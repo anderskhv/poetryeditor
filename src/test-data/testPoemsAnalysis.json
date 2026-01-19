@@ -1,0 +1,1837 @@
+{
+  "summary": {
+    "totalPoems": 118,
+    "totalLines": 1684,
+    "formCounts": {
+      "Shakespearean Sonnet": 10,
+      "Haiku": 20,
+      "Villanelle": 3,
+      "Blank Verse": 2,
+      "Limerick": 5,
+      "Free Verse": 7,
+      "Not specified": 61,
+      "Terza Rima": 1,
+      "Keatsian Sonnet": 1,
+      "Fibonacci": 1,
+      "Ottava Rima": 1,
+      "Ghazal": 1,
+      "Pantoum": 1,
+      "Cinquain": 2,
+      "Acrostic": 2
+    },
+    "tagCounts": {
+      "sonnet": 12,
+      "iambic-pentameter": 16,
+      "nature": 31,
+      "metaphor": 3,
+      "memory": 10,
+      "summer": 4,
+      "love": 7,
+      "dreams": 1,
+      "technology": 3,
+      "modern": 7,
+      "urban": 5,
+      "night": 3,
+      "gardening": 2,
+      "winter": 2,
+      "childhood": 2,
+      "haiku": 20,
+      "spring": 2,
+      "autumn": 2,
+      "mountains": 1,
+      "ocean": 2,
+      "spiritual": 2,
+      "zen": 1,
+      "rain": 1,
+      "garden": 1,
+      "moon": 1,
+      "morning": 1,
+      "daily-life": 2,
+      "insects": 1,
+      "loneliness": 1,
+      "villanelle": 3,
+      "death": 1,
+      "defiance": 1,
+      "time": 3,
+      "forgiveness": 1,
+      "healing": 1,
+      "blank-verse": 2,
+      "meditation": 3,
+      "insomnia": 2,
+      "anxiety": 2,
+      "limerick": 5,
+      "humor": 6,
+      "food": 1,
+      "science": 1,
+      "meta": 3,
+      "free-verse": 10,
+      "observation": 3,
+      "illness": 1,
+      "life-change": 1,
+      "experimental": 4,
+      "parenting": 1,
+      "growth": 1,
+      "communication": 1,
+      "regret": 1,
+      "philosophy": 5,
+      "couplets": 2,
+      "seasons": 3,
+      "wisdom": 1,
+      "advice": 2,
+      "terza-rima": 1,
+      "journey": 2,
+      "dante-style": 1,
+      "alliteration": 1,
+      "sound-patterns": 3,
+      "assonance": 1,
+      "consonance": 1,
+      "trochaic": 1,
+      "gothic": 3,
+      "anapestic": 1,
+      "christmas": 1,
+      "narrative": 2,
+      "dactylic": 1,
+      "war": 1,
+      "tennyson-style": 1,
+      "spondaic": 1,
+      "sea": 3,
+      "grief": 4,
+      "edge-case": 11,
+      "minimalist": 1,
+      "imperative": 1,
+      "prose-poetry": 1,
+      "long-lines": 1,
+      "multilingual": 1,
+      "punctuation": 1,
+      "numbers": 1,
+      "contractions": 1,
+      "grammar": 1,
+      "archaic": 1,
+      "shakespeare-style": 1,
+      "near-rhymes": 1,
+      "slant-rhymes": 1,
+      "repetition": 1,
+      "anaphora": 1,
+      "homophones": 1,
+      "word-play": 1,
+      "sleep": 1,
+      "keats-style": 2,
+      "quatrain": 1,
+      "ode": 2,
+      "coffee": 2,
+      "celebration": 3,
+      "elegy": 1,
+      "friendship": 1,
+      "loss": 4,
+      "epistle": 1,
+      "letter": 1,
+      "youth": 1,
+      "monologue": 1,
+      "character": 5,
+      "duty": 1,
+      "aging": 1,
+      "tree": 1,
+      "endurance": 2,
+      "water": 1,
+      "cycle": 1,
+      "first-sight": 1,
+      "romance": 1,
+      "marriage": 1,
+      "anniversary": 1,
+      "commitment": 1,
+      "subway": 1,
+      "craftsman": 1,
+      "dedication": 3,
+      "clouds": 1,
+      "educational": 1,
+      "books": 3,
+      "language": 1,
+      "nostalgia": 1,
+      "ai": 1,
+      "yoga": 1,
+      "wellness": 1,
+      "body": 2,
+      "work": 5,
+      "hospital": 1,
+      "math": 1,
+      "form": 5,
+      "palindrome": 1,
+      "dawn": 1,
+      "cycles": 1,
+      "health": 1,
+      "pain": 1,
+      "personal": 1,
+      "objects": 1,
+      "thrift": 1,
+      "service": 1,
+      "wonder": 3,
+      "travel": 1,
+      "transcendence": 1,
+      "reading": 1,
+      "identity": 1,
+      "home": 2,
+      "community": 2,
+      "fire": 1,
+      "connection": 1,
+      "family": 2,
+      "legacy": 1,
+      "astronomy": 2,
+      "flowers": 1,
+      "resilience": 1,
+      "perspective": 1,
+      "library": 1,
+      "capitalism": 1,
+      "critique": 1,
+      "lighthouse": 1,
+      "ghost": 1,
+      "commute": 1,
+      "storm": 2,
+      "conversation": 1,
+      "growing-up": 1,
+      "iambic-tetrameter": 2,
+      "traditional": 2,
+      "evening": 1,
+      "comfort": 1,
+      "ottava-rima": 1,
+      "feast": 1,
+      "ghazal": 1,
+      "persian-form": 1,
+      "pantoum": 1,
+      "haunting": 1,
+      "cinquain": 2,
+      "butterfly": 1,
+      "acrostic": 2,
+      "poetry": 1,
+      "slant-rhyme": 1,
+      "testing": 1,
+      "prose-poem": 2,
+      "mystery": 1,
+      "psychological": 1,
+      "survival": 1,
+      "encouragement": 1,
+      "lyrical": 1,
+      "epic": 1,
+      "life": 1,
+      "long": 1,
+      "collection": 1,
+      "observations": 1,
+      "vignettes": 1,
+      "short-poems": 1,
+      "variety": 1,
+      "dramatic": 1,
+      "voices": 1,
+      "multiple-speakers": 1,
+      "sonnet-sequence": 1,
+      "days": 1,
+      "week": 1,
+      "work-life": 1,
+      "series": 1
+    }
+  },
+  "poems": [
+    {
+      "id": "sonnet-001",
+      "title": "The Passing Storm",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "nature",
+        "metaphor"
+      ],
+      "expectedForm": "Shakespearean Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GG"
+    },
+    {
+      "id": "sonnet-002",
+      "title": "Memory of Summer",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "memory",
+        "summer"
+      ],
+      "expectedForm": "Shakespearean Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GG"
+    },
+    {
+      "id": "sonnet-004",
+      "title": "Petrarchan Dreams",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "love",
+        "dreams"
+      ],
+      "expectedForm": "Shakespearean Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GG"
+    },
+    {
+      "id": "sonnet-005",
+      "title": "Digital Age",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "technology",
+        "modern"
+      ],
+      "expectedForm": "Shakespearean Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GG"
+    },
+    {
+      "id": "sonnet-008",
+      "title": "City at Midnight",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "urban",
+        "night"
+      ],
+      "expectedForm": "Shakespearean Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GG"
+    },
+    {
+      "id": "sonnet-009",
+      "title": "The Gardener",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "gardening",
+        "memory",
+        "love"
+      ],
+      "expectedForm": "Shakespearean Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GG"
+    },
+    {
+      "id": "sonnet-010",
+      "title": "First Snow",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "winter",
+        "childhood"
+      ],
+      "expectedForm": "Shakespearean Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GG"
+    },
+    {
+      "id": "haiku-001",
+      "title": "Spring Awakening",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "spring",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-002",
+      "title": "Summer Heat",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "summer",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-003",
+      "title": "Autumn Leaves",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "autumn",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-004",
+      "title": "Winter Stillness",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "winter",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-005",
+      "title": "Mountain Dawn",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "mountains",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-006",
+      "title": "Ocean Waves",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "ocean",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-007",
+      "title": "Temple Bell",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "spiritual",
+        "zen"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-008",
+      "title": "City Rain",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "urban",
+        "rain"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-009",
+      "title": "Garden Pond",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "garden",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-010",
+      "title": "Full Moon",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "moon",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-011",
+      "title": "Morning Coffee",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "morning",
+        "daily-life"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-012",
+      "title": "Ancient Path",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "spiritual",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-013",
+      "title": "Butterfly",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "insects",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-014",
+      "title": "Train Station",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "urban",
+        "loneliness"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-015",
+      "title": "Fireflies",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "summer",
+        "nature"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "villanelle-001",
+      "title": "Do Not Go Gentle (Style)",
+      "lineCount": 19,
+      "tags": [
+        "villanelle",
+        "iambic-pentameter",
+        "death",
+        "defiance"
+      ],
+      "expectedForm": "Villanelle",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "villanelle-002",
+      "title": "The Hours Return",
+      "lineCount": 19,
+      "tags": [
+        "villanelle",
+        "iambic-pentameter",
+        "time",
+        "memory"
+      ],
+      "expectedForm": "Villanelle",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABA"
+    },
+    {
+      "id": "villanelle-003",
+      "title": "Learning to Forgive",
+      "lineCount": 19,
+      "tags": [
+        "villanelle",
+        "iambic-pentameter",
+        "forgiveness",
+        "healing"
+      ],
+      "expectedForm": "Villanelle",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABA"
+    },
+    {
+      "id": "blank-verse-001",
+      "title": "The Forest Walk",
+      "lineCount": 16,
+      "tags": [
+        "blank-verse",
+        "iambic-pentameter",
+        "nature",
+        "meditation"
+      ],
+      "expectedForm": "Blank Verse",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "blank-verse-003",
+      "title": "Insomnia",
+      "lineCount": 16,
+      "tags": [
+        "blank-verse",
+        "iambic-pentameter",
+        "insomnia",
+        "anxiety"
+      ],
+      "expectedForm": "Blank Verse",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "limerick-001",
+      "title": "The Programmer",
+      "lineCount": 5,
+      "tags": [
+        "limerick",
+        "humor",
+        "technology"
+      ],
+      "expectedForm": "Limerick",
+      "expectedMeter": "anapestic",
+      "expectedRhymeScheme": "AABBA"
+    },
+    {
+      "id": "limerick-002",
+      "title": "The Chef",
+      "lineCount": 5,
+      "tags": [
+        "limerick",
+        "humor",
+        "food"
+      ],
+      "expectedForm": "Limerick",
+      "expectedMeter": "anapestic",
+      "expectedRhymeScheme": "AABBA"
+    },
+    {
+      "id": "limerick-003",
+      "title": "The Astronomer",
+      "lineCount": 5,
+      "tags": [
+        "limerick",
+        "humor",
+        "science"
+      ],
+      "expectedForm": "Limerick",
+      "expectedMeter": "anapestic",
+      "expectedRhymeScheme": "AABBA"
+    },
+    {
+      "id": "limerick-004",
+      "title": "The Baker",
+      "lineCount": 5,
+      "tags": [
+        "limerick",
+        "humor"
+      ],
+      "expectedForm": "Limerick",
+      "expectedMeter": "anapestic",
+      "expectedRhymeScheme": "AABBA"
+    },
+    {
+      "id": "limerick-005",
+      "title": "The Poet",
+      "lineCount": 5,
+      "tags": [
+        "limerick",
+        "humor",
+        "meta"
+      ],
+      "expectedForm": "Limerick",
+      "expectedMeter": "anapestic",
+      "expectedRhymeScheme": "AABBA"
+    },
+    {
+      "id": "free-verse-001",
+      "title": "The City Wakes",
+      "lineCount": 19,
+      "tags": [
+        "free-verse",
+        "urban",
+        "observation"
+      ],
+      "expectedForm": "Free Verse",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "free-verse-002",
+      "title": "After the Diagnosis",
+      "lineCount": 21,
+      "tags": [
+        "free-verse",
+        "illness",
+        "life-change"
+      ],
+      "expectedForm": "Free Verse",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "free-verse-003",
+      "title": "Grocery List",
+      "lineCount": 13,
+      "tags": [
+        "free-verse",
+        "memory",
+        "experimental"
+      ],
+      "expectedForm": "Free Verse",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "free-verse-004",
+      "title": "Teaching My Daughter to Ride",
+      "lineCount": 18,
+      "tags": [
+        "free-verse",
+        "parenting",
+        "growth"
+      ],
+      "expectedForm": "Free Verse",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "free-verse-005",
+      "title": "The Museum of Unfinished Sentences",
+      "lineCount": 15,
+      "tags": [
+        "free-verse",
+        "communication",
+        "regret",
+        "metaphor"
+      ],
+      "expectedForm": "Free Verse",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "free-verse-006",
+      "title": "Variations on Water",
+      "lineCount": 15,
+      "tags": [
+        "free-verse",
+        "nature",
+        "philosophy"
+      ],
+      "expectedForm": "Free Verse",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "free-verse-007",
+      "title": "3 AM",
+      "lineCount": 16,
+      "tags": [
+        "free-verse",
+        "insomnia",
+        "night"
+      ],
+      "expectedForm": "Free Verse",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "couplets-001",
+      "title": "The Seasons Turn",
+      "lineCount": 14,
+      "tags": [
+        "couplets",
+        "nature",
+        "seasons"
+      ],
+      "expectedForm": null,
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "AA BB CC DD EE FF GG"
+    },
+    {
+      "id": "couplets-002",
+      "title": "Advice from an Old Man",
+      "lineCount": 12,
+      "tags": [
+        "couplets",
+        "wisdom",
+        "advice"
+      ],
+      "expectedForm": null,
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "AA BB CC DD EE FF"
+    },
+    {
+      "id": "terza-rima-001",
+      "title": "The Journey Down",
+      "lineCount": 15,
+      "tags": [
+        "terza-rima",
+        "journey",
+        "dante-style"
+      ],
+      "expectedForm": "Terza Rima",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABA BCB CDC DED"
+    },
+    {
+      "id": "alliteration-002",
+      "title": "Sounds of Summer",
+      "lineCount": 8,
+      "tags": [
+        "alliteration",
+        "summer",
+        "sound-patterns"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "assonance-001",
+      "title": "The Long Road Home",
+      "lineCount": 8,
+      "tags": [
+        "assonance",
+        "journey",
+        "sound-patterns"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "consonance-001",
+      "title": "Night Flight",
+      "lineCount": 8,
+      "tags": [
+        "consonance",
+        "night",
+        "sound-patterns"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "trochaic-001",
+      "title": "Forest Darkness",
+      "lineCount": 8,
+      "tags": [
+        "trochaic",
+        "gothic",
+        "nature"
+      ],
+      "expectedForm": null,
+      "expectedMeter": "trochaic tetrameter",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "anapestic-001",
+      "title": "The Night Before",
+      "lineCount": 8,
+      "tags": [
+        "anapestic",
+        "christmas",
+        "narrative"
+      ],
+      "expectedForm": null,
+      "expectedMeter": "anapestic tetrameter",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "dactylic-001",
+      "title": "The Charge",
+      "lineCount": 8,
+      "tags": [
+        "dactylic",
+        "war",
+        "tennyson-style"
+      ],
+      "expectedForm": null,
+      "expectedMeter": "dactylic",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "spondaic-001",
+      "title": "Break, Break",
+      "lineCount": 8,
+      "tags": [
+        "spondaic",
+        "sea",
+        "grief"
+      ],
+      "expectedForm": null,
+      "expectedMeter": "varied with spondees",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "edge-case-001",
+      "title": "One Word Lines",
+      "lineCount": 9,
+      "tags": [
+        "edge-case",
+        "minimalist",
+        "imperative"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "edge-case-002",
+      "title": "Very Long Lines",
+      "lineCount": 3,
+      "tags": [
+        "edge-case",
+        "prose-poetry",
+        "long-lines"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "edge-case-003",
+      "title": "Mixed Languages",
+      "lineCount": 8,
+      "tags": [
+        "edge-case",
+        "multilingual",
+        "philosophy"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "edge-case-004",
+      "title": "Heavy Punctuation",
+      "lineCount": 8,
+      "tags": [
+        "edge-case",
+        "punctuation",
+        "meta"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "edge-case-005",
+      "title": "Numbers and Symbols",
+      "lineCount": 8,
+      "tags": [
+        "edge-case",
+        "numbers",
+        "modern"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "edge-case-006",
+      "title": "Contractions Galore",
+      "lineCount": 8,
+      "tags": [
+        "edge-case",
+        "contractions",
+        "grammar"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "edge-case-007",
+      "title": "Archaic Language",
+      "lineCount": 8,
+      "tags": [
+        "edge-case",
+        "archaic",
+        "shakespeare-style"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "edge-case-008",
+      "title": "Near Rhymes",
+      "lineCount": 8,
+      "tags": [
+        "edge-case",
+        "near-rhymes",
+        "slant-rhymes"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "edge-case-009",
+      "title": "Repeated Words",
+      "lineCount": 8,
+      "tags": [
+        "edge-case",
+        "repetition",
+        "anaphora"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "edge-case-010",
+      "title": "Homophone Pairs",
+      "lineCount": 8,
+      "tags": [
+        "edge-case",
+        "homophones",
+        "word-play"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "sonnet-011",
+      "title": "To Sleep",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "sleep",
+        "keats-style"
+      ],
+      "expectedForm": "Keatsian Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "quatrain-001",
+      "title": "Four Seasons",
+      "lineCount": 16,
+      "tags": [
+        "quatrain",
+        "seasons",
+        "nature"
+      ],
+      "expectedForm": null,
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GHGH"
+    },
+    {
+      "id": "ode-001",
+      "title": "Ode to Coffee",
+      "lineCount": 14,
+      "tags": [
+        "ode",
+        "coffee",
+        "daily-life",
+        "celebration"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "ode-002",
+      "title": "Ode to Autumn",
+      "lineCount": 12,
+      "tags": [
+        "ode",
+        "autumn",
+        "keats-style",
+        "nature"
+      ],
+      "expectedForm": null,
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "elegy-001",
+      "title": "For a Friend",
+      "lineCount": 16,
+      "tags": [
+        "elegy",
+        "grief",
+        "friendship",
+        "loss"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "epistle-001",
+      "title": "Letter to My Younger Self",
+      "lineCount": 20,
+      "tags": [
+        "epistle",
+        "letter",
+        "advice",
+        "youth"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "monologue-001",
+      "title": "The Old Lighthouse Keeper",
+      "lineCount": 24,
+      "tags": [
+        "monologue",
+        "character",
+        "duty",
+        "aging"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "nature-001",
+      "title": "The Oak",
+      "lineCount": 16,
+      "tags": [
+        "nature",
+        "tree",
+        "endurance",
+        "time"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "nature-002",
+      "title": "Mountain Stream",
+      "lineCount": 16,
+      "tags": [
+        "nature",
+        "water",
+        "cycle",
+        "meditation"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "love-001",
+      "title": "First Sight",
+      "lineCount": 16,
+      "tags": [
+        "love",
+        "first-sight",
+        "romance"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "love-002",
+      "title": "Twenty Years",
+      "lineCount": 16,
+      "tags": [
+        "love",
+        "marriage",
+        "anniversary",
+        "commitment"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-001",
+      "title": "Subway Sonata",
+      "lineCount": 14,
+      "tags": [
+        "urban",
+        "subway",
+        "sonnet",
+        "observation"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-002",
+      "title": "Recipe for Grief",
+      "lineCount": 16,
+      "tags": [
+        "grief",
+        "loss",
+        "experimental",
+        "metaphor"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-003",
+      "title": "The Clockmaker",
+      "lineCount": 14,
+      "tags": [
+        "character",
+        "craftsman",
+        "time",
+        "dedication"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-004",
+      "title": "Field Guide to Clouds",
+      "lineCount": 16,
+      "tags": [
+        "nature",
+        "clouds",
+        "educational",
+        "observation"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-005",
+      "title": "Dictionary",
+      "lineCount": 16,
+      "tags": [
+        "books",
+        "language",
+        "nostalgia",
+        "celebration"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-006",
+      "title": "The Algorithm",
+      "lineCount": 16,
+      "tags": [
+        "technology",
+        "ai",
+        "modern",
+        "anxiety"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-007",
+      "title": "Yoga",
+      "lineCount": 16,
+      "tags": [
+        "yoga",
+        "wellness",
+        "meditation",
+        "body"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-008",
+      "title": "Night Shift",
+      "lineCount": 16,
+      "tags": [
+        "work",
+        "hospital",
+        "character",
+        "dedication"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-009",
+      "title": "Fibonacci",
+      "lineCount": 6,
+      "tags": [
+        "experimental",
+        "math",
+        "nature",
+        "form"
+      ],
+      "expectedForm": "Fibonacci",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-010",
+      "title": "Palindrome",
+      "lineCount": 8,
+      "tags": [
+        "experimental",
+        "palindrome",
+        "dawn",
+        "form"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-011",
+      "title": "Compost",
+      "lineCount": 16,
+      "tags": [
+        "nature",
+        "gardening",
+        "cycles",
+        "memory"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-012",
+      "title": "Migraine",
+      "lineCount": 16,
+      "tags": [
+        "health",
+        "pain",
+        "personal",
+        "endurance"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-013",
+      "title": "Thrift Store",
+      "lineCount": 16,
+      "tags": [
+        "objects",
+        "memory",
+        "thrift",
+        "philosophy"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-014",
+      "title": "Barista",
+      "lineCount": 16,
+      "tags": [
+        "work",
+        "coffee",
+        "character",
+        "service"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-015",
+      "title": "Northern Lights",
+      "lineCount": 16,
+      "tags": [
+        "nature",
+        "wonder",
+        "travel",
+        "transcendence"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-016",
+      "title": "Bookshelf",
+      "lineCount": 16,
+      "tags": [
+        "books",
+        "reading",
+        "identity",
+        "home"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-017",
+      "title": "Campfire",
+      "lineCount": 16,
+      "tags": [
+        "nature",
+        "community",
+        "fire",
+        "connection"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-018",
+      "title": "Hands",
+      "lineCount": 16,
+      "tags": [
+        "family",
+        "work",
+        "body",
+        "legacy"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-019",
+      "title": "Eclipse",
+      "lineCount": 16,
+      "tags": [
+        "nature",
+        "astronomy",
+        "wonder",
+        "community"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "misc-020",
+      "title": "Dandelion",
+      "lineCount": 16,
+      "tags": [
+        "nature",
+        "flowers",
+        "resilience",
+        "perspective"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "sonnet-013",
+      "title": "The Telescope",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "astronomy",
+        "wonder"
+      ],
+      "expectedForm": "Shakespearean Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GG"
+    },
+    {
+      "id": "sonnet-014",
+      "title": "The Library at Night",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "books",
+        "library"
+      ],
+      "expectedForm": "Shakespearean Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GG"
+    },
+    {
+      "id": "sonnet-015",
+      "title": "Late Capitalism",
+      "lineCount": 14,
+      "tags": [
+        "sonnet",
+        "iambic-pentameter",
+        "modern",
+        "capitalism",
+        "critique"
+      ],
+      "expectedForm": "Shakespearean Sonnet",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABAB CDCD EFEF GG"
+    },
+    {
+      "id": "narrative-001",
+      "title": "The Lighthouse",
+      "lineCount": 56,
+      "tags": [
+        "narrative",
+        "lighthouse",
+        "dedication",
+        "ghost",
+        "sea"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-016",
+      "title": "Midnight Snack",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "modern",
+        "humor"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-017",
+      "title": "Email",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "modern",
+        "work"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-018",
+      "title": "Traffic",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "modern",
+        "commute"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-019",
+      "title": "Old Photo",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "family",
+        "memory"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "haiku-020",
+      "title": "Storm Warning",
+      "lineCount": 3,
+      "tags": [
+        "haiku",
+        "nature",
+        "storm"
+      ],
+      "expectedForm": "Haiku",
+      "expectedMeter": "syllabic (5-7-5)",
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "free-verse-008",
+      "title": "What We Talk About When We Talk About Love",
+      "lineCount": 36,
+      "tags": [
+        "free-verse",
+        "love",
+        "philosophy",
+        "conversation"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "free-verse-009",
+      "title": "The Last Day of Childhood",
+      "lineCount": 38,
+      "tags": [
+        "free-verse",
+        "childhood",
+        "growing-up",
+        "memory"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "free-verse-010",
+      "title": "A Brief History of Forgetting",
+      "lineCount": 39,
+      "tags": [
+        "free-verse",
+        "memory",
+        "loss",
+        "grief"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "iambic-tetrameter-001",
+      "title": "The Village Blacksmith",
+      "lineCount": 16,
+      "tags": [
+        "iambic-tetrameter",
+        "work",
+        "character",
+        "traditional"
+      ],
+      "expectedForm": null,
+      "expectedMeter": "iambic tetrameter",
+      "expectedRhymeScheme": "ABAB CDCD"
+    },
+    {
+      "id": "iambic-tetrameter-002",
+      "title": "Walking Home",
+      "lineCount": 16,
+      "tags": [
+        "iambic-tetrameter",
+        "home",
+        "evening",
+        "comfort"
+      ],
+      "expectedForm": null,
+      "expectedMeter": "iambic tetrameter",
+      "expectedRhymeScheme": "ABAB CDCD"
+    },
+    {
+      "id": "ottava-rima-001",
+      "title": "The Feast",
+      "lineCount": 16,
+      "tags": [
+        "ottava-rima",
+        "celebration",
+        "feast",
+        "traditional"
+      ],
+      "expectedForm": "Ottava Rima",
+      "expectedMeter": "iambic pentameter",
+      "expectedRhymeScheme": "ABABABCC"
+    },
+    {
+      "id": "ghazal-001",
+      "title": "The Garden of Memory",
+      "lineCount": 12,
+      "tags": [
+        "ghazal",
+        "love",
+        "memory",
+        "loss",
+        "persian-form"
+      ],
+      "expectedForm": "Ghazal",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "pantoum-001",
+      "title": "The Haunting",
+      "lineCount": 12,
+      "tags": [
+        "pantoum",
+        "gothic",
+        "haunting",
+        "form"
+      ],
+      "expectedForm": "Pantoum",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "cinquain-001",
+      "title": "Butterfly",
+      "lineCount": 5,
+      "tags": [
+        "cinquain",
+        "nature",
+        "butterfly"
+      ],
+      "expectedForm": "Cinquain",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "cinquain-002",
+      "title": "Ocean",
+      "lineCount": 5,
+      "tags": [
+        "cinquain",
+        "nature",
+        "ocean"
+      ],
+      "expectedForm": "Cinquain",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "acrostic-001",
+      "title": "SPRING",
+      "lineCount": 6,
+      "tags": [
+        "acrostic",
+        "spring",
+        "nature",
+        "form"
+      ],
+      "expectedForm": "Acrostic",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "acrostic-002",
+      "title": "POETRY",
+      "lineCount": 6,
+      "tags": [
+        "acrostic",
+        "meta",
+        "poetry",
+        "form"
+      ],
+      "expectedForm": "Acrostic",
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "slant-rhyme-001",
+      "title": "Almost Perfect",
+      "lineCount": 12,
+      "tags": [
+        "edge-case",
+        "slant-rhyme",
+        "love",
+        "testing"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "prose-poem-001",
+      "title": "The Door",
+      "lineCount": 1,
+      "tags": [
+        "prose-poem",
+        "gothic",
+        "mystery",
+        "psychological"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "prose-poem-002",
+      "title": "Instructions for Surviving the Night",
+      "lineCount": 1,
+      "tags": [
+        "prose-poem",
+        "survival",
+        "encouragement",
+        "lyrical"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "epic-002",
+      "title": "The Seasons of a Life",
+      "lineCount": 77,
+      "tags": [
+        "epic",
+        "life",
+        "seasons",
+        "philosophy",
+        "long"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "collection-001",
+      "title": "Twenty Short Observations",
+      "lineCount": 80,
+      "tags": [
+        "collection",
+        "observations",
+        "vignettes",
+        "short-poems",
+        "variety"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "dramatic-001",
+      "title": "Voices from the Storm",
+      "lineCount": 63,
+      "tags": [
+        "dramatic",
+        "voices",
+        "storm",
+        "sea",
+        "multiple-speakers"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    },
+    {
+      "id": "sonnet-sequence-001",
+      "title": "Seven Sonnets for Seven Days",
+      "lineCount": 105,
+      "tags": [
+        "sonnet-sequence",
+        "days",
+        "week",
+        "work-life",
+        "series"
+      ],
+      "expectedForm": null,
+      "expectedMeter": null,
+      "expectedRhymeScheme": null
+    }
+  ]
+}

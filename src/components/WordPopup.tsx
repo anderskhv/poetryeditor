@@ -1,0 +1,350 @@
+import { useState, useEffect, useRef } from 'react';
+import { getStressPattern, getSyllables } from '../utils/cmuDict';
+import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonyms, RhymeWord, SynonymWord } from '../utils/rhymeApi';
+import { fetchWordInfo, type WordOrigin, type Pronunciation, type WordDefinition } from '../utils/wordInfoApi';
+import './WordPopup.css';
+
+interface WordPopupProps {
+  word: string;
+  position: { top: number; left: number };
+  onClose: () => void;
+}
+
+type Tab = 'rhymes' | 'nearrhymes' | 'synonyms' | 'syllables' | 'origin';
+
+interface GroupedWords<T> {
+  [syllables: number]: T[];
+}
+
+export function WordPopup({ word, position, onClose }: WordPopupProps) {
+  const [activeTab, setActiveTab] = useState<Tab>('syllables');
+  const [rhymes, setRhymes] = useState<RhymeWord[]>([]);
+  const [nearRhymes, setNearRhymes] = useState<RhymeWord[]>([]);
+  const [synonyms, setSynonyms] = useState<SynonymWord[]>([]);
+  const [loadingRhymes, setLoadingRhymes] = useState(false);
+  const [loadingNearRhymes, setLoadingNearRhymes] = useState(false);
+  const [loadingSynonyms, setLoadingSynonyms] = useState(false);
+  const [wordOrigin, setWordOrigin] = useState<WordOrigin | null>(null);
+  const [wordDefinitions, setWordDefinitions] = useState<WordDefinition[]>([]);
+  const [pronunciation, setPronunciation] = useState<Pronunciation | null>(null);
+  const [loadingWordInfo, setLoadingWordInfo] = useState(false);
+  const [wordInfoLoaded, setWordInfoLoaded] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const stresses = getStressPattern(word);
+  const syllableCount = stresses.length;
+  const syllables = getSyllables(word);
+
+  // Group rhymes by syllable count
+  const groupedRhymes: GroupedWords<RhymeWord> = rhymes.reduce((acc, rhyme) => {
+    const sylCount = rhyme.numSyllables || 0;
+    if (!acc[sylCount]) acc[sylCount] = [];
+    acc[sylCount].push(rhyme);
+    return acc;
+  }, {} as GroupedWords<RhymeWord>);
+
+  // Group near rhymes by syllable count
+  const groupedNearRhymes: GroupedWords<RhymeWord> = nearRhymes.reduce((acc, rhyme) => {
+    const sylCount = rhyme.numSyllables || 0;
+    if (!acc[sylCount]) acc[sylCount] = [];
+    acc[sylCount].push(rhyme);
+    return acc;
+  }, {} as GroupedWords<RhymeWord>);
+
+  // Synonyms don't need syllable grouping - just sort by score
+
+  // Fetch rhymes when the rhymes tab is active
+  useEffect(() => {
+    if (activeTab === 'rhymes' && rhymes.length === 0 && !loadingRhymes) {
+      setLoadingRhymes(true);
+      fetchRhymes(word).then((result) => {
+        setRhymes(result);
+        setLoadingRhymes(false);
+      });
+    }
+  }, [activeTab, word, rhymes.length, loadingRhymes]);
+
+  // Fetch near rhymes when the near rhymes tab is active
+  useEffect(() => {
+    if (activeTab === 'nearrhymes' && nearRhymes.length === 0 && !loadingNearRhymes) {
+      setLoadingNearRhymes(true);
+      fetchNearAndSlantRhymes(word).then((result) => {
+        setNearRhymes(result);
+        setLoadingNearRhymes(false);
+      });
+    }
+  }, [activeTab, word, nearRhymes.length, loadingNearRhymes]);
+
+  // Fetch synonyms when the synonyms tab is active
+  useEffect(() => {
+    if (activeTab === 'synonyms' && synonyms.length === 0 && !loadingSynonyms) {
+      setLoadingSynonyms(true);
+      fetchSynonyms(word).then((result) => {
+        setSynonyms(result);
+        setLoadingSynonyms(false);
+      });
+    }
+  }, [activeTab, word, synonyms.length, loadingSynonyms]);
+
+  // Fetch word info (origin + pronunciation) when origin tab is active or on mount for audio
+  useEffect(() => {
+    if ((activeTab === 'origin' || !wordInfoLoaded) && !loadingWordInfo) {
+      setLoadingWordInfo(true);
+      fetchWordInfo(word).then((result) => {
+        if (result) {
+          setWordOrigin(result.origin);
+          setWordDefinitions(result.definitions);
+          setPronunciation(result.pronunciation);
+        }
+        setWordInfoLoaded(true);
+        setLoadingWordInfo(false);
+      });
+    }
+  }, [activeTab, word, wordInfoLoaded, loadingWordInfo]);
+
+  // Handle audio playback
+  const playAudio = () => {
+    if (pronunciation?.audioUrl && audioRef.current) {
+      audioRef.current.src = pronunciation.audioUrl;
+      audioRef.current.play();
+    }
+  };
+
+  return (
+    <>
+      <div className="word-popup-overlay" onClick={onClose} />
+      <div
+        className="word-popup"
+        style={{
+          top: `${position.top}px`,
+          left: `${position.left}px`,
+        }}
+      >
+        <div className="word-popup-header">
+          <div className="word-popup-title">
+            <h3>{word}</h3>
+            {pronunciation?.audioUrl && (
+              <button className="speaker-icon-btn" onClick={playAudio} title="Play pronunciation">
+                🔊
+              </button>
+            )}
+            {pronunciation?.text && (
+              <span className="header-phonetic">{pronunciation.text}</span>
+            )}
+          </div>
+          <button className="word-popup-close" onClick={onClose}>×</button>
+          <audio ref={audioRef} />
+        </div>
+
+        <div className="word-popup-tabs">
+          <button
+            className={`word-popup-tab ${activeTab === 'rhymes' ? 'active' : ''}`}
+            onClick={() => setActiveTab('rhymes')}
+          >
+            Rhymes
+          </button>
+          <button
+            className={`word-popup-tab ${activeTab === 'nearrhymes' ? 'active' : ''}`}
+            onClick={() => setActiveTab('nearrhymes')}
+          >
+            Near Rhymes
+          </button>
+          <button
+            className={`word-popup-tab ${activeTab === 'synonyms' ? 'active' : ''}`}
+            onClick={() => setActiveTab('synonyms')}
+          >
+            Synonyms
+          </button>
+          <button
+            className={`word-popup-tab ${activeTab === 'syllables' ? 'active' : ''}`}
+            onClick={() => setActiveTab('syllables')}
+          >
+            Syllables
+          </button>
+          <button
+            className={`word-popup-tab ${activeTab === 'origin' ? 'active' : ''}`}
+            onClick={() => setActiveTab('origin')}
+          >
+            Definition
+          </button>
+        </div>
+
+        <div className="word-popup-content">
+          {activeTab === 'rhymes' && (
+            <div className="word-popup-section">
+              {loadingRhymes ? (
+                <p className="loading">Loading rhymes...</p>
+              ) : rhymes.length > 0 ? (
+                <div className="grouped-words">
+                  {Object.keys(groupedRhymes)
+                    .sort((a, b) => Number(a) - Number(b))
+                    .map((sylCount) => {
+                      const filteredRhymes = groupedRhymes[Number(sylCount)].filter(rhyme => !rhyme.word.includes(' '));
+                      if (filteredRhymes.length === 0) return null;
+
+                      return (
+                        <div key={sylCount} className="syllable-group">
+                          <h4 className="group-header">
+                            {sylCount} {Number(sylCount) === 1 ? 'syllable' : 'syllables'}
+                          </h4>
+                          <div className="word-list">
+                            {filteredRhymes
+                              .sort((a, b) => b.score - a.score)
+                              .map((rhyme, idx) => (
+                                <div key={idx} className="word-item">
+                                  <span className="word-text">{rhyme.word}</span>
+                                  <span className="word-meta">#{idx + 1}</span>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              ) : (
+                <p className="no-data">No rhymes found</p>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'nearrhymes' && (
+            <div className="word-popup-section">
+              {loadingNearRhymes ? (
+                <p className="loading">Loading near rhymes & slant rhymes...</p>
+              ) : nearRhymes.length > 0 ? (
+                <div className="grouped-words">
+                  {Object.keys(groupedNearRhymes)
+                    .sort((a, b) => Number(a) - Number(b))
+                    .map((sylCount) => {
+                      const filteredRhymes = groupedNearRhymes[Number(sylCount)].filter(rhyme => !rhyme.word.includes(' '));
+                      if (filteredRhymes.length === 0) return null;
+
+                      return (
+                        <div key={sylCount} className="syllable-group">
+                          <h4 className="group-header">
+                            {sylCount} {Number(sylCount) === 1 ? 'syllable' : 'syllables'}
+                          </h4>
+                          <div className="word-list">
+                            {filteredRhymes
+                              .sort((a, b) => b.score - a.score)
+                              .map((rhyme, idx) => (
+                                <div key={idx} className="word-item">
+                                  <span className="word-text">{rhyme.word}</span>
+                                  <span className="word-meta">#{idx + 1}</span>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              ) : (
+                <p className="no-data">No near rhymes or slant rhymes found</p>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'synonyms' && (
+            <div className="word-popup-section">
+              {loadingSynonyms ? (
+                <p className="loading">Loading synonyms...</p>
+              ) : synonyms.length > 0 ? (
+                <div className="word-list">
+                  {synonyms
+                    .filter(synonym => !synonym.word.includes(' '))
+                    .sort((a, b) => b.score - a.score)
+                    .map((synonym, idx) => (
+                      <div key={idx} className="word-item">
+                        <span className="word-text">{synonym.word}</span>
+                        <span className="word-meta">#{idx + 1}</span>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <p className="no-data">No synonyms found</p>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'syllables' && (
+            <div className="word-popup-section">
+              {syllableCount > 0 && syllables.length > 0 ? (
+                <>
+                  <div className="syllable-info">
+                    <strong>{syllableCount}</strong> {syllableCount === 1 ? 'syllable' : 'syllables'}
+                  </div>
+                  <div className="syllable-breakdown">
+                    {syllables.map((syllable, idx) => {
+                      const stress = stresses[idx] || 0;
+                      // Only capitalize first letter of entire word
+                      const displaySyl = idx === 0
+                        ? syllable.charAt(0).toUpperCase() + syllable.slice(1).toLowerCase()
+                        : syllable.toLowerCase();
+                      return (
+                        <span key={idx}>
+                          <span
+                            className={`syllable-text ${
+                              stress === 1 ? 'primary-stress' : stress === 2 ? 'secondary-stress' : 'unstressed'
+                            }`}
+                          >
+                            {displaySyl}
+                          </span>
+                          {idx < syllables.length - 1 && <span className="syllable-separator">-</span>}
+                        </span>
+                      );
+                    })}
+                  </div>
+                  <div className="stress-explainer">
+                    <p><strong className="primary-stress">Primary stress</strong> (underlined + bold): The strongest emphasis</p>
+                    <p><strong className="secondary-stress">Secondary stress</strong> (bold): Moderate emphasis</p>
+                    <p><span className="unstressed">Unstressed</span> (normal): Weak or no emphasis</p>
+                  </div>
+                </>
+              ) : (
+                <p className="no-data">No stress data available for this word</p>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'origin' && (
+            <div className="word-popup-section">
+              {loadingWordInfo ? (
+                <p className="loading">Loading etymology...</p>
+              ) : wordOrigin || wordDefinitions.length > 0 ? (
+                <div className="word-origin">
+                  {wordDefinitions.length > 0 && (
+                    <div className="word-definitions">
+                      {wordDefinitions.map((def, idx) => (
+                        <div key={idx} className="definition-group">
+                          <div className="origin-pos">
+                            <em>{def.partOfSpeech}</em>
+                          </div>
+                          <ul className="definition-list">
+                            {def.definitions.map((d, dIdx) => (
+                              <li key={dIdx}>{d}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {wordOrigin && (
+                    <>
+                      <div className="origin-label">Etymology</div>
+                      <div className="origin-text">
+                        {wordOrigin.origin}
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <p className="no-data">No information available for this word</p>
+              )}
+            </div>
+          )}
+
+        </div>
+      </div>
+    </>
+  );
+}

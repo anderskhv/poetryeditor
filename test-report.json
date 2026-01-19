@@ -1,0 +1,338 @@
+{
+  "timestamp": "2026-01-17T22:36:57.524Z",
+  "summary": {
+    "passed": 41,
+    "failed": 0,
+    "passRate": "100.0%"
+  },
+  "results": [
+    {
+      "category": "Passive Voice",
+      "testName": "Sonnet with \"was written\"",
+      "passed": true,
+      "expected": "was written, were chosen, was crafted",
+      "actual": "was written, were chosen, was crafted",
+      "poem": "The letter was written by candlelight dim,\nWith words that were chosen with trembling care,\nEach sentence was crafted to reach out to him,\nA message of love floating soft through the air."
+    },
+    {
+      "category": "Passive Voice",
+      "testName": "Poem with \"is done\"",
+      "passed": true,
+      "expected": "is done, was finished, is filled",
+      "actual": "is done, was finished, is filled",
+      "poem": "The work is done, the day is complete,\nThe task was finished before the sun set,\nMy heart is filled with joy so sweet,\nA goal achieved I won't forget."
+    },
+    {
+      "category": "Passive Voice",
+      "testName": "Poem with \"were taken\"",
+      "passed": true,
+      "expected": "were taken, was lifted, were drawn, were stolen",
+      "actual": "were taken, was lifted, were drawn, were stolen",
+      "poem": "The photographs were taken at dawn,\nWhen mist was lifted by morning light,\nThe memories were drawn upon the lawn,\nBefore they were stolen by the night."
+    },
+    {
+      "category": "Passive Voice",
+      "testName": "Poem with \"been created\"",
+      "passed": true,
+      "expected": "been created, been given, been torn, been shown",
+      "actual": "been created, been given, been torn, been shown",
+      "poem": "A world has been created from dreams,\nWhere hope has been given to all who seek,\nThe fabric of life has been torn at the seams,\nYet strength has been shown by the meek."
+    },
+    {
+      "category": "Passive Voice",
+      "testName": "Poem with \"get caught\"",
+      "passed": true,
+      "expected": "get caught, get soaked, got broken, got restored",
+      "actual": "get caught, get soaked, got broken, got restored",
+      "poem": "Don't get caught in the rain tonight,\nOr you'll get soaked right to the bone,\nThe storm got broken by morning light,\nAnd peace got restored when you came home."
+    },
+    {
+      "category": "Passive Voice",
+      "testName": "Poem with NO passive voice (control)",
+      "passed": true,
+      "expected": "none",
+      "actual": "none",
+      "poem": "I walked alone beneath the stars,\nThe moon shone bright above my head,\nI dreamed of distant lands and cars,\nAnd whispered softly what I said."
+    },
+    {
+      "category": "Passive Voice",
+      "testName": "Poem with \"are loved\"",
+      "passed": true,
+      "expected": "are loved, are kissed, are blessed, am touched",
+      "actual": "are loved, are kissed, are blessed, am touched",
+      "poem": "The flowers are loved by the bees,\nThe trees are kissed by morning dew,\nThe birds are blessed by gentle breeze,\nAnd I am touched by thoughts of you."
+    },
+    {
+      "category": "Passive Voice",
+      "testName": "Poem with \"being watched\"",
+      "passed": true,
+      "expected": "being watched, being gripped",
+      "actual": "being watched, being gripped",
+      "poem": "I feel like I'm being watched tonight,\nThe shadows seem to move and sway,\nMy heart is being gripped by fright,\nAs darkness chases light away."
+    },
+    {
+      "category": "Double Adverbs",
+      "testName": "Poem with \"very quickly ran\"",
+      "passed": true,
+      "expected": "very quickly ran, really slowly walked",
+      "actual": "very quickly ran, really slowly walked",
+      "poem": "He very quickly ran away,\nThrough fields of gold at break of day,\nShe really slowly walked behind,\nWith thoughts of love upon her mind."
+    },
+    {
+      "category": "Double Adverbs",
+      "testName": "Poem with \"extremely carefully\"",
+      "passed": true,
+      "expected": "extremely carefully stepped, quite nervously looked",
+      "actual": "extremely carefully stepped, quite nervously looked",
+      "poem": "She extremely carefully stepped,\nAcross the ice where others slept,\nHe quite nervously looked around,\nNot making even one small sound."
+    },
+    {
+      "category": "Double Adverbs",
+      "testName": "Poem with multiple double adverbs",
+      "passed": true,
+      "expected": "very softly whispered, truly deeply felt, really gently touched, quite slowly walked",
+      "actual": "very softly whispered, truly deeply felt, really gently touched, quite slowly walked",
+      "poem": "They very softly whispered low,\nShe truly deeply felt below,\nHe really gently touched her face,\nAnd quite slowly walked with grace."
+    },
+    {
+      "category": "Double Adverbs",
+      "testName": "Poem with NO double adverbs (control)",
+      "passed": true,
+      "expected": "none",
+      "actual": "none",
+      "poem": "He quickly ran across the field,\nThe slowly setting sun revealed,\nA gently flowing river wide,\nWhere softly singing birds reside."
+    },
+    {
+      "category": "Adverb-Verb",
+      "testName": "Poem with \"quickly ran\" and \"slowly walked\"",
+      "passed": true,
+      "expected": "quickly ran, slowly walked, softly spoke, loudly laughed",
+      "actual": "quickly ran, ran through, slowly walked, softly spoke, loudly laughed",
+      "poem": "He quickly ran through morning dew,\nShe slowly walked the path she knew,\nThey softly spoke of days gone by,\nAnd loudly laughed beneath the sky."
+    },
+    {
+      "category": "Adverb-Verb",
+      "testName": "Poem with verb-adverb order",
+      "passed": true,
+      "expected": "sang sweetly, flowed gently, blew fiercely, shone brightly",
+      "actual": "sang sweetly, flowed gently, blew fiercely, shone brightly",
+      "poem": "The bird sang sweetly in the tree,\nThe river flowed gently to the sea,\nThe wind blew fiercely through the night,\nThe stars shone brightly with their light."
+    },
+    {
+      "category": "Adverb-Verb",
+      "testName": "Poem with NO problematic adverb-verb (control)",
+      "passed": true,
+      "expected": "none",
+      "actual": "in whispered",
+      "poem": "The ancient oak stood tall and proud,\nIts branches reaching toward the cloud,\nThe forest deep held secrets old,\nIn whispered tales forever told."
+    },
+    {
+      "category": "Alliteration",
+      "testName": "Classic alliteration \"Peter Piper\"",
+      "passed": true,
+      "expected": "sounds: p",
+      "actual": "sounds: p",
+      "poem": "Peter Piper picked a peck of pickled peppers,\nA peck of pickled peppers Peter Piper picked,\nIf Peter Piper picked a peck of pickled peppers,\nWhere's the peck of pickled peppers Peter Piper picked?"
+    },
+    {
+      "category": "Alliteration",
+      "testName": "Alliteration with \"s\" sound",
+      "passed": true,
+      "expected": "sounds: s",
+      "actual": "sounds: s",
+      "poem": "Sally sells seashells by the seashore,\nThe shells she sells are seashells for sure,\nSo if she sells shells on the seashore,\nI'm sure she sells seashore shells."
+    },
+    {
+      "category": "Alliteration",
+      "testName": "Multiple alliterations in one poem",
+      "passed": true,
+      "expected": "sounds: b, k, d",
+      "actual": "sounds: b, k, d",
+      "poem": "Big black bears browse by the brook,\nCrafty cats catch curious creatures,\nDancing dolphins dive down deep,\nEager eagles eye their prey."
+    },
+    {
+      "category": "Alliteration",
+      "testName": "Subtle alliteration (3 words)",
+      "passed": true,
+      "expected": "sounds: b, f, g, m",
+      "actual": "sounds: b, f, g, m",
+      "poem": "The brave boy bounded over the hill,\nWhile fierce flames flickered in the night,\nThe gentle giant gave a gift,\nTo make the morning meadow bright."
+    },
+    {
+      "category": "Alliteration",
+      "testName": "No alliteration (control)",
+      "passed": true,
+      "expected": "no alliteration",
+      "actual": "no alliteration",
+      "poem": "The cat sat on a velvet chair,\nWhile dogs played in the yard outside,\nA bird flew over the quiet lake,\nAnd fish swam in the river wide."
+    },
+    {
+      "category": "Alliteration",
+      "testName": "Silent letter alliteration (kn/k)",
+      "passed": true,
+      "expected": "sounds: n, k",
+      "actual": "sounds: n, k",
+      "poem": "The knight knew nothing of the knife,\nThat knowledge kept him safe from strife,\nThe king kept kind words for the keen,\nThe kindest knight that he had seen."
+    },
+    {
+      "category": "Assonance",
+      "testName": "Long \"e\" sound assonance",
+      "passed": true,
+      "expected": "sound: long-e",
+      "actual": "sounds: long-e, short-a",
+      "poem": "The fleet feet sweep the street so clean,\nWhile bees seek leaves upon the green,\nWe see the sea beneath the breeze,\nAnd feel at ease among the trees."
+    },
+    {
+      "category": "Assonance",
+      "testName": "Long \"o\" sound assonance",
+      "passed": true,
+      "expected": "sound: long-o",
+      "actual": "sounds: long-o, short-a",
+      "poem": "I roam alone through roads unknown,\nWhere cold winds blow and groan and moan,\nThe snow falls slow on stones below,\nAnd crows all know which way to go."
+    },
+    {
+      "category": "Assonance",
+      "testName": "Short \"a\" sound assonance",
+      "passed": true,
+      "expected": "sound: short-a",
+      "actual": "sounds: short-a",
+      "poem": "The cat sat flat upon the mat,\nWhile bats attacked the rat so fat,\nThe man ran fast and grabbed his hat,\nAnd that was that, imagine that!"
+    },
+    {
+      "category": "Assonance",
+      "testName": "Long \"i\" sound assonance",
+      "passed": true,
+      "expected": "sound: long-i",
+      "actual": "sounds: long-i, short-e",
+      "poem": "The night light shines so bright and white,\nWhile knights in flight take flight tonight,\nThe sky so high holds light sublime,\nAs time flies by in perfect rhyme."
+    },
+    {
+      "category": "Assonance",
+      "testName": "No significant assonance (control)",
+      "passed": true,
+      "expected": "no assonance",
+      "actual": "no assonance",
+      "poem": "I walk by night,\nYou rest in light,\nWe move through dawn,\nOur path is drawn."
+    },
+    {
+      "category": "Meter",
+      "testName": "Perfect iambic pentameter",
+      "passed": true,
+      "expected": "iambic pentameter",
+      "actual": "iambic pentameter",
+      "poem": "Shall I compare thee to a summer's day?\nThou art more lovely and more temperate.\nRough winds do shake the darling buds of May,\nAnd summer's lease hath all too short a date."
+    },
+    {
+      "category": "Meter",
+      "testName": "Trochaic tetrameter",
+      "passed": true,
+      "expected": "trochaic tetrameter",
+      "actual": "trochaic tetrameter",
+      "poem": "Tell me not in mournful numbers,\nLife is but an empty dream,\nFor the soul is dead that slumbers,\nAnd things are not what they seem."
+    },
+    {
+      "category": "Meter",
+      "testName": "Iambic tetrameter",
+      "passed": true,
+      "expected": "iambic tetrameter",
+      "actual": "iambic tetrameter",
+      "poem": "I wandered lonely as a cloud\nThat floats on high o'er vales and hills,\nWhen all at once I saw a crowd,\nA host of golden daffodils."
+    },
+    {
+      "category": "Meter",
+      "testName": "Broken meter (intentionally bad)",
+      "passed": true,
+      "expected": "irregular",
+      "actual": "iambic octameter",
+      "poem": "The cat quickly sat down on the extraordinarily soft mat\nWhile birds magnificently sang their incredibly beautiful song\nThe dog enthusiastically ran through the wonderfully green grass\nAnd butterflies gracefully flew past."
+    },
+    {
+      "category": "Figurative",
+      "testName": "Similes with \"like\"",
+      "passed": true,
+      "expected": "simile (count: 4)",
+      "actual": "simile (count: 4)",
+      "poem": "Her eyes shine like diamonds in the night,\nHer smile spreads like sunshine warm and bright,\nShe moves like water flowing free,\nAnd sings like birds in harmony."
+    },
+    {
+      "category": "Figurative",
+      "testName": "Similes with \"as...as\"",
+      "passed": true,
+      "expected": "simile (count: 4)",
+      "actual": "simile (count: 4)",
+      "poem": "He's as brave as a lion in the fight,\nAs swift as an eagle taking flight,\nAs gentle as a lamb at rest,\nAs wise as an owl, the very best."
+    },
+    {
+      "category": "Figurative",
+      "testName": "Personification",
+      "passed": true,
+      "expected": "personification (count: 4)",
+      "actual": "personification (count: 7)",
+      "poem": "The wind whispered secrets through the trees,\nThe sun smiled down upon the earth,\nThe moon danced across the midnight sky,\nWhile shadows crept at evening's birth."
+    },
+    {
+      "category": "Figurative",
+      "testName": "Mixed figurative language",
+      "passed": true,
+      "expected": "metaphor, personification, simile (count: 3)",
+      "actual": "metaphor, personification, simile (count: 7)",
+      "poem": "Life is a journey on a winding road,\nThe sun kissed the morning dew goodbye,\nHer heart was as cold as winter's snow,\nWhile time marched on beneath the sky."
+    },
+    {
+      "category": "Figurative",
+      "testName": "No figurative language (control)",
+      "passed": true,
+      "expected": "none (count: 0)",
+      "actual": "none (count: 0)",
+      "poem": "I walked to the store today,\nI bought some bread and milk,\nI came back home another way,\nMy shirt was made of silk."
+    },
+    {
+      "category": "Tense",
+      "testName": "Consistent past tense",
+      "passed": true,
+      "expected": "past, consistent: true",
+      "actual": "past, consistent: true",
+      "poem": "I walked alone beneath the stars,\nThe moon shone bright above my head,\nI dreamed of distant lands and cars,\nAnd whispered softly what I said."
+    },
+    {
+      "category": "Tense",
+      "testName": "Consistent present tense",
+      "passed": true,
+      "expected": "present, consistent: true",
+      "actual": "present, consistent: true",
+      "poem": "I walk alone beneath the stars,\nThe moon shines bright above my head,\nI dream of distant lands and cars,\nAnd whisper softly what is said."
+    },
+    {
+      "category": "Tense",
+      "testName": "Inconsistent tense (mixed)",
+      "passed": true,
+      "expected": "mixed, consistent: false",
+      "actual": "mixed, consistent: false",
+      "poem": "I walked alone beneath the stars,\nThe moon shines bright above my head,\nI dreamed of distant lands and cars,\nAnd whisper softly what is said."
+    },
+    {
+      "category": "Edge Case",
+      "testName": "Empty string",
+      "passed": true,
+      "expected": "no crash",
+      "actual": "no crash",
+      "poem": "(empty)"
+    },
+    {
+      "category": "Edge Case",
+      "testName": "Only whitespace",
+      "passed": true,
+      "expected": "no crash",
+      "actual": "no crash",
+      "poem": "   \n   \n   "
+    },
+    {
+      "category": "Edge Case",
+      "testName": "Only punctuation",
+      "passed": true,
+      "expected": "no crash",
+      "actual": "no crash",
+      "poem": "... !!! ???"
+    }
+  ]
+}

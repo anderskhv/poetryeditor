@@ -1,0 +1,746 @@
+{
+  "metadata": {
+    "generatedAt": "2026-01-19T09:32:03.198Z",
+    "version": "1.0.0"
+  },
+  "automatedTests": {
+    "timestamp": "2026-01-19T09:32:03.106Z",
+    "totalIssues": 0,
+    "summary": {
+      "critical": 0,
+      "major": 0,
+      "minor": 0,
+      "improvements": 0
+    },
+    "issues": []
+  },
+  "manualChecklist": {
+    "total": 86,
+    "automated": 37,
+    "manual": 49,
+    "byCategory": {
+      "Editor": [
+        {
+          "category": "Editor",
+          "item": "Text can be typed and appears correctly",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Editor",
+          "item": "Copy/paste works correctly",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Editor",
+          "item": "Undo/redo works correctly",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Editor",
+          "item": "Syntax highlighting applies to poetry",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Editor",
+          "item": "Line numbers are visible and accurate",
+          "priority": "low",
+          "automated": false
+        },
+        {
+          "category": "Editor",
+          "item": "Cursor position is visible",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Editor",
+          "item": "Selection highlighting works",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Editor",
+          "item": "Scrolling is smooth for long poems",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Editor",
+          "item": "Word wrap behaves correctly",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Editor",
+          "item": "Find/replace works (Cmd+F)",
+          "priority": "low",
+          "automated": false
+        }
+      ],
+      "Auto-save": [
+        {
+          "category": "Auto-save",
+          "item": "Content persists after page reload",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Auto-save",
+          "item": "Save indicator shows status",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Auto-save",
+          "item": "Save happens within reasonable time",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Auto-save",
+          "item": "localStorage is used correctly",
+          "priority": "low",
+          "automated": false
+        }
+      ],
+      "Header": [
+        {
+          "category": "Header",
+          "item": "New Poem button clears editor",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Header",
+          "item": "New Poem shows confirmation if content exists",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Header",
+          "item": "Export button triggers download",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Header",
+          "item": "Exported file has correct content",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Header",
+          "item": "Exported filename is descriptive",
+          "priority": "low",
+          "automated": false
+        }
+      ],
+      "Analysis Panel": [
+        {
+          "category": "Analysis Panel",
+          "item": "Panel is visible by default",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Analysis Panel",
+          "item": "All four tabs are present",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Analysis Panel",
+          "item": "Tab switching works smoothly",
+          "priority": "medium",
+          "automated": true
+        },
+        {
+          "category": "Analysis Panel",
+          "item": "Panel can be collapsed/expanded",
+          "priority": "medium",
+          "automated": true
+        },
+        {
+          "category": "Analysis Panel",
+          "item": "Sections expand/collapse correctly",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Analysis Panel",
+          "item": "Only one section expanded at a time",
+          "priority": "low",
+          "automated": false
+        },
+        {
+          "category": "Analysis Panel",
+          "item": "Scroll works within panel",
+          "priority": "medium",
+          "automated": false
+        }
+      ],
+      "Rhythm": [
+        {
+          "category": "Rhythm",
+          "item": "Syllable counts are displayed",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Rhythm",
+          "item": "Syllable counts are accurate",
+          "priority": "high",
+          "automated": false
+        },
+        {
+          "category": "Rhythm",
+          "item": "Scansion patterns shown",
+          "priority": "medium",
+          "automated": true
+        },
+        {
+          "category": "Rhythm",
+          "item": "Meter type detected",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Rhythm",
+          "item": "Line length consistency shown",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Rhythm",
+          "item": "Rhythm variation analysis present",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Rhythm",
+          "item": "Clicking section highlights editor",
+          "priority": "medium",
+          "automated": false
+        }
+      ],
+      "Rhymes": [
+        {
+          "category": "Rhymes",
+          "item": "Rhyme scheme detected",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Rhymes",
+          "item": "Rhyme scheme uses standard notation",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Rhymes",
+          "item": "Rhyme quality assessment shown",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Rhymes",
+          "item": "Sound patterns detected",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Rhymes",
+          "item": "Alliteration highlighted",
+          "priority": "low",
+          "automated": false
+        },
+        {
+          "category": "Rhymes",
+          "item": "Assonance detected",
+          "priority": "low",
+          "automated": false
+        }
+      ],
+      "Language": [
+        {
+          "category": "Language",
+          "item": "Word repetition shown",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Language",
+          "item": "Parts of speech distribution",
+          "priority": "medium",
+          "automated": true
+        },
+        {
+          "category": "Language",
+          "item": "Adverb suggestions provided",
+          "priority": "low",
+          "automated": true
+        },
+        {
+          "category": "Language",
+          "item": "Passive voice detected",
+          "priority": "medium",
+          "automated": true
+        },
+        {
+          "category": "Language",
+          "item": "Tense consistency checked",
+          "priority": "medium",
+          "automated": false
+        }
+      ],
+      "Originality": [
+        {
+          "category": "Originality",
+          "item": "Rhyme originality score shown",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Originality",
+          "item": "Cliche detection works",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Originality",
+          "item": "Figurative language identified",
+          "priority": "low",
+          "automated": false
+        },
+        {
+          "category": "Originality",
+          "item": "Form detection works",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Originality",
+          "item": "Form selector dropdown present",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Originality",
+          "item": "Constraint evaluation shown",
+          "priority": "low",
+          "automated": false
+        }
+      ],
+      "Form Detection": [
+        {
+          "category": "Form Detection",
+          "item": "Haiku detected correctly",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Form Detection",
+          "item": "Sonnet detected correctly",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Form Detection",
+          "item": "Limerick detected correctly",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Form Detection",
+          "item": "Free verse identified",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Form Detection",
+          "item": "Blank verse identified",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Form Detection",
+          "item": "Villanelle detected",
+          "priority": "low",
+          "automated": false
+        }
+      ],
+      "Word Popup": [
+        {
+          "category": "Word Popup",
+          "item": "Popup appears on word click/select",
+          "priority": "high",
+          "automated": false
+        },
+        {
+          "category": "Word Popup",
+          "item": "Rhymes tab shows rhymes",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Word Popup",
+          "item": "Synonyms tab shows synonyms",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Word Popup",
+          "item": "Syllables tab shows breakdown",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Word Popup",
+          "item": "Definition tab shows definition",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Word Popup",
+          "item": "Audio pronunciation plays",
+          "priority": "low",
+          "automated": false
+        },
+        {
+          "category": "Word Popup",
+          "item": "Popup can be closed",
+          "priority": "high",
+          "automated": false
+        },
+        {
+          "category": "Word Popup",
+          "item": "Popup position is correct",
+          "priority": "medium",
+          "automated": false
+        }
+      ],
+      "Accessibility": [
+        {
+          "category": "Accessibility",
+          "item": "Keyboard navigation works",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Accessibility",
+          "item": "Screen reader compatible",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Accessibility",
+          "item": "Sufficient color contrast",
+          "priority": "medium",
+          "automated": true
+        },
+        {
+          "category": "Accessibility",
+          "item": "Focus indicators visible",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Accessibility",
+          "item": "ARIA labels present",
+          "priority": "low",
+          "automated": false
+        }
+      ],
+      "Responsive": [
+        {
+          "category": "Responsive",
+          "item": "Works on mobile (375px)",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Responsive",
+          "item": "Works on tablet (768px)",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Responsive",
+          "item": "Works on desktop (1920px)",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Responsive",
+          "item": "No horizontal scroll",
+          "priority": "medium",
+          "automated": true
+        },
+        {
+          "category": "Responsive",
+          "item": "Touch interactions work",
+          "priority": "medium",
+          "automated": false
+        }
+      ],
+      "Performance": [
+        {
+          "category": "Performance",
+          "item": "Page loads under 5 seconds",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Performance",
+          "item": "Analysis completes quickly",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Performance",
+          "item": "No UI freezes",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Performance",
+          "item": "Smooth scrolling",
+          "priority": "medium",
+          "automated": false
+        },
+        {
+          "category": "Performance",
+          "item": "No memory leaks",
+          "priority": "medium",
+          "automated": true
+        }
+      ],
+      "Edge Cases": [
+        {
+          "category": "Edge Cases",
+          "item": "Empty input handled",
+          "priority": "high",
+          "automated": true
+        },
+        {
+          "category": "Edge Cases",
+          "item": "Very long lines handled",
+          "priority": "medium",
+          "automated": true
+        },
+        {
+          "category": "Edge Cases",
+          "item": "Special characters handled",
+          "priority": "medium",
+          "automated": true
+        },
+        {
+          "category": "Edge Cases",
+          "item": "Unicode/accents handled",
+          "priority": "medium",
+          "automated": true
+        },
+        {
+          "category": "Edge Cases",
+          "item": "Numbers handled",
+          "priority": "low",
+          "automated": true
+        },
+        {
+          "category": "Edge Cases",
+          "item": "Mixed case handled",
+          "priority": "low",
+          "automated": true
+        },
+        {
+          "category": "Edge Cases",
+          "item": "Heavy punctuation handled",
+          "priority": "low",
+          "automated": true
+        }
+      ]
+    }
+  },
+  "improvementSuggestions": {
+    "total": 24,
+    "byImpact": {
+      "high": 4,
+      "medium": 17,
+      "low": 3
+    },
+    "suggestions": [
+      {
+        "category": "Onboarding",
+        "title": "Add guided tour for new users",
+        "description": "A step-by-step tour highlighting key features like tabs, form detection, and word popup would help new users discover functionality.",
+        "impact": "high",
+        "effort": "medium"
+      },
+      {
+        "category": "Onboarding",
+        "title": "Add example poems button",
+        "description": "Quick-load example poems (haiku, sonnet, free verse) to demonstrate analysis features.",
+        "impact": "medium",
+        "effort": "low"
+      },
+      {
+        "category": "Editor",
+        "title": "Add line-by-line syllable count gutter",
+        "description": "Show syllable counts in the editor margin like line numbers for quick reference.",
+        "impact": "medium",
+        "effort": "medium"
+      },
+      {
+        "category": "Editor",
+        "title": "Add stress pattern overlay toggle",
+        "description": "Overlay / and u symbols directly on text to visualize scansion without leaving the editor.",
+        "impact": "medium",
+        "effort": "medium"
+      },
+      {
+        "category": "Editor",
+        "title": "Support markdown preview for section headers",
+        "description": "Allow poets to use # headers for poem sections with preview mode.",
+        "impact": "low",
+        "effort": "medium"
+      },
+      {
+        "category": "Analysis",
+        "title": "Add comparative analysis",
+        "description": "Compare current poem to famous poems of the same form to show similarities/differences.",
+        "impact": "medium",
+        "effort": "high"
+      },
+      {
+        "category": "Analysis",
+        "title": "Add reading time estimate",
+        "description": "Show estimated reading time for the poem (useful for spoken word/performance poets).",
+        "impact": "low",
+        "effort": "low"
+      },
+      {
+        "category": "Analysis",
+        "title": "Add sentiment analysis",
+        "description": "Show emotional tone analysis (positive/negative/neutral) per stanza.",
+        "impact": "medium",
+        "effort": "medium"
+      },
+      {
+        "category": "Export",
+        "title": "Add PDF export with analysis",
+        "description": "Export poem with scansion marks and analysis as a formatted PDF.",
+        "impact": "medium",
+        "effort": "medium"
+      },
+      {
+        "category": "Export",
+        "title": "Add sharing functionality",
+        "description": "Generate shareable link to poem (with privacy options).",
+        "impact": "medium",
+        "effort": "high"
+      },
+      {
+        "category": "Form Detection",
+        "title": "Show form requirements while writing",
+        "description": "When a form is selected, show real-time constraint satisfaction (e.g., \"Need 3 more syllables for haiku\").",
+        "impact": "high",
+        "effort": "medium"
+      },
+      {
+        "category": "Form Detection",
+        "title": "Add form templates",
+        "description": "Pre-fill editor with form structure (e.g., \"___ (5 syllables)\" for haiku).",
+        "impact": "medium",
+        "effort": "low"
+      },
+      {
+        "category": "Rhymes",
+        "title": "Add rhyme suggestions inline",
+        "description": "When typing at end of line, suggest rhyming words for previous lines.",
+        "impact": "high",
+        "effort": "high"
+      },
+      {
+        "category": "Rhymes",
+        "title": "Visual rhyme scheme diagram",
+        "description": "Draw connecting lines between rhyming line endings in a sidebar visualization.",
+        "impact": "medium",
+        "effort": "medium"
+      },
+      {
+        "category": "Word Popup",
+        "title": "Add \"Replace with synonym\" button",
+        "description": "One-click replacement of selected word with chosen synonym.",
+        "impact": "medium",
+        "effort": "low"
+      },
+      {
+        "category": "Word Popup",
+        "title": "Show word frequency in English",
+        "description": "Indicate if a word is common or rare to help with word choice.",
+        "impact": "low",
+        "effort": "low"
+      },
+      {
+        "category": "Accessibility",
+        "title": "Add dark mode",
+        "description": "Dark theme option for reduced eye strain and preference.",
+        "impact": "medium",
+        "effort": "medium"
+      },
+      {
+        "category": "Accessibility",
+        "title": "Add font size controls",
+        "description": "Allow users to increase/decrease editor font size.",
+        "impact": "medium",
+        "effort": "low"
+      },
+      {
+        "category": "Accessibility",
+        "title": "Add high contrast mode",
+        "description": "Alternative color scheme for users with visual impairments.",
+        "impact": "medium",
+        "effort": "medium"
+      },
+      {
+        "category": "Performance",
+        "title": "Add analysis debounce indicator",
+        "description": "Show when analysis is running vs. complete (loading spinner or status).",
+        "impact": "medium",
+        "effort": "low"
+      },
+      {
+        "category": "Performance",
+        "title": "Lazy load analysis tabs",
+        "description": "Only run analysis for the active tab to improve performance.",
+        "impact": "medium",
+        "effort": "medium"
+      },
+      {
+        "category": "Collaboration",
+        "title": "Add comments/annotations",
+        "description": "Allow users to add comments to specific lines for workshop feedback.",
+        "impact": "medium",
+        "effort": "high"
+      },
+      {
+        "category": "History",
+        "title": "Add version history",
+        "description": "Show previous versions of the poem with ability to restore.",
+        "impact": "medium",
+        "effort": "medium"
+      },
+      {
+        "category": "History",
+        "title": "Add multiple poem support",
+        "description": "Allow saving and switching between multiple poems.",
+        "impact": "high",
+        "effort": "medium"
+      }
+    ]
+  }
+}

@@ -1,0 +1,622 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-primary {
+  background-color: white;
+  color: #667eea;
+}
+
+.btn-primary:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.btn-icon:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Analyzing indicator */
+.analyzing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  margin-left: 12px;
+}
+
+.analyzing-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #4caf50;
+  border-radius: 50%;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Examples dropdown */
+.examples-dropdown {
+  position: relative;
+}
+
+.examples-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.example-item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.example-item:hover {
+  background-color: #f5f5f5;
+}
+
+.example-item:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+
+/* Export dropdown */
+.export-dropdown {
+  position: relative;
+}
+
+.export-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  min-width: 160px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.export-item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.export-item:hover {
+  background-color: #f5f5f5;
+}
+
+.export-item:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+
+/* Poems dropdown (My Poems) */
+.poems-dropdown {
+  position: relative;
+}
+
+.poems-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  min-width: 220px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.poems-empty {
+  padding: 16px;
+  color: #888;
+  text-align: center;
+  font-size: 14px;
+}
+
+.poem-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-bottom: 1px solid #eee;
+}
+
+.poem-item:last-child {
+  border-bottom: none;
+}
+
+.poem-item:hover {
+  background-color: #f5f5f5;
+}
+
+.poem-item.active {
+  background-color: #e8eaf6;
+}
+
+.poem-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+
+.poem-delete {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: #999;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.poem-delete:hover {
+  background-color: #ffebee;
+  color: #e53935;
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.editor-pane {
+  flex: 1;
+  background-color: #fafafa;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Poem title input in editor */
+.poem-title-container {
+  padding: 16px 20px 8px 56px; /* 56px left to align with Monaco editor content */
+  background-color: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.poem-title-editor-input {
+  width: 100%;
+  max-width: 600px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #333;
+  font-size: 24px;
+  font-weight: 500;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  padding: 8px 0;
+  transition: border-color 0.2s ease;
+}
+
+.poem-title-editor-input:hover {
+  border-bottom-color: #e0e0e0;
+}
+
+.poem-title-editor-input:focus {
+  outline: none;
+  border-bottom-color: #667eea;
+}
+
+.poem-title-editor-input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Dark mode for poem title in editor */
+.poem-title-editor-input.dark {
+  color: #e2e8f0;
+}
+
+.poem-title-editor-input.dark::placeholder {
+  color: #718096;
+}
+
+.panel-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 60px;
+  border-radius: 8px 0 0 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-toggle:hover {
+  width: 28px;
+  box-shadow: -3px 0 12px rgba(0, 0, 0, 0.2);
+}
+
+.panel-toggle.open {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.side-panel {
+  width: 450px;
+  background-color: #f9f9f9;
+  border-left: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-tabs {
+  display: flex;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0;
+}
+
+.tab {
+  flex: 1;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tab:hover {
+  color: #667eea;
+  background: #fafafa;
+}
+
+.tab.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+}
+
+.panel-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.coach-panel {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-footer {
+  background-color: #f5f5f5;
+  border-top: 1px solid #e0e0e0;
+  padding: 12px 32px;
+  font-size: 12px;
+  color: #666;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .side-panel {
+    width: 400px;
+  }
+}
+
+@media (max-width: 900px) {
+  .side-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 400px;
+    z-index: 50;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    padding: 16px 20px;
+  }
+
+  .app-title {
+    font-size: 24px;
+  }
+
+  .app-subtitle {
+    font-size: 12px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .footer-content span:nth-child(2n) {
+    display: none;
+  }
+}
+
+/* ============================================
+   DARK MODE
+   ============================================ */
+
+:root.dark-mode {
+  color-scheme: dark;
+}
+
+:root.dark-mode .app {
+  background-color: #1a1a2e;
+}
+
+:root.dark-mode .app-header {
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+:root.dark-mode .editor-pane {
+  background-color: #16213e;
+}
+
+:root.dark-mode .poem-title-container {
+  background-color: #16213e;
+  border-bottom-color: #2d3748;
+}
+
+:root.dark-mode .poem-title-editor-input {
+  color: #e2e8f0;
+}
+
+:root.dark-mode .poem-title-editor-input:hover {
+  border-bottom-color: #4a5568;
+}
+
+:root.dark-mode .poem-title-editor-input:focus {
+  border-bottom-color: #667eea;
+}
+
+:root.dark-mode .poem-title-editor-input::placeholder {
+  color: #718096;
+}
+
+:root.dark-mode .side-panel {
+  background-color: #1a1a2e;
+  border-left-color: #2d3748;
+}
+
+:root.dark-mode .app-footer {
+  background-color: #16213e;
+  border-top-color: #2d3748;
+  color: #a0aec0;
+}
+
+:root.dark-mode .panel-toggle {
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+:root.dark-mode .panel-toggle.open {
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+:root.dark-mode .examples-menu {
+  background: #2d3748;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .example-item {
+  color: #e2e8f0;
+}
+
+:root.dark-mode .example-item:hover {
+  background-color: #4a5568;
+}
+
+:root.dark-mode .example-item:not(:last-child) {
+  border-bottom-color: #4a5568;
+}
+
+:root.dark-mode .export-menu {
+  background: #2d3748;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .export-item {
+  color: #e2e8f0;
+}
+
+:root.dark-mode .export-item:hover {
+  background-color: #4a5568;
+}
+
+:root.dark-mode .export-item:not(:last-child) {
+  border-bottom-color: #4a5568;
+}
+
+:root.dark-mode .poems-menu {
+  background-color: #2d3748;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .poems-empty {
+  color: #a0aec0;
+}
+
+:root.dark-mode .poem-item {
+  color: #e2e8f0;
+  border-bottom-color: #4a5568;
+}
+
+:root.dark-mode .poem-item:hover {
+  background-color: #4a5568;
+}
+
+:root.dark-mode .poem-item.active {
+  background-color: #4a5568;
+}
+
+:root.dark-mode .poem-delete {
+  color: #a0aec0;
+}
+
+:root.dark-mode .poem-delete:hover {
+  background-color: rgba(229, 57, 53, 0.2);
+  color: #fc8181;
+}

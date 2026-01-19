@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Test - Sonnet 18 Detection</title>
+    <style>
+        body { font-family: monospace; padding: 20px; max-width: 900px; margin: 0 auto; }
+        h1 { color: #333; }
+        .test { margin: 20px 0; padding: 15px; border: 2px solid #ddd; border-radius: 8px; }
+        .pass { border-color: #4caf50; background: #e8f5e9; }
+        .fail { border-color: #f44336; background: #ffebee; }
+        .warn { border-color: #ff9800; background: #fff3e0; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .result { font-weight: bold; font-size: 1.2em; margin: 10px 0; }
+        .pass .result { color: #2e7d32; }
+        .fail .result { color: #c62828; }
+        .warn .result { color: #f57c00; }
+    </style>
+</head>
+<body>
+    <h1>Quick Test: Sonnet 18 Form Detection</h1>
+    <p>This page tests if the improved algorithm can correctly detect Shakespeare's Sonnet 18 as a Shakespearean Sonnet.</p>
+
+    <div id="output"></div>
+
+    <script type="module">
+        import { detectPoetricForm } from './src/utils/formDetector.ts';
+        import { detectRhymeScheme } from './src/utils/rhymeScheme.ts';
+
+        const sonnet18 = `Shall I compare thee to a summer's day?
+Thou art more lovely and more temperate:
+Rough winds do shake the darling buds of May,
+And summer's lease hath all too short a date:
+Sometime too hot the eye of heaven shines,
+And often is his gold complexion dimmed,
+And every fair from fair sometime declines,
+By chance, or nature's changing course untrimmed:
+But thy eternal summer shall not fade,
+Nor lose possession of that fair thou ow'st,
+Nor shall death brag thou wand'rest in his shade,
+When in eternal lines to time thou grow'st,
+So long as men can breathe, or eyes can see,
+So long lives this, and this gives life to thee.`;
+
+        const rhymeScheme = detectRhymeScheme(sonnet18);
+        const formDetection = detectPoetricForm(sonnet18);
+
+        const output = document.getElementById('output');
+
+        // Test 1: Rhyme Scheme Detection
+        const test1 = document.createElement('div');
+        test1.className = 'test';
+        test1.innerHTML = `
+            <h2>Test 1: Rhyme Scheme Detection</h2>
+            <p><strong>Pattern:</strong> ${rhymeScheme.schemePattern.join(' ')}</p>
+            <p><strong>End Words:</strong> ${rhymeScheme.lineEndWords.join(', ')}</p>
+            <pre>${JSON.stringify(rhymeScheme.rhymeQualities, null, 2)}</pre>
+        `;
+        output.appendChild(test1);
+
+        // Test 2: Form Detection
+        const test2 = document.createElement('div');
+        const expectedForm = 'Shakespearean Sonnet';
+        const isCorrectForm = formDetection.form === expectedForm;
+        const hasAcceptableFit = formDetection.fit === 'high' || formDetection.fit === 'medium';
+        const testPassed = isCorrectForm && hasAcceptableFit;
+
+        test2.className = `test ${testPassed ? 'pass' : 'fail'}`;
+        test2.innerHTML = `
+            <h2>Test 2: Form Detection</h2>
+            <div class="result">${testPassed ? '✓ PASS' : '✗ FAIL'}</div>
+            <p><strong>Expected:</strong> ${expectedForm}</p>
+            <p><strong>Detected:</strong> ${formDetection.form}</p>
+            <p><strong>Fit:</strong> ${formDetection.fit}${formDetection.fitScore !== undefined ? ` (${formDetection.fitScore}/100)` : ''}</p>
+            ${formDetection.expectedPattern ? `<p><strong>Expected Pattern:</strong> ${formDetection.expectedPattern}</p>` : ''}
+            ${formDetection.actualPattern ? `<p><strong>Actual Pattern:</strong> ${formDetection.actualPattern}</p>` : ''}
+            ${formDetection.description ? `<p><strong>Description:</strong> ${formDetection.description}</p>` : ''}
+            ${formDetection.issues && formDetection.issues.length > 0 ? `
+                <p><strong>Issues:</strong></p>
+                <ul>
+                    ${formDetection.issues.map(issue => `<li>${issue}</li>`).join('')}
+                </ul>
+            ` : ''}
+        `;
+        output.appendChild(test2);
+
+        // Summary
+        const summary = document.createElement('div');
+        summary.className = `test ${testPassed ? 'pass' : 'fail'}`;
+        summary.innerHTML = `
+            <h2>Summary</h2>
+            <div class="result">${testPassed ? '✓ ALGORITHM FIX SUCCESSFUL!' : '✗ ALGORITHM STILL NEEDS WORK'}</div>
+            <p>${testPassed ?
+                'The improved algorithm correctly identifies Sonnet 18 as a Shakespearean Sonnet!' :
+                'The algorithm still fails to correctly identify Sonnet 18. Further fixes needed.'
+            }</p>
+        `;
+        output.appendChild(summary);
+    </script>
+</body>
+</html>

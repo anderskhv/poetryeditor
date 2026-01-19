@@ -1,0 +1,87 @@
+{
+  "timestamp": "2026-01-19T13:18:35.443Z",
+  "summary": {
+    "totalPoems": 118,
+    "totalLines": 1684,
+    "rhymeSchemePassRate": "62.5%",
+    "haikuPassRate": "90.0%",
+    "avgAlliteration": "1.52",
+    "avgConsonance": "16.00"
+  },
+  "rhymeSchemeIssues": [
+    {
+      "poem": "The Hours Return",
+      "expected": "ABA",
+      "detected": "ABACDAAEAFDAGHAAIAA"
+    },
+    {
+      "poem": "Learning to Forgive",
+      "expected": "ABA",
+      "detected": "ABAABAABACBAABAABAA"
+    },
+    {
+      "poem": "The Programmer",
+      "expected": "AABBA",
+      "detected": "AABBC"
+    },
+    {
+      "poem": "The Chef",
+      "expected": "AABBA",
+      "detected": "ABCCA"
+    },
+    {
+      "poem": "The Astronomer",
+      "expected": "AABBA",
+      "detected": "ABCCB"
+    },
+    {
+      "poem": "The Baker",
+      "expected": "AABBA",
+      "detected": "ABCCD"
+    },
+    {
+      "poem": "The Poet",
+      "expected": "AABBA",
+      "detected": "ABCDA"
+    },
+    {
+      "poem": "Advice from an Old Man",
+      "expected": "AA BB CC DD EE FF",
+      "detected": "AABBCCDEFFGG"
+    },
+    {
+      "poem": "Four Seasons",
+      "expected": "ABAB CDCD EFEF GHGH",
+      "detected": "ABCDEFGFHFHFAIAJ"
+    }
+  ],
+  "haikuIssues": [
+    {
+      "poem": "Spring Awakening",
+      "syllables": [
+        5,
+        7,
+        7
+      ],
+      "expected": "5-7-5"
+    },
+    {
+      "poem": "Storm Warning",
+      "syllables": [
+        7,
+        7,
+        5
+      ],
+      "expected": "5-7-5"
+    }
+  ],
+  "uxIssues": [
+    "Rhyme scheme detection has >30% failure rate - users may see incorrect rhyme patterns",
+    "Consonance detection is very high - UI highlighting may be overwhelming"
+  ],
+  "recommendations": [
+    "Improve rhyme scheme detection algorithm for more pattern types",
+    "Refine syllable counting for better haiku detection accuracy",
+    "Consider filtering consonance results to show only the most significant patterns"
+  ]
+}

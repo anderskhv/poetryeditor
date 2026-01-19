@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Poetry Editor - Analysis Test Runner</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+    pre { white-space: pre-wrap; }
+    .pass { color: #4ec9b0; }
+    .fail { color: #f14c4c; }
+    .warn { color: #dcdcaa; }
+    h1 { color: #569cd6; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>Poetry Editor - Analysis Test Runner</h1>
+  <button onclick="runTests()">Run Tests</button>
+  <pre id="output">Click "Run Tests" to begin...</pre>
+
+  <script type="module">
+    import { detectRhymeScheme, assessRhymeQuality } from './src/utils/rhymeScheme.ts';
+    import { analyzeSoundPatterns } from './src/utils/soundPatterns.ts';
+    import { getSyllableCounts } from './src/utils/syllableCounter.ts';
+
+    // Test poems
+    const testPoems = [
+      {
+        id: 'villanelle-1',
+        title: 'The Hours Return (Villanelle)',
+        content: `Do not go gentle into that good night,
+Old age should burn and rave at close of day;
+Rage, rage against the dying of the light.
+
+Though wise men at their end know dark is right,
+Because their words had forked no lightning they
+Do not go gentle into that good night.
+
+Good men, the last wave by, crying how bright
+Their frail deeds might have danced in a green bay,
+Rage, rage against the dying of the light.`,
+        expectedRhymePattern: 'ABA',
+        form: 'Villanelle'
+      },
+      {
+        id: 'limerick-1',
+        title: 'The Programmer (Limerick)',
+        content: `A programmer worked through the night,
+His code was a glorious sight,
+He tested and planned,
+With keyboard in hand,
+Till everything worked just right.`,
+        expectedRhymePattern: 'AABBA',
+        form: 'Limerick'
+      },
+      {
+        id: 'near-rhyme-1',
+        title: 'Wanderer (Near-Rhyme Test)',
+        content: `I wandered far from Rome,
+Across the salty foam,
+Until I found my home.`,
+        expectedRhymePattern: 'AAA',
+        form: 'Free Verse'
+      },
+      {
+        id: 'haiku-1',
+        title: 'Spring Morning (Haiku)',
+        content: `Cherry blossoms fall
+Soft petals on still water
+Morning light breaks through`,
+        expectedSyllables: [5, 7, 5],
+        form: 'Haiku'
+      },
+      {
+        id: 'haiku-2',
+        title: 'Winter Scene (Haiku)',
+        content: `Silent snow descends
+Covering the sleeping earth
+White peace everywhere`,
+        expectedSyllables: [5, 7, 5],
+        form: 'Haiku'
+      }
+    ];
+
+    window.runTests = function() {
+      const output = document.getElementById('output');
+      let html = '';
+
+      html += '='.repeat(80) + '\n';
+      html += 'POETRY ANALYSIS TEST RESULTS\n';
+      html += '='.repeat(80) + '\n\n';
+
+      const results = {
+        rhymeScheme: { total: 0, passed: 0, failed: 0, issues: [] },
+        haiku: { total: 0, passed: 0, failed: 0, issues: [] },
+        soundPatterns: { avgAlliteration: 0, avgAssonance: 0, avgConsonance: 0, count: 0 }
+      };
+
+      for (const poem of testPoems) {
+        html += `\nTesting: ${poem.title}\n`;
+        html += '-'.repeat(50) + '\n';
+
+        // Test rhyme scheme
+        if (poem.expectedRhymePattern) {
+          results.rhymeScheme.total++;
+          const rhymeResult = detectRhymeScheme(poem.content);
+          const detectedPattern = rhymeResult.schemePattern.join('');
+
+          let passed = false;
+          if (poem.form === 'Villanelle') {
+            const firstThreeLabels = rhymeResult.schemePattern.slice(0, 3);
+            passed = firstThreeLabels[0] === firstThreeLabels[2] &&
+                     firstThreeLabels[0] !== firstThreeLabels[1];
+            html += `  Rhyme scheme: ${detectedPattern.substring(0, 9)}...\n`;
+            html += `  First tercet: ${firstThreeLabels.join('')} (expected ABA)\n`;
+          } else {
+            passed = detectedPattern === poem.expectedRhymePattern;
+            html += `  Rhyme scheme: ${detectedPattern}\n`;
+            html += `  Expected: ${poem.expectedRhymePattern}\n`;
+          }
+
+          if (passed) {
+            results.rhymeScheme.passed++;
+            html += `  <span class="pass">✓ PASSED</span>\n`;
+          } else {
+            results.rhymeScheme.failed++;
+            results.rhymeScheme.issues.push(`${poem.title}: got ${detectedPattern}`);
+            html += `  <span class="fail">✗ FAILED</span>\n`;
+          }
+        }
+
+        // Test haiku syllables
+        if (poem.expectedSyllables) {
+          results.haiku.total++;
+          const syllableCounts = getSyllableCounts(poem.content);
+          const nonEmptyCounts = syllableCounts.filter(c => c > 0);
+
+          html += `  Syllables: ${nonEmptyCounts.join('-')}\n`;
+          html += `  Expected: ${poem.expectedSyllables.join('-')}\n`;
+
+          const passed = nonEmptyCounts.length === poem.expectedSyllables.length &&
+                         nonEmptyCounts.every((c, i) => Math.abs(c - poem.expectedSyllables[i]) <= 1);
+
+          if (passed) {
+            results.haiku.passed++;
+            html += `  <span class="pass">✓ PASSED</span>\n`;
+          } else {
+            results.haiku.failed++;
+            results.haiku.issues.push(`${poem.title}: got ${nonEmptyCounts.join('-')}`);
+            html += `  <span class="fail">✗ FAILED</span>\n`;
+          }
+        }
+
+        // Test sound patterns
+        const soundPatterns = analyzeSoundPatterns(poem.content);
+        results.soundPatterns.count++;
+        results.soundPatterns.avgAlliteration += soundPatterns.alliterations.length;
+        results.soundPatterns.avgAssonance += soundPatterns.assonances.length;
+        results.soundPatterns.avgConsonance += soundPatterns.consonances.length;
+
+        html += `  Sound Patterns: Allit=${soundPatterns.alliterations.length}, Asson=${soundPatterns.assonances.length}, Cons=${soundPatterns.consonances.length}\n`;
+      }
+
+      // Calculate averages
+      if (results.soundPatterns.count > 0) {
+        results.soundPatterns.avgAlliteration /= results.soundPatterns.count;
+        results.soundPatterns.avgAssonance /= results.soundPatterns.count;
+        results.soundPatterns.avgConsonance /= results.soundPatterns.count;
+      }
+
+      // Print summary
+      html += '\n\n' + '='.repeat(80) + '\n';
+      html += 'SUMMARY\n';
+      html += '='.repeat(80) + '\n';
+
+      html += '\n<b>Rhyme Scheme Detection:</b>\n';
+      html += `  Total: ${results.rhymeScheme.total}\n`;
+      html += `  Passed: ${results.rhymeScheme.passed}\n`;
+      html += `  Failed: ${results.rhymeScheme.failed}\n`;
+      const rhymePassRate = (results.rhymeScheme.passed / results.rhymeScheme.total * 100).toFixed(1);
+      html += `  Pass Rate: <span class="${rhymePassRate >= 80 ? 'pass' : 'fail'}">${rhymePassRate}%</span>\n`;
+
+      html += '\n<b>Haiku/Syllable Detection:</b>\n';
+      html += `  Total: ${results.haiku.total}\n`;
+      html += `  Passed: ${results.haiku.passed}\n`;
+      html += `  Failed: ${results.haiku.failed}\n`;
+      const haikuPassRate = (results.haiku.passed / results.haiku.total * 100).toFixed(1);
+      html += `  Pass Rate: <span class="${haikuPassRate >= 80 ? 'pass' : 'fail'}">${haikuPassRate}%</span>\n`;
+
+      html += '\n<b>Sound Patterns (avg per poem):</b>\n';
+      html += `  Alliteration: ${results.soundPatterns.avgAlliteration.toFixed(2)}\n`;
+      html += `  Assonance: ${results.soundPatterns.avgAssonance.toFixed(2)}\n`;
+      const consAvg = results.soundPatterns.avgConsonance.toFixed(2);
+      html += `  Consonance: <span class="${consAvg <= 5 ? 'pass' : 'warn'}">${consAvg}</span>\n`;
+
+      if (results.soundPatterns.avgConsonance <= 5) {
+        html += `  <span class="pass">✓ Consonance levels acceptable (3+ word threshold working)</span>\n`;
+      } else {
+        html += `  <span class="warn">⚠️ Consonance still high - may need further tuning</span>\n`;
+      }
+
+      // Test specific rhyme pairs
+      html += '\n\n' + '='.repeat(80) + '\n';
+      html += 'RHYME PAIR TESTS\n';
+      html += '='.repeat(80) + '\n';
+
+      const pairs = [
+        ['Rome', 'foam', 'perfect or slant'],
+        ['Rome', 'home', 'perfect or slant'],
+        ['night', 'light', 'perfect'],
+        ['night', 'right', 'perfect'],
+        ['day', 'they', 'perfect'],
+      ];
+
+      for (const [word1, word2, expected] of pairs) {
+        const quality = assessRhymeQuality(word1, word2);
+        const passed = quality !== 'none';
+        html += `  ${word1} / ${word2}: <span class="${passed ? 'pass' : 'fail'}">${quality}</span> (expected: ${expected})\n`;
+      }
+
+      html += '\n' + '='.repeat(80) + '\n';
+      html += 'END OF TEST REPORT\n';
+      html += '='.repeat(80) + '\n';
+
+      output.innerHTML = html;
+    };
+  </script>
+</body>
+</html>

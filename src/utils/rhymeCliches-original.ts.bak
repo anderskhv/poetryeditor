@@ -1,0 +1,211 @@
+/**
+ * Database of clichéd and overused rhyme pairs in poetry and song lyrics
+ *
+ * Sources:
+ * - Based on research from song lyric analysis, poetry critique forums
+ * - Common patterns identified in popular music and poetry
+ * - TV Tropes "Stock Rhymes" documentation
+ * - Songwriting guides and lyrical cliché lists
+ *
+ * Scoring:
+ * - 10 = Extremely overused, universally recognized as cliché
+ * - 7-9 = Very common, often cited as overused
+ * - 4-6 = Moderately common, becoming clichéd
+ * - 1-3 = Occasionally used but not necessarily clichéd
+ */
+
+export interface RhymeCliche {
+  word1: string;
+  word2: string;
+  clicheScore: number; // 1-10, higher = more clichéd
+  category?: string;
+}
+
+export const rhymeClicheDatabase: RhymeCliche[] = [
+  // LOVE AND ROMANCE (Most overused category)
+  { word1: 'love', word2: 'above', clicheScore: 10, category: 'Romance' },
+  { word1: 'love', word2: 'dove', clicheScore: 9, category: 'Romance' },
+  { word1: 'love', word2: 'glove', clicheScore: 7, category: 'Romance' },
+  { word1: 'love', word2: 'of', clicheScore: 8, category: 'Romance' },
+
+  { word1: 'heart', word2: 'apart', clicheScore: 10, category: 'Romance' },
+  { word1: 'heart', word2: 'start', clicheScore: 8, category: 'Romance' },
+  { word1: 'heart', word2: 'part', clicheScore: 7, category: 'Romance' },
+  { word1: 'heart', word2: 'art', clicheScore: 6, category: 'Romance' },
+
+  { word1: 'fire', word2: 'desire', clicheScore: 10, category: 'Romance' },
+  { word1: 'fire', word2: 'higher', clicheScore: 8, category: 'Aspiration' },
+  { word1: 'fire', word2: 'liar', clicheScore: 7, category: 'Conflict' },
+
+  { word1: 'kiss', word2: 'miss', clicheScore: 9, category: 'Romance' },
+  { word1: 'kiss', word2: 'bliss', clicheScore: 8, category: 'Romance' },
+  { word1: 'kiss', word2: 'this', clicheScore: 7, category: 'Romance' },
+
+  // TIME AND COMMITMENT
+  { word1: 'forever', word2: 'never', clicheScore: 10, category: 'Time' },
+  { word1: 'forever', word2: 'together', clicheScore: 9, category: 'Time' },
+  { word1: 'forever', word2: 'whatever', clicheScore: 7, category: 'Time' },
+  { word1: 'forever', word2: 'endeavor', clicheScore: 6, category: 'Time' },
+
+  { word1: 'never', word2: 'together', clicheScore: 9, category: 'Time' },
+  { word1: 'never', word2: 'whenever', clicheScore: 7, category: 'Time' },
+  { word1: 'never', word2: 'ever', clicheScore: 8, category: 'Time' },
+
+  { word1: 'again', word2: 'pain', clicheScore: 9, category: 'Emotion' },
+  { word1: 'again', word2: 'rain', clicheScore: 8, category: 'Nature' },
+  { word1: 'again', word2: 'gain', clicheScore: 6, category: 'Action' },
+
+  // SADNESS AND MELANCHOLY
+  { word1: 'tears', word2: 'years', clicheScore: 9, category: 'Sadness' },
+  { word1: 'tears', word2: 'fears', clicheScore: 8, category: 'Sadness' },
+  { word1: 'tears', word2: 'hears', clicheScore: 6, category: 'Sadness' },
+
+  { word1: 'cry', word2: 'die', clicheScore: 9, category: 'Sadness' },
+  { word1: 'cry', word2: 'goodbye', clicheScore: 8, category: 'Sadness' },
+  { word1: 'cry', word2: 'try', clicheScore: 7, category: 'Sadness' },
+  { word1: 'cry', word2: 'why', clicheScore: 8, category: 'Sadness' },
+  { word1: 'cry', word2: 'sky', clicheScore: 7, category: 'Sadness' },
+
+  { word1: 'alone', word2: 'home', clicheScore: 9, category: 'Loneliness' },
+  { word1: 'alone', word2: 'own', clicheScore: 7, category: 'Loneliness' },
+  { word1: 'alone', word2: 'stone', clicheScore: 6, category: 'Loneliness' },
+
+  { word1: 'sorrow', word2: 'tomorrow', clicheScore: 10, category: 'Sadness' },
+  { word1: 'sorrow', word2: 'borrow', clicheScore: 6, category: 'Sadness' },
+
+  { word1: 'pain', word2: 'insane', clicheScore: 8, category: 'Emotion' },
+  { word1: 'pain', word2: 'remain', clicheScore: 6, category: 'Emotion' },
+  { word1: 'pain', word2: 'vain', clicheScore: 7, category: 'Emotion' },
+
+  // NATURE AND SKY
+  { word1: 'sky', word2: 'high', clicheScore: 9, category: 'Nature' },
+  { word1: 'sky', word2: 'fly', clicheScore: 8, category: 'Nature' },
+  { word1: 'sky', word2: 'goodbye', clicheScore: 7, category: 'Nature' },
+
+  { word1: 'night', word2: 'light', clicheScore: 9, category: 'Time' },
+  { word1: 'night', word2: 'bright', clicheScore: 8, category: 'Time' },
+  { word1: 'night', word2: 'sight', clicheScore: 7, category: 'Time' },
+  { word1: 'night', word2: 'right', clicheScore: 8, category: 'Time' },
+  { word1: 'night', word2: 'fight', clicheScore: 6, category: 'Time' },
+
+  { word1: 'moon', word2: 'june', clicheScore: 9, category: 'Nature' },
+  { word1: 'moon', word2: 'soon', clicheScore: 8, category: 'Nature' },
+  { word1: 'moon', word2: 'tune', clicheScore: 7, category: 'Nature' },
+
+  { word1: 'star', word2: 'far', clicheScore: 8, category: 'Nature' },
+  { word1: 'star', word2: 'are', clicheScore: 7, category: 'Nature' },
+
+  { word1: 'sun', word2: 'fun', clicheScore: 8, category: 'Nature' },
+  { word1: 'sun', word2: 'done', clicheScore: 7, category: 'Nature' },
+  { word1: 'sun', word2: 'run', clicheScore: 6, category: 'Nature' },
+
+  { word1: 'rain', word2: 'pain', clicheScore: 8, category: 'Nature' },
+  { word1: 'rain', word2: 'chain', clicheScore: 6, category: 'Nature' },
+
+  // FREEDOM AND IDENTITY
+  { word1: 'free', word2: 'me', clicheScore: 9, category: 'Freedom' },
+  { word1: 'free', word2: 'be', clicheScore: 8, category: 'Freedom' },
+  { word1: 'free', word2: 'see', clicheScore: 8, category: 'Freedom' },
+  { word1: 'free', word2: 'key', clicheScore: 7, category: 'Freedom' },
+
+  { word1: 'me', word2: 'be', clicheScore: 8, category: 'Identity' },
+  { word1: 'me', word2: 'see', clicheScore: 8, category: 'Identity' },
+  { word1: 'me', word2: 'we', clicheScore: 7, category: 'Identity' },
+
+  // GAMES AND ACTIONS
+  { word1: 'game', word2: 'same', clicheScore: 9, category: 'Action' },
+  { word1: 'game', word2: 'name', clicheScore: 8, category: 'Action' },
+  { word1: 'game', word2: 'shame', clicheScore: 7, category: 'Action' },
+  { word1: 'game', word2: 'blame', clicheScore: 7, category: 'Action' },
+  { word1: 'game', word2: 'fame', clicheScore: 6, category: 'Action' },
+
+  // DREAMS AND ASPIRATION
+  { word1: 'dream', word2: 'seem', clicheScore: 8, category: 'Aspiration' },
+  { word1: 'dream', word2: 'beam', clicheScore: 6, category: 'Aspiration' },
+  { word1: 'dream', word2: 'stream', clicheScore: 5, category: 'Aspiration' },
+
+  // TRUTH AND LIES
+  { word1: 'lie', word2: 'die', clicheScore: 8, category: 'Truth' },
+  { word1: 'lie', word2: 'goodbye', clicheScore: 7, category: 'Truth' },
+  { word1: 'lie', word2: 'try', clicheScore: 6, category: 'Truth' },
+
+  { word1: 'true', word2: 'you', clicheScore: 9, category: 'Truth' },
+  { word1: 'true', word2: 'blue', clicheScore: 8, category: 'Truth' },
+  { word1: 'true', word2: 'through', clicheScore: 7, category: 'Truth' },
+  { word1: 'true', word2: 'knew', clicheScore: 7, category: 'Truth' },
+
+  // TIME OF DAY
+  { word1: 'day', word2: 'way', clicheScore: 8, category: 'Time' },
+  { word1: 'day', word2: 'stay', clicheScore: 7, category: 'Time' },
+  { word1: 'day', word2: 'away', clicheScore: 7, category: 'Time' },
+  { word1: 'day', word2: 'say', clicheScore: 7, category: 'Time' },
+
+  // SOUL AND SPIRIT
+  { word1: 'soul', word2: 'control', clicheScore: 8, category: 'Spirit' },
+  { word1: 'soul', word2: 'whole', clicheScore: 7, category: 'Spirit' },
+  { word1: 'soul', word2: 'goal', clicheScore: 6, category: 'Spirit' },
+
+  // MIND AND THOUGHT
+  { word1: 'mind', word2: 'find', clicheScore: 8, category: 'Thought' },
+  { word1: 'mind', word2: 'kind', clicheScore: 7, category: 'Thought' },
+  { word1: 'mind', word2: 'behind', clicheScore: 6, category: 'Thought' },
+];
+
+/**
+ * Get the cliché score for a rhyme pair (0 if not in database)
+ */
+export function getRhymeClicheScore(word1: string, word2: string): number {
+  const w1 = word1.toLowerCase();
+  const w2 = word2.toLowerCase();
+
+  // Check both orderings
+  const entry = rhymeClicheDatabase.find(
+    (e) => (e.word1 === w1 && e.word2 === w2) || (e.word1 === w2 && e.word2 === w1)
+  );
+
+  return entry ? entry.clicheScore : 0;
+}
+
+/**
+ * Get the originality score for a rhyme (inverse of cliché score)
+ * Returns a percentage: 100 = completely original, 0 = extremely clichéd
+ */
+export function getRhymeOriginalityScore(word1: string, word2: string): number {
+  const clicheScore = getRhymeClicheScore(word1, word2);
+
+  if (clicheScore === 0) {
+    return 100; // Not in database = original
+  }
+
+  // Convert cliché score (1-10) to originality percentage
+  // 10 (max cliché) = 0% original
+  // 1 (min cliché) = 90% original
+  return 100 - (clicheScore * 10);
+}
+
+/**
+ * Get a textual description of rhyme originality
+ */
+export function getRhymeOriginalityLabel(score: number): string {
+  if (score >= 90) return 'Very Original';
+  if (score >= 70) return 'Original';
+  if (score >= 50) return 'Somewhat Original';
+  if (score >= 30) return 'Clichéd';
+  if (score >= 10) return 'Very Clichéd';
+  return 'Extremely Clichéd';
+}
+
+/**
+ * Get all rhyme pairs in a category
+ */
+export function getRhymesByCategory(category: string): RhymeCliche[] {
+  return rhymeClicheDatabase.filter((e) => e.category === category);
+}
+
+/**
+ * Get all available categories
+ */
+export function getRhymeCategories(): string[] {
+  const categories = new Set(rhymeClicheDatabase.map((e) => e.category).filter(Boolean));
+  return Array.from(categories).sort();
+}

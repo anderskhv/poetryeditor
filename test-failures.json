@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-01-17T22:36:30.490Z",
+  "summary": {
+    "total": 349,
+    "passed": 348,
+    "failed": 1,
+    "passRate": "99.7%"
+  },
+  "failures": [
+    {
+      "category": "Tense",
+      "testName": "Mixed tense: \"The sun rose and darkness falls quickly....\"",
+      "passed": false,
+      "expected": "detect inconsistency",
+      "actual": "consistent",
+      "input": "The sun rose and darkness falls quickly."
+    }
+  ]
+}

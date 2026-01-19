@@ -1,0 +1,5559 @@
+{
+  "timestamp": "2026-01-18T20:38:51.413Z",
+  "metrics": {
+    "totalLines": 550,
+    "exactMatches": 136,
+    "exactMatchRate": 0.24727272727272728,
+    "syllableCountMatches": 306,
+    "syllableCountMatchRate": 0.5563636363636364,
+    "averagePartialMatch": 0.6916480676186565
+  },
+  "failurePatterns": {
+    "function_word_stress": 158,
+    "syllable_count_mismatch (expected 9, got 8)": 13,
+    "syllable_count_mismatch (expected 9, got 10)": 32,
+    "syllable_count_mismatch (expected 10, got 9)": 6,
+    "syllable_count_mismatch (expected 8, got 9)": 19,
+    "syllable_count_mismatch (expected 7, got 9)": 2,
+    "general_stress_error": 12,
+    "syllable_count_mismatch (expected 6, got 7)": 11,
+    "syllable_count_mismatch (expected 9, got 11)": 5,
+    "syllable_count_mismatch (expected 10, got 11)": 24,
+    "syllable_count_mismatch (expected 10, got 12)": 5,
+    "syllable_count_mismatch (expected 12, got 13)": 11,
+    "syllable_count_mismatch (expected 8, got 10)": 5,
+    "syllable_count_mismatch (expected 13, got 12)": 7,
+    "syllable_count_mismatch (expected 13, got 14)": 7,
+    "syllable_count_mismatch (expected 14, got 13)": 2,
+    "syllable_count_mismatch (expected 13, got 15)": 4,
+    "syllable_count_mismatch (expected 7, got 8)": 14,
+    "syllable_count_mismatch (expected 6, got 8)": 1,
+    "syllable_count_mismatch (expected 11, got 12)": 5,
+    "syllable_count_mismatch (expected 5, got 7)": 1,
+    "syllable_count_mismatch (expected 8, got 7)": 13,
+    "syllable_count_mismatch (expected 5, got 6)": 6,
+    "syllable_count_mismatch (expected 12, got 14)": 2,
+    "syllable_count_mismatch (expected 14, got 15)": 4,
+    "syllable_count_mismatch (expected 4, got 3)": 12,
+    "syllable_count_mismatch (expected 6, got 5)": 5,
+    "syllable_count_mismatch (expected 3, got 4)": 2,
+    "syllable_count_mismatch (expected 2, got 4)": 1,
+    "syllable_count_mismatch (expected 8, got 6)": 1,
+    "syllable_count_mismatch (expected 4, got 5)": 1,
+    "syllable_count_mismatch (expected 15, got 17)": 2,
+    "syllable_count_mismatch (expected 5, got 4)": 5,
+    "syllable_count_mismatch (expected 11, got 10)": 7,
+    "syllable_count_mismatch (expected 7, got 6)": 4,
+    "syllable_count_mismatch (expected 11, got 9)": 1,
+    "syllable_count_mismatch (expected 12, got 11)": 3,
+    "syllable_count_mismatch (expected 10, got 8)": 1
+  },
+  "bySource": {
+    "Frost - Road Not Taken": {
+      "total": 20,
+      "matches": 7
+    },
+    "Frost - Stopping by Woods": {
+      "total": 16,
+      "matches": 11
+    },
+    "Frost - Fire and Ice": {
+      "total": 9,
+      "matches": 6
+    },
+    "Frost - Nothing Gold": {
+      "total": 8,
+      "matches": 5
+    },
+    "Yeats - Second Coming": {
+      "total": 22,
+      "matches": 7
+    },
+    "Yeats - Innisfree": {
+      "total": 12,
+      "matches": 2
+    },
+    "Eliot - Prufrock": {
+      "total": 34,
+      "matches": 8
+    },
+    "Hughes - Harlem": {
+      "total": 11,
+      "matches": 1
+    },
+    "Hughes - Rivers": {
+      "total": 12,
+      "matches": 3
+    },
+    "Plath - Lady Lazarus": {
+      "total": 24,
+      "matches": 9
+    },
+    "Plath - Daddy": {
+      "total": 15,
+      "matches": 1
+    },
+    "Angelou - Still I Rise": {
+      "total": 24,
+      "matches": 8
+    },
+    "Angelou - Phenomenal Woman": {
+      "total": 13,
+      "matches": 3
+    },
+    "Cummings - i carry": {
+      "total": 18,
+      "matches": 4
+    },
+    "Williams - Red Wheelbarrow": {
+      "total": 8,
+      "matches": 7
+    },
+    "Williams - This Is Just to Say": {
+      "total": 12,
+      "matches": 7
+    },
+    "Thomas - Do Not Go Gentle": {
+      "total": 13,
+      "matches": 7
+    },
+    "Thomas - Fern Hill": {
+      "total": 18,
+      "matches": 1
+    },
+    "Larkin - This Be The Verse": {
+      "total": 12,
+      "matches": 6
+    },
+    "Larkin - Whitsun Weddings": {
+      "total": 10,
+      "matches": 5
+    },
+    "Heaney - Digging": {
+      "total": 31,
+      "matches": 2
+    },
+    "Heaney - Mid-Term Break": {
+      "total": 22,
+      "matches": 5
+    },
+    "Auden - Funeral Blues": {
+      "total": 16,
+      "matches": 1
+    },
+    "Auden - September 1, 1939": {
+      "total": 11,
+      "matches": 2
+    },
+    "Bishop - One Art": {
+      "total": 18,
+      "matches": 4
+    },
+    "Stevens - Emperor of Ice-Cream": {
+      "total": 15,
+      "matches": 2
+    },
+    "Ginsberg - Howl": {
+      "total": 9,
+      "matches": 1
+    },
+    "Collins - Introduction to Poetry": {
+      "total": 16,
+      "matches": 4
+    },
+    "Oliver - Summer Day": {
+      "total": 19,
+      "matches": 1
+    },
+    "Oliver - Wild Geese": {
+      "total": 18,
+      "matches": 1
+    },
+    "Rich - Diving into the Wreck": {
+      "total": 21,
+      "matches": 5
+    },
+    "Walcott - Far Cry from Africa": {
+      "total": 10,
+      "matches": 0
+    },
+    "Brooks - We Real Cool": {
+      "total": 8,
+      "matches": 0
+    },
+    "Sexton - Her Kind": {
+      "total": 13,
+      "matches": 0
+    },
+    "Dove - Daystar": {
+      "total": 12,
+      "matches": 0
+    }
+  },
+  "results": [
+    {
+      "line": "Two roads diverged in a yellow wood,",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And sorry I could not travel both",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/uu/u/u/",
+      "actual": "u/u/u//u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And be one traveler, long I stood",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And looked down one as far as I could",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "To where it bent in the undergrowth;",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Then took the other, as just as fair,",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And having perhaps the better claim,",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/uu/u/",
+      "actual": "u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Because it was grassy and wanted wear;",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u//uu/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Though as for that the passing there",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/u/uu/",
+      "actual": "/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "Had worn them really about the same,",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And both that morning equally lay",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/uu/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "In leaves no step had trodden black.",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Oh, I kept the first for another day!",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Yet knowing how way leads on to way,",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 10, got 9)"
+    },
+    {
+      "line": "I doubted if I should ever come back.",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/uu/u/u/",
+      "actual": "u/u/u//uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "I shall be telling this with a sigh",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u//u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Somewhere ages and ages hence:",
+      "source": "Frost - Road Not Taken",
+      "expected": "u//uu/u/",
+      "actual": "///uu/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.875,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Two roads diverged in a wood, and I—",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I took the one less traveled by,",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "And that has made all the difference.",
+      "source": "Frost - Road Not Taken",
+      "expected": "u/u/u/u/u",
+      "actual": "uu/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.1111111111111111,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "Whose woods these are I think I know.",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "His house is in the village though;",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "He will not see me stopping here",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "To watch his woods fill up with snow.",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "My little horse must think it queer",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "To stop without a farmhouse near",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u//u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Between the woods and frozen lake",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The darkest evening of the year.",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/uuu/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.875,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "He gives his harness bells a shake",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "To ask if there is some mistake.",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The only other sound's the sweep",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Of easy wind and downy flake.",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The woods are lovely, dark and deep,",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "But I have promises to keep,",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/uuu/",
+      "actual": "u/u/uuu/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And miles to go before I sleep,",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.375,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "And miles to go before I sleep.",
+      "source": "Frost - Stopping by Woods",
+      "expected": "u/u/u/u/",
+      "actual": "u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.375,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "Some say the world will end in fire,",
+      "source": "Frost - Fire and Ice",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "Some say in ice.",
+      "source": "Frost - Fire and Ice",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "From what I've tasted of desire",
+      "source": "Frost - Fire and Ice",
+      "expected": "u/u/uu/",
+      "actual": "u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "syllable_count_mismatch (expected 7, got 9)"
+    },
+    {
+      "line": "I hold with those who favor fire.",
+      "source": "Frost - Fire and Ice",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "But if it had to perish twice,",
+      "source": "Frost - Fire and Ice",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I think I know enough of hate",
+      "source": "Frost - Fire and Ice",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "To say that for destruction ice",
+      "source": "Frost - Fire and Ice",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Is also great",
+      "source": "Frost - Fire and Ice",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And would suffice.",
+      "source": "Frost - Fire and Ice",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Nature's first green is gold,",
+      "source": "Frost - Nothing Gold",
+      "expected": "u/u/u/",
+      "actual": "/uu/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "Her hardest hue to hold.",
+      "source": "Frost - Nothing Gold",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Her early leaf's a flower;",
+      "source": "Frost - Nothing Gold",
+      "expected": "u/u/u/u",
+      "actual": "u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "But only so an hour.",
+      "source": "Frost - Nothing Gold",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "Then leaf subsides to leaf.",
+      "source": "Frost - Nothing Gold",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "So Eden sank to grief,",
+      "source": "Frost - Nothing Gold",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "So dawn goes down to day.",
+      "source": "Frost - Nothing Gold",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Nothing gold can stay.",
+      "source": "Frost - Nothing Gold",
+      "expected": "uu/u/",
+      "actual": "/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "Turning and turning in the widening gyre",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/uu/u/",
+      "actual": "/uu/u/u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 9, got 11)"
+    },
+    {
+      "line": "The falcon cannot hear the falconer;",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/u",
+      "actual": "u/u/u/u/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Things fall apart; the centre cannot hold;",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Mere anarchy is loosed upon the world,",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The blood-dimmed tide is loosed, and everywhere",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The ceremony of innocence is drowned;",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/uu/uu/",
+      "actual": "u/u/uu/uuu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.9,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "The best lack all conviction, while the worst",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Are full of passionate intensity.",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uuu/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Surely some revelation is at hand;",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/u/",
+      "actual": "/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Surely the Second Coming is at hand.",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/uuu/",
+      "actual": "/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "The Second Coming! Hardly are those words out",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/u/u",
+      "actual": "u/u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9090909090909091,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "When a vast image out of Spiritus Mundi",
+      "source": "Yeats - Second Coming",
+      "expected": "uu/u/u/u/u",
+      "actual": "/uu/u/uu/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4,
+      "failureType": "syllable_count_mismatch (expected 10, got 12)"
+    },
+    {
+      "line": "Troubles my sight: somewhere in sands of the desert",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/uu/u",
+      "actual": "/u/u//u/uu/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5833333333333334,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "A shape with lion body and the head of a man,",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/uu/uu/",
+      "actual": "u/u/u/u/u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "A gaze blank and pitiless as the sun,",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/uu/",
+      "actual": "u/uu/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4444444444444444,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Is moving its slow thighs, while all about it",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/u/u",
+      "actual": "u/u/u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Reel shadows of the indignant desert birds.",
+      "source": "Yeats - Second Coming",
+      "expected": "u/uu/u/u/",
+      "actual": "u//uu//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 9, got 11)"
+    },
+    {
+      "line": "The darkness drops again; but now I know",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "That twenty centuries of stony sleep",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/uuu/u/",
+      "actual": "u/u/uuu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Were vexed to nightmare by a rocking cradle,",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/uu/u/u",
+      "actual": "u/u//uu/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "And what rough beast, its hour come round at last,",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "Slouches towards Bethlehem to be born?",
+      "source": "Yeats - Second Coming",
+      "expected": "u/u/u/u/",
+      "actual": "/uu//u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 8, got 10)"
+    },
+    {
+      "line": "I will arise and go now, and go to Innisfree,",
+      "source": "Yeats - Innisfree",
+      "expected": "u/u/u/u/u/uu/",
+      "actual": "u/u/u//u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5384615384615384,
+      "failureType": "syllable_count_mismatch (expected 13, got 12)"
+    },
+    {
+      "line": "And a small cabin build there, of clay and wattles made:",
+      "source": "Yeats - Innisfree",
+      "expected": "uu/u/u/u/u/u/",
+      "actual": "u/u/u//u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6153846153846154,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Nine bean-rows will I have there, a hive for the honey-bee,",
+      "source": "Yeats - Innisfree",
+      "expected": "u/u/u/u/u/uu/",
+      "actual": "/u/u/u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.23076923076923078,
+      "failureType": "syllable_count_mismatch (expected 13, got 14)"
+    },
+    {
+      "line": "And live alone in the bee-loud glade.",
+      "source": "Yeats - Innisfree",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And I shall have some peace there, for peace comes dropping slow,",
+      "source": "Yeats - Innisfree",
+      "expected": "u/u/u/u/u/u/u/",
+      "actual": "u/u/u/u/u//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "syllable_count_mismatch (expected 14, got 13)"
+    },
+    {
+      "line": "Dropping from the veils of the morning to where the cricket sings;",
+      "source": "Yeats - Innisfree",
+      "expected": "u/uu/uu/uu/u/",
+      "actual": "/u/u/uu/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7692307692307693,
+      "failureType": "syllable_count_mismatch (expected 13, got 15)"
+    },
+    {
+      "line": "There midnight's all a glimmer, and noon a purple glow,",
+      "source": "Yeats - Innisfree",
+      "expected": "u/u/u/uu/u/u/",
+      "actual": "u/u/u/uu/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And evening full of the linnet's wings.",
+      "source": "Yeats - Innisfree",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I will arise and go now, for always night and day",
+      "source": "Yeats - Innisfree",
+      "expected": "u/u/u/u/u/u/",
+      "actual": "u/u/u/u//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "I hear lake water lapping with low sounds by the shore;",
+      "source": "Yeats - Innisfree",
+      "expected": "u/u/u/uuu/u/",
+      "actual": "u/u/u/u/u//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.75,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "While I stand on the roadway, or on the pavements grey,",
+      "source": "Yeats - Innisfree",
+      "expected": "u/u/u/uuu/u/",
+      "actual": "u/u/u//u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5833333333333334,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "I hear it in the deep heart's core.",
+      "source": "Yeats - Innisfree",
+      "expected": "u/uu/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.42857142857142855,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "Let us go then, you and I,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/",
+      "actual": "/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 6, got 8)"
+    },
+    {
+      "line": "When the evening is spread out against the sky",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u/",
+      "actual": "/u/uu//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "Like a patient etherized upon a table;",
+      "source": "Eliot - Prufrock",
+      "expected": "uu/u/u/uu/u",
+      "actual": "/u/uu/uu/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.36363636363636365,
+      "failureType": "syllable_count_mismatch (expected 11, got 12)"
+    },
+    {
+      "line": "Let us go, through certain half-deserted streets,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u/",
+      "actual": "/uu/u/uu/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 10, got 12)"
+    },
+    {
+      "line": "The muttering retreats",
+      "source": "Eliot - Prufrock",
+      "expected": "u/uu/",
+      "actual": "u/uu/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Of restless nights in one-night cheap hotels",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "And sawdust restaurants with oyster-shells:",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/uuu/u/",
+      "actual": "u///u/uu/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Streets that follow like a tedious argument",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/uu/uu/u",
+      "actual": "/u/u/u/u/uu",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.36363636363636365,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Of insidious intent",
+      "source": "Eliot - Prufrock",
+      "expected": "uu/u/",
+      "actual": "u///u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4,
+      "failureType": "syllable_count_mismatch (expected 5, got 7)"
+    },
+    {
+      "line": "To lead you to an overwhelming question...",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/uu/u/u",
+      "actual": "u//uu/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "Oh, do not ask, \"What is it?\"",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u",
+      "actual": "u/u//uu",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "Let us go and make our visit.",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u",
+      "actual": "/uu/u/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "In the room the women come and go",
+      "source": "Eliot - Prufrock",
+      "expected": "uu/u/u/u/",
+      "actual": "uu/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Talking of Michelangelo.",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u",
+      "actual": "/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "The yellow fog that rubs its back upon the window-panes,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u/u/u/",
+      "actual": "u/u/u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The yellow smoke that rubs its muzzle on the window-panes,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/uu/u/",
+      "actual": "u/u/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6923076923076923,
+      "failureType": "syllable_count_mismatch (expected 13, got 14)"
+    },
+    {
+      "line": "Licked its tongue into the corners of the evening,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/uu/uuu/u",
+      "actual": "u/u/uu/u/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9166666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Lingered upon the pools that stand in drains,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u/",
+      "actual": "/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Let fall upon its back the soot that falls from chimneys,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u/u/u",
+      "actual": "u/u/u/u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Slipped by the terrace, made a sudden leap,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And seeing that it was a soft October night,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/uu/u/u/u/",
+      "actual": "u/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2727272727272727,
+      "failureType": "syllable_count_mismatch (expected 11, got 12)"
+    },
+    {
+      "line": "Curled once about the house, and fell asleep.",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And indeed there will be time",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/",
+      "actual": "u//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "For the yellow smoke that slides along the street,",
+      "source": "Eliot - Prufrock",
+      "expected": "uu/u/u/u/u/",
+      "actual": "/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9090909090909091,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Rubbing its back upon the window-panes;",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u/",
+      "actual": "/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "There will be time, there will be time",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "To prepare a face to meet the faces that you meet;",
+      "source": "Eliot - Prufrock",
+      "expected": "uu/u/u/u/uu/",
+      "actual": "uu/u/u/u/uu//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "There will be time to murder and create,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "And time for all the works and days of hands",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "That lift and drop a question on your plate;",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/uuu/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Time for you and time for me,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/u/",
+      "actual": "/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "And time yet for a hundred indecisions,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/uu/u",
+      "actual": "u/u/u/uu/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "And for a hundred visions and revisions,",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/u/uuu/u",
+      "actual": "u/u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9090909090909091,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Before the taking of a toast and tea.",
+      "source": "Eliot - Prufrock",
+      "expected": "u/u/uuu/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "What happens to a dream deferred?",
+      "source": "Hughes - Harlem",
+      "expected": "u/uu/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.42857142857142855,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "Does it dry up",
+      "source": "Hughes - Harlem",
+      "expected": "u/u/",
+      "actual": "/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "like a raisin in the sun?",
+      "source": "Hughes - Harlem",
+      "expected": "uu/uu/",
+      "actual": "/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "Or fester like a sore—",
+      "source": "Hughes - Harlem",
+      "expected": "u/uuu/",
+      "actual": "u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8333333333333334,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And then run?",
+      "source": "Hughes - Harlem",
+      "expected": "u/u",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Does it stink like rotten meat?",
+      "source": "Hughes - Harlem",
+      "expected": "u/u/u/u/",
+      "actual": "/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "Or crust and sugar over—",
+      "source": "Hughes - Harlem",
+      "expected": "u/u/u/u",
+      "actual": "u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "like a syrupy sweet?",
+      "source": "Hughes - Harlem",
+      "expected": "uu/u/",
+      "actual": "/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2,
+      "failureType": "syllable_count_mismatch (expected 5, got 6)"
+    },
+    {
+      "line": "Maybe it just sags",
+      "source": "Hughes - Harlem",
+      "expected": "u/u/u",
+      "actual": "/uu//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.4,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "like a heavy load.",
+      "source": "Hughes - Harlem",
+      "expected": "uu/u/",
+      "actual": "/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Or does it explode?",
+      "source": "Hughes - Harlem",
+      "expected": "u/u//",
+      "actual": "u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "I've known rivers:",
+      "source": "Hughes - Rivers",
+      "expected": "u//u",
+      "actual": "u//u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I've known rivers ancient as the world and older than the",
+      "source": "Hughes - Rivers",
+      "expected": "u//uuu/u/uu/u",
+      "actual": "u//u/u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6923076923076923,
+      "failureType": "syllable_count_mismatch (expected 13, got 14)"
+    },
+    {
+      "line": "flow of human blood in human veins.",
+      "source": "Hughes - Rivers",
+      "expected": "u/u/uu/u/",
+      "actual": "/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.4444444444444444,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "My soul has grown deep like the rivers.",
+      "source": "Hughes - Rivers",
+      "expected": "u/u//uu/u",
+      "actual": "u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "I bathed in the Euphrates when dawns were young.",
+      "source": "Hughes - Rivers",
+      "expected": "u/uu/uuu/u/",
+      "actual": "u/u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.45454545454545453,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "I built my hut near the Congo and it lulled me to sleep.",
+      "source": "Hughes - Rivers",
+      "expected": "u/u/uu/uu/u/",
+      "actual": "u/u//u/u/u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5833333333333334,
+      "failureType": "syllable_count_mismatch (expected 12, got 14)"
+    },
+    {
+      "line": "I looked upon the Nile and raised the pyramids above it.",
+      "source": "Hughes - Rivers",
+      "expected": "u/u/u/u/u/uu/u",
+      "actual": "u/u/u/u/u/uuu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8571428571428571,
+      "failureType": "syllable_count_mismatch (expected 14, got 15)"
+    },
+    {
+      "line": "I heard the singing of the Mississippi when Abe Lincoln",
+      "source": "Hughes - Rivers",
+      "expected": "u/u/uuu/u/u/u",
+      "actual": "u/u/u/u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.9230769230769231,
+      "failureType": "syllable_count_mismatch (expected 13, got 15)"
+    },
+    {
+      "line": "went down to New Orleans, and I've seen its muddy",
+      "source": "Hughes - Rivers",
+      "expected": "u/u/u/uu//u/u",
+      "actual": "u/u//uu/u/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6923076923076923,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "bosom turn all golden in the sunset.",
+      "source": "Hughes - Rivers",
+      "expected": "u/u/u/u/",
+      "actual": "/uu//u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 8, got 10)"
+    },
+    {
+      "line": "I've known rivers:",
+      "source": "Hughes - Rivers",
+      "expected": "u//u",
+      "actual": "u//u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Ancient, dusky rivers.",
+      "source": "Hughes - Rivers",
+      "expected": "/u/u/u",
+      "actual": "/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I have done it again.",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/u/",
+      "actual": "/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "One year in every ten",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I manage it—",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/",
+      "actual": "u/uu",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "A sort of walking miracle, my skin",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/uu//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Bright as a Nazi lampshade,",
+      "source": "Plath - Lady Lazarus",
+      "expected": "/uu/u/u",
+      "actual": "u/u/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "My right foot",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u//",
+      "actual": "u//",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "A paperweight,",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "My face a featureless, fine",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/uu/",
+      "actual": "u/u/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "Jew linen.",
+      "source": "Plath - Lady Lazarus",
+      "expected": "/u/u",
+      "actual": "u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "Peel off the napkin",
+      "source": "Plath - Lady Lazarus",
+      "expected": "/u/u/u",
+      "actual": "u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 6, got 5)"
+    },
+    {
+      "line": "O my enemy.",
+      "source": "Plath - Lady Lazarus",
+      "expected": "uu/u/",
+      "actual": "/u/uu",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Do I terrify?—",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/u",
+      "actual": "/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "The nose, the eye pits, the full set of teeth?",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The sour breath",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u//",
+      "actual": "u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 3, got 4)"
+    },
+    {
+      "line": "Will vanish in a day.",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/uu/",
+      "actual": "u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 5, got 6)"
+    },
+    {
+      "line": "Soon, soon the flesh",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The grave cave ate will be",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "At home on me",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And I a smiling woman.",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/u/u",
+      "actual": "u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I am only thirty.",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/u/u",
+      "actual": "/uu/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5714285714285714,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And like the cat I have nine times to die.",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "This is Number Three.",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/u/",
+      "actual": "/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 6, got 5)"
+    },
+    {
+      "line": "What a trash",
+      "source": "Plath - Lady Lazarus",
+      "expected": "u/u/",
+      "actual": "/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "To annihilate each decade.",
+      "source": "Plath - Lady Lazarus",
+      "expected": "uu/u/u/u",
+      "actual": "uu/u//u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.625,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "You do not do, you do not do",
+      "source": "Plath - Daddy",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Any more, black shoe",
+      "source": "Plath - Daddy",
+      "expected": "u/u/u/",
+      "actual": "/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 6, got 5)"
+    },
+    {
+      "line": "In which I have lived like a foot",
+      "source": "Plath - Daddy",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "For thirty years, poor and white,",
+      "source": "Plath - Daddy",
+      "expected": "u/u/u/u/",
+      "actual": "u//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "Barely daring to breathe or Achoo.",
+      "source": "Plath - Daddy",
+      "expected": "u/u/u/u/",
+      "actual": "/u/uu/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "Daddy, I have had to kill you.",
+      "source": "Plath - Daddy",
+      "expected": "/uu/u/u",
+      "actual": "/u/u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.42857142857142855,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "You died before I had time—",
+      "source": "Plath - Daddy",
+      "expected": "u/u/u/u",
+      "actual": "u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8571428571428571,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Marble-heavy, a bag full of God,",
+      "source": "Plath - Daddy",
+      "expected": "u/u/u/u/",
+      "actual": "u/uuu//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.625,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "Ghastly statue with one gray toe",
+      "source": "Plath - Daddy",
+      "expected": "/u/uu/u/",
+      "actual": "/u//u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.875,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Big as a Frisco seal",
+      "source": "Plath - Daddy",
+      "expected": "/uu/u/",
+      "actual": "u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And a head in the freakish Atlantic",
+      "source": "Plath - Daddy",
+      "expected": "uu/uu/u/u",
+      "actual": "uu/uu/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Where it pours bean green over blue",
+      "source": "Plath - Daddy",
+      "expected": "u/u/u/u/",
+      "actual": "/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "In the waters off beautiful Nauset.",
+      "source": "Plath - Daddy",
+      "expected": "uu/u/u/u/u",
+      "actual": "uu/uu/uu/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "I used to pray to recover you.",
+      "source": "Plath - Daddy",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.625,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "Ach, du.",
+      "source": "Plath - Daddy",
+      "expected": "u/",
+      "actual": "///u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 2, got 4)"
+    },
+    {
+      "line": "You may write me down in history",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/u/u",
+      "actual": "u/u//u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4444444444444444,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "With your bitter, twisted lies,",
+      "source": "Angelou - Still I Rise",
+      "expected": "uu/u/u/",
+      "actual": "/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8571428571428571,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "You may trod me in the very dirt",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "But still, like dust, I'll rise.",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Does my sassiness upset you?",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/uu/u",
+      "actual": "/u/uuu//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.375,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Why are you beset with gloom?",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/",
+      "actual": "/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "'Cause I walk like I've got oil wells",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Pumping in my living room.",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/",
+      "actual": "/uu//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "Just like moons and like suns,",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/",
+      "actual": "/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "With the certainty of tides,",
+      "source": "Angelou - Still I Rise",
+      "expected": "uu/uuu/",
+      "actual": "/u/uuu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8571428571428571,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Just like hopes springing high,",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Still I'll rise.",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "Did you want to see me broken?",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/u/u",
+      "actual": "/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "Bowed head and lowered eyes?",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Shoulders falling down like teardrops,",
+      "source": "Angelou - Still I Rise",
+      "expected": "/u/u/u/u",
+      "actual": "/u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Weakened by my soulful cries?",
+      "source": "Angelou - Still I Rise",
+      "expected": "/uu/u/",
+      "actual": "/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "Does my haughtiness offend you?",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/uu/u",
+      "actual": "/u/uuu//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.375,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Don't you take it awful hard",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/u/",
+      "actual": "/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "'Cause I laugh like I've got gold mines",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Diggin' in my own backyard.",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/u/",
+      "actual": "/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.125,
+      "failureType": "syllable_count_mismatch (expected 8, got 6)"
+    },
+    {
+      "line": "You may shoot me with your words,",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/uu/",
+      "actual": "u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8571428571428571,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "You may cut me with your eyes,",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/uu/",
+      "actual": "u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8571428571428571,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "You may kill me with your hatefulness,",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/uu/uu",
+      "actual": "u/u/u/u/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "But still, like air, I'll rise.",
+      "source": "Angelou - Still I Rise",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Pretty women wonder where my secret lies.",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "/u/u/uu/u/",
+      "actual": "/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "I'm not cute or built to suit a fashion model's size",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/u/u/u/u/u/",
+      "actual": "u/u//u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "But when I start to tell them,",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/u/u/u",
+      "actual": "u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8571428571428571,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "They think I'm telling lies.",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I say,",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/",
+      "actual": "u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "It's in the reach of my arms,",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/u/uu/",
+      "actual": "/uu/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5714285714285714,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "The span of my hips,",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/uu/",
+      "actual": "u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "The stride of my step,",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/uu/",
+      "actual": "u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "The curl of my lips.",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/uu/",
+      "actual": "u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "I'm a woman",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/u",
+      "actual": "/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 3, got 4)"
+    },
+    {
+      "line": "Phenomenally.",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/uu",
+      "actual": "u/uuu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 4, got 5)"
+    },
+    {
+      "line": "Phenomenal woman,",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/u/u",
+      "actual": "u/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 5, got 6)"
+    },
+    {
+      "line": "That's me.",
+      "source": "Angelou - Phenomenal Woman",
+      "expected": "u/",
+      "actual": "u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "i carry your heart with me",
+      "source": "Cummings - i carry",
+      "expected": "u/uu/u/",
+      "actual": "u/u//u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8571428571428571,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "i carry it in my heart",
+      "source": "Cummings - i carry",
+      "expected": "u/u/u/",
+      "actual": "u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "i am never without it",
+      "source": "Cummings - i carry",
+      "expected": "u/u/u/u",
+      "actual": "/uu/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.42857142857142855,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "anywhere i go you go my dear",
+      "source": "Cummings - i carry",
+      "expected": "u/u/u/u/u/",
+      "actual": "/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 10, got 9)"
+    },
+    {
+      "line": "and whatever is done by only me is your doing my darling",
+      "source": "Cummings - i carry",
+      "expected": "u/u/u/u/u/u/u/u",
+      "actual": "uu/uu/u/u/u//uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 15, got 17)"
+    },
+    {
+      "line": "i fear no fate",
+      "source": "Cummings - i carry",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "for you are my fate my sweet",
+      "source": "Cummings - i carry",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.75,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "i want no world",
+      "source": "Cummings - i carry",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "for beautiful you are my world my true",
+      "source": "Cummings - i carry",
+      "expected": "u/uuu/u/u/",
+      "actual": "u/uu//u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "and it's you are whatever a moon has always meant",
+      "source": "Cummings - i carry",
+      "expected": "u/u/u/uu/u/u/",
+      "actual": "u/u/u/uu/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "and whatever a sun will always sing is you",
+      "source": "Cummings - i carry",
+      "expected": "u/uuu/u/u/u/",
+      "actual": "uu/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8333333333333334,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "here is the deepest secret nobody knows",
+      "source": "Cummings - i carry",
+      "expected": "u/u/u/uu/u/",
+      "actual": "/uu/u/u///u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5454545454545454,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "here is the root of the root and the bud of the bud",
+      "source": "Cummings - i carry",
+      "expected": "u/u/uu/uu/uu/",
+      "actual": "/uu/uu/uu/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8461538461538461,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "and the sky of the sky of a tree called life",
+      "source": "Cummings - i carry",
+      "expected": "uu/uu/uu/u/",
+      "actual": "uu/uu/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "which grows higher than soul can hope or mind can hide",
+      "source": "Cummings - i carry",
+      "expected": "u/u/u/u/u/u/",
+      "actual": "u//uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8333333333333334,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "and this is the wonder that's keeping the stars apart",
+      "source": "Cummings - i carry",
+      "expected": "u/u/u/u/u/u/",
+      "actual": "u/uu/uu/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "i carry your heart",
+      "source": "Cummings - i carry",
+      "expected": "u/uu/",
+      "actual": "u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "i carry it in my heart",
+      "source": "Cummings - i carry",
+      "expected": "u/u/u/",
+      "actual": "u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "so much depends",
+      "source": "Williams - Red Wheelbarrow",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "upon",
+      "source": "Williams - Red Wheelbarrow",
+      "expected": "u/",
+      "actual": "u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "a red wheel",
+      "source": "Williams - Red Wheelbarrow",
+      "expected": "u//",
+      "actual": "u//",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "barrow",
+      "source": "Williams - Red Wheelbarrow",
+      "expected": "/u",
+      "actual": "/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "glazed with rain",
+      "source": "Williams - Red Wheelbarrow",
+      "expected": "u/u/",
+      "actual": "/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "water",
+      "source": "Williams - Red Wheelbarrow",
+      "expected": "/u",
+      "actual": "/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "beside the white",
+      "source": "Williams - Red Wheelbarrow",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "chickens",
+      "source": "Williams - Red Wheelbarrow",
+      "expected": "/u",
+      "actual": "/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I have eaten",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/u/u",
+      "actual": "/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 5, got 4)"
+    },
+    {
+      "line": "the plums",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/",
+      "actual": "u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "that were in",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/u",
+      "actual": "u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "the icebox",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/u",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "and which",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/",
+      "actual": "u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "you were probably",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/u/u",
+      "actual": "/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "saving",
+      "source": "Williams - This Is Just to Say",
+      "expected": "/u",
+      "actual": "/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "for breakfast",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/u",
+      "actual": "u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Forgive me",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/u",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "they were delicious",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/u/u",
+      "actual": "u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "so sweet",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/",
+      "actual": "u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "and so cold",
+      "source": "Williams - This Is Just to Say",
+      "expected": "u/u/",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "Do not go gentle into that good night,",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Old age should burn and rave at close of day;",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Rage, rage against the dying of the light.",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Though wise men at their end know dark is right,",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Because their words had forked no lightning they",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Good men, the last wave by, crying how bright",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u//uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Their frail deeds might have danced in a green bay,",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Wild men who caught and sang the sun in flight,",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And learn, too late, they grieved it on its way,",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Grave men, near death, who see with blinding sight",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Blind eyes could blaze like meteors and be gay,",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u/uuu//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "And you, my father, there on the sad height,",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Curse, bless, me now with your fierce tears, I pray.",
+      "source": "Thomas - Do Not Go Gentle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Now as I was young and easy under the apple boughs",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/u/u/u/uu/u/",
+      "actual": "u/u//u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.38461538461538464,
+      "failureType": "syllable_count_mismatch (expected 13, got 14)"
+    },
+    {
+      "line": "About the lilting house and happy as the grass was green,",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/u/u/u/uuu/u/",
+      "actual": "u/u/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9285714285714286,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "The night above the dingle starry,",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/u/u/u/u",
+      "actual": "u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Time let me hail and climb",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/u/u/",
+      "actual": "/uu/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Golden in the heydays of his eyes,",
+      "source": "Thomas - Fern Hill",
+      "expected": "/uuu/uuu/",
+      "actual": "/u/u/uu//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And honored among wagons I was prince of the apple towns",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/uu/uuu/uu/u/",
+      "actual": "u/uu//u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 14, got 15)"
+    },
+    {
+      "line": "And once below a time I lordly had the trees and leaves",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/u/u/u/uu/u/",
+      "actual": "u/u/u/u//uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6923076923076923,
+      "failureType": "syllable_count_mismatch (expected 13, got 14)"
+    },
+    {
+      "line": "Trail with daisies and barley",
+      "source": "Thomas - Fern Hill",
+      "expected": "/u/uu/u",
+      "actual": "/u/uu/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Down the rivers of the windfall light.",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/uuu/u/",
+      "actual": "/u/u/u///",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "And as I was green and carefree, famous among the barns",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/u//u/u/uuu/",
+      "actual": "u/u//u///uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7692307692307693,
+      "failureType": "syllable_count_mismatch (expected 13, got 14)"
+    },
+    {
+      "line": "About the happy yard and singing as the farm was home,",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/u/u/u/uuu/u/",
+      "actual": "u/u/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9285714285714286,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "In the sun that is young once only,",
+      "source": "Thomas - Fern Hill",
+      "expected": "uu/u//u/u",
+      "actual": "uu/uu/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Time let me play and be",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/u/u/",
+      "actual": "/uu/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Golden in the mercy of his means,",
+      "source": "Thomas - Fern Hill",
+      "expected": "/uuu/uu/",
+      "actual": "/u/u/uu//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.875,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "And green and golden I was huntsman and herdsman, the calves",
+      "source": "Thomas - Fern Hill",
+      "expected": "u/u/uu/uuu/uu/",
+      "actual": "u/u/u/u/uu/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7857142857142857,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Sang to my horn, the foxes on the hills barked clear and cold,",
+      "source": "Thomas - Fern Hill",
+      "expected": "/uu/u/uuu/u/u/",
+      "actual": "/uu/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9285714285714286,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And the sabbath rang slowly",
+      "source": "Thomas - Fern Hill",
+      "expected": "uu/u/u/u",
+      "actual": "uu/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "In the pebbles of the holy streams.",
+      "source": "Thomas - Fern Hill",
+      "expected": "uu/uuu/u/",
+      "actual": "uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "They fuck you up, your mum and dad.",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "They may not mean to, but they do.",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "They fill you with the faults they had",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And add some extra, just for you.",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "But they were fucked up in their turn",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/u/u/",
+      "actual": "u/u//uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "By fools in old-style hats and coats,",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/u/u/",
+      "actual": "u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.375,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "Who half the time were soppy-stern",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/u/u/",
+      "actual": "u/u//u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And half at one another's throats.",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Man hands on misery to man.",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/uu/",
+      "actual": "/uu/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "It deepens like a coastal shelf.",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Get out as early as you can,",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/uu/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "And don't have any kids yourself.",
+      "source": "Larkin - This Be The Verse",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "That Whitsun, I was late getting away:",
+      "source": "Larkin - Whitsun Weddings",
+      "expected": "u/uu/u/u/",
+      "actual": "u/u/u//uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Not till about",
+      "source": "Larkin - Whitsun Weddings",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "One-twenty on the sunlit Saturday",
+      "source": "Larkin - Whitsun Weddings",
+      "expected": "u/uuu/u/u/",
+      "actual": "u/uu/u///uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "Did my three-quarters-empty train pull out,",
+      "source": "Larkin - Whitsun Weddings",
+      "expected": "u/u/uu/u/u/",
+      "actual": "u/uu/u//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.45454545454545453,
+      "failureType": "syllable_count_mismatch (expected 11, got 10)"
+    },
+    {
+      "line": "All windows down, all cushions hot, all sense",
+      "source": "Larkin - Whitsun Weddings",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Of being in a hurry gone. We ran",
+      "source": "Larkin - Whitsun Weddings",
+      "expected": "u/uu/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Behind the backs of houses, crossed a street",
+      "source": "Larkin - Whitsun Weddings",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Of blinding windscreens, smelt the fish-dock; thence",
+      "source": "Larkin - Whitsun Weddings",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The river's level drifting breadth began,",
+      "source": "Larkin - Whitsun Weddings",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Where sky and Lincolnshire and water meet.",
+      "source": "Larkin - Whitsun Weddings",
+      "expected": "u/u/uuu/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Between my finger and my thumb",
+      "source": "Heaney - Digging",
+      "expected": "u/u/uu/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "The squat pen rests; snug as a gun.",
+      "source": "Heaney - Digging",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "Under my window, a clean rasping sound",
+      "source": "Heaney - Digging",
+      "expected": "u/u/uu/u/u/",
+      "actual": "/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2727272727272727,
+      "failureType": "syllable_count_mismatch (expected 11, got 10)"
+    },
+    {
+      "line": "When the spade sinks into gravelly ground:",
+      "source": "Heaney - Digging",
+      "expected": "uu/u/u/uu/",
+      "actual": "/uu//u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "My father, digging. I look down",
+      "source": "Heaney - Digging",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "Till his straining rump among the flowerbeds",
+      "source": "Heaney - Digging",
+      "expected": "u/u/u/uu/u/",
+      "actual": "/u/u/u/uu/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.09090909090909091,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Bends low, comes up twenty years away",
+      "source": "Heaney - Digging",
+      "expected": "/u/u/u/u/",
+      "actual": "u/u//u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "Stooping in rhythm through potato drills",
+      "source": "Heaney - Digging",
+      "expected": "/uu/u/u/u/",
+      "actual": "/uu/u/u//u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Where he was digging.",
+      "source": "Heaney - Digging",
+      "expected": "u//u/u",
+      "actual": "u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 6, got 5)"
+    },
+    {
+      "line": "The coarse boot nestled on the lug, the shaft",
+      "source": "Heaney - Digging",
+      "expected": "u//u/uu/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Against the inside knee was levered firmly.",
+      "source": "Heaney - Digging",
+      "expected": "u/u/u/u/u/u",
+      "actual": "u/u//uu/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8181818181818182,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "He rooted out tall tops, buried the bright edge deep",
+      "source": "Heaney - Digging",
+      "expected": "u/uu/u/uu/u/",
+      "actual": "u/u/u//uu/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "To scatter new potatoes that we picked,",
+      "source": "Heaney - Digging",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Loving their cool hardness in our hands.",
+      "source": "Heaney - Digging",
+      "expected": "/uu/u/uu/",
+      "actual": "/uu//u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "By God, the old man could handle a spade.",
+      "source": "Heaney - Digging",
+      "expected": "u/u//u/uu/",
+      "actual": "u/u//u/uu/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Just like his old man.",
+      "source": "Heaney - Digging",
+      "expected": "/uu//",
+      "actual": "u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "My grandfather cut more turf in a day",
+      "source": "Heaney - Digging",
+      "expected": "u/u/u/uu/",
+      "actual": "u//uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Than any other man on Toner's bog.",
+      "source": "Heaney - Digging",
+      "expected": "uu/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.1111111111111111,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Once I carried him milk in a bottle",
+      "source": "Heaney - Digging",
+      "expected": "/u/uu/uu/u",
+      "actual": "u//uu/uu/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Corked sloppily with paper. He straightened up",
+      "source": "Heaney - Digging",
+      "expected": "/u/uu/u/u/",
+      "actual": "u/uu//u//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "To drink it, then fell to right away",
+      "source": "Heaney - Digging",
+      "expected": "u/u/u/u/",
+      "actual": "u/u//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "Nicking and slicing neatly, heaving sods",
+      "source": "Heaney - Digging",
+      "expected": "/uu/u/u/u/",
+      "actual": "/uu/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Over his shoulder, going down and down",
+      "source": "Heaney - Digging",
+      "expected": "u/u/uu/u/",
+      "actual": "/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "For the good turf. Digging.",
+      "source": "Heaney - Digging",
+      "expected": "uu/uu/u",
+      "actual": "/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.42857142857142855,
+      "failureType": "syllable_count_mismatch (expected 7, got 6)"
+    },
+    {
+      "line": "The cold smell of potato mould, the squelch and slap",
+      "source": "Heaney - Digging",
+      "expected": "u//u/u//u/u/",
+      "actual": "u//uu//uu/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Of soggy peat, the curt cuts of an edge",
+      "source": "Heaney - Digging",
+      "expected": "u/u/u//uu/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Through living roots awaken in my head.",
+      "source": "Heaney - Digging",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "But I've no spade to follow men like them.",
+      "source": "Heaney - Digging",
+      "expected": "uu//u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Between my finger and my thumb",
+      "source": "Heaney - Digging",
+      "expected": "u/u/uu/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "The squat pen rests.",
+      "source": "Heaney - Digging",
+      "expected": "u//u/",
+      "actual": "u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4,
+      "failureType": "syllable_count_mismatch (expected 5, got 4)"
+    },
+    {
+      "line": "I'll dig with it.",
+      "source": "Heaney - Digging",
+      "expected": "u/u/",
+      "actual": "u//u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "I sat all morning in the college sick bay",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/uu/u/u/",
+      "actual": "u/u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5454545454545454,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Counting bells knelling classes to a close.",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "/u/u/u/uu/",
+      "actual": "/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.4,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "At two o'clock our neighbors drove me home.",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/u/u/",
+      "actual": "u//uu/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "In the porch I met my father crying—",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "uu/u/u/u/u",
+      "actual": "u/u/u//u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "He had always taken funerals in his stride—",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/u/uu/",
+      "actual": "/u/u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.09090909090909091,
+      "failureType": "syllable_count_mismatch (expected 11, got 12)"
+    },
+    {
+      "line": "And Big Jim Evans saying it was a hard blow.",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u///u/u/u/u/",
+      "actual": "u/u/u/uu/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "The baby cooed and laughed and rocked the pram",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "When I came in, and I was embarrassed",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/uu/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "By old men standing up to shake my hand",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u//u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.18181818181818182,
+      "failureType": "syllable_count_mismatch (expected 11, got 10)"
+    },
+    {
+      "line": "And tell me they were 'sorry for my trouble.'",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/u/u/u",
+      "actual": "u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7272727272727273,
+      "failureType": "syllable_count_mismatch (expected 11, got 9)"
+    },
+    {
+      "line": "Whispers informed strangers I was the eldest,",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "/uu/u/u/u/u",
+      "actual": "/u///uu/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7272727272727273,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Away at school, as my mother held my hand",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "In hers and coughed out angry tearless sighs.",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "At ten o'clock the ambulance arrived",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/uuu/",
+      "actual": "u//u/uuu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4,
+      "failureType": "syllable_count_mismatch (expected 10, got 9)"
+    },
+    {
+      "line": "With the corpse, stanched and bandaged by the nurses.",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "uu//u/uu/u",
+      "actual": "/uu/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "Next morning I went up into the room. Snowdrops",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "/u/u/u/uu/u/u",
+      "actual": "u/u/u//uu//u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3076923076923077,
+      "failureType": "syllable_count_mismatch (expected 13, got 12)"
+    },
+    {
+      "line": "And candles soothed the bedside; I saw him",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/u/u/u",
+      "actual": "u/u/u//uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7272727272727273,
+      "failureType": "syllable_count_mismatch (expected 11, got 10)"
+    },
+    {
+      "line": "For the first time in six weeks. Paler now,",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "uu/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.09090909090909091,
+      "failureType": "syllable_count_mismatch (expected 11, got 10)"
+    },
+    {
+      "line": "Wearing a poppy bruise on his left temple,",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "/uu/u/u/u/u",
+      "actual": "/uu/u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "He lay in the four-foot box as in his cot.",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/uu/u/uu/",
+      "actual": "u/uu/uu/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "No gaudy scars, the bumper knocked him clear.",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "A four-foot box, a foot for every year.",
+      "source": "Heaney - Mid-Term Break",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Stop all the clocks, cut off the telephone,",
+      "source": "Auden - Funeral Blues",
+      "expected": "/u/u/uu/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.4,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Prevent the dog from barking with a juicy bone,",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/u/u/uuu/u/",
+      "actual": "u/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9166666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Silence the pianos and with muffled drum",
+      "source": "Auden - Funeral Blues",
+      "expected": "/uu/uu/u/",
+      "actual": "/u/u/uu//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4444444444444444,
+      "failureType": "syllable_count_mismatch (expected 9, got 11)"
+    },
+    {
+      "line": "Bring out the coffin, let the mourners come.",
+      "source": "Auden - Funeral Blues",
+      "expected": "/uu/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Let aeroplanes circle moaning overhead",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/u/u/u/u/",
+      "actual": "/u/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 10, got 12)"
+    },
+    {
+      "line": "Scribbling on the sky the message: He is Dead.",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/uu/u/uu/",
+      "actual": "/uu/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3,
+      "failureType": "syllable_count_mismatch (expected 10, got 12)"
+    },
+    {
+      "line": "Put crepe bows round the white necks of the public doves,",
+      "source": "Auden - Funeral Blues",
+      "expected": "u//u/u/uu/u/",
+      "actual": "u/u/u//uu/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Let the traffic policemen wear black cotton gloves.",
+      "source": "Auden - Funeral Blues",
+      "expected": "uu/u/u/u/u/",
+      "actual": "/u/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2727272727272727,
+      "failureType": "syllable_count_mismatch (expected 11, got 12)"
+    },
+    {
+      "line": "He was my North, my South, my East and West,",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "My working week and my Sunday rest,",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu//u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "My noon, my midnight, my talk, my song;",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/u/u/u/",
+      "actual": "u/u//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "I thought that love would last forever: I was wrong.",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/u/u/u/uu/",
+      "actual": "u/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8181818181818182,
+      "failureType": "syllable_count_mismatch (expected 11, got 12)"
+    },
+    {
+      "line": "The stars are not wanted now; put out every one,",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/u/u/u/u/u/u",
+      "actual": "u/u//uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7692307692307693,
+      "failureType": "syllable_count_mismatch (expected 13, got 12)"
+    },
+    {
+      "line": "Pack up the moon and dismantle the sun,",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Pour away the ocean and sweep up the wood;",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/u/u/uu/",
+      "actual": "/u/u/uu//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2222222222222222,
+      "failureType": "syllable_count_mismatch (expected 9, got 11)"
+    },
+    {
+      "line": "For nothing now can ever come to any good.",
+      "source": "Auden - Funeral Blues",
+      "expected": "u/u/u/u/uu/u/",
+      "actual": "u/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6923076923076923,
+      "failureType": "syllable_count_mismatch (expected 13, got 12)"
+    },
+    {
+      "line": "I sit in one of the dives",
+      "source": "Auden - September 1, 1939",
+      "expected": "u/u/uu/",
+      "actual": "u/u/uu/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "On Fifty-second Street",
+      "source": "Auden - September 1, 1939",
+      "expected": "u/u/u/",
+      "actual": "/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Uncertain and afraid",
+      "source": "Auden - September 1, 1939",
+      "expected": "u/uu/",
+      "actual": "u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 5, got 6)"
+    },
+    {
+      "line": "As the clever hopes expire",
+      "source": "Auden - September 1, 1939",
+      "expected": "uu/u/u/",
+      "actual": "/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8571428571428571,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Of a low dishonest decade:",
+      "source": "Auden - September 1, 1939",
+      "expected": "uu/u/u/u",
+      "actual": "uu/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Waves of anger and fear",
+      "source": "Auden - September 1, 1939",
+      "expected": "/uu/u/",
+      "actual": "/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Circulate over the bright",
+      "source": "Auden - September 1, 1939",
+      "expected": "/u/u/u/",
+      "actual": "/u//uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And darkened lands of the earth,",
+      "source": "Auden - September 1, 1939",
+      "expected": "u/u/uu/",
+      "actual": "u/u/uu/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Obsessing our private lives;",
+      "source": "Auden - September 1, 1939",
+      "expected": "u/uu/u/",
+      "actual": "u/uuu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5714285714285714,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "The unmentionable odour of death",
+      "source": "Auden - September 1, 1939",
+      "expected": "uu/uu/u/",
+      "actual": "uu/uuu/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.625,
+      "failureType": "syllable_count_mismatch (expected 8, got 10)"
+    },
+    {
+      "line": "Offends the September night.",
+      "source": "Auden - September 1, 1939",
+      "expected": "u/u/u/",
+      "actual": "u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "The art of losing isn't hard to master;",
+      "source": "Bishop - One Art",
+      "expected": "u/u/uu/u/u",
+      "actual": "u/u/u/uu/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "so many things seem filled with the intent",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/uu//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "to be lost that their loss is no disaster.",
+      "source": "Bishop - One Art",
+      "expected": "uu/u/u/u/u",
+      "actual": "u//uu/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "Lose something every day. Accept the fluster",
+      "source": "Bishop - One Art",
+      "expected": "/uuu/u/u/u",
+      "actual": "u/u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.1,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "of lost door keys, the hour badly spent.",
+      "source": "Bishop - One Art",
+      "expected": "u//u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2222222222222222,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "The art of losing isn't hard to master.",
+      "source": "Bishop - One Art",
+      "expected": "u/u/uu/u/u",
+      "actual": "u/u/u/uu/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Then practice losing farther, losing faster:",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/u/u/u",
+      "actual": "u/u/u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "places, and names, and where it was you meant",
+      "source": "Bishop - One Art",
+      "expected": "/uu/u/u/u/",
+      "actual": "/uu/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "to travel. None of these will bring disaster.",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/u/u/u",
+      "actual": "u/u/u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I lost my mother's watch. And look! my last, or",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/u/u/u",
+      "actual": "u/u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9090909090909091,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "next-to-last, of three loved houses went.",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3,
+      "failureType": "syllable_count_mismatch (expected 10, got 9)"
+    },
+    {
+      "line": "I lost two cities, lovely ones. And, vaster,",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/uu/u/u",
+      "actual": "u/u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5833333333333334,
+      "failureType": "syllable_count_mismatch (expected 12, got 11)"
+    },
+    {
+      "line": "some realms I owned, two rivers, a continent.",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/uu/u",
+      "actual": "u/u/u/uu/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "I miss them, but it wasn't a disaster.",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/uu/u",
+      "actual": "u/u/u/uu/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "—Even losing you (the joking voice, a gesture",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/u/u/u/u",
+      "actual": "/u/u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 13, got 12)"
+    },
+    {
+      "line": "I love) I shan't have lied. It's evident",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/u/u",
+      "actual": "u/u/u/u/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "the art of losing's not too hard to master",
+      "source": "Bishop - One Art",
+      "expected": "u/u/uu/u/u/u",
+      "actual": "u/u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4166666666666667,
+      "failureType": "syllable_count_mismatch (expected 12, got 11)"
+    },
+    {
+      "line": "though it may look like (Write it!) like disaster.",
+      "source": "Bishop - One Art",
+      "expected": "u/u/u/u/u/u",
+      "actual": "/uu/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8181818181818182,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "Call the roller of big cigars,",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "/u/uu/u/",
+      "actual": "/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The muscular one, and bid him whip",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "u/uuu/u/",
+      "actual": "u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "In kitchen cups concupiscent curds.",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7,
+      "failureType": "syllable_count_mismatch (expected 10, got 9)"
+    },
+    {
+      "line": "Let the wenches dawdle in such dress",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "uu/u/u/u/",
+      "actual": "/u/u/uu//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "As they are used to wear, and let the boys",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Bring flowers in last month's newspapers.",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "/uuu/u/uu",
+      "actual": "u/uu/u//u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Let be be finale of seem.",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "u/u/u/u/",
+      "actual": "/u/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.25,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "The only emperor is the emperor of ice-cream.",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "u/u/uuu/uuu/u",
+      "actual": "u/u/uu/u/uu/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7692307692307693,
+      "failureType": "syllable_count_mismatch (expected 13, got 15)"
+    },
+    {
+      "line": "Take from the dresser of deal,",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "/uu/uu/",
+      "actual": "u/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Lacking the three glass knobs, that sheet",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "u/u/u/u/",
+      "actual": "/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "On which she embroidered fantails once",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "u/uu/u/u/",
+      "actual": "/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And spread it so as to cover her face.",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/uu/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "If her horny feet protrude, they come",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "uu/u/u/u/",
+      "actual": "/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "To show how cold she is, and dumb.",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "u/u/u/u/",
+      "actual": "u/u//uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Let the lamp affix its beam.",
+      "source": "Stevens - Emperor of Ice-Cream",
+      "expected": "uu/u/u/",
+      "actual": "/uu/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.2857142857142857,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "I saw the best minds of my generation destroyed by madness,",
+      "source": "Ginsberg - Howl",
+      "expected": "u/u/uuu/u/u/u/u",
+      "actual": "u/u//uu/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9333333333333333,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "starving hysterical naked,",
+      "source": "Ginsberg - Howl",
+      "expected": "/uu/uu/u",
+      "actual": "/uu/uu/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "dragging themselves through the negro streets at dawn",
+      "source": "Ginsberg - Howl",
+      "expected": "/uu/u/u/u/",
+      "actual": "/uu//u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "looking for an angry fix,",
+      "source": "Ginsberg - Howl",
+      "expected": "/uu/u/",
+      "actual": "/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "angelheaded hipsters burning for the ancient heavenly",
+      "source": "Ginsberg - Howl",
+      "expected": "/u/u/uu/u/u/uu",
+      "actual": "u/uu/u/u/u/u/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2857142857142857,
+      "failureType": "syllable_count_mismatch (expected 14, got 15)"
+    },
+    {
+      "line": "connection to the starry dynamo in the machinery of night,",
+      "source": "Ginsberg - Howl",
+      "expected": "u/u/u/u/uuu/u/uu/",
+      "actual": "u/u/u///u/u/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8823529411764706,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "who poverty and tatters and hollow-eyed and high sat up smoking",
+      "source": "Ginsberg - Howl",
+      "expected": "u/u/uu/uu/uu/u/u",
+      "actual": "u/uuu/uu/uu/u//u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "in the supernatural darkness of cold-water flats",
+      "source": "Ginsberg - Howl",
+      "expected": "uu/u/u/uu/u/",
+      "actual": "uu/u/uu/uu//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 12, got 14)"
+    },
+    {
+      "line": "floating across the tops of cities contemplating jazz,",
+      "source": "Ginsberg - Howl",
+      "expected": "/uu/u/u/uu/u/",
+      "actual": "/uu/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6923076923076923,
+      "failureType": "syllable_count_mismatch (expected 13, got 14)"
+    },
+    {
+      "line": "I ask them to take a poem",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/uu/u/",
+      "actual": "u//u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8571428571428571,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "and hold it up to the light",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u/uu/",
+      "actual": "u/u/uu/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "like a color slide",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "uu/u/",
+      "actual": "/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "or press an ear against its hive.",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I say drop a mouse into a poem",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "and watch him probe his way out,",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u//u/u",
+      "actual": "u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.625,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "or walk inside the poem's room",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u/u/u/",
+      "actual": "/u//u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.625,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "and feel the walls for a light switch.",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u/uu/u",
+      "actual": "u/u//u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "I want them to water-ski",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/uu/u/",
+      "actual": "u//uu/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.42857142857142855,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "across the surface of a poem",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u/uuu/",
+      "actual": "u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.875,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "waving at the author's name on the shore.",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "/uu/u/uu/",
+      "actual": "/u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "But all they want to do",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "is tie the poem to a chair with rope",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "and torture a confession out of it.",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/uu/u/u/",
+      "actual": "u/uu/u/uu",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "They begin beating it with a hose",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u/uu/",
+      "actual": "/u//uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5714285714285714,
+      "failureType": "syllable_count_mismatch (expected 7, got 9)"
+    },
+    {
+      "line": "to find out what it really means.",
+      "source": "Collins - Introduction to Poetry",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Who made the world?",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Who made the swan, and the black bear?",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/uu/u",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.625,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Who made the grasshopper?",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/uu",
+      "actual": "u/u//u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8333333333333334,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "This grasshopper, I mean—",
+      "source": "Oliver - Summer Day",
+      "expected": "u/uu/",
+      "actual": "u//uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 5, got 6)"
+    },
+    {
+      "line": "the one who has flung herself out of the grass,",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u//u//uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "the one who is eating sugar out of my hand,",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/u/u/u/",
+      "actual": "u//u/u/u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2,
+      "failureType": "syllable_count_mismatch (expected 10, got 12)"
+    },
+    {
+      "line": "who is moving her jaws back and forth instead of up and down—",
+      "source": "Oliver - Summer Day",
+      "expected": "u/uu/u/u/u/u/u/",
+      "actual": "/u/u/u/uu//u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "who is gazing around with her enormous and complicated eyes.",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/u/u/u/uu/u/",
+      "actual": "/u/uu/u/u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7333333333333333,
+      "failureType": "syllable_count_mismatch (expected 15, got 17)"
+    },
+    {
+      "line": "Now she lifts her pale forearms and thoroughly washes her face.",
+      "source": "Oliver - Summer Day",
+      "expected": "/u/u/u/uu/uu/",
+      "actual": "u/u//u/u/uu/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.38461538461538464,
+      "failureType": "syllable_count_mismatch (expected 13, got 15)"
+    },
+    {
+      "line": "Now she snaps her wings open, and floats away.",
+      "source": "Oliver - Summer Day",
+      "expected": "/u/u/u/u/u/",
+      "actual": "u/u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.36363636363636365,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "I don't know exactly what a prayer is.",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/u/uu/u",
+      "actual": "u//u/u/u/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "I do know how to pay attention, how to fall down",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/u/u/u/u/",
+      "actual": "u/u/u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "into the grass, how to kneel down in the grass,",
+      "source": "Oliver - Summer Day",
+      "expected": "uu/u/u/uu/",
+      "actual": "/uu//uu/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "how to be idle and blessed, how to stroll through the fields,",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/u/u/u/u/",
+      "actual": "/uu/u/u/u//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "which is what I have been doing all day.",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/u/u/u/",
+      "actual": "/uu/u//uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Tell me, what else should I have done?",
+      "source": "Oliver - Summer Day",
+      "expected": "/u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "Doesn't everything die at last, and too soon?",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/u/uu/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6363636363636364,
+      "failureType": "syllable_count_mismatch (expected 11, got 10)"
+    },
+    {
+      "line": "Tell me, what is it you plan to do",
+      "source": "Oliver - Summer Day",
+      "expected": "/u/u/u/u/",
+      "actual": "/u/uu//u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "with your one wild and precious life?",
+      "source": "Oliver - Summer Day",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "You do not have to be good.",
+      "source": "Oliver - Wild Geese",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.75,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "You do not have to walk on your knees",
+      "source": "Oliver - Wild Geese",
+      "expected": "u/u/u/uu/",
+      "actual": "u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "for a hundred miles through the desert, repenting.",
+      "source": "Oliver - Wild Geese",
+      "expected": "uu/u/u/u/u/u",
+      "actual": "/u/u/u/u/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.75,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "You only have to let the soft animal of your body",
+      "source": "Oliver - Wild Geese",
+      "expected": "u/u/u/u/u/uu/u",
+      "actual": "u/u/u/u//uu/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6428571428571429,
+      "failureType": "syllable_count_mismatch (expected 14, got 15)"
+    },
+    {
+      "line": "love what it loves.",
+      "source": "Oliver - Wild Geese",
+      "expected": "/u/u/",
+      "actual": "/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4,
+      "failureType": "syllable_count_mismatch (expected 5, got 4)"
+    },
+    {
+      "line": "Tell me about despair, yours, and I will tell you mine.",
+      "source": "Oliver - Wild Geese",
+      "expected": "/uu/u/u/u/u/u/",
+      "actual": "u/u/u//u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2857142857142857,
+      "failureType": "syllable_count_mismatch (expected 14, got 13)"
+    },
+    {
+      "line": "Meanwhile the world goes on.",
+      "source": "Oliver - Wild Geese",
+      "expected": "/u/u/u/",
+      "actual": "//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.14285714285714285,
+      "failureType": "syllable_count_mismatch (expected 7, got 6)"
+    },
+    {
+      "line": "Meanwhile the sun and the clear pebbles of the rain",
+      "source": "Oliver - Wild Geese",
+      "expected": "/u/u/uu/u/uu/",
+      "actual": "//u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.46153846153846156,
+      "failureType": "syllable_count_mismatch (expected 13, got 12)"
+    },
+    {
+      "line": "are moving across the landscapes,",
+      "source": "Oliver - Wild Geese",
+      "expected": "u/u/u/u",
+      "actual": "u/uu/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.42857142857142855,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "over the prairies and the deep trees,",
+      "source": "Oliver - Wild Geese",
+      "expected": "/uu/uuu/u",
+      "actual": "/uu/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "the mountains and the rivers.",
+      "source": "Oliver - Wild Geese",
+      "expected": "u/uu/u",
+      "actual": "u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "Meanwhile the wild geese, high in the clean blue air,",
+      "source": "Oliver - Wild Geese",
+      "expected": "/u/u/u/uu/u/",
+      "actual": "//u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.16666666666666666,
+      "failureType": "syllable_count_mismatch (expected 12, got 11)"
+    },
+    {
+      "line": "are heading home again.",
+      "source": "Oliver - Wild Geese",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Whoever you are, no matter how lonely,",
+      "source": "Oliver - Wild Geese",
+      "expected": "/uu/u/u/u",
+      "actual": "u/u/u//uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 11)"
+    },
+    {
+      "line": "the world offers itself to your imagination,",
+      "source": "Oliver - Wild Geese",
+      "expected": "u/u/u/uu/u/u",
+      "actual": "u//uu/uu//u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5833333333333334,
+      "failureType": "syllable_count_mismatch (expected 12, got 13)"
+    },
+    {
+      "line": "calls to you like the wild geese, harsh and exciting—",
+      "source": "Oliver - Wild Geese",
+      "expected": "/u/u/u/u/uu/u",
+      "actual": "/uu/u/u/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.23076923076923078,
+      "failureType": "syllable_count_mismatch (expected 13, got 12)"
+    },
+    {
+      "line": "over and over announcing your place",
+      "source": "Oliver - Wild Geese",
+      "expected": "/uu/uu/u/",
+      "actual": "/uu/uu/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "in the family of things.",
+      "source": "Oliver - Wild Geese",
+      "expected": "uu/uu/",
+      "actual": "uu/uuu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8333333333333334,
+      "failureType": "syllable_count_mismatch (expected 6, got 7)"
+    },
+    {
+      "line": "First having read the book of myths,",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "and loaded the camera,",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/uu/uu",
+      "actual": "u/uu/uu",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "and checked the edge of the knife-blade,",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/uu/u",
+      "actual": "u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.625,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "I put on",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "the body-armor of black rubber",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/uu/u/u",
+      "actual": "uu/uu//u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4,
+      "failureType": "syllable_count_mismatch (expected 10, got 8)"
+    },
+    {
+      "line": "the absurd flippers",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/u",
+      "actual": "uu//u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "the grave and awkward mask.",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I am having to do this",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/u/u",
+      "actual": "/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7142857142857143,
+      "failureType": "syllable_count_mismatch (expected 7, got 8)"
+    },
+    {
+      "line": "not like Cousteau with his",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/u/",
+      "actual": "/u//u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "assiduous team",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/uu/",
+      "actual": "u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 5, got 4)"
+    },
+    {
+      "line": "aboard the sun-flooded schooner",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/uu/u",
+      "actual": "u/uu/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "but here alone.",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/",
+      "actual": "u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "There is a ladder.",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/u",
+      "actual": "/uu/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "The ladder is always there",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/u/u/",
+      "actual": "u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.375,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "hanging innocently",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "/uu/u",
+      "actual": "/u/uuu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 5, got 6)"
+    },
+    {
+      "line": "close to the side of the schooner.",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "/uu/uu/u",
+      "actual": "/uu/uu/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "We know what it is for,",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/u/",
+      "actual": "u//uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "we who have used it.",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/u",
+      "actual": "u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Otherwise",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "/uu/",
+      "actual": "/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "it is a piece of maritime floss,",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 1,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "some sundry equipment.",
+      "source": "Rich - Diving into the Wreck",
+      "expected": "u/u/u/u",
+      "actual": "u/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.42857142857142855,
+      "failureType": "syllable_count_mismatch (expected 7, got 6)"
+    },
+    {
+      "line": "A wind is ruffling the tawny pelt",
+      "source": "Walcott - Far Cry from Africa",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uuu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Of Africa. Kikuyu, quick as flies,",
+      "source": "Walcott - Far Cry from Africa",
+      "expected": "u/uu/uu/u/",
+      "actual": "u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 10, got 9)"
+    },
+    {
+      "line": "Batten upon the bloodstreams of the veldt.",
+      "source": "Walcott - Far Cry from Africa",
+      "expected": "/uu/u/uu/",
+      "actual": "/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7777777777777778,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "Corpses are scattered through a paradise.",
+      "source": "Walcott - Far Cry from Africa",
+      "expected": "/uu/uuu/u/",
+      "actual": "/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "Only the worm, colonel of carrion, cries:",
+      "source": "Walcott - Far Cry from Africa",
+      "expected": "/uu/u/uu/u/",
+      "actual": "/uu//uu/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6363636363636364,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "'Waste no compassion on these separate dead!'",
+      "source": "Walcott - Far Cry from Africa",
+      "expected": "/u/u/uu/u/",
+      "actual": "u/u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "Statistics justify and scholars seize",
+      "source": "Walcott - Far Cry from Africa",
+      "expected": "u/uu/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "The salients of colonial policy.",
+      "source": "Walcott - Far Cry from Africa",
+      "expected": "u/uuu/u/u/",
+      "actual": "u/u/u/uu/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "What is that to the white child hacked in bed?",
+      "source": "Walcott - Far Cry from Africa",
+      "expected": "u/uu/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "To savages, expendable as Jews?",
+      "source": "Walcott - Far Cry from Africa",
+      "expected": "u/uu/uu/",
+      "actual": "u/uuu/uu//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.625,
+      "failureType": "syllable_count_mismatch (expected 8, got 10)"
+    },
+    {
+      "line": "We real cool. We",
+      "source": "Brooks - We Real Cool",
+      "expected": "u/u/u",
+      "actual": "u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8,
+      "failureType": "syllable_count_mismatch (expected 5, got 4)"
+    },
+    {
+      "line": "Left school. We",
+      "source": "Brooks - We Real Cool",
+      "expected": "/u/u",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "Lurk late. We",
+      "source": "Brooks - We Real Cool",
+      "expected": "/u/u",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "Strike straight. We",
+      "source": "Brooks - We Real Cool",
+      "expected": "/u/u",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "Sing sin. We",
+      "source": "Brooks - We Real Cool",
+      "expected": "/u/u",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "Thin gin. We",
+      "source": "Brooks - We Real Cool",
+      "expected": "/u/u",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "Jazz June. We",
+      "source": "Brooks - We Real Cool",
+      "expected": "/u/u",
+      "actual": "u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 4, got 3)"
+    },
+    {
+      "line": "Die soon.",
+      "source": "Brooks - We Real Cool",
+      "expected": "/u",
+      "actual": "u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0,
+      "failureType": "general_stress_error"
+    },
+    {
+      "line": "I have gone out, a possessed witch,",
+      "source": "Sexton - Her Kind",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/uu//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "haunting the black air, braver at night;",
+      "source": "Sexton - Her Kind",
+      "expected": "/uu/u/uu/",
+      "actual": "/uu/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8888888888888888,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "dreaming evil, I have done my hitch",
+      "source": "Sexton - Her Kind",
+      "expected": "/u/uu/u/",
+      "actual": "/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "over the plain houses, light by light:",
+      "source": "Sexton - Her Kind",
+      "expected": "/uu/u/u/",
+      "actual": "/uu//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "lonely thing, twelve-fingered, out of mind.",
+      "source": "Sexton - Her Kind",
+      "expected": "/u//u/u/",
+      "actual": "/u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.625,
+      "failureType": "syllable_count_mismatch (expected 8, got 10)"
+    },
+    {
+      "line": "A woman like that is not a woman, quite.",
+      "source": "Sexton - Her Kind",
+      "expected": "u/u/u/uu/u/",
+      "actual": "u/u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8181818181818182,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "I have been her kind.",
+      "source": "Sexton - Her Kind",
+      "expected": "u/u/u/",
+      "actual": "u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 6, got 5)"
+    },
+    {
+      "line": "I have found the warm caves in the woods,",
+      "source": "Sexton - Her Kind",
+      "expected": "u/u/u/uu/",
+      "actual": "/u/uu/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "filled them with skillets, carvings, shelves,",
+      "source": "Sexton - Her Kind",
+      "expected": "/uu/u/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "closets, silks, innumerable goods;",
+      "source": "Sexton - Her Kind",
+      "expected": "/u/uu/u/",
+      "actual": "/uu//uuu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.375,
+      "failureType": "syllable_count_mismatch (expected 8, got 9)"
+    },
+    {
+      "line": "fixed the suppers for the worms and the elves:",
+      "source": "Sexton - Her Kind",
+      "expected": "/u/uu/uu/",
+      "actual": "/u/u/u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "whining, rearranging the disaligned.",
+      "source": "Sexton - Her Kind",
+      "expected": "/uu/uu/u/",
+      "actual": "/u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "A woman like that is misunderstood.",
+      "source": "Sexton - Her Kind",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/uu/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "She wanted a little room for thinking:",
+      "source": "Dove - Daystar",
+      "expected": "u/uu/u/u/u",
+      "actual": "u/uu/uu//u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "but she saw diapers steaming on the line,",
+      "source": "Dove - Daystar",
+      "expected": "u/u/uu/uu/",
+      "actual": "u/u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8,
+      "failureType": "syllable_count_mismatch (expected 10, got 11)"
+    },
+    {
+      "line": "a doll slumped behind the door.",
+      "source": "Dove - Daystar",
+      "expected": "u/u/u/u/",
+      "actual": "u//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "So she lugged a chair behind the garage",
+      "source": "Dove - Daystar",
+      "expected": "u/u/u/uu/",
+      "actual": "u/uu/u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4444444444444444,
+      "failureType": "syllable_count_mismatch (expected 9, got 10)"
+    },
+    {
+      "line": "to sit out the children's naps.",
+      "source": "Dove - Daystar",
+      "expected": "u/u/u/u/",
+      "actual": "u//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.25,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "Sometimes there were things to watch—",
+      "source": "Dove - Daystar",
+      "expected": "u/u/u/u/",
+      "actual": "u/u//u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5,
+      "failureType": "syllable_count_mismatch (expected 8, got 7)"
+    },
+    {
+      "line": "the pinched armor of a vanished cricket,",
+      "source": "Dove - Daystar",
+      "expected": "u/u/uuu/u/u",
+      "actual": "u//uu//u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2727272727272727,
+      "failureType": "syllable_count_mismatch (expected 11, got 10)"
+    },
+    {
+      "line": "a raft of perch nudging the shore.",
+      "source": "Dove - Daystar",
+      "expected": "u/u/u/u/",
+      "actual": "u/u//uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.75,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "And not once did her mind wander",
+      "source": "Dove - Daystar",
+      "expected": "u/u/u/u/u",
+      "actual": "u/u/u//u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "syllable_count_mismatch (expected 9, got 8)"
+    },
+    {
+      "line": "to what she was doing.",
+      "source": "Dove - Daystar",
+      "expected": "u/u/u/u",
+      "actual": "u/u//u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5714285714285714,
+      "failureType": "syllable_count_mismatch (expected 7, got 6)"
+    },
+    {
+      "line": "She rocked, letting the wind",
+      "source": "Dove - Daystar",
+      "expected": "u/u/u/",
+      "actual": "u//uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666,
+      "failureType": "function_word_stress"
+    },
+    {
+      "line": "lift her hair, watching the clouds.",
+      "source": "Dove - Daystar",
+      "expected": "/u/u/u/",
+      "actual": "u/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.2857142857142857,
+      "failureType": "function_word_stress"
+    }
+  ]
+}

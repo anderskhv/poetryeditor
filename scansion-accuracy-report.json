@@ -1,0 +1,1314 @@
+{
+  "timestamp": "2026-01-18T20:30:02.450Z",
+  "metrics": {
+    "totalLines": 135,
+    "exactMatches": 63,
+    "exactMatchRate": 0.4666666666666667,
+    "syllableCountMatches": 99,
+    "syllableCountMatchRate": 0.7333333333333333,
+    "averagePartialMatch": 0.7943805625504972
+  },
+  "failurePatterns": {
+    "function_word_stress": 13,
+    "general_stress_error": 19,
+    "archaic_word": 3,
+    "syllable_count_mismatch (expected 10, got 9)": 3,
+    "syllable_count_mismatch (expected 10, got 11)": 6,
+    "syllable_count_mismatch (expected 11, got 10)": 2,
+    "syllable_count_mismatch (expected 15, got 16)": 1,
+    "syllable_count_mismatch (expected 14, got 15)": 1,
+    "syllable_count_mismatch (expected 17, got 16)": 1,
+    "syllable_count_mismatch (expected 7, got 8)": 4,
+    "syllable_count_mismatch (expected 8, got 9)": 5,
+    "syllable_count_mismatch (expected 10, got 8)": 1,
+    "syllable_count_mismatch (expected 6, got 7)": 1,
+    "syllable_count_mismatch (expected 5, got 6)": 1,
+    "syllable_count_mismatch (expected 7, got 6)": 1,
+    "syllable_count_mismatch (expected 8, got 7)": 2,
+    "syllable_count_mismatch (expected 6, got 5)": 2,
+    "syllable_count_mismatch (expected 9, got 10)": 5,
+    "heteronym_ambiguity (record)": 1
+  },
+  "bySource": {
+    "Shakespeare Sonnet 18": {
+      "total": 14,
+      "matches": 9
+    },
+    "Shakespeare Sonnet 116": {
+      "total": 13,
+      "matches": 7
+    },
+    "Shakespeare Sonnet 29": {
+      "total": 14,
+      "matches": 7
+    },
+    "Milton Paradise Lost": {
+      "total": 8,
+      "matches": 2
+    },
+    "Poe The Raven": {
+      "total": 8,
+      "matches": 2
+    },
+    "Wordsworth Daffodils": {
+      "total": 8,
+      "matches": 4
+    },
+    "Thomas Villanelle": {
+      "total": 11,
+      "matches": 6
+    },
+    "Keats Nightingale": {
+      "total": 8,
+      "matches": 2
+    },
+    "Frost Roads": {
+      "total": 10,
+      "matches": 3
+    },
+    "Dickinson Death": {
+      "total": 8,
+      "matches": 4
+    },
+    "Tennyson Light Brigade": {
+      "total": 8,
+      "matches": 2
+    },
+    "Browning Duchess": {
+      "total": 8,
+      "matches": 3
+    },
+    "Coleridge Kubla Khan": {
+      "total": 7,
+      "matches": 3
+    },
+    "Single word test": {
+      "total": 9,
+      "matches": 8
+    },
+    "Single word test - verb": {
+      "total": 1,
+      "matches": 1
+    }
+  },
+  "results": [
+    {
+      "line": "Shall I compare thee to a summer's day?",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Thou art more lovely and more temperate:",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/u/uu/u/u",
+      "actual": "u/u/u/u/uu",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6
+    },
+    {
+      "line": "Rough winds do shake the darling buds of May,",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "/uu/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8
+    },
+    {
+      "line": "And summer's lease hath all too short a date:",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Sometime too hot the eye of heaven shines,",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And often is his gold complexion dimmed,",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/uu/u/u/",
+      "actual": "u/uu/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And every fair from fair sometime declines,",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "By chance, or nature's changing course untrimmed:",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "But thy eternal summer shall not fade,",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Nor lose possession of that fair thou ow'st,",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/u/uu/u/",
+      "actual": "u//u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666
+    },
+    {
+      "line": "Nor shall death brag thou wand'rest in his shade,",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u//u/u/u/",
+      "actual": "/u/uu/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.3333333333333333
+    },
+    {
+      "line": "When in eternal lines to time thou grow'st,",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "So long as men can breathe, or eyes can see,",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "So long lives this, and this gives life to thee.",
+      "source": "Shakespeare Sonnet 18",
+      "expected": "u//uu/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8
+    },
+    {
+      "line": "Let me not to the marriage of true minds",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Admit impediments. Love is not love",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/",
+      "actual": "u///u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7
+    },
+    {
+      "line": "Which alters when it alteration finds,",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8
+    },
+    {
+      "line": "Or bends with the remover to remove:",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "O no! it is an ever-fixed mark",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5
+    },
+    {
+      "line": "That looks on tempests and is never shaken;",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/u",
+      "actual": "u/u/u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "It is the star to every wandering bark,",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Love's not Time's fool, though rosy lips and cheeks",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9
+    },
+    {
+      "line": "Within his bending sickle's compass come:",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Love alters not with his brief hours and weeks,",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "/u/u/u/u/u/",
+      "actual": "//u/u/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.2727272727272727
+    },
+    {
+      "line": "But bears it out even to the edge of doom.",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/u",
+      "actual": "u/u//u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.36363636363636365
+    },
+    {
+      "line": "If this be error and upon me proved,",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I never writ, nor no man ever loved.",
+      "source": "Shakespeare Sonnet 116",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "When in disgrace with fortune and men's eyes",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "I all alone beweep my outcast state,",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u//u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8
+    },
+    {
+      "line": "And trouble deaf heaven with my bootless cries,",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "u/u/u/uu/u/",
+      "actual": "u/u//u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7272727272727273
+    },
+    {
+      "line": "And look upon myself, and curse my fate,",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u///u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9
+    },
+    {
+      "line": "Wishing me like to one more rich in hope,",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "/uu/u/u/u/",
+      "actual": "/uu/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Featured like him, like him with friends possessed,",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "/uu/u/u/u/",
+      "actual": "/uu/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Desiring this man's art, and that man's scope,",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/uu/u/uu//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.45454545454545453
+    },
+    {
+      "line": "With what I most enjoy contented least;",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u///u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9
+    },
+    {
+      "line": "Yet in these thoughts my self almost despising,",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "u/u/u/u/u/u",
+      "actual": "/u/u/u//u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.36363636363636365
+    },
+    {
+      "line": "Haply I think on thee, and then my state,",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "/uu/u/u/u/",
+      "actual": "/uu/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Like to the lark at break of day arising",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "/uu/u/u/u/u",
+      "actual": "/uu/u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "From sullen earth, sings hymns at heaven's gate;",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "For thy sweet love remembered such wealth brings",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "u/u/u/uu/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6363636363636364
+    },
+    {
+      "line": "That then I scorn to change my state with kings.",
+      "source": "Shakespeare Sonnet 29",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Of Man's first disobedience, and the fruit",
+      "source": "Milton Paradise Lost",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6363636363636364
+    },
+    {
+      "line": "Of that forbidden tree whose mortal taste",
+      "source": "Milton Paradise Lost",
+      "expected": "u/u/u/u/u/",
+      "actual": "uu/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7
+    },
+    {
+      "line": "Brought death into the World, and all our woe,",
+      "source": "Milton Paradise Lost",
+      "expected": "/u/u/u/u/u/",
+      "actual": "u//uu/u/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.36363636363636365
+    },
+    {
+      "line": "With loss of Eden, till one greater Man",
+      "source": "Milton Paradise Lost",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Restore us, and regain the blissful seat,",
+      "source": "Milton Paradise Lost",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.2727272727272727
+    },
+    {
+      "line": "Sing, Heavenly Muse, that, on the secret top",
+      "source": "Milton Paradise Lost",
+      "expected": "/u/u/u/u/u/",
+      "actual": "u/uu/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7272727272727273
+    },
+    {
+      "line": "Of Oreb, or of Sinai, didst inspire",
+      "source": "Milton Paradise Lost",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u//u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7
+    },
+    {
+      "line": "That shepherd who first taught the chosen seed",
+      "source": "Milton Paradise Lost",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Once upon a midnight dreary, while I pondered, weak and weary,",
+      "source": "Poe The Raven",
+      "expected": "/uu/u/u/uu/u/u/u",
+      "actual": "/u/u///u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.625
+    },
+    {
+      "line": "Over many a quaint and curious volume of forgotten lore—",
+      "source": "Poe The Raven",
+      "expected": "/u/uu/u/u/uu/u/",
+      "actual": "/u/uu/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6875
+    },
+    {
+      "line": "While I nodded, nearly napping, suddenly there came a tapping,",
+      "source": "Poe The Raven",
+      "expected": "/u/u/u/uu/uu/u/u",
+      "actual": "/u/u/u/u/uu//u/u",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8125
+    },
+    {
+      "line": "As of some one gently rapping, rapping at my chamber door.",
+      "source": "Poe The Raven",
+      "expected": "/u/u/u/u/uu/u/",
+      "actual": "/u/u/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666
+    },
+    {
+      "line": "Deep into that darkness peering, long I stood there wondering, fearing,",
+      "source": "Poe The Raven",
+      "expected": "/uu/u/u/u/u/u/u/u",
+      "actual": "u/uu/u/uu/u//u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.29411764705882354
+    },
+    {
+      "line": "Doubting, dreaming dreams no mortal ever dared to dream before;",
+      "source": "Poe The Raven",
+      "expected": "/u/u/u/u/u/u/u/",
+      "actual": "/u/u/u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "But the silence was unbroken, and the stillness gave no token,",
+      "source": "Poe The Raven",
+      "expected": "/u/u/u/u/u/u/u/u",
+      "actual": "/u/u/u/u/u/u/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And the only word there spoken was the whispered word, \"Lenore?\"",
+      "source": "Poe The Raven",
+      "expected": "/u/u/u/u/u/u/u/",
+      "actual": "uu/u/u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9333333333333333
+    },
+    {
+      "line": "I wandered lonely as a cloud",
+      "source": "Wordsworth Daffodils",
+      "expected": "u/u/uu/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.625
+    },
+    {
+      "line": "That floats on high o'er vales and hills,",
+      "source": "Wordsworth Daffodils",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "When all at once I saw a crowd,",
+      "source": "Wordsworth Daffodils",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "A host, of golden daffodils;",
+      "source": "Wordsworth Daffodils",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Beside the lake, beneath the trees,",
+      "source": "Wordsworth Daffodils",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Fluttering and dancing in the breeze.",
+      "source": "Wordsworth Daffodils",
+      "expected": "/uu/uu/u/",
+      "actual": "/uuu/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7777777777777778
+    },
+    {
+      "line": "Continuous as the stars that shine",
+      "source": "Wordsworth Daffodils",
+      "expected": "u/uuu/u/",
+      "actual": "u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4444444444444444
+    },
+    {
+      "line": "And twinkle on the milky way,",
+      "source": "Wordsworth Daffodils",
+      "expected": "u/uu/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.375
+    },
+    {
+      "line": "Do not go gentle into that good night,",
+      "source": "Thomas Villanelle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Old age should burn and rave at close of day;",
+      "source": "Thomas Villanelle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Rage, rage against the dying of the light.",
+      "source": "Thomas Villanelle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9
+    },
+    {
+      "line": "Though wise men at their end know dark is right,",
+      "source": "Thomas Villanelle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Because their words had forked no lightning they",
+      "source": "Thomas Villanelle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Good men, the last wave by, crying how bright",
+      "source": "Thomas Villanelle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u//uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7
+    },
+    {
+      "line": "Their frail deeds might have danced in a green bay,",
+      "source": "Thomas Villanelle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Wild men who caught and sang the sun in flight,",
+      "source": "Thomas Villanelle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9
+    },
+    {
+      "line": "And learn, too late, they grieved it on its way,",
+      "source": "Thomas Villanelle",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Grave men, near death, who see with blinding sight",
+      "source": "Thomas Villanelle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.9
+    },
+    {
+      "line": "Blind eyes could blaze like meteors and be gay,",
+      "source": "Thomas Villanelle",
+      "expected": "//u/u/u/u/",
+      "actual": "u/u/u/uuu//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7272727272727273
+    },
+    {
+      "line": "My heart aches, and a drowsy numbness pains",
+      "source": "Keats Nightingale",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "My sense, as though of hemlock I had drunk,",
+      "source": "Keats Nightingale",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u//uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8
+    },
+    {
+      "line": "Or emptied some dull opiate to the drains",
+      "source": "Keats Nightingale",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u//u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5454545454545454
+    },
+    {
+      "line": "One minute past, and Lethe-wards had sunk:",
+      "source": "Keats Nightingale",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/uu/uu/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7
+    },
+    {
+      "line": "'Tis not through envy of thy happy lot,",
+      "source": "Keats Nightingale",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "But being too happy in thine happiness,—",
+      "source": "Keats Nightingale",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u//uu//uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5454545454545454
+    },
+    {
+      "line": "That thou, light-wingèd Dryad of the trees,",
+      "source": "Keats Nightingale",
+      "expected": "u/u/u/u/u/",
+      "actual": "u//u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4
+    },
+    {
+      "line": "In some melodious plot",
+      "source": "Keats Nightingale",
+      "expected": "u/u/u/",
+      "actual": "u/u/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7142857142857143
+    },
+    {
+      "line": "Two roads diverged in a yellow wood,",
+      "source": "Frost Roads",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And sorry I could not travel both",
+      "source": "Frost Roads",
+      "expected": "u/uu/u/u/",
+      "actual": "u/u/u//u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666
+    },
+    {
+      "line": "And be one traveler, long I stood",
+      "source": "Frost Roads",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And looked down one as far as I could",
+      "source": "Frost Roads",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666
+    },
+    {
+      "line": "To where it bent in the undergrowth;",
+      "source": "Frost Roads",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Then took the other, as just as fair,",
+      "source": "Frost Roads",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u/u//",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666
+    },
+    {
+      "line": "And having perhaps the better claim,",
+      "source": "Frost Roads",
+      "expected": "u/u/uu/u/",
+      "actual": "u/uu/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.7777777777777778
+    },
+    {
+      "line": "Because it was grassy and wanted wear;",
+      "source": "Frost Roads",
+      "expected": "u/u/u/uu/u/",
+      "actual": "u/u//uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.45454545454545453
+    },
+    {
+      "line": "I shall be telling this with a sigh",
+      "source": "Frost Roads",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u//u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8888888888888888
+    },
+    {
+      "line": "Somewhere ages and ages hence:",
+      "source": "Frost Roads",
+      "expected": "u//uu/u/",
+      "actual": "///uu/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.875
+    },
+    {
+      "line": "Because I could not stop for Death –",
+      "source": "Dickinson Death",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "He kindly stopped for me –",
+      "source": "Dickinson Death",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "The Carriage held but just Ourselves –",
+      "source": "Dickinson Death",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.8888888888888888
+    },
+    {
+      "line": "And Immortality.",
+      "source": "Dickinson Death",
+      "expected": "uu/u/",
+      "actual": "u/u/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.16666666666666666
+    },
+    {
+      "line": "We slowly drove – He knew no haste",
+      "source": "Dickinson Death",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "And I had put away",
+      "source": "Dickinson Death",
+      "expected": "u/u/u/",
+      "actual": "u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "My labor and my leisure too,",
+      "source": "Dickinson Death",
+      "expected": "u/uu/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.375
+    },
+    {
+      "line": "For His Civility –",
+      "source": "Dickinson Death",
+      "expected": "u/u/u/",
+      "actual": "u/u/uu",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.8333333333333334
+    },
+    {
+      "line": "Half a league, half a league,",
+      "source": "Tennyson Light Brigade",
+      "expected": "/uu/uu/",
+      "actual": "/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.7142857142857143
+    },
+    {
+      "line": "Half a league onward,",
+      "source": "Tennyson Light Brigade",
+      "expected": "/uu/u",
+      "actual": "/uu/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "All in the valley of Death",
+      "source": "Tennyson Light Brigade",
+      "expected": "/uu/uuu/",
+      "actual": "/uu/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.75
+    },
+    {
+      "line": "Rode the six hundred.",
+      "source": "Tennyson Light Brigade",
+      "expected": "/u/u/u",
+      "actual": "/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333
+    },
+    {
+      "line": "\"Forward, the Light Brigade!\"",
+      "source": "Tennyson Light Brigade",
+      "expected": "/uu/u/",
+      "actual": "/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "\"Charge for the guns!\" he said.",
+      "source": "Tennyson Light Brigade",
+      "expected": "/uu/u/",
+      "actual": "u/u/u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0.6666666666666666
+    },
+    {
+      "line": "Into the valley of Death",
+      "source": "Tennyson Light Brigade",
+      "expected": "/uu/uuu/",
+      "actual": "/uu/uu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.75
+    },
+    {
+      "line": "Rode the six hundred.",
+      "source": "Tennyson Light Brigade",
+      "expected": "/u/u/u",
+      "actual": "/uu/u",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3333333333333333
+    },
+    {
+      "line": "That's my last Duchess painted on the wall,",
+      "source": "Browning Duchess",
+      "expected": "/u//u/uu/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4
+    },
+    {
+      "line": "Looking as if she were alive. I call",
+      "source": "Browning Duchess",
+      "expected": "/uu/u/u/u/",
+      "actual": "/uu/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "That piece a wonder, now; Fra Pandolf's hands",
+      "source": "Browning Duchess",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Worked busily a day, and there she stands.",
+      "source": "Browning Duchess",
+      "expected": "//uu/u/u/",
+      "actual": "u/uuu/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3
+    },
+    {
+      "line": "Will't please you sit and look at her? I said",
+      "source": "Browning Duchess",
+      "expected": "u/u/u/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "\"Fra Pandolf\" by design, for never read",
+      "source": "Browning Duchess",
+      "expected": "u/uu/u/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.3
+    },
+    {
+      "line": "Strangers like you that pictured countenance,",
+      "source": "Browning Duchess",
+      "expected": "/uu/u/u/u",
+      "actual": "/uu/u/u/uu",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.9
+    },
+    {
+      "line": "The depth and passion of its earnest glance,",
+      "source": "Browning Duchess",
+      "expected": "u/u/uu/u/",
+      "actual": "u/u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5
+    },
+    {
+      "line": "In Xanadu did Kubla Khan",
+      "source": "Coleridge Kubla Khan",
+      "expected": "u/uu/u/",
+      "actual": "u/u/u/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.375
+    },
+    {
+      "line": "A stately pleasure-dome decree:",
+      "source": "Coleridge Kubla Khan",
+      "expected": "u/u/u/u/",
+      "actual": "u/uu/uuu/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.4444444444444444
+    },
+    {
+      "line": "Where Alph, the sacred river, ran",
+      "source": "Coleridge Kubla Khan",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "Through caverns measureless to man",
+      "source": "Coleridge Kubla Khan",
+      "expected": "u/u/uuu/",
+      "actual": "u/uu/uu//",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.6666666666666666
+    },
+    {
+      "line": "Down to a sunless sea.",
+      "source": "Coleridge Kubla Khan",
+      "expected": "/uu/u/",
+      "actual": "/uu/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "So twice five miles of fertile ground",
+      "source": "Coleridge Kubla Khan",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/uu/u/",
+      "match": false,
+      "syllableCountMatch": false,
+      "partialMatch": 0.5555555555555556
+    },
+    {
+      "line": "With walls and towers were girdled round:",
+      "source": "Coleridge Kubla Khan",
+      "expected": "u/u/u/u/",
+      "actual": "u/u/u/u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "compare",
+      "source": "Single word test",
+      "expected": "u/",
+      "actual": "u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1,
+      "notes": "verb, 2nd syllable stressed"
+    },
+    {
+      "line": "record",
+      "source": "Single word test",
+      "expected": "/u",
+      "actual": "u/",
+      "match": false,
+      "syllableCountMatch": true,
+      "partialMatch": 0,
+      "notes": "noun form"
+    },
+    {
+      "line": "record",
+      "source": "Single word test - verb",
+      "expected": "u/",
+      "actual": "u/",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1,
+      "notes": "verb form - AMBIGUOUS"
+    },
+    {
+      "line": "beautiful",
+      "source": "Single word test",
+      "expected": "/uu",
+      "actual": "/uu",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "desperately",
+      "source": "Single word test",
+      "expected": "/uuu",
+      "actual": "/uuu",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "remember",
+      "source": "Single word test",
+      "expected": "u/u",
+      "actual": "u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "forever",
+      "source": "Single word test",
+      "expected": "u/u",
+      "actual": "u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "photography",
+      "source": "Single word test",
+      "expected": "u/uu",
+      "actual": "u/uu",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "photographer",
+      "source": "Single word test",
+      "expected": "u/uu",
+      "actual": "u/uu",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    },
+    {
+      "line": "photographic",
+      "source": "Single word test",
+      "expected": "/u/u",
+      "actual": "/u/u",
+      "match": true,
+      "syllableCountMatch": true,
+      "partialMatch": 1
+    }
+  ]
+}
