@@ -1,0 +1,8992 @@
+# Common Cliches, Idioms, and Overused Expressions for Poets to Avoid
+
+This comprehensive list contains 5000+ cliches organized by category. Use this reference to identify and eliminate overused phrases from your poetry.
+
+---
+
+## 1. Weather/Nature Cliches
+
+- raining cats and dogs
+- calm before the storm
+- storm is brewing
+- weather the storm
+- any port in a storm
+- perfect storm
+- storm in a teacup
+- eye of the storm
+- after the storm comes the calm
+- ride out the storm
+- stormy relationship
+- thunderous applause
+- bolt from the blue
+- lightning never strikes twice
+- quick as lightning
+- lightning fast
+- struck by lightning
+- thunder and lightning
+- steal someone's thunder
+- face like thunder
+- ray of sunshine
+- ray of hope
+- sunny disposition
+- sunny side up
+- place in the sun
+- nothing new under the sun
+- sun will come out tomorrow
+- sun-kissed
+- chasing the sun
+- sunset years
+- sunrise of hope
+- basking in the sun
+- sun on my face
+- walking on sunshine
+- cloud nine
+- head in the clouds
+- every cloud has a silver lining
+- silver lining
+- under a cloud
+- cloud of suspicion
+- clouded judgment
+- storm clouds gathering
+- dark clouds on the horizon
+- castles in the clouds
+- cloudy with a chance of
+- rain on my parade
+- right as rain
+- rain or shine
+- come rain or come shine
+- saving for a rainy day
+- rainy day fund
+- when it rains it pours
+- into each life some rain must fall
+- rainbow after the storm
+- chasing rainbows
+- pot of gold at the end of the rainbow
+- somewhere over the rainbow
+- rainbow of colors
+- rainbow of emotions
+- wind of change
+- winds of fate
+- gone with the wind
+- throw caution to the wind
+- wind beneath my wings
+- second wind
+- which way the wind blows
+- straw in the wind
+- wind in my sails
+- twist in the wind
+- ill wind
+- break wind
+- get wind of
+- four winds
+- howling wind
+- whistling wind
+- whisper in the wind
+- like the wind
+- reap the whirlwind
+- breeze through
+- shoot the breeze
+- fresh breeze
+- gentle breeze
+- cooling breeze
+- snow white
+- pure as snow
+- pure as the driven snow
+- snowed under
+- snowball effect
+- snowball's chance in hell
+- snow job
+- let it snow
+- melting like snow
+- first snowfall
+- blanket of snow
+- frozen in place
+- frozen with fear
+- cold as ice
+- break the ice
+- tip of the iceberg
+- skating on thin ice
+- ice in veins
+- ice cold
+- icy stare
+- icy grip
+- cold shoulder
+- left out in the cold
+- cold comfort
+- cold hard truth
+- cold hard cash
+- cold feet
+- stone cold
+- cold-blooded
+- in cold blood
+- catch cold
+- cold snap
+- frost bitten
+- frosty reception
+- Jack Frost
+- foggy memory
+- fog of war
+- in a fog
+- thick as fog
+- foggy notion
+- mist of time
+- misty-eyed
+- lost in the mist
+- hazy memory
+- hazy recollection
+- mountain to climb
+- make a mountain out of a molehill
+- move mountains
+- mountain high
+- peak experience
+- peak performance
+- over the hill
+- hill to die on
+- uphill battle
+- downhill from here
+- over hill and dale
+- valley of death
+- valley of tears
+- peaks and valleys
+- deep as the ocean
+- drop in the ocean
+- ocean of tears
+- sea of troubles
+- lost at sea
+- all at sea
+- plenty of fish in the sea
+- sea change
+- between the devil and the deep blue sea
+- calm seas
+- rough seas
+- smooth sailing
+- sail into the sunset
+- plain sailing
+- ship has sailed
+- river of tears
+- cry me a river
+- sell down the river
+- up the river
+- river runs through it
+- river of life
+- cross that river
+- still waters run deep
+- water under the bridge
+- bridge over troubled water
+- muddy the waters
+- test the waters
+- tread water
+- in deep water
+- in hot water
+- hold water
+- water off a duck's back
+- fish out of water
+- come hell or high water
+- blood is thicker than water
+- dead in the water
+- keep head above water
+- pour cold water on
+- like water off a duck's back
+- waterfall of emotions
+- lake of fire
+- still as a lake
+- pond scum
+- big fish in a small pond
+- stream of consciousness
+- mainstream
+- against the stream
+- down the stream
+- babbling brook
+- forest for the trees
+- can't see the forest for the trees
+- out of the woods
+- neck of the woods
+- babe in the woods
+- deep dark woods
+- lost in the woods
+- knock on wood
+- wooden performance
+- tree of life
+- family tree
+- up a tree
+- bark up the wrong tree
+- apple doesn't fall far from the tree
+- money doesn't grow on trees
+- root of the problem
+- root cause
+- put down roots
+- deep roots
+- grass roots
+- take root
+- root and branch
+- root of all evil
+- branch out
+- olive branch
+- leaf through
+- turn over a new leaf
+- shake like a leaf
+- leaf of faith
+- leaves falling
+- autumn leaves
+- falling leaves
+- seed of doubt
+- plant a seed
+- plant the seeds
+- seeds of destruction
+- go to seed
+- bad seed
+- flower of youth
+- flower power
+- late bloomer
+- bloom where planted
+- in full bloom
+- blooming idiot
+- nip in the bud
+- budding romance
+- budding talent
+- rose by any other name
+- bed of roses
+- coming up roses
+- smell the roses
+- stop and smell the roses
+- rose-colored glasses
+- through rose-tinted glasses
+- sub rosa
+- rose between thorns
+- every rose has its thorn
+- thorn in my side
+- crown of thorns
+- path of thorns
+- thorny issue
+- thorny problem
+- garden variety
+- garden of Eden
+- lead down the garden path
+- everything in the garden is rosy
+- garden of delights
+- cultivate relationships
+- weed out
+- grass is always greener
+- green grass
+- snake in the grass
+- let the grass grow under feet
+- put out to pasture
+- field of dreams
+- playing field
+- level playing field
+- left field
+- out of left field
+- field day
+- fresh as a daisy
+- pushing up daisies
+- daisy chain
+- lily white
+- lily of the valley
+- gilding the lily
+- shrinking violet
+- violet skies
+- wild flower
+- wildflower child
+- wallflower
+- flower child
+- desert flower
+- hothouse flower
+- rock solid
+- solid as a rock
+- rock bottom
+- hit rock bottom
+- between a rock and a hard place
+- steady as a rock
+- on the rocks
+- rock of ages
+- rock and roll
+- bedrock
+- like a rock
+- built on rock
+- sands of time
+- shifting sands
+- head in the sand
+- bury head in sand
+- line in the sand
+- draw a line in the sand
+- sand through fingers
+- built on sand
+- desert island
+- desert wasteland
+- voice in the wilderness
+- wilderness years
+- crying in the wilderness
+- wild wilderness
+- jungle out there
+- concrete jungle
+- jungle law
+- law of the jungle
+- swamp of despair
+- swamped with work
+- drain the swamp
+- marsh lights
+- earthquake of emotions
+- earth shattering
+- down to earth
+- salt of the earth
+- ends of the earth
+- move heaven and earth
+- earth mother
+- scorched earth
+- heaven on earth
+- hell on earth
+- earth angel
+- what on earth
+- four corners of the earth
+- face of the earth
+- dirt cheap
+- dirty secret
+- dirty laundry
+- air dirty laundry
+- dirt poor
+- treat like dirt
+- dig up dirt
+- mud slinging
+- mud in your eye
+- clear as mud
+- stick in the mud
+- name is mud
+- drag through the mud
+- dust in the wind
+- dust to dust
+- ashes to ashes
+- bite the dust
+- gather dust
+- dust off
+- dust settles
+- dusty old
+- volcanic temper
+- eruption of anger
+- lava flow
+- molten passion
+- ash heap of history
+- rise from the ashes
+- phoenix from the ashes
+- cave dweller
+- cave in
+- caveman mentality
+- cliff hanger
+- cliff edge
+- drive off a cliff
+- fiscal cliff
+- edge of the cliff
+- canyon of doubt
+- grand canyon
+- deep canyon
+- ravine of despair
+- gorge on
+- nature calls
+- Mother Nature
+- nature versus nurture
+- back to nature
+- human nature
+- second nature
+- force of nature
+- let nature take its course
+- against nature
+- nature abhors a vacuum
+- natural born
+- natural order
+- natural selection
+- naturally gifted
+- element of surprise
+- in your element
+- out of your element
+- elemental force
+- brave the elements
+- battle the elements
+- exposed to elements
+- dawn of a new day
+- crack of dawn
+- dawn breaks
+- dawn chorus
+- false dawn
+- new dawn
+- darkest before the dawn
+- from dawn to dusk
+- at the crack of dawn
+- dusk till dawn
+- twilight years
+- twilight zone
+- in the twilight
+- twilight of life
+- midday sun
+- high noon
+- midnight hour
+- stroke of midnight
+- midnight oil
+- burn the midnight oil
+- midnight blue
+- witching hour
+- dead of night
+- night owl
+- night and day
+- day and night
+- ships in the night
+- dark night of the soul
+- one night stand
+- night falls
+- nightfall
+- all through the night
+- in the dead of night
+- long dark night
+- endless night
+- starry night
+- moonlit night
+- star-crossed
+- reach for the stars
+- stars in eyes
+- star quality
+- shooting star
+- rising star
+- star is born
+- star power
+- lucky stars
+- thank your lucky stars
+- written in the stars
+- twinkle twinkle
+- starlight
+- stardust
+- stargazing
+- north star
+- guiding star
+- fallen star
+- superstar
+- all-star
+- five-star
+- moon and back
+- over the moon
+- once in a blue moon
+- ask for the moon
+- moon shot
+- moonshine
+- moonlight
+- moonlit
+- moon glow
+- harvest moon
+- full moon
+- new moon
+- lunar eclipse
+- lunatic fringe
+- sun and moon
+- eclipse of the heart
+- total eclipse
+- heavenly body
+- heavenly bliss
+- heaven sent
+- heaven knows
+- seventh heaven
+- match made in heaven
+- heaven forbid
+- for heaven's sake
+- heavens above
+- manna from heaven
+- stairway to heaven
+- pennies from heaven
+- heaven help us
+- sky is the limit
+- sky high
+- pie in the sky
+- blue sky thinking
+- clear blue sky
+- out of a clear blue sky
+- sky is falling
+- reach for the sky
+- open skies
+- endless sky
+- vast sky
+- azure sky
+- leaden sky
+- grey skies
+- horizon of hope
+- on the horizon
+- beyond the horizon
+- broaden horizons
+- new horizons
+- distant horizon
+- cosmic proportions
+- universe conspires
+- center of the universe
+- universal truth
+- world at your feet
+- world on shoulders
+- weight of the world
+- world of difference
+- world apart
+- world away
+- out of this world
+- end of the world
+- brave new world
+- new world order
+- world is your oyster
+- world class
+- world weary
+- world of hurt
+- world of pain
+- planetary alignment
+- planet earth
+- what planet
+- globe trotting
+- global village
+- atmosphere of fear
+- charged atmosphere
+- electric atmosphere
+- gravity of situation
+- gravitational pull
+- grounded in reality
+- orbit around
+- in orbit
+- space cadet
+- outer space
+- inner space
+- space between
+- give space
+- need space
+
+---
+
+## 2. Love/Romance Cliches
+
+- heart of gold
+- love at first sight
+- love is blind
+- all is fair in love and war
+- love conquers all
+- love makes the world go round
+- love of my life
+- love sick
+- puppy love
+- true love
+- first love
+- last love
+- endless love
+- eternal love
+- undying love
+- unconditional love
+- forbidden love
+- star-crossed lovers
+- love triangle
+- love story
+- love letter
+- love song
+- love nest
+- love affair
+- love child
+- love handles
+- love hurts
+- love bites
+- labor of love
+- tough love
+- free love
+- love lost
+- love found
+- love unrequited
+- love returned
+- love denied
+- love accepted
+- love rejected
+- for the love of
+- no love lost
+- love me tender
+- love me true
+- love struck
+- love drunk
+- madly in love
+- deeply in love
+- hopelessly in love
+- head over heels
+- head over heels in love
+- fall in love
+- falling for you
+- fell hard
+- swept off feet
+- sweep me off my feet
+- take my breath away
+- breathless with love
+- butterflies in stomach
+- weak in the knees
+- knees go weak
+- heart skips a beat
+- heart flutters
+- heart races
+- heart pounds
+- heart sings
+- heart soars
+- makes my heart sing
+- heart melts
+- melt my heart
+- warm my heart
+- heartwarming
+- heart strings
+- tug at heartstrings
+- pull at heartstrings
+- heartfelt
+- from the heart
+- straight from the heart
+- heart to heart
+- heart and soul
+- pour out heart
+- open heart
+- wear heart on sleeve
+- give your heart
+- steal your heart
+- capture your heart
+- win your heart
+- lose your heart
+- heart belongs to
+- key to my heart
+- unlock my heart
+- heart of hearts
+- deep in my heart
+- close to my heart
+- near and dear to heart
+- after my own heart
+- heart's desire
+- young at heart
+- heart of stone
+- cold heart
+- warm heart
+- pure heart
+- kind heart
+- gentle heart
+- brave heart
+- wild heart
+- restless heart
+- hungry heart
+- lonely heart
+- lonely hearts club
+- aching heart
+- heavy heart
+- light heart
+- broken heart
+- heart broken
+- heartbreak
+- heartache
+- wounded heart
+- scarred heart
+- bleeding heart
+- shattered heart
+- crushed heart
+- torn heart
+- empty heart
+- hollow heart
+- mend a broken heart
+- heal a broken heart
+- time heals all wounds
+- wounds of love
+- scars of love
+- soul mate
+- soulmate
+- other half
+- better half
+- my other half
+- you complete me
+- two halves of a whole
+- made for each other
+- meant to be
+- destined to be together
+- written in the stars
+- match made in heaven
+- heaven sent
+- gift from above
+- angel from above
+- my angel
+- angel face
+- angel eyes
+- cupid's arrow
+- struck by cupid
+- lovey dovey
+- turtle doves
+- love birds
+- lovebirds
+- kiss and make up
+- kiss and tell
+- stolen kiss
+- first kiss
+- last kiss
+- goodbye kiss
+- kiss of death
+- kiss of life
+- sealed with a kiss
+- blow a kiss
+- butterfly kisses
+- lips like wine
+- lips like honey
+- lips like roses
+- cherry lips
+- ruby lips
+- tender kiss
+- passionate kiss
+- gentle kiss
+- soft kiss
+- deep kiss
+- warm embrace
+- tight embrace
+- loving embrace
+- tender embrace
+- passionate embrace
+- wrapped in your arms
+- arms around you
+- hold me close
+- hold me tight
+- never let go
+- holding on
+- hands intertwined
+- fingers intertwined
+- holding hands
+- hand in hand
+- gentle touch
+- tender touch
+- soft touch
+- loving touch
+- tender caress
+- eye contact
+- eyes meet
+- our eyes met
+- across a crowded room
+- locked eyes
+- gaze into eyes
+- look into my eyes
+- drown in your eyes
+- lost in your eyes
+- eyes speak volumes
+- window to the soul
+- twinkle in eye
+- sparkle in eye
+- stars in eyes
+- fire in eyes
+- passion in eyes
+- desire in eyes
+- longing in eyes
+- love in your eyes
+- adoring eyes
+- loving gaze
+- stolen glances
+- furtive glances
+- meaningful looks
+- knowing look
+- bedroom eyes
+- smoldering gaze
+- intense gaze
+- burning desire
+- burning passion
+- burning love
+- flames of passion
+- flames of desire
+- flames of love
+- fire of love
+- passion ignited
+- spark of love
+- spark between us
+- sparks fly
+- chemistry between us
+- magnetic attraction
+- drawn to you
+- drawn together
+- irresistible attraction
+- fatal attraction
+- physical attraction
+- instant attraction
+- mutual attraction
+- enchanted by you
+- bewitched by you
+- spellbound
+- under your spell
+- magic between us
+- magical connection
+- magical moment
+- love is in the air
+- romance in the air
+- electricity in the air
+- electric connection
+- intoxicated by you
+- drunk on love
+- addicted to you
+- addicted to love
+- can't get enough
+- crave you
+- hunger for you
+- yearning for you
+- longing for you
+- aching for you
+- pining for you
+- missing you
+- counting the days
+- every moment
+- cherish every moment
+- precious moments
+- stolen moments
+- time stands still
+- time stops
+- forever and a day
+- forever and always
+- forever yours
+- yours forever
+- always and forever
+- till the end of time
+- timeless love
+- eternal flame
+- never ending love
+- everlasting love
+- love never dies
+- love lives on
+- together forever
+- always together
+- never apart
+- inseparable
+- can't live without you
+- nothing without you
+- everything to me
+- you mean everything
+- my everything
+- my world
+- you are my world
+- center of my universe
+- light of my life
+- sunshine of my life
+- apple of my eye
+- one and only
+- only one for me
+- eyes only for you
+- faithful and true
+- devoted to you
+- committed to you
+- promise to love
+- vow to love
+- till death do us part
+- in sickness and health
+- for better or worse
+- through thick and thin
+- stand by you
+- by your side
+- never leave your side
+- side by side
+- walk beside you
+- journey together
+- grow old together
+- spend my life
+- rest of my life
+- sunset years together
+- golden years together
+- home is where the heart is
+- two hearts beat as one
+- hearts entwined
+- souls connected
+- soul connection
+- deep connection
+- kindred spirits
+- kindred souls
+- twin flame
+- twin soul
+- missing piece
+- puzzle piece
+- perfect fit
+- belong together
+- belong to each other
+- found the one
+- the one
+- one true love
+- love of a lifetime
+- once in a lifetime love
+- nothing compares to you
+- beyond compare
+- one of a kind
+- irreplaceable
+- love endures
+- love survives
+- love prevails
+- love wins
+- power of love
+- strength of love
+- all you need is love
+- need your love
+- need you
+- want you
+- desire you
+- adore you
+- worship you
+- cherish you
+- treasure you
+- blessed to have you
+- lucky to have you
+- gift of love
+- romantic gesture
+- grand gesture
+- wine and dine
+- candlelit dinner
+- roses and champagne
+- dozen roses
+- red roses
+- rose petals
+- bed of roses
+- moonlit walk
+- walk on the beach
+- sunset walk
+- serenade
+- dance with you
+- dance the night away
+- last dance
+- first dance
+- slow dance
+- music of love
+- love song
+- our song
+- song in my heart
+- melody of love
+- symphony of love
+- poem for you
+- love poem
+- words of love
+- sweet nothings
+- whisper sweet nothings
+- tender words
+- loving words
+- words can't express
+- beyond words
+- speechless
+- at a loss for words
+- prince charming
+- knight in shining armor
+- white knight
+- fairy tale romance
+- fairy tale ending
+- happily ever after
+- once upon a time
+- dream come true
+- dreams do come true
+- pinch me I'm dreaming
+- walking on air
+- floating on air
+- on cloud nine
+- over the moon
+- top of the world
+- walking on clouds
+- seventh heaven
+- blissfully happy
+- happy as can be
+- couldn't be happier
+- never been happier
+- happiest day
+- best day of my life
+- moment I've been waiting for
+- waited my whole life
+- love at last
+- finally found love
+- search is over
+- found what I was looking for
+- looking for love
+- searching for love
+- quest for love
+- love will find a way
+- love finds a way
+- where there's love
+- power of true love
+- true love conquers all
+- love overcomes
+- love heals
+- love mends
+- love transforms
+- changed by love
+- better person because of you
+- you make me better
+- bring out the best
+- complete each other
+- perfect for each other
+- perfect match
+- perfect pair
+- perfect couple
+- couple goals
+- relationship goals
+- love goals
+- meant for each other
+- fated to be
+- destiny calling
+- stars aligned
+- planets aligned
+- cosmic connection
+- universe brought us together
+- serendipity
+- fate intervened
+- twist of fate
+- lucky in love
+- fortune smiled
+- blessed in love
+- gift of your love
+- treasure your love
+- hold onto love
+- never let love go
+- fight for love
+- love worth fighting for
+- stand up for love
+- believe in love
+- faith in love
+- hope for love
+- dream of love
+- vision of love
+- promise of love
+- vow of love
+- declaration of love
+- profession of love
+- expression of love
+- testament of love
+- proof of love
+- token of love
+- symbol of love
+- sign of love
+- gesture of love
+- act of love
+- deed of love
+- sacrifice for love
+- die for love
+- kill for love
+- live for love
+- breathe for love
+- exist for love
+- born for love
+- made for love
+- created for love
+- destined for love
+- fated for love
+- meant for love
+- built for love
+- designed for love
+- programmed for love
+
+---
+
+## 3. Time Cliches
+
+- time flies
+- time flies when you're having fun
+- in the nick of time
+- just in time
+- time is of the essence
+- time is money
+- time waits for no one
+- time waits for no man
+- time heals all wounds
+- only time will tell
+- test of time
+- stand the test of time
+- withstand the test of time
+- against time
+- race against time
+- running out of time
+- out of time
+- borrowed time
+- living on borrowed time
+- killing time
+- time to kill
+- pass the time
+- time passed
+- time goes by
+- as time goes by
+- time marches on
+- march of time
+- sands of time
+- hands of time
+- turn back the hands of time
+- turn back time
+- if I could turn back time
+- winds of time
+- ravages of time
+- toll of time
+- passage of time
+- passing of time
+- river of time
+- flow of time
+- stream of time
+- current of time
+- tide of time
+- wheel of time
+- cycle of time
+- circle of time
+- end of time
+- beginning of time
+- since the beginning of time
+- dawn of time
+- since the dawn of time
+- until the end of time
+- from time immemorial
+- time immemorial
+- lost in time
+- frozen in time
+- stuck in time
+- trapped in time
+- suspended in time
+- caught in time
+- moment in time
+- point in time
+- at this point in time
+- snapshot in time
+- slice of time
+- window of time
+- pocket of time
+- bubble of time
+- warp of time
+- time warp
+- rift in time
+- fabric of time
+- tapestry of time
+- threads of time
+- weave of time
+- matter of time
+- only a matter of time
+- question of time
+- just a question of time
+- all in good time
+- in due time
+- in due course
+- when the time is right
+- right time
+- wrong time
+- bad timing
+- good timing
+- perfect timing
+- timing is everything
+- ahead of time
+- behind the times
+- sign of the times
+- signs of the times
+- changing times
+- times are changing
+- times have changed
+- different times
+- hard times
+- tough times
+- trying times
+- troubled times
+- turbulent times
+- uncertain times
+- challenging times
+- difficult times
+- dark times
+- better times
+- good times
+- happy times
+- simpler times
+- olden times
+- golden times
+- glory days
+- good old days
+- days of yore
+- days gone by
+- bygone days
+- bygone era
+- bygone age
+- distant past
+- dim and distant past
+- mists of time
+- lost to time
+- erased by time
+- washed away by time
+- swept away by time
+- carried away by time
+- time ran out
+- time's up
+- time has come
+- time has arrived
+- time is now
+- now is the time
+- no time like the present
+- present moment
+- living in the moment
+- live in the moment
+- seize the moment
+- moment of truth
+- defining moment
+- pivotal moment
+- crucial moment
+- critical moment
+- decisive moment
+- turning point
+- watershed moment
+- tipping point
+- crossroads of time
+- at the crossroads
+- fork in the road
+- fork in time
+- once in a lifetime
+- once in a blue moon
+- once upon a time
+- one time only
+- first time
+- last time
+- final time
+- one more time
+- time and again
+- time after time
+- again and again
+- over and over
+- day after day
+- day in day out
+- day by day
+- minute by minute
+- hour by hour
+- moment by moment
+- second by second
+- tick tock
+- clock is ticking
+- ticking clock
+- ticking time bomb
+- against the clock
+- around the clock
+- clock watching
+- watching the clock
+- beat the clock
+- race the clock
+- clock struck
+- when the clock strikes
+- stroke of midnight
+- eleventh hour
+- at the eleventh hour
+- last minute
+- at the last minute
+- last second
+- split second
+- in a split second
+- fraction of a second
+- blink of an eye
+- in the blink of an eye
+- twinkle of an eye
+- heartbeat
+- in a heartbeat
+- flash
+- in a flash
+- instant
+- in an instant
+- moment
+- in a moment
+- jiffy
+- in a jiffy
+- no time at all
+- before you know it
+- quick as a wink
+- fast as lightning
+- speed of light
+- warp speed
+- at breakneck speed
+- full speed ahead
+- time stood still
+- time stopped
+- time froze
+- time seemed to stop
+- freeze frame
+- slow motion
+- in slow motion
+- time slowed down
+- time sped up
+- time accelerated
+- time compressed
+- time expanded
+- time stretched
+- time dragged
+- time crawled
+- time crept
+- drag on
+- dragging on forever
+- feels like forever
+- taking forever
+- forever and a day
+- eternity
+- felt like an eternity
+- seemed like an eternity
+- ages
+- felt like ages
+- for ages
+- eons
+- for eons
+- centuries
+- for centuries
+- millennia
+- for millennia
+- generations
+- for generations
+- lifetimes
+- for lifetimes
+- years
+- for years
+- months
+- for months
+- weeks
+- for weeks
+- days
+- for days
+- hours
+- for hours
+- minutes
+- for minutes
+- countdown
+- counting down
+- count the days
+- counting the days
+- counting the hours
+- counting the minutes
+- counting the seconds
+- mark the days
+- marking time
+- biding time
+- bide your time
+- wait and see
+- wait for the right moment
+- waiting game
+- play the waiting game
+- patience is a virtue
+- good things come to those who wait
+- all good things come
+- worth the wait
+- long wait
+- endless wait
+- interminable wait
+- anticipation
+- eager anticipation
+- great anticipation
+- in anticipation
+- looking forward
+- look forward to
+- can't wait
+- countdown begins
+- clock starts now
+- starting now
+- from this moment
+- from this day forward
+- from now on
+- henceforth
+- going forward
+- moving forward
+- from here on out
+- rest of our lives
+- rest of my life
+- rest of your life
+- remaining days
+- remaining time
+- what's left
+- time remaining
+- time left
+- little time left
+- not much time left
+- precious time
+- valuable time
+- limited time
+- finite time
+- unlimited time
+- infinite time
+- boundless time
+- endless time
+- timeless
+- eternal
+- everlasting
+- perpetual
+- permanent
+- temporary
+- fleeting
+- ephemeral
+- transient
+- momentary
+- brief
+- short-lived
+- passing
+- fading
+- vanishing
+- disappearing
+- slipping away
+- time slipping away
+- time running out
+- time is short
+- short on time
+- pressed for time
+- crunch time
+- deadline
+- against a deadline
+- meet the deadline
+- miss the deadline
+- deadline looms
+- deadline approaches
+- deadline pressure
+- under pressure
+- time pressure
+- time constraint
+- time limit
+- time frame
+- time span
+- time period
+- time zone
+- lost time
+- make up for lost time
+- wasted time
+- waste of time
+- no time to waste
+- don't waste time
+- time well spent
+- quality time
+- spare time
+- free time
+- leisure time
+- down time
+- me time
+- family time
+- face time
+- one on one time
+- alone time
+- together time
+- prime time
+- peak time
+- off peak
+- rush hour
+- happy hour
+- golden hour
+- magic hour
+- witching hour
+- darkest hour
+- finest hour
+- zero hour
+- hour of need
+- time of need
+- in times of trouble
+- troubled times ahead
+- dark days ahead
+- brighter days ahead
+- better days to come
+- future beckons
+- future awaits
+- future holds
+- what the future holds
+- uncertain future
+- bright future
+- promising future
+- bleak future
+- future generations
+- generations to come
+- years to come
+- time to come
+- time ahead
+- road ahead
+- path ahead
+- journey ahead
+- looking ahead
+- look to the future
+- eye on the future
+- future is now
+- future is bright
+- future is written
+- write the future
+- shape the future
+- future in our hands
+- hold the future
+- key to the future
+- door to the future
+- window to the future
+- glimpse of the future
+- taste of the future
+- preview of the future
+- foreshadow
+- foreshadowing
+- harbinger
+- omen
+- sign of things to come
+- things to come
+- what's to come
+- come what may
+- whatever comes
+- whatever the future brings
+- bring the future
+- future proof
+- ahead of its time
+- before its time
+- man ahead of his time
+- woman ahead of her time
+- born before their time
+- born too late
+- born too soon
+- wrong era
+- right era
+- sign of the era
+- end of an era
+- new era
+- dawn of a new era
+- beginning of a new era
+- ushering in a new era
+- new chapter
+- turn the page
+- new page
+- blank page
+- fresh start
+- new beginning
+- new start
+- clean slate
+- wipe the slate clean
+- start fresh
+- start over
+- start anew
+- begin again
+- second chance
+- another chance
+- one more chance
+- last chance
+- final chance
+- no more chances
+- out of chances
+- missed chance
+- missed opportunity
+- opportunity knocks
+- window of opportunity
+- opportunity of a lifetime
+- once in a lifetime opportunity
+- golden opportunity
+- rare opportunity
+- seize the opportunity
+- seize the day
+- carpe diem
+- make the most of
+- make hay while the sun shines
+- strike while the iron is hot
+- now or never
+- do or die
+- moment of decision
+- decision time
+- judgment day
+- day of reckoning
+- D-day
+- zero day
+- day one
+- from day one
+- since day one
+- first day
+- last day
+- final day
+- big day
+- the day
+- one day
+- someday
+- some day
+- one fine day
+- another day
+- live to fight another day
+- tomorrow is another day
+- tomorrow never comes
+- tomorrow never knows
+- see you tomorrow
+- until tomorrow
+- today is the day
+- today's the day
+- this is the day
+- day has come
+- day has arrived
+- break of day
+- end of day
+- at the end of the day
+- day is done
+- call it a day
+- day is young
+- in broad daylight
+- see the light of day
+- night and day
+- day and night
+- night turns to day
+- day turns to night
+- morning comes
+- morning breaks
+- morning dawns
+- early morning
+- late morning
+- high noon
+- afternoon delight
+- late afternoon
+- early evening
+- late evening
+- dead of night
+- middle of the night
+- late at night
+- early hours
+- small hours
+- wee hours
+- wee small hours
+- crack of dawn
+- break of dawn
+- first light
+- last light
+- fading light
+- dying light
+- twilight
+- dusk
+- nightfall
+- sundown
+- sunset
+- sunrise
+- daybreak
+
+---
+
+## 4. Death/Darkness Cliches
+
+- deathly silence
+- the grim reaper
+- grim reaper
+- death's door
+- at death's door
+- knock on death's door
+- death knell
+- death sentence
+- death warrant
+- signed death warrant
+- death wish
+- death trap
+- death blow
+- dealt the death blow
+- death rattle
+- death bed
+- on my deathbed
+- deathbed confession
+- death march
+- death spiral
+- kiss of death
+- angel of death
+- dance with death
+- cheating death
+- cheat death
+- defy death
+- face death
+- facing death
+- stare death in the face
+- meet your maker
+- meeting your maker
+- shuffle off this mortal coil
+- mortal coil
+- crossing over
+- cross over
+- passed away
+- passed on
+- passing away
+- passing on
+- departed this life
+- departed soul
+- departed loved one
+- gone to a better place
+- better place
+- in a better place
+- rest in peace
+- eternal rest
+- final rest
+- final sleep
+- big sleep
+- the big sleep
+- gone to sleep
+- laid to rest
+- put to rest
+- six feet under
+- pushing up daisies
+- bought the farm
+- kicked the bucket
+- bite the dust
+- gave up the ghost
+- give up the ghost
+- breathed last breath
+- last breath
+- final breath
+- dying breath
+- with dying breath
+- drew last breath
+- death throes
+- throes of death
+- moment of death
+- hour of death
+- time of death
+- brink of death
+- edge of death
+- jaws of death
+- clutches of death
+- grip of death
+- embrace of death
+- cold embrace of death
+- icy grip of death
+- shadow of death
+- valley of the shadow of death
+- walk through the valley
+- specter of death
+- spectre of death
+- haunted by death
+- death haunts
+- death follows
+- death stalks
+- death lurks
+- death waits
+- death comes
+- when death comes
+- death comes knocking
+- knock of death
+- call of death
+- death calls
+- death beckons
+- death summons
+- death takes
+- death claims
+- claimed by death
+- taken by death
+- stolen by death
+- snatched by death
+- death snatches
+- untimely death
+- premature death
+- early grave
+- to the grave
+- from the grave
+- beyond the grave
+- grave danger
+- grave situation
+- one foot in the grave
+- dig your own grave
+- turn in grave
+- spinning in grave
+- grave mistake
+- graveyard shift
+- whistling past the graveyard
+- dead and buried
+- dead and gone
+- dead to the world
+- dead to me
+- dead as a doornail
+- dead as a dodo
+- dead end
+- dead of night
+- dead of winter
+- dead silence
+- dead stop
+- dead weight
+- dead wrong
+- dead tired
+- dead last
+- dead heat
+- dead center
+- dead on
+- dead ringer
+- dead set
+- dead serious
+- deadly serious
+- deadly silence
+- deadly force
+- deadly weapon
+- deadly sin
+- deadly combination
+- deadly accurate
+- deadly embrace
+- deadly dance
+- deadly game
+- deadly trap
+- lethal dose
+- lethal injection
+- lethal force
+- lethal combination
+- lethal weapon
+- fatal blow
+- fatal flaw
+- fatal mistake
+- fatal error
+- fatal attraction
+- fatally wounded
+- fatality
+- mortality
+- mortal wound
+- mortal enemy
+- mortal sin
+- mortal danger
+- mortal fear
+- immortal soul
+- life after death
+- near death experience
+- brush with death
+- close call with death
+- narrowly escaped death
+- escaped death
+- death defying
+- death sentence
+- condemned to death
+- sentenced to death
+- executed
+- execution
+- gallows
+- hanging
+- electric chair
+- lethal injection
+- firing squad
+- burial
+- funeral
+- wake
+- mourning
+- grief
+- grieving
+- bereaved
+- bereavement
+- loss
+- profound loss
+- devastating loss
+- irreplaceable loss
+- gone forever
+- lost forever
+- never coming back
+- never return
+- no return
+- point of no return
+- final journey
+- last journey
+- final voyage
+- crossing the river
+- river Styx
+- ferryman
+- Charon
+- underworld
+- afterlife
+- the other side
+- other side
+- beyond the veil
+- veil between worlds
+- thin veil
+- lifted veil
+- spirit world
+- spirit realm
+- realm of the dead
+- land of the dead
+- kingdom of the dead
+- world of the dead
+- among the dead
+- walking dead
+- living dead
+- undead
+- risen from the dead
+- back from the dead
+- return from the dead
+- ghost
+- ghostly
+- ghostly presence
+- ghostly figure
+- spectral
+- spectral figure
+- apparition
+- phantom
+- phantasm
+- wraith
+- specter
+- spectre
+- haunting
+- haunted
+- haunted house
+- haunted by the past
+- haunted by memories
+- haunted by ghosts
+- ghosts of the past
+- skeleton in the closet
+- skeletons in closet
+- buried secrets
+- secrets of the dead
+- tomb
+- crypt
+- mausoleum
+- cemetery
+- graveyard
+- burial ground
+- sacred ground
+- hallowed ground
+- unhallowed ground
+- consecrated ground
+- final resting place
+- resting place
+- place of rest
+- eternal home
+- heavenly home
+- gates of heaven
+- pearly gates
+- stairway to heaven
+- highway to hell
+- gates of hell
+- hell's gates
+- hellfire
+- hellbound
+- hell to pay
+- hell on earth
+- living hell
+- through hell
+- been through hell
+- hell and back
+- been to hell and back
+- what the hell
+- hell of a
+- one hell of a
+- all hell broke loose
+- hell freezes over
+- when hell freezes over
+- snowball's chance in hell
+- bat out of hell
+- raise hell
+- hell raiser
+- hell bent
+- hell to pay
+- catch hell
+- give hell
+- go to hell
+- rot in hell
+- damn
+- damned
+- damnation
+- eternal damnation
+- condemned
+- condemned soul
+- lost soul
+- tortured soul
+- soul in torment
+- tormented spirit
+- restless spirit
+- wandering spirit
+- wandering soul
+- purgatory
+- limbo
+- in limbo
+- abyss
+- stare into the abyss
+- abyss stares back
+- bottomless pit
+- pit of despair
+- depths of despair
+- darkness
+- the darkness
+- into the darkness
+- out of the darkness
+- heart of darkness
+- prince of darkness
+- powers of darkness
+- forces of darkness
+- dark forces
+- dark side
+- the dark side
+- embrace the dark side
+- dark lord
+- dark figure
+- dark shadow
+- dark presence
+- dark energy
+- dark matter
+- dark thoughts
+- dark mood
+- dark place
+- in a dark place
+- dark times
+- dark days
+- dark night
+- dark night of the soul
+- darkest hour
+- darkest before the dawn
+- darkest moment
+- darkest depths
+- pitch black
+- pitch dark
+- black as night
+- black as pitch
+- black as coal
+- black as ink
+- blackness
+- inky blackness
+- total darkness
+- complete darkness
+- utter darkness
+- consumed by darkness
+- shrouded in darkness
+- cloaked in darkness
+- veiled in darkness
+- engulfed by darkness
+- swallowed by darkness
+- lost in darkness
+- wandering in darkness
+- stumbling in darkness
+- groping in darkness
+- blinded by darkness
+- darkness falls
+- darkness descends
+- darkness closes in
+- darkness surrounds
+- darkness envelops
+- darkness consumes
+- overcome by darkness
+- fight the darkness
+- battle the darkness
+- against the darkness
+- hold back the darkness
+- keep the darkness at bay
+- light in the darkness
+- beacon in the darkness
+- candle in the darkness
+- spark in the darkness
+- glimmer in the darkness
+- ray of light in darkness
+- hope in darkness
+- emerge from darkness
+- rise from darkness
+- escape the darkness
+- flee the darkness
+- banish the darkness
+- dispel the darkness
+- drive away the darkness
+- shadows
+- in the shadows
+- lurking in shadows
+- hiding in shadows
+- shadow of doubt
+- shadow of fear
+- shadow of death
+- cast a shadow
+- long shadow
+- dark shadow
+- looming shadow
+- ominous shadow
+- menacing shadow
+- shadow falls
+- shadow passes
+- shadow lingers
+- shadowy figure
+- shadowy presence
+- shadowy form
+- shadowy depths
+- shadow self
+- shadow side
+- eclipse
+- eclipsed
+- total eclipse
+- eclipse of the heart
+- blotted out
+- snuffed out
+- extinguished
+- flame extinguished
+- light extinguished
+- candle snuffed
+- blown out
+- faded away
+- faded into darkness
+- faded to black
+- fade to black
+- blackout
+- lights out
+- curtain falls
+- final curtain
+- end of the line
+- end of the road
+- end of days
+- end times
+- apocalypse
+- apocalyptic
+- armageddon
+- doomsday
+- day of doom
+- doom and gloom
+- gloom and doom
+- harbinger of doom
+- sense of doom
+- feeling of doom
+- impending doom
+- looming doom
+- inevitable doom
+- sealed doom
+- doomed
+- doomed from the start
+- doomed to fail
+- doomed to die
+- cursed
+- curse
+- cursed from birth
+- under a curse
+- family curse
+- generational curse
+- lift the curse
+- break the curse
+- hex
+- jinx
+- bad luck
+- ill fortune
+- misfortune
+- calamity
+- catastrophe
+- disaster
+- tragedy
+- tragic end
+- tragic fate
+- tragic death
+- cruel fate
+- fate worse than death
+- meet your fate
+- seal your fate
+- sealed fate
+- accept your fate
+- fight your fate
+- tempt fate
+- fate tempted
+- twist of fate
+- hand of fate
+- finger of fate
+- victim of fate
+- at the mercy of fate
+- fated to die
+- destined to die
+- marked for death
+- death mark
+- omen of death
+- portent of doom
+- sign of death
+- harbinger of death
+- writing on the wall
+- toll of the bell
+- bell tolls
+- for whom the bell tolls
+- funeral bell
+- death knell
+- mournful sound
+- keening
+- wailing
+- lament
+- lamentation
+- dirge
+- requiem
+- eulogy
+- elegy
+- memorial
+- tribute
+- remembrance
+- in memoriam
+- never forget
+- never forgotten
+- always remembered
+- remembered forever
+- memory lives on
+- legacy lives on
+- spirit lives on
+- gone but not forgotten
+- ashes to ashes
+- dust to dust
+- from dust to dust
+- return to dust
+- return to the earth
+- one with the earth
+- one with nature
+- cycle of life
+- circle of life
+- wheel of life
+- birth and death
+- life and death
+- matter of life and death
+- life or death
+- life and death struggle
+- fight for life
+- cling to life
+- hold onto life
+- grasp at life
+- spark of life
+- breath of life
+- flame of life
+- candle of life
+- light of life
+- thread of life
+- web of life
+- tapestry of life
+- book of life
+- end of life
+- twilight of life
+- autumn of life
+- winter of life
+- final chapter
+- closing chapter
+- last chapter
+- final act
+- last act
+- final scene
+- final moments
+- final hours
+- final days
+- final words
+- last words
+- dying words
+- parting words
+- farewell
+- final farewell
+- last goodbye
+- goodbye forever
+- eternal goodbye
+- never say goodbye
+
+---
+
+## 5. Body/Physical Cliches
+
+- cold feet
+- butterflies in stomach
+- butterflies in my stomach
+- weak in the knees
+- knees go weak
+- knees buckle
+- weak at the knees
+- wobbly knees
+- shaking knees
+- knocking knees
+- knee deep
+- knee jerk reaction
+- brought to my knees
+- on bended knee
+- bend the knee
+- take a knee
+- head over heels
+- heels over head
+- dig in heels
+- drag feet
+- dragging feet
+- feet of clay
+- get feet wet
+- sweep off feet
+- swept off feet
+- land on feet
+- feet on the ground
+- both feet on the ground
+- one foot in the grave
+- foot in the door
+- get your foot in the door
+- put your foot down
+- put foot in mouth
+- foot in mouth disease
+- shoot yourself in the foot
+- wrong foot
+- start on the wrong foot
+- best foot forward
+- cold shoulder
+- shoulder to cry on
+- chip on shoulder
+- weight on shoulders
+- world on shoulders
+- carry on shoulders
+- shoulder the burden
+- broad shoulders
+- rub shoulders with
+- look over shoulder
+- head on shoulders
+- good head on shoulders
+- level headed
+- hot headed
+- hard headed
+- big headed
+- empty headed
+- clear headed
+- cool headed
+- wrong headed
+- pig headed
+- bull headed
+- light headed
+- soft headed
+- head in the clouds
+- head over heels
+- head first
+- head to toe
+- from head to toe
+- head start
+- get ahead
+- head and shoulders above
+- keep your head
+- lose your head
+- head on a platter
+- head on the block
+- hang your head
+- hold your head high
+- keep head above water
+- over your head
+- in over your head
+- go over your head
+- hit the nail on the head
+- head of the class
+- head of the pack
+- rear its ugly head
+- scratch your head
+- head scratcher
+- wrap your head around
+- get it through your head
+- two heads are better than one
+- put heads together
+- butt heads
+- heads will roll
+- off the top of my head
+- head case
+- head games
+- head trip
+- brain storm
+- brain wave
+- brain child
+- brain dead
+- brain drain
+- brain freeze
+- brain fart
+- brain power
+- pick your brain
+- rack your brain
+- on the brain
+- no brainer
+- brainless
+- brains and brawn
+- brains over brawn
+- use your brain
+- all brawn no brain
+- face the music
+- face to face
+- face value
+- face the facts
+- face it
+- face up to
+- face down
+- in your face
+- egg on your face
+- slap in the face
+- blow up in your face
+- until blue in the face
+- straight face
+- poker face
+- game face
+- put on a brave face
+- save face
+- lose face
+- show your face
+- two faced
+- about face
+- face lift
+- face time
+- face off
+- face plant
+- written all over your face
+- plain as the nose on your face
+- nose to the grindstone
+- follow your nose
+- under your nose
+- right under your nose
+- on the nose
+- nose in the air
+- nose out of joint
+- brown nose
+- hard nosed
+- nosy
+- poke your nose in
+- stick your nose in
+- keep your nose clean
+- nose dive
+- nose bleed
+- pay through the nose
+- cut off nose to spite face
+- lead by the nose
+- look down your nose
+- turn up your nose
+- by a nose
+- eye to eye
+- see eye to eye
+- eye for an eye
+- eagle eye
+- evil eye
+- give the eye
+- keep an eye on
+- keep your eye on the ball
+- eye of the storm
+- eye of the beholder
+- in the eye of the beholder
+- beauty is in the eye
+- apple of my eye
+- turn a blind eye
+- eye opener
+- eye catching
+- eye candy
+- eye popping
+- eyes wide open
+- eyes wide shut
+- close your eyes
+- open your eyes
+- feast your eyes
+- all eyes on
+- before your eyes
+- right before your eyes
+- in front of your eyes
+- under your eyes
+- easy on the eyes
+- hard on the eyes
+- stars in eyes
+- fire in eyes
+- light in eyes
+- twinkle in eye
+- gleam in eye
+- tear in eye
+- dry eyes
+- wet eyes
+- moist eyes
+- red eyes
+- bloodshot eyes
+- tired eyes
+- sleepy eyes
+- bedroom eyes
+- doe eyes
+- puppy dog eyes
+- snake eyes
+- cat eyes
+- hawk eyes
+- eagle eyes
+- sharp eyes
+- keen eyes
+- watchful eyes
+- prying eyes
+- wandering eyes
+- roving eyes
+- piercing eyes
+- penetrating eyes
+- cold eyes
+- warm eyes
+- kind eyes
+- sad eyes
+- happy eyes
+- laughing eyes
+- crying eyes
+- vacant eyes
+- dead eyes
+- glassy eyes
+- wild eyes
+- crazy eyes
+- shifty eyes
+- beady eyes
+- steely eyes
+- eyes of steel
+- only have eyes for
+- couldn't take eyes off
+- caught my eye
+- eye contact
+- avoid eye contact
+- make eye contact
+- meet your eyes
+- lock eyes
+- bat an eye
+- blink of an eye
+- in the blink of an eye
+- not bat an eye
+- ear to the ground
+- all ears
+- lend an ear
+- play it by ear
+- fall on deaf ears
+- turn a deaf ear
+- in one ear out the other
+- ear full
+- wet behind the ears
+- up to your ears
+- music to my ears
+- ring in my ears
+- ears are burning
+- bend someone's ear
+- have the ear of
+- ear worm
+- pin back your ears
+- prick up your ears
+- mouth watering
+- mouth to mouth
+- bad mouth
+- big mouth
+- loud mouth
+- shut your mouth
+- open mouth insert foot
+- word of mouth
+- by word of mouth
+- from the horse's mouth
+- straight from the horse's mouth
+- down in the mouth
+- mouth off
+- mouth piece
+- foam at the mouth
+- melt in your mouth
+- leave a bad taste in mouth
+- bitter taste in mouth
+- sweet taste
+- taste of victory
+- taste of defeat
+- tongue tied
+- tongue in cheek
+- bite your tongue
+- hold your tongue
+- slip of the tongue
+- on the tip of my tongue
+- silver tongue
+- sharp tongue
+- loose tongue
+- mother tongue
+- tongue lashing
+- tongue twister
+- cat got your tongue
+- wag your tongue
+- speak with forked tongue
+- lip service
+- bite your lip
+- stiff upper lip
+- read my lips
+- loose lips
+- loose lips sink ships
+- zip your lip
+- button your lip
+- lick your lips
+- lips are sealed
+- my lips are sealed
+- on everyone's lips
+- from your lips
+- pursed lips
+- thin lipped
+- tight lipped
+- fat lip
+- tooth and nail
+- fight tooth and nail
+- sweet tooth
+- long in the tooth
+- by the skin of your teeth
+- sink your teeth into
+- cut your teeth
+- bare your teeth
+- grit your teeth
+- gnash your teeth
+- pull teeth
+- like pulling teeth
+- armed to the teeth
+- set your teeth on edge
+- skin of your teeth
+- cheek by jowl
+- cheek to cheek
+- turn the other cheek
+- tongue in cheek
+- cheeky
+- chin up
+- keep your chin up
+- take it on the chin
+- lead with your chin
+- neck and neck
+- neck of the woods
+- pain in the neck
+- stick your neck out
+- break neck speed
+- up to your neck
+- neck deep
+- breathing down your neck
+- wring your neck
+- save your neck
+- risk your neck
+- throat cut
+- cut throat
+- jump down your throat
+- lump in throat
+- frog in throat
+- clear your throat
+- at each other's throats
+- grab by the throat
+- shove down your throat
+- ram down your throat
+- stick in your throat
+- bare your soul
+- heart and soul
+- soul searching
+- soul stirring
+- soul crushing
+- soul mate
+- old soul
+- lost soul
+- kindred spirit
+- free spirit
+- broken spirit
+- fighting spirit
+- team spirit
+- spirit of the law
+- in good spirits
+- in high spirits
+- in low spirits
+- lift your spirits
+- dampen your spirits
+- spine tingling
+- spineless
+- send shivers down spine
+- chill down spine
+- shiver down spine
+- backbone
+- no backbone
+- show some backbone
+- put your back into it
+- back to back
+- back and forth
+- back to the wall
+- behind your back
+- stab in the back
+- back stabber
+- back stabbing
+- watch your back
+- got your back
+- have your back
+- turn your back
+- get off my back
+- on your back
+- flat on your back
+- back against the wall
+- back breaking
+- break your back
+- bend over backwards
+- pat on the back
+- monkey on your back
+- weight off your back
+- back seat driver
+- back burner
+- back handed
+- back pedal
+- back track
+- back slide
+- back fire
+- chest out
+- get off your chest
+- close to the chest
+- play close to the chest
+- cards close to chest
+- bare your chest
+- chest pounding
+- beat your chest
+- puffed up chest
+- rib tickler
+- tickle your ribs
+- elbow grease
+- elbow room
+- rub elbows
+- sharp elbows
+- tennis elbow
+- more power to your elbow
+- arm and a leg
+- cost an arm and a leg
+- arm in arm
+- arm's length
+- keep at arm's length
+- arm's reach
+- within arm's reach
+- shot in the arm
+- twist your arm
+- arm twisting
+- strong arm
+- long arm of the law
+- with open arms
+- welcome with open arms
+- up in arms
+- bear arms
+- take up arms
+- call to arms
+- arms race
+- in the arms of
+- fold your arms
+- cross your arms
+- throw your arms around
+- chance your arm
+- hand in hand
+- hand over fist
+- hand to mouth
+- live hand to mouth
+- hand to hand
+- hand to hand combat
+- hands on
+- hands off
+- hands down
+- hands up
+- hands tied
+- on hand
+- at hand
+- close at hand
+- out of hand
+- get out of hand
+- upper hand
+- gain the upper hand
+- have the upper hand
+- helping hand
+- lend a hand
+- give a hand
+- heavy hand
+- heavy handed
+- light touch
+- firm hand
+- steady hand
+- sure hand
+- shaky hand
+- sweaty palms
+- greasy palm
+- palm off
+- palm reading
+- in the palm of your hand
+- eat out of the palm
+- have them eating out of your palm
+- itchy palm
+- finger on the pulse
+- finger pointing
+- point the finger
+- finger in every pie
+- sticky fingers
+- butterfingers
+- slip through fingers
+- sand through fingers
+- cross your fingers
+- keep your fingers crossed
+- fingers crossed
+- finger tips
+- at your fingertips
+- wrap around your finger
+- wrapped around finger
+- twist around finger
+- put your finger on
+- can't put my finger on
+- lay a finger on
+- lift a finger
+- not lift a finger
+- snap of fingers
+- snap your fingers
+- give the finger
+- green thumb
+- rule of thumb
+- thumb your nose
+- thumbs up
+- thumbs down
+- under the thumb
+- all thumbs
+- stick out like sore thumb
+- twiddle your thumbs
+- thumb through
+- hitchhiker's thumb
+- fist bump
+- iron fist
+- rule with iron fist
+- fist full
+- tight fisted
+- make a fist
+- clench your fist
+- shake your fist
+- pound your fist
+- belly laugh
+- belly up
+- go belly up
+- fire in the belly
+- belly of the beast
+- beer belly
+- belly ache
+- belly button
+- belly flop
+- navel gazing
+- gut feeling
+- gut reaction
+- gut instinct
+- go with your gut
+- trust your gut
+- gut wrenching
+- gut punch
+- punch to the gut
+- spill your guts
+- hate your guts
+- no guts no glory
+- blood and guts
+- bust a gut
+- gut check
+- hip hop
+- joined at the hip
+- shoot from the hip
+- hip to
+- hip deep
+- thigh high
+- leg up
+- give a leg up
+- get a leg up
+- leg to stand on
+- don't have a leg to stand on
+- last leg
+- on your last legs
+- stretch your legs
+- shake a leg
+- break a leg
+- pull your leg
+- leg work
+- leg room
+- leg it
+- show some leg
+- bone of contention
+- bone to pick
+- have a bone to pick
+- bare bones
+- skin and bones
+- bone dry
+- bone tired
+- bone chilling
+- cut to the bone
+- feel it in my bones
+- in your bones
+- make no bones about
+- throw a bone
+- work your fingers to the bone
+- bone head
+- lazy bones
+- funny bone
+- flesh and blood
+- in the flesh
+- pound of flesh
+- flesh wound
+- make your flesh crawl
+- flesh out
+- put flesh on
+- press the flesh
+- flesh eating
+- blood is thicker than water
+- blood on your hands
+- blood sweat and tears
+- blood boiling
+- makes my blood boil
+- blood runs cold
+- in cold blood
+- blood curdling
+- new blood
+- fresh blood
+- young blood
+- old blood
+- blue blood
+- bad blood
+- blood bath
+- blood money
+- blood lust
+- blood brothers
+- blood sisters
+- blood line
+- blood ties
+- blood relation
+- flesh and blood
+- blood and guts
+- blood red
+- blood stained
+- out for blood
+- smell blood
+- draw blood
+- first blood
+- blood letting
+- blood sport
+- blood feud
+- bloody murder
+- scream bloody murder
+- skin deep
+- beauty is only skin deep
+- thick skinned
+- thin skinned
+- get under your skin
+- makes my skin crawl
+- skin in the game
+- no skin off my nose
+- skin alive
+- save your skin
+- by the skin of your teeth
+- jump out of your skin
+- skin and bones
+- skeleton crew
+- skeleton in the closet
+- nervous system
+- bundle of nerves
+- get on your nerves
+- nerve wracking
+- nerve racking
+- hit a nerve
+- touch a nerve
+- strike a nerve
+- raw nerve
+- lot of nerve
+- nerve of steel
+- nerves of steel
+- steady nerves
+- jangled nerves
+- shot nerves
+- frayed nerves
+- calm your nerves
+- steel your nerves
+- lose your nerve
+- work up the nerve
+- muscle in
+- flex your muscles
+- muscle memory
+- muscle bound
+- muscle through
+- not move a muscle
+- pull a muscle
+- brain and muscle
+- mental muscle
+- political muscle
+- financial muscle
+- vein of gold
+- in that vein
+- along those veins
+- varicose veins
+- jugular vein
+- go for the jugular
+- pulse racing
+- pulse pounding
+- feel the pulse
+- finger on the pulse
+- keep your finger on the pulse
+- check the pulse
+- quickening pulse
+
+---
+
+## 6. Animal Cliches
+
+- busy as a bee
+- bee in your bonnet
+- bee's knees
+- make a beeline
+- birds and the bees
+- queen bee
+- worker bee
+- hive mind
+- swarm around
+- honey trap
+- sweet as honey
+- land of milk and honey
+- honeymoon phase
+- honeymoon period
+- ants in your pants
+- antsy
+- ant hill
+- strong as an ant
+- wolf in sheep's clothing
+- cry wolf
+- lone wolf
+- wolf at the door
+- keep the wolf from the door
+- wolf pack
+- wolf down
+- throw to the wolves
+- wolf whistle
+- raised by wolves
+- hungry like the wolf
+- wolfing down
+- fox in the henhouse
+- sly as a fox
+- outfox
+- crazy like a fox
+- fox hunt
+- silver fox
+- foxy
+- foxy lady
+- dog eat dog
+- dog days
+- dog tired
+- every dog has its day
+- let sleeping dogs lie
+- you can't teach an old dog new tricks
+- hair of the dog
+- in the doghouse
+- go to the dogs
+- dog and pony show
+- dog's life
+- dog's breakfast
+- sick as a dog
+- call off the dogs
+- raining cats and dogs
+- work like a dog
+- top dog
+- underdog
+- lucky dog
+- hot dog
+- puppy love
+- puppy dog eyes
+- follow like a puppy
+- eager puppy
+- barking up the wrong tree
+- bark is worse than bite
+- all bark no bite
+- let the dogs out
+- tail wagging the dog
+- throw a dog a bone
+- dogged determination
+- dog eared
+- shaggy dog story
+- man's best friend
+- cat got your tongue
+- cat's meow
+- cat's pajamas
+- curiosity killed the cat
+- scaredy cat
+- fraidy cat
+- cool cat
+- fat cat
+- alley cat
+- copycat
+- catnap
+- cat nap
+- let the cat out of the bag
+- not enough room to swing a cat
+- like herding cats
+- cat and mouse
+- play cat and mouse
+- when the cat's away
+- cat on a hot tin roof
+- land on your feet like a cat
+- nine lives
+- have nine lives
+- cat fight
+- catty
+- kitty corner
+- sex kitten
+- kitten heels
+- weak as a kitten
+- lion's share
+- lion's den
+- into the lion's den
+- lion hearted
+- brave as a lion
+- roar like a lion
+- king of the jungle
+- lionize
+- fight like a lion
+- fierce as a lion
+- proud as a lion
+- march like a lion
+- mane attraction
+- tiger by the tail
+- paper tiger
+- eye of the tiger
+- tiger mom
+- tiger stripes
+- easy tiger
+- fierce as a tiger
+- leopard can't change its spots
+- spotted like a leopard
+- panther like grace
+- stealthy as a panther
+- black panther
+- cheetah fast
+- fast as a cheetah
+- bear with me
+- bear hug
+- bear market
+- bear the burden
+- cross to bear
+- loaded for bear
+- hungry as a bear
+- bear down
+- bear fruit
+- grin and bear it
+- bare necessities
+- teddy bear
+- mama bear
+- papa bear
+- bear trap
+- poke the bear
+- don't poke the bear
+- like a bear with a sore head
+- monkey see monkey do
+- monkey business
+- monkey on your back
+- monkey around
+- more fun than a barrel of monkeys
+- grease monkey
+- monkey wrench
+- throw a monkey wrench
+- make a monkey out of
+- monkey suit
+- going ape
+- go ape
+- ape crazy
+- gorilla warfare
+- guerrilla tactics
+- 800 pound gorilla
+- elephant in the room
+- white elephant
+- elephant memory
+- memory of an elephant
+- pink elephants
+- see pink elephants
+- elephant ears
+- elephant graveyard
+- horse sense
+- horse around
+- horse of a different color
+- dark horse
+- high horse
+- get off your high horse
+- hold your horses
+- horse play
+- horse trading
+- straight from the horse's mouth
+- beat a dead horse
+- flogging a dead horse
+- don't look a gift horse in the mouth
+- one horse town
+- horse power
+- horse race
+- horse and buggy
+- horse laugh
+- wild horses
+- wild horses couldn't drag me
+- put the cart before the horse
+- work horse
+- war horse
+- trojan horse
+- hungry horse
+- back the wrong horse
+- change horses midstream
+- don't change horses in midstream
+- charley horse
+- horse feathers
+- donkey work
+- stubborn as a mule
+- kick like a mule
+- mule headed
+- jackass
+- bull in a china shop
+- bull market
+- bull headed
+- bull by the horns
+- take the bull by the horns
+- bull session
+- bull pen
+- shoot the bull
+- like a red rag to a bull
+- bull's eye
+- hit the bull's eye
+- cock and bull story
+- load of bull
+- bull doze
+- pit bull
+- strong as an ox
+- ox in the ditch
+- dumb as an ox
+- sacred cow
+- cash cow
+- until the cows come home
+- cow eyes
+- holy cow
+- have a cow
+- don't have a cow
+- cow tipping
+- mad cow
+- fat cow
+- cow pie
+- buffalo soldier
+- buffalo wings
+- water buffalo
+- pig out
+- pig headed
+- pig in a poke
+- when pigs fly
+- sweat like a pig
+- pig pen
+- pig sty
+- make a pig of yourself
+- guinea pig
+- fat pig
+- pig latin
+- piggy back
+- piggy bank
+- three little pigs
+- hog wild
+- go hog wild
+- hog the spotlight
+- road hog
+- whole hog
+- go whole hog
+- high on the hog
+- hog heaven
+- hog wash
+- hog tied
+- sheep in wolf's clothing
+- black sheep
+- black sheep of the family
+- count sheep
+- lost sheep
+- separate the sheep from the goats
+- like sheep to slaughter
+- follow like sheep
+- sheepish
+- wolf in sheep's clothing
+- lamb to the slaughter
+- gentle as a lamb
+- meek as a lamb
+- spring lamb
+- sacrificial lamb
+- lamb chops
+- mutton dressed as lamb
+- get your goat
+- old goat
+- scapegoat
+- billy goat
+- kid around
+- chickens come home to roost
+- chicken out
+- spring chicken
+- no spring chicken
+- chicken feed
+- chicken scratch
+- chicken little
+- sky is falling
+- running around like a chicken with its head cut off
+- mother hen
+- hen pecked
+- hen party
+- hen house
+- rule the roost
+- rooster crow
+- cock of the walk
+- cocky
+- cock sure
+- crow about
+- eat crow
+- as the crow flies
+- crow's feet
+- crow's nest
+- something to crow about
+- duck out
+- sitting duck
+- lame duck
+- duck and cover
+- get your ducks in a row
+- like water off a duck's back
+- ugly duckling
+- duck soup
+- lucky duck
+- dead duck
+- duck test
+- goose is cooked
+- your goose is cooked
+- wild goose chase
+- goose egg
+- goose bumps
+- goose pimples
+- silly goose
+- mother goose
+- kill the goose that laid the golden egg
+- golden goose
+- what's good for the goose
+- turkey
+- cold turkey
+- talk turkey
+- turkey trot
+- jive turkey
+- gobble up
+- peacock proud
+- proud as a peacock
+- peacock strutting
+- swan song
+- swan dive
+- ugly duckling to swan
+- black swan
+- swan lake
+- graceful as a swan
+- bird brain
+- bird's eye view
+- free as a bird
+- bird in the hand
+- bird in hand worth two in bush
+- birds of a feather
+- birds of a feather flock together
+- early bird
+- early bird gets the worm
+- night owl
+- wise as an owl
+- owl eyes
+- hoot owl
+- eagle eye
+- eagle eyed
+- spread your wings
+- eagle scout
+- bald eagle
+- legal eagle
+- soar like an eagle
+- hawk eyed
+- watch like a hawk
+- war hawk
+- hawk and dove
+- dove of peace
+- gentle as a dove
+- turtle dove
+- lovey dovey
+- stool pigeon
+- pigeon hole
+- pigeon toed
+- clay pigeon
+- carrier pigeon
+- home to roost
+- parrot fashion
+- sick as a parrot
+- dead parrot
+- poll parrot
+- pretty polly
+- raven haired
+- raven black
+- ravening wolves
+- ravenous
+- like a raven
+- magpie tendency
+- chatter like a magpie
+- robin hood
+- robin's egg blue
+- round robin
+- sparrow fart
+- sing like a canary
+- canary in a coal mine
+- cat ate the canary
+- look like the cat that ate the canary
+- hummingbird heart
+- flutter like a hummingbird
+- busy as a hummingbird
+- fish out of water
+- big fish
+- big fish in a small pond
+- small fish in a big pond
+- other fish to fry
+- bigger fish to fry
+- plenty of fish in the sea
+- like a fish
+- drink like a fish
+- cold fish
+- fish story
+- fish tale
+- fishy
+- sounds fishy
+- something's fishy
+- smell fishy
+- fish for compliments
+- fishing expedition
+- fishing for answers
+- red herring
+- packed like sardines
+- sardine can
+- shark attack
+- loan shark
+- shark infested
+- card shark
+- pool shark
+- jump the shark
+- shark tank
+- whale of a time
+- whale watching
+- beached whale
+- whale song
+- dolphin dive
+- dolphin safe
+- smart as a dolphin
+- eel like
+- slippery as an eel
+- electric eel
+- snake in the grass
+- snake charmer
+- snake eyes
+- snake oil
+- snake oil salesman
+- snake pit
+- snake bite
+- two headed snake
+- speak with forked tongue
+- hiss like a snake
+- slithering snake
+- den of vipers
+- viper's nest
+- pit viper
+- venomous
+- crocodile tears
+- see you later alligator
+- alligator arms
+- alligator mouth
+- gator bait
+- snapping turtle
+- turtle pace
+- slow as a turtle
+- come out of your shell
+- shell shocked
+- tortoise and hare
+- slow and steady wins the race
+- frog in my throat
+- leap frog
+- frog prince
+- boiling frog
+- frog march
+- big frog in a small pond
+- toad stool
+- ugly as a toad
+- warts and all
+- horny toad
+- rat race
+- smell a rat
+- like rats leaving a sinking ship
+- pack rat
+- rat on
+- rat fink
+- rat hole
+- rat's nest
+- lab rat
+- gym rat
+- mall rat
+- dirty rat
+- rattled
+- ratted out
+- mouse trap
+- quiet as a mouse
+- mouse around
+- play cat and mouse
+- church mouse
+- poor as a church mouse
+- are you a man or a mouse
+- squirrel away
+- squirrelly
+- nutty as a squirrel
+- go squirrely
+- busy as a squirrel
+- rabbit hole
+- down the rabbit hole
+- breed like rabbits
+- quick like a bunny
+- bunny hop
+- dust bunny
+- funny bunny
+- happy as a rabbit
+- scared rabbit
+- white rabbit
+- weasel out
+- weasel words
+- pop goes the weasel
+- weaselly
+- ferret out
+- badger
+- badgering
+- don't badger me
+- as fierce as a badger
+- wolverine
+- skunk at a garden party
+- drunk as a skunk
+- stink like a skunk
+- skunked
+- raccoon eyes
+- beaver away
+- eager beaver
+- busy beaver
+- dam builder
+- otter pop
+- sea otter
+- playful as an otter
+- otter nonsense
+- porcupine personality
+- hedgehog
+- spiny
+- bat out of hell
+- blind as a bat
+- bat crazy
+- bats in the belfry
+- batty
+- old bat
+- go to bat for
+- right off the bat
+- bat an eye
+- bat around
+- bug eyed
+- bug out
+- bug off
+- snug as a bug
+- snug as a bug in a rug
+- put a bug in your ear
+- bitten by the bug
+- love bug
+- bug bite
+- bug bear
+- don't bug me
+- debug
+- fly on the wall
+- fly in the ointment
+- fly by night
+- fly off the handle
+- on the fly
+- fly by the seat of your pants
+- wouldn't hurt a fly
+- like flies to honey
+- drop like flies
+- fly trap
+- bar fly
+- time flies
+- fly high
+- spider web
+- tangled web
+- caught in a web
+- web of lies
+- web of deceit
+- spin a web
+- spider sense
+- worm your way
+- can of worms
+- open a can of worms
+- worm hole
+- book worm
+- early bird gets the worm
+- glow worm
+- worm food
+- worm's eye view
+- snail's pace
+- slow as a snail
+- snail mail
+- snail trail
+- slug it out
+- sluggish
+- slug fest
+- slug bug
+- leech
+- leeching
+- blood sucker
+- parasite
+- mosquito bite
+- mosquito net
+- buzz kill
+- buzz around
+- buzz off
+- buzz word
+- create a buzz
+- butterfly effect
+- social butterfly
+- butterflies in stomach
+- butterfly kisses
+- spread your wings like a butterfly
+- float like a butterfly
+- moth to a flame
+- like a moth to flame
+- moth eaten
+- moth ball
+- cricket
+- crickets
+- hear crickets
+- not cricket
+- grasshopper
+- knee high to a grasshopper
+- ant farm
+- fire ant
+- ant colony
+- army of ants
+- dragonfly
+- firefly
+- lightning bug
+- bee sting
+- hornet's nest
+- stir up a hornet's nest
+- mad as a hornet
+- wasp waist
+- wasp nest
+- caterpillar
+- inch worm
+- cocoon
+- emerge from cocoon
+- chrysalis
+
+---
+
+## 7. Color Cliches
+
+- green with envy
+- feeling blue
+- tickled pink
+- in the pink
+- pretty in pink
+- pink slip
+- pink elephant
+- see pink elephants
+- pink cloud
+- pink cheeks
+- rose-colored glasses
+- rose tinted
+- through rose-tinted glasses
+- red hot
+- red handed
+- caught red handed
+- red in the face
+- red flag
+- raise a red flag
+- red alert
+- code red
+- red carpet
+- roll out the red carpet
+- red tape
+- red letter day
+- paint the town red
+- see red
+- seeing red
+- red faced
+- red eye
+- red herring
+- in the red
+- red ink
+- red light
+- red light district
+- thin red line
+- red blooded
+- red cent
+- red as a beet
+- red as a tomato
+- blood red
+- ruby red
+- cherry red
+- crimson tide
+- scarlet letter
+- orange you glad
+- orange crush
+- agent orange
+- apples and oranges
+- compare apples to oranges
+- yellow bellied
+- yellow streak
+- yellow journalism
+- yellow brick road
+- mellow yellow
+- golden opportunity
+- golden age
+- golden years
+- golden rule
+- golden child
+- golden boy
+- golden girl
+- golden goose
+- golden egg
+- kill the golden goose
+- golden ticket
+- golden touch
+- Midas touch
+- heart of gold
+- good as gold
+- gold standard
+- gold digger
+- gold medal
+- go for the gold
+- strike gold
+- hit gold
+- pot of gold
+- gold mine
+- sitting on a gold mine
+- golden handshake
+- golden parachute
+- golden mean
+- golden ratio
+- silence is golden
+- golden retriever energy
+- silver lining
+- every cloud has a silver lining
+- silver screen
+- silver tongue
+- silver tongued devil
+- silver bullet
+- magic silver bullet
+- silver spoon
+- born with a silver spoon
+- silver fox
+- silver anniversary
+- silver medal
+- silver platter
+- handed on a silver platter
+- thirty pieces of silver
+- silver streak
+- bronze medal
+- bronze age
+- bronzed body
+- true blue
+- blue blood
+- blue blooded
+- feeling blue
+- blue mood
+- got the blues
+- singing the blues
+- blue funk
+- blue monday
+- blue period
+- blue ribbon
+- blue chip
+- blue collar
+- white collar
+- blue in the face
+- talk until blue in the face
+- out of the blue
+- bolt from the blue
+- blue sky
+- blue sky thinking
+- clear blue sky
+- blue ocean
+- blue seas
+- blue moon
+- once in a blue moon
+- blue streak
+- talk a blue streak
+- blue language
+- blue humor
+- true blue
+- blue plate special
+- blue print
+- blue print for success
+- navy blue
+- royal blue
+- baby blue
+- robin's egg blue
+- sky blue
+- midnight blue
+- prussian blue
+- cobalt blue
+- cerulean
+- azure
+- indigo child
+- purple prose
+- purple patch
+- purple reign
+- purple heart
+- born to the purple
+- purple with rage
+- violet shrinking
+- shrinking violet
+- violet skies
+- lavender
+- lilac
+- mauve decade
+- black and white
+- in black and white
+- see things in black and white
+- black and white thinking
+- black sheep
+- black sheep of the family
+- black eye
+- give a black eye
+- black mark
+- black list
+- black ball
+- black out
+- black mail
+- black market
+- black tie
+- black tie affair
+- black tie event
+- black belt
+- black magic
+- black arts
+- dark arts
+- black cat
+- black as night
+- black as pitch
+- black as coal
+- pitch black
+- black hole
+- black box
+- black comedy
+- black humor
+- black widow
+- black swan
+- black swan event
+- black ice
+- black gold
+- black diamond
+- black heart
+- black hearted
+- black cloud
+- black mood
+- in the black
+- back in black
+- men in black
+- little black dress
+- little black book
+- pot calling the kettle black
+- paint it black
+- fade to black
+- black death
+- black plague
+- black lung
+- black out drunk
+- black ops
+- black flag
+- black friday
+- black monday
+- black tuesday
+- white as snow
+- pure as snow
+- white as a sheet
+- white as a ghost
+- white knuckle
+- white knuckled
+- white flag
+- wave the white flag
+- white knight
+- white horse
+- white lie
+- little white lie
+- white wash
+- white washed
+- white bread
+- white collar
+- white collar crime
+- white elephant
+- white elephant gift
+- white hot
+- white noise
+- white out
+- white picket fence
+- white wedding
+- great white hope
+- great white shark
+- white whale
+- pearly white
+- pearly gates
+- egg white
+- snow white
+- white christmas
+- white light
+- white magic
+- white pages
+- white paper
+- white space
+- blank white page
+- cream of the crop
+- cream colored
+- cream puff
+- ivory tower
+- ivory white
+- tickle the ivories
+- grey area
+- gray area
+- shades of grey
+- fifty shades of grey
+- grey matter
+- grey hair
+- grey beard
+- grey skies
+- grey day
+- grey cloud
+- grey market
+- grey zone
+- charcoal grey
+- silver grey
+- pewter
+- ashen
+- ashen faced
+- brown nosing
+- brown nose
+- brown bag
+- brown bagging it
+- brown out
+- browned off
+- in a brown study
+- brown sugar
+- chocolate brown
+- coffee colored
+- tan lines
+- beige
+- beige existence
+- taupe
+- khaki
+- earth tones
+- earthy colors
+- copper tone
+- rust colored
+- rust belt
+- rusty
+- rusty skills
+- amber alert
+- amber waves of grain
+- amber glow
+- amber light
+- caution yellow
+- mellow yellow
+- canary yellow
+- lemon yellow
+- sunshine yellow
+- mustard yellow
+- gold leaf
+- gold plated
+- gold dust
+- liquid gold
+- black gold
+- white gold
+- red gold
+- fool's gold
+- green thumb
+- green light
+- get the green light
+- green around the gills
+- green horn
+- green behind the ears
+- green eyed monster
+- green with envy
+- green as grass
+- green energy
+- green movement
+- going green
+- green peace
+- green room
+- green house
+- green house effect
+- green back
+- long green
+- green acres
+- greener pastures
+- grass is greener
+- grass is always greener on the other side
+- green card
+- putting green
+- evergreen
+- evergreen content
+- kelly green
+- forest green
+- emerald green
+- jade green
+- lime green
+- mint green
+- olive branch
+- olive drab
+- olive skinned
+- teal
+- turquoise
+- aquamarine
+- sea green
+- sea foam green
+- hunter green
+- sage advice
+- sage green
+- rainbow
+- rainbow coalition
+- rainbow colors
+- somewhere over the rainbow
+- pot of gold at the end of the rainbow
+- chase rainbows
+- rainbow flag
+- rainbow warrior
+- technicolor
+- technicolor dream
+- multi colored
+- kaleidoscope of colors
+- riot of color
+- splash of color
+- burst of color
+- pop of color
+- wash of color
+- sea of color
+- ocean of color
+- wave of color
+- blanket of color
+- tapestry of color
+- mosaic of color
+- palette of colors
+- color palette
+- color wheel
+- primary colors
+- secondary colors
+- complementary colors
+- contrasting colors
+- clashing colors
+- coordinating colors
+- matching colors
+- color coded
+- color blind
+- color me surprised
+- color me impressed
+- show your true colors
+- true colors
+- flying colors
+- pass with flying colors
+- colors flying
+- vivid colors
+- bright colors
+- bold colors
+- muted colors
+- soft colors
+- pastel colors
+- neon colors
+- fluorescent
+- iridescent
+- luminous
+- luminescent
+- glowing colors
+- dull colors
+- faded colors
+- washed out colors
+- bleached out
+- sun bleached
+- color drained
+- drain of color
+- loss of color
+- burst of color
+- explosion of color
+- symphony of color
+- dance of colors
+- play of light and color
+- shimmering colors
+- sparkling colors
+- glistening colors
+- lustrous
+- radiant colors
+- vibrant colors
+- rich colors
+- deep colors
+- saturated colors
+- intense colors
+- electric colors
+- shocking pink
+- hot pink
+- neon pink
+- bubblegum pink
+- cotton candy pink
+- blush pink
+- dusty rose
+- coral
+- salmon
+- peach
+- apricot
+- tangerine
+- burnt orange
+- rust
+- terra cotta
+- sienna
+- umber
+- ochre
+- sepia
+- sepia toned
+- vintage colors
+- retro colors
+- antique colors
+- jewel tones
+- gem colors
+- ruby
+- sapphire
+- emerald
+- amethyst
+- topaz
+- opal
+- pearl
+- pearlescent
+- mother of pearl
+- diamond white
+- crystal clear
+- transparent
+- translucent
+- opaque
+- monochrome
+- monochromatic
+- black and white
+- grayscale
+- two tone
+- dual tone
+- tri color
+- multicolor
+- prismatic
+- spectrum
+- full spectrum
+- across the spectrum
+- on the spectrum
+- color spectrum
+- visible spectrum
+- beyond the spectrum
+- infrared
+- ultraviolet
+- neon glow
+- bioluminescent
+- phosphorescent
+- incandescent
+- fluorescent glow
+- soft glow
+- warm glow
+- cool tones
+- warm tones
+- earth tones
+- skin tones
+- undertones
+- overtones
+- off color
+- off white
+- off black
+- color fast
+- color proof
+- color safe
+- local color
+- true to color
+- natural color
+- artificial color
+- synthetic color
+- organic color
+- living color
+- in living color
+- full color
+- high color
+- rich in color
+- poor in color
+- devoid of color
+- stripped of color
+- add color
+- bring color
+- inject color
+- splash of color
+- touch of color
+- hint of color
+- suggestion of color
+- whisper of color
+- breath of color
+
+---
+
+## 8. War/Battle Cliches
+
+- battle of wills
+- fight fire with fire
+- all's fair in love and war
+- fog of war
+- war of words
+- war cry
+- war path
+- on the warpath
+- war zone
+- war torn
+- war weary
+- war horse
+- war chest
+- war games
+- war stories
+- war room
+- war paint
+- declaration of war
+- act of war
+- spoils of war
+- casualties of war
+- prisoner of war
+- theater of war
+- dogs of war
+- drums of war
+- winds of war
+- art of war
+- rules of war
+- laws of war
+- war footing
+- war effort
+- war machine
+- war monger
+- total war
+- cold war
+- civil war
+- class war
+- turf war
+- price war
+- bidding war
+- flame war
+- war of attrition
+- war of nerves
+- tug of war
+- at war
+- go to war
+- wage war
+- declare war
+- make war
+- bring war
+- end the war
+- win the war
+- lose the war
+- survive the war
+- war hero
+- war veteran
+- war memorial
+- war dead
+- war crimes
+- war criminal
+- battle ready
+- battle hardened
+- battle tested
+- battle scarred
+- battle weary
+- battle stations
+- battle lines
+- battle cry
+- battle hymn
+- battle royal
+- battle ground
+- battle field
+- battle front
+- battle plan
+- battle strategy
+- battle tactics
+- pick your battles
+- choose your battles
+- win the battle lose the war
+- fight the good fight
+- good fight
+- put up a fight
+- fight to the finish
+- fight to the death
+- fight for your life
+- fight for survival
+- fight or flight
+- fighting chance
+- fighting fit
+- fighting spirit
+- fighting words
+- fighting mad
+- fight back
+- fight on
+- fight through
+- fight fire with fire
+- friendly fire
+- under fire
+- cease fire
+- open fire
+- return fire
+- hold your fire
+- fire at will
+- fire away
+- fire back
+- fire power
+- fire storm
+- fire fight
+- baptism of fire
+- trial by fire
+- play with fire
+- add fuel to the fire
+- fan the flames
+- flame out
+- flame up
+- flame war
+- go down in flames
+- shot down in flames
+- old flame
+- eternal flame
+- carry a torch
+- torch bearer
+- pass the torch
+- torch song
+- smoking gun
+- gun shy
+- gun ho
+- stick to your guns
+- guns blazing
+- going in guns blazing
+- under the gun
+- jump the gun
+- son of a gun
+- hired gun
+- top gun
+- big gun
+- big guns
+- bring out the big guns
+- gun for
+- shot in the dark
+- shot across the bow
+- warning shot
+- parting shot
+- cheap shot
+- long shot
+- shot in the arm
+- shot to pieces
+- shot through
+- shot down
+- call the shots
+- give it your best shot
+- hot shot
+- big shot
+- bullet proof
+- silver bullet
+- magic bullet
+- bite the bullet
+- bullet points
+- bullet train
+- dodge a bullet
+- dodged a bullet
+- bullet riddled
+- bullet hole
+- aim high
+- aim low
+- aim true
+- take aim
+- dead aim
+- miss the mark
+- hit the mark
+- on target
+- off target
+- target practice
+- easy target
+- sitting target
+- moving target
+- target audience
+- target market
+- target date
+- target goal
+- targeted attack
+- cross hairs
+- in the crosshairs
+- on the radar
+- under the radar
+- fly under the radar
+- off the radar
+- radar detector
+- pick up on radar
+- bomb shell
+- drop a bombshell
+- bomb scare
+- time bomb
+- ticking time bomb
+- bomb squad
+- bomb threat
+- bomb out
+- bomb proof
+- carpet bomb
+- nuclear option
+- go nuclear
+- nuclear fallout
+- nuclear winter
+- ground zero
+- blast radius
+- blast zone
+- blast off
+- full blast
+- blast from the past
+- explosive situation
+- explosive temper
+- explosive growth
+- explosive personality
+- detonate
+- defuse the situation
+- defuse tension
+- set off
+- trigger
+- trigger warning
+- hair trigger
+- pull the trigger
+- on the trigger
+- trigger happy
+- loaded gun
+- loaded question
+- loaded dice
+- weapon of choice
+- secret weapon
+- double edged sword
+- sword of Damocles
+- fall on your sword
+- live by the sword die by the sword
+- cross swords
+- sword fight
+- pen is mightier than the sword
+- sharp as a sword
+- cut through
+- cut down
+- cut to the quick
+- cut to the bone
+- cut and run
+- cut and dried
+- cut throat
+- knife fight
+- knife edge
+- knife in the back
+- bring a knife to a gunfight
+- under the knife
+- twist the knife
+- sharp as a knife
+- dagger looks
+- cloak and dagger
+- daggers drawn
+- look daggers
+- spear head
+- spear point
+- arrow straight
+- straight as an arrow
+- arrow to the heart
+- Cupid's arrow
+- bow and arrow
+- quiver
+- take a stab at
+- stab in the dark
+- stab in the back
+- back stabber
+- shield yourself
+- human shield
+- shield from
+- raise your shield
+- drop your shield
+- lower your guard
+- let your guard down
+- catch off guard
+- on guard
+- guard duty
+- guard dog
+- body guard
+- life guard
+- coast guard
+- old guard
+- advance guard
+- rear guard
+- armor up
+- armor plated
+- chink in the armor
+- knight in shining armor
+- suit of armor
+- armored
+- fort up
+- hold the fort
+- hold down the fort
+- fortress of solitude
+- fortress mentality
+- siege mentality
+- under siege
+- lay siege
+- state of siege
+- siege warfare
+- bunker down
+- bunker mentality
+- trench warfare
+- in the trenches
+- from the trenches
+- dig in
+- dug in
+- entrenched
+- deeply entrenched
+- foxhole
+- no atheists in foxholes
+- front lines
+- on the front lines
+- front line workers
+- behind enemy lines
+- enemy lines
+- draw the line
+- line of fire
+- firing line
+- on the firing line
+- thin line
+- hold the line
+- toe the line
+- cross the line
+- line in the sand
+- battle lines drawn
+- lines of defense
+- first line of defense
+- last line of defense
+- defense mechanism
+- on the defensive
+- defensive posture
+- play defense
+- offense is the best defense
+- go on the offensive
+- offensive line
+- offensive strategy
+- take the offensive
+- offensive remarks
+- offense taken
+- no offense
+- full offense
+- attack mode
+- attack plan
+- attack dog
+- attack ads
+- under attack
+- heart attack
+- panic attack
+- sneak attack
+- surprise attack
+- counter attack
+- frontal attack
+- flank attack
+- pincer movement
+- surround
+- surrounded
+- circle the wagons
+- close ranks
+- ranks closed
+- break ranks
+- rank and file
+- pull rank
+- outrank
+- chain of command
+- command post
+- command center
+- take command
+- in command
+- second in command
+- chain of command
+- commanding presence
+- commanding lead
+- commanding view
+- at your command
+- mission accomplished
+- mission critical
+- mission statement
+- mission impossible
+- abort mission
+- rescue mission
+- covert operation
+- special ops
+- black ops
+- military precision
+- with military precision
+- like clockwork
+- well oiled machine
+- marching orders
+- take orders
+- follow orders
+- give orders
+- standing orders
+- tall order
+- order of battle
+- call to action
+- action stations
+- see action
+- in action
+- out of action
+- action hero
+- action packed
+- spring into action
+- man of action
+- call to arms
+- up in arms
+- take up arms
+- arms race
+- bear arms
+- lay down arms
+- armed and dangerous
+- armed to the teeth
+- arm yourself
+- disarm
+- unarmed
+- recruit
+- recruitment
+- new recruits
+- raw recruits
+- boot camp
+- basic training
+- combat ready
+- combat zone
+- combat boots
+- combat fatigue
+- close combat
+- hand to hand combat
+- mortal combat
+- enter the fray
+- into the fray
+- join the fray
+- above the fray
+- heat of battle
+- in the heat of battle
+- thick of battle
+- in the thick of it
+- battle stations
+- general quarters
+- all hands on deck
+- batten down the hatches
+- clear the decks
+- hit the deck
+- below decks
+- on deck
+- deck the halls
+- stacked deck
+- deck stacked against
+- cards on the table
+- ace up your sleeve
+- trump card
+- play your cards right
+- play the hand you're dealt
+- wild card
+- house of cards
+- call someone's bluff
+- poker face
+- up the ante
+- raise the stakes
+- high stakes
+- stakes are high
+- stake your claim
+- burned stake
+- at stake
+- life at stake
+- victory lap
+- victory garden
+- victory dance
+- sweet victory
+- bitter victory
+- hard won victory
+- pyrrhic victory
+- hollow victory
+- taste of victory
+- snatch victory from the jaws of defeat
+- jaws of defeat
+- admit defeat
+- accept defeat
+- suffer defeat
+- crushing defeat
+- devastating defeat
+- humiliating defeat
+- go down fighting
+- go down swinging
+- never say die
+- die trying
+- fight to the last
+- last stand
+- make a stand
+- stand your ground
+- hold your ground
+- gain ground
+- lose ground
+- common ground
+- middle ground
+- high ground
+- take the high ground
+- moral high ground
+- break new ground
+- ground breaking
+- cover ground
+- hit the ground running
+- ground rules
+- ground zero
+- ground level
+- stand down
+- back down
+- step down
+- step up
+- gear up
+- suit up
+- man up
+- soldier on
+- soldier through
+- good soldier
+- unknown soldier
+- toy soldier
+- old soldier
+- fallen soldier
+- wounded warrior
+- weekend warrior
+- road warrior
+- keyboard warrior
+- social justice warrior
+- warrior spirit
+- warrior code
+- inner warrior
+- warrior princess
+- warrior king
+- champion
+- championing
+- champion the cause
+- world champion
+- defending champion
+- undefeated champion
+- champion of the people
+- hero worship
+- war hero
+- unsung hero
+- hero's journey
+- hero's welcome
+- play the hero
+- tragic hero
+- fallen hero
+- hometown hero
+- everyday hero
+- reluctant hero
+- hero complex
+
+---
+
+## 9. Journey/Path Cliches
+
+- light at end of tunnel
+- light at the end of the tunnel
+- crossroads
+- at a crossroads
+- at the crossroads
+- fork in the road
+- which path to take
+- path less traveled
+- road less traveled
+- beaten path
+- off the beaten path
+- blaze a trail
+- trail blazer
+- trailblazing
+- pioneer spirit
+- chart your own course
+- set your own path
+- follow your own path
+- carve your own path
+- pave the way
+- paved with good intentions
+- road to hell is paved with good intentions
+- on the right path
+- on the wrong path
+- lost your way
+- find your way
+- find your path
+- guided path
+- path of least resistance
+- path of most resistance
+- path to success
+- path to failure
+- path to destruction
+- path to enlightenment
+- path to happiness
+- path forward
+- clear path
+- unclear path
+- rocky path
+- smooth path
+- narrow path
+- wide path
+- winding path
+- straight path
+- twisted path
+- crooked path
+- thorny path
+- treacherous path
+- dangerous path
+- safe path
+- dark path
+- lit path
+- shadowy path
+- hidden path
+- secret path
+- well worn path
+- ancient path
+- new path
+- old path
+- familiar path
+- unfamiliar path
+- unknown path
+- mysterious path
+- spiritual path
+- life path
+- career path
+- journey begins
+- journey ends
+- journey of a thousand miles
+- journey of a thousand miles begins with a single step
+- single step
+- first step
+- next step
+- final step
+- baby steps
+- one step at a time
+- step by step
+- step forward
+- step backward
+- step up
+- step down
+- step aside
+- step in
+- step out
+- misstep
+- false step
+- wrong step
+- right step
+- giant step
+- leap of faith
+- take the leap
+- take the plunge
+- dive in
+- jump in
+- spring forward
+- bound forward
+- march forward
+- move forward
+- push forward
+- press forward
+- forge ahead
+- charge ahead
+- steam ahead
+- full steam ahead
+- plow ahead
+- soldier on
+- trudge on
+- carry on
+- keep going
+- keep moving
+- onward and upward
+- onward
+- forward march
+- forward motion
+- forward progress
+- forward thinking
+- looking forward
+- move on
+- moving on
+- moving forward
+- get moving
+- start moving
+- keep moving forward
+- one foot in front of the other
+- put one foot in front of the other
+- walk the walk
+- talk the talk
+- walk before you run
+- run before you walk
+- walk the line
+- walk a mile in someone's shoes
+- walk of life
+- walk of shame
+- walk on water
+- walk on air
+- walk on eggshells
+- walk in the park
+- walk through fire
+- walk through the valley
+- long walk
+- short walk
+- slow walk
+- fast walk
+- random walk
+- nature walk
+- walk away
+- walk out
+- walk into
+- walk around
+- walk through
+- walk over
+- walk up
+- walk down
+- uphill walk
+- downhill walk
+- winding walk
+- scenic walk
+- lonely walk
+- solitary walk
+- midnight walk
+- moonlit walk
+- morning walk
+- evening walk
+- run of the mill
+- run the gauntlet
+- run the gamut
+- run amok
+- run wild
+- run free
+- run away
+- run toward
+- run from
+- run for your life
+- run for cover
+- run for the hills
+- on the run
+- hit the ground running
+- running in circles
+- running on empty
+- running out of time
+- running late
+- running scared
+- running high
+- running low
+- running hot
+- running cold
+- long run
+- short run
+- home run
+- dry run
+- test run
+- trial run
+- run of luck
+- good run
+- bad run
+- end of the run
+- road trip
+- road to success
+- road to ruin
+- road to recovery
+- road to nowhere
+- road ahead
+- long road
+- short road
+- bumpy road
+- smooth road
+- rocky road
+- winding road
+- straight road
+- narrow road
+- wide road
+- open road
+- hit the road
+- on the road
+- down the road
+- further down the road
+- at the end of the road
+- end of the road
+- middle of the road
+- crossroad
+- high road
+- low road
+- take the high road
+- take the low road
+- royal road
+- golden road
+- yellow brick road
+- road rage
+- road block
+- road map
+- road sign
+- road warrior
+- road kill
+- road tested
+- road worn
+- road weary
+- dusty road
+- dirt road
+- paved road
+- country road
+- city street
+- main street
+- side street
+- back street
+- dead end street
+- one way street
+- two way street
+- streets of gold
+- street smart
+- street wise
+- street cred
+- street level
+- street corner
+- street light
+- wall street
+- easy street
+- skid row
+- highway to hell
+- highway of life
+- highway robbery
+- information superhighway
+- super highway
+- freeway
+- expressway
+- fast lane
+- slow lane
+- passing lane
+- lane change
+- change lanes
+- stay in your lane
+- out of your lane
+- bridge to cross
+- bridge over troubled water
+- burn your bridges
+- burn bridges
+- cross that bridge
+- cross that bridge when you come to it
+- water under the bridge
+- bridge the gap
+- bridging the gap
+- build bridges
+- building bridges
+- golden gate
+- gate keeper
+- gatekeeper
+- gateway
+- gateway drug
+- gateway to success
+- open the gate
+- close the gate
+- at the gate
+- through the gate
+- behind the gate
+- beyond the gate
+- door to door
+- open door
+- open doors
+- close the door
+- shut the door
+- door of opportunity
+- window of opportunity
+- when one door closes
+- when one door closes another opens
+- door is open
+- door is closed
+- foot in the door
+- get a foot in the door
+- knock on the door
+- knock on doors
+- opportunity knocks
+- answer the door
+- slam the door
+- revolving door
+- back door
+- front door
+- side door
+- secret door
+- hidden door
+- locked door
+- open the door
+- close the door
+- door step
+- at your doorstep
+- threshold
+- on the threshold
+- cross the threshold
+- over the threshold
+- at the threshold
+- entrance
+- grand entrance
+- make an entrance
+- exit
+- exit strategy
+- exit stage left
+- no exit
+- fire exit
+- emergency exit
+- make your exit
+- graceful exit
+- hasty exit
+- quick exit
+- slow exit
+- point of departure
+- departure gate
+- departing
+- depart
+- leave
+- leaving
+- left behind
+- don't look back
+- look back
+- looking back
+- backwards glance
+- rear view mirror
+- in the rear view
+- getting smaller in the rear view
+- point of no return
+- past the point of no return
+- no turning back
+- can't turn back
+- turn back
+- turn around
+- about face
+- U-turn
+- detour
+- take a detour
+- scenic route
+- scenic detour
+- long way around
+- short cut
+- take a short cut
+- no short cuts
+- there are no short cuts
+- compass
+- moral compass
+- lost compass
+- find your compass
+- true north
+- magnetic north
+- north star
+- guiding star
+- guiding light
+- beacon
+- beacon of hope
+- lighthouse
+- light house
+- follow the light
+- toward the light
+- into the light
+- out of the darkness
+- landmark
+- milestone
+- millstone
+- milestone moment
+- reach a milestone
+- pass a milestone
+- marker
+- mile marker
+- way point
+- check point
+- rest stop
+- pit stop
+- make a pit stop
+- rest area
+- oasis
+- oasis in the desert
+- safe haven
+- safe harbor
+- port in a storm
+- any port in a storm
+- home port
+- home base
+- home stretch
+- on the home stretch
+- final stretch
+- last leg
+- final leg
+- home free
+- almost home
+- nearly there
+- getting closer
+- closing in
+- within reach
+- within sight
+- in sight
+- out of sight
+- destination
+- final destination
+- reach your destination
+- unknown destination
+- journey's end
+- end of the journey
+- journey complete
+- arrived
+- arrival
+- safe arrival
+- grand arrival
+- late arrival
+- early arrival
+- just in time
+- in the nick of time
+- made it
+- we made it
+- here at last
+- finally here
+- long time coming
+- worth the journey
+- worth the trip
+- worth the wait
+- what a ride
+- enjoy the ride
+- bumpy ride
+- smooth ride
+- wild ride
+- roller coaster ride
+- thrill ride
+- joy ride
+- free ride
+- long ride
+- short ride
+- end of the ride
+- ride off into the sunset
+- ride into the sunset
+- sailing into the sunset
+- ship has sailed
+- miss the boat
+- in the same boat
+- rock the boat
+- don't rock the boat
+- steady the ship
+- right the ship
+- captain of the ship
+- abandon ship
+- sinking ship
+- rats leaving a sinking ship
+- smooth sailing
+- plain sailing
+- rough sailing
+- rough seas
+- calm seas
+- navigate
+- navigation
+- navigate through
+- navigate around
+- chart a course
+- stay the course
+- course correction
+- on course
+- off course
+- of course
+- in due course
+- uncharted waters
+- uncharted territory
+- new territory
+- familiar territory
+- virgin territory
+- explore new territory
+- unexplored
+- undiscovered
+- venture forth
+- venture out
+- venture into
+- bold venture
+- new venture
+- risky venture
+- solo venture
+- joint venture
+- adventure awaits
+- adventure calls
+- spirit of adventure
+- adventure of a lifetime
+- life's adventure
+- grand adventure
+- great adventure
+- epic adventure
+- next adventure
+- new adventure
+- quest
+- on a quest
+- quest for meaning
+- quest for truth
+- quest for love
+- noble quest
+- personal quest
+- spiritual quest
+- hero's quest
+- lifelong quest
+- never ending quest
+- pilgrimage
+- make a pilgrimage
+- pilgrim's journey
+- pilgrim's progress
+- wanderer
+- wandering
+- wander aimlessly
+- wander freely
+- wandering spirit
+- wandering soul
+- wanderlust
+- roaming
+- roam free
+- roam the earth
+- nomad
+- nomadic
+- nomadic life
+- vagabond
+- drifter
+- drifting
+- drift away
+- adrift
+- cast adrift
+- lost at sea
+- all at sea
+- sea legs
+- find your sea legs
+- get your bearings
+- lose your bearings
+- regain your bearings
+- orient yourself
+- orientation
+- direction
+- sense of direction
+- lost direction
+- find direction
+- new direction
+- change direction
+- wrong direction
+- right direction
+- head in the right direction
+- headed in the right direction
+- headed in the wrong direction
+- which direction
+- every direction
+- all directions
+- point me in the right direction
+
+---
+
+## 10. Emotional Cliches
+
+- tears of joy
+- broken heart
+- broken hearted
+- heart broken
+- heavy heart
+- with a heavy heart
+- light heart
+- with a light heart
+- aching heart
+- bleeding heart
+- wounded heart
+- hollow heart
+- empty heart
+- full heart
+- warm heart
+- cold heart
+- frozen heart
+- melting heart
+- swelling heart
+- bursting heart
+- pounding heart
+- racing heart
+- singing heart
+- soaring heart
+- sinking heart
+- crushed heart
+- shattered heart
+- torn heart
+- hardened heart
+- softened heart
+- open heart
+- closed heart
+- guarded heart
+- vulnerable heart
+- exposed heart
+- raw heart
+- tender heart
+- gentle heart
+- kind heart
+- pure heart
+- dark heart
+- troubled heart
+- restless heart
+- wild heart
+- brave heart
+- fearful heart
+- anxious heart
+- peaceful heart
+- joyful heart
+- sorrowful heart
+- grieving heart
+- mourning heart
+- yearning heart
+- longing heart
+- hopeful heart
+- hopeless heart
+- grateful heart
+- thankful heart
+- humble heart
+- proud heart
+- loving heart
+- hateful heart
+- forgiving heart
+- bitter heart
+- sweet heart
+- sweetheart
+- dear heart
+- my heart
+- follow your heart
+- listen to your heart
+- speak from the heart
+- straight from the heart
+- from the bottom of my heart
+- bottom of my heart
+- heartfelt
+- heart of gold
+- heart of stone
+- heart of darkness
+- change of heart
+- heart to heart
+- wear your heart on your sleeve
+- heart on sleeve
+- cross my heart
+- heart and soul
+- put your heart into it
+- pour your heart out
+- lose heart
+- take heart
+- have a heart
+- at heart
+- by heart
+- learn by heart
+- know by heart
+- heart of the matter
+- heart strings
+- tug at heartstrings
+- pull at heartstrings
+- heartache
+- heartbreak
+- heart skip a beat
+- heart flutter
+- heart pound
+- heart race
+- heart sink
+- heart soar
+- heart melt
+- heart grow fonder
+- absence makes the heart grow fonder
+- home is where the heart is
+- tear
+- tears
+- tearful
+- teary
+- teary eyed
+- tear stained
+- shed a tear
+- brought to tears
+- moved to tears
+- tears streaming
+- tears flowing
+- tears falling
+- tears rolling
+- hold back tears
+- fight back tears
+- blink back tears
+- wipe away tears
+- dry your tears
+- crocodile tears
+- tears of sorrow
+- tears of sadness
+- tears of happiness
+- tears of relief
+- bitter tears
+- sweet tears
+- silent tears
+- quiet tears
+- uncontrollable tears
+- flood of tears
+- sea of tears
+- ocean of tears
+- river of tears
+- cry me a river
+- cry your eyes out
+- cry yourself to sleep
+- cry on my shoulder
+- shoulder to cry on
+- good cry
+- have a good cry
+- make you cry
+- want to cry
+- need to cry
+- don't cry
+- no tears
+- all cried out
+- cry baby
+- cry wolf
+- weep
+- weeping
+- wept
+- weep for joy
+- weep with sorrow
+- sob
+- sobbing
+- sob story
+- sobs of grief
+- uncontrollable sobbing
+- whimper
+- whimpering
+- wail
+- wailing
+- howl
+- howling with grief
+- moan
+- moaning
+- groan
+- groaning
+- sigh
+- sighing
+- deep sigh
+- heavy sigh
+- sigh of relief
+- heave a sigh
+- breathe a sigh
+- laughter
+- laugh
+- laughing
+- laugh out loud
+- belly laugh
+- hearty laugh
+- genuine laugh
+- fake laugh
+- nervous laugh
+- forced laugh
+- infectious laugh
+- contagious laughter
+- burst into laughter
+- burst out laughing
+- roar with laughter
+- howl with laughter
+- double over with laughter
+- in stitches
+- have them in stitches
+- laugh until you cry
+- laugh through tears
+- laugh to keep from crying
+- laugh it off
+- have the last laugh
+- laugh all the way to the bank
+- no laughing matter
+- laugh track
+- laughter is the best medicine
+- die laughing
+- split your sides
+- crack up
+- cracking up
+- chuckle
+- chuckling
+- giggle
+- giggling
+- snicker
+- snickering
+- guffaw
+- chortle
+- smile
+- smiling
+- smiles
+- smile on your face
+- put a smile on your face
+- wipe that smile off
+- crack a smile
+- forced smile
+- fake smile
+- genuine smile
+- warm smile
+- bright smile
+- beaming smile
+- radiant smile
+- ear to ear smile
+- from ear to ear
+- light up with a smile
+- smile through the pain
+- smile through adversity
+- grin
+- grinning
+- grin and bear it
+- grin from ear to ear
+- wicked grin
+- sly grin
+- sheepish grin
+- smirk
+- smirking
+- beam
+- beaming
+- beaming with pride
+- happy
+- happiness
+- happy as a clam
+- happy as a lark
+- happy go lucky
+- happy camper
+- not a happy camper
+- happy ending
+- happy days
+- happy times
+- find happiness
+- pursuit of happiness
+- true happiness
+- lasting happiness
+- fleeting happiness
+- moment of happiness
+- happiness is
+- key to happiness
+- secret of happiness
+- path to happiness
+- road to happiness
+- joy
+- joyful
+- joyous
+- pure joy
+- sheer joy
+- overwhelming joy
+- burst of joy
+- filled with joy
+- jump for joy
+- leap for joy
+- tears of joy
+- cry for joy
+- weep for joy
+- sing for joy
+- shout for joy
+- joy to the world
+- bundle of joy
+- full of joy
+- joyride
+- joyless
+- bliss
+- blissful
+- blissfully
+- blissfully ignorant
+- blissfully unaware
+- blissful state
+- state of bliss
+- pure bliss
+- marital bliss
+- wedded bliss
+- ignorance is bliss
+- ecstasy
+- ecstatic
+- pure ecstasy
+- sheer ecstasy
+- state of ecstasy
+- in ecstasy
+- euphoria
+- euphoric
+- feeling euphoric
+- state of euphoria
+- wave of euphoria
+- elation
+- elated
+- feeling elated
+- delight
+- delighted
+- delightful
+- pure delight
+- sheer delight
+- take delight
+- delight in
+- to my delight
+- much to my delight
+- rapture
+- enraptured
+- in raptures
+- rapturous
+- rapturous applause
+- glee
+- gleeful
+- gleefully
+- with glee
+- full of glee
+- excitement
+- excited
+- exciting
+- excitable
+- overwhelming excitement
+- burst of excitement
+- bubbling with excitement
+- contain excitement
+- can't contain
+- barely contain
+- thrill
+- thrilled
+- thrilling
+- thrill of victory
+- thrill ride
+- thrill seeker
+- cheap thrill
+- contentment
+- content
+- contented
+- feeling content
+- sense of contentment
+- state of contentment
+- satisfaction
+- satisfied
+- satisfying
+- deep satisfaction
+- sense of satisfaction
+- self satisfaction
+- smug satisfaction
+- pleasure
+- pleased
+- pleasing
+- pleasurable
+- take pleasure
+- my pleasure
+- guilty pleasure
+- simple pleasures
+- life's pleasures
+- at your pleasure
+- relief
+- relieved
+- sense of relief
+- sigh of relief
+- wave of relief
+- flood of relief
+- what a relief
+- to my relief
+- much to my relief
+- gratitude
+- grateful
+- gratefully
+- feeling grateful
+- filled with gratitude
+- sense of gratitude
+- express gratitude
+- show gratitude
+- attitude of gratitude
+- debt of gratitude
+- owe a debt of gratitude
+- thankful
+- thankfulness
+- feeling thankful
+- appreciation
+- appreciate
+- appreciated
+- appreciative
+- show appreciation
+- express appreciation
+- token of appreciation
+- deep appreciation
+- hope
+- hopeful
+- hopefully
+- hoping
+- full of hope
+- ray of hope
+- glimmer of hope
+- beacon of hope
+- spark of hope
+- flicker of hope
+- renewed hope
+- new hope
+- fresh hope
+- false hope
+- faint hope
+- last hope
+- only hope
+- beyond hope
+- lose hope
+- give up hope
+- abandon hope
+- cling to hope
+- hold onto hope
+- hope against hope
+- hope springs eternal
+- where there's hope
+- optimism
+- optimistic
+- optimistically
+- cautious optimism
+- guarded optimism
+- feeling optimistic
+- cautiously optimistic
+- pessimism
+- pessimistic
+- pessimistically
+- feeling pessimistic
+- sad
+- sadness
+- sadly
+- sad to say
+- sad story
+- sad ending
+- sad news
+- sad day
+- sad times
+- feeling sad
+- deeply sad
+- overwhelming sadness
+- wave of sadness
+- cloud of sadness
+- shadow of sadness
+- sorrow
+- sorrowful
+- sorrowfully
+- deep sorrow
+- profound sorrow
+- overwhelming sorrow
+- drown in sorrow
+- wallow in sorrow
+- grief
+- grieving
+- grieve
+- deep grief
+- profound grief
+- overwhelming grief
+- consumed by grief
+- paralyzed by grief
+- stages of grief
+- process grief
+- work through grief
+- grief stricken
+- mourning
+- mourn
+- mourner
+- in mourning
+- period of mourning
+- state of mourning
+- misery
+- miserable
+- miserably
+- abject misery
+- pure misery
+- wallowing in misery
+- misery loves company
+- put out of misery
+- despair
+- despairing
+- deep despair
+- utter despair
+- pit of despair
+- depths of despair
+- sink into despair
+- driven to despair
+- beyond despair
+- desperation
+- desperate
+- desperately
+- growing desperate
+- feeling desperate
+- act of desperation
+- out of desperation
+- in desperation
+- hopelessness
+- hopeless
+- hopelessly
+- feeling hopeless
+- sense of hopelessness
+- anguish
+- anguished
+- deep anguish
+- cry of anguish
+- in anguish
+- torment
+- tormented
+- tormenting
+- in torment
+- soul in torment
+- tortured soul
+- agony
+- agonizing
+- in agony
+- sheer agony
+- pure agony
+- prolonged agony
+- death agony
+- suffering
+- suffer
+- suffered
+- suffering through
+- endless suffering
+- needless suffering
+- human suffering
+- pain
+- painful
+- painfully
+- in pain
+- excruciating pain
+- unbearable pain
+- searing pain
+- stabbing pain
+- dull pain
+- sharp pain
+- chronic pain
+- emotional pain
+- feel the pain
+- no pain no gain
+- growing pains
+- pain in the neck
+- hurt
+- hurting
+- hurtful
+- deeply hurt
+- feeling hurt
+- wounded
+- wounds
+- emotional wounds
+- deep wounds
+- open wound
+- fresh wound
+- old wounds
+- heal wounds
+- lick wounds
+- time heals all wounds
+- salt in the wound
+- rub salt in wound
+- anger
+- angry
+- angrily
+- feel angry
+- anger rising
+- flash of anger
+- burst of anger
+- fit of anger
+- blind with anger
+- consumed by anger
+- boiling with anger
+- seething with anger
+- white hot anger
+- righteous anger
+- justified anger
+- suppressed anger
+- pent up anger
+- rage
+- raging
+- blind rage
+- fit of rage
+- filled with rage
+- consumed by rage
+- fly into a rage
+- road rage
+- roid rage
+- all the rage
+- fury
+- furious
+- furiously
+- blind fury
+- hell hath no fury
+- wrath
+- wrathful
+- grapes of wrath
+- incur wrath
+- face the wrath
+- feel the wrath
+- indignation
+- indignant
+- righteous indignation
+- outrage
+- outraged
+- outrageous
+- moral outrage
+- public outrage
+- express outrage
+- resentment
+- resent
+- resentful
+- feeling resentful
+- build up resentment
+- harbor resentment
+- bitter resentment
+- jealousy
+- jealous
+- jealously
+- green with jealousy
+- consumed by jealousy
+- burning jealousy
+- fit of jealousy
+- pangs of jealousy
+- envy
+- envious
+- enviously
+- green with envy
+- consumed by envy
+- object of envy
+- hatred
+- hate
+- hated
+- hateful
+- deep hatred
+- pure hatred
+- burning hatred
+- filled with hate
+- consumed by hate
+- hate with passion
+- love hate relationship
+- loathing
+- loathe
+- self loathing
+- disgust
+- disgusted
+- disgusting
+- filled with disgust
+- look of disgust
+- contempt
+- contemptuous
+- contemptuously
+- beneath contempt
+- hold in contempt
+- treat with contempt
+- scorn
+- scornful
+- scornfully
+- heap scorn
+- object of scorn
+- fear
+- fearful
+- fearfully
+- feel fear
+- overcome with fear
+- paralyzed by fear
+- frozen with fear
+- gripped by fear
+- consumed by fear
+- face your fears
+- conquer your fears
+- overcome your fears
+- fear of the unknown
+- fear of failure
+- fear of success
+- fear of rejection
+- fear of death
+- fear factor
+- nothing to fear
+- only thing to fear is fear itself
+- terror
+- terrified
+- terrifying
+- sheer terror
+- struck with terror
+- reign of terror
+- night terrors
+- horror
+- horrified
+- horrifying
+- horrible
+- horrendous
+- to my horror
+- look of horror
+- scream of horror
+- dread
+- dreaded
+- dreadful
+- dreading
+- sense of dread
+- feeling of dread
+- filled with dread
+- pit of dread
+- anxiety
+- anxious
+- anxiously
+- feeling anxious
+- overwhelming anxiety
+- crippling anxiety
+- anxiety attack
+- separation anxiety
+- worry
+- worried
+- worrying
+- worried sick
+- don't worry
+- stop worrying
+- constant worry
+- worry wart
+- nervousness
+- nervous
+- nervously
+- feeling nervous
+- bundle of nerves
+- nervous wreck
+- nervous breakdown
+- apprehension
+- apprehensive
+- apprehensively
+- with apprehension
+- sense of apprehension
+- unease
+- uneasy
+- uneasily
+- feeling uneasy
+- sense of unease
+- growing unease
+- discomfort
+- uncomfortable
+- uncomfortably
+- feeling uncomfortable
+- embarrassment
+- embarrassed
+- embarrassing
+- feeling embarrassed
+- deeply embarrassed
+- die of embarrassment
+- shame
+- ashamed
+- shameful
+- shamefully
+- feeling ashamed
+- sense of shame
+- die of shame
+- put to shame
+- guilt
+- guilty
+- guiltily
+- feeling guilty
+- consumed by guilt
+- wracked with guilt
+- guilty conscience
+- guilty pleasure
+- regret
+- regretful
+- regrettably
+- feeling regret
+- deep regret
+- live with regret
+- no regrets
+- with regret
+- express regret
+- remorse
+- remorseful
+- feeling remorse
+- without remorse
+- show remorse
+- loneliness
+- lonely
+- feel lonely
+- feeling lonely
+- deep loneliness
+- crushing loneliness
+- overwhelming loneliness
+- isolation
+- isolated
+- feeling isolated
+- sense of isolation
+- self imposed isolation
+- alienation
+- alienated
+- feeling alienated
+- sense of alienation
+- emptiness
+- empty
+- feeling empty
+- sense of emptiness
+- void
+- inner void
+- fill the void
+- stare into the void
+- numbness
+- numb
+- feeling numb
+- go numb
+- emotionally numb
+- confusion
+- confused
+- confusing
+- feeling confused
+- state of confusion
+- mass confusion
+- frustration
+- frustrated
+- frustrating
+- feeling frustrated
+- growing frustration
+- mounting frustration
+- disappointment
+- disappointed
+- disappointing
+- feeling disappointed
+- deeply disappointed
+- sense of disappointment
+- boredom
+- bored
+- boring
+- feeling bored
+- bored to tears
+- bored to death
+- bored stiff
+- apathy
+- apathetic
+- apathetically
+- feeling apathetic
+- sense of apathy
+- indifference
+- indifferent
+- indifferently
+- feeling indifferent
+- love
+- loved
+- loving
+- lovingly
+- feeling loved
+- deeply loved
+- unconditional love
+- romantic love
+- true love
+- first love
+- lost love
+- unrequited love
+- forbidden love
+- passionate love
+- tender love
+- gentle love
+- affection
+- affectionate
+- affectionately
+- show affection
+- feeling of affection
+- fondness
+- fond
+- fondly
+- feeling fond
+- grow fond
+- compassion
+- compassionate
+- compassionately
+- show compassion
+- feeling of compassion
+- empathy
+- empathetic
+- empathetically
+- show empathy
+- lack of empathy
+- sympathy
+- sympathetic
+- sympathetically
+- show sympathy
+- feeling of sympathy
+- express sympathy
+- kindness
+- kind
+- kindly
+- random act of kindness
+- milk of human kindness
+- kill with kindness
+- caring
+- care
+- cared
+- caring deeply
+- beyond caring
+- tender loving care
+- pride
+- proud
+- proudly
+- feeling proud
+- burst with pride
+- swell with pride
+- sense of pride
+- source of pride
+- take pride
+- false pride
+- wounded pride
+- swallow your pride
+- confidence
+- confident
+- confidently
+- feeling confident
+- full of confidence
+- lack of confidence
+- crisis of confidence
+- vote of confidence
+- courage
+- courageous
+- courageously
+- show courage
+- find courage
+- summon courage
+- gather courage
+- muster courage
+- take courage
+- liquid courage
+- bravery
+- brave
+- bravely
+- feeling brave
+- act of bravery
+- determination
+- determined
+- determinedly
+- feeling determined
+- steely determination
+- dogged determination
+- resilience
+- resilient
+- feeling resilient
+- show resilience
+- inner strength
+- strength
+- strong
+- strongly
+- feeling strong
+- inner strength
+- pillar of strength
+- tower of strength
+- source of strength
+- find strength
+- gather strength
+- muster strength
+- strength to carry on
+
+---
+
+## 11. Poetic Cliches Specifically
+
+- dark night of the soul
+- rose by any other name
+- a rose by any other name would smell as sweet
+- to be or not to be
+- all the world's a stage
+- sound and fury
+- full of sound and fury signifying nothing
+- infinite jest
+- more things in heaven and earth
+- cruel to be kind
+- brevity is the soul of wit
+- method in madness
+- salad days
+- parting is such sweet sorrow
+- star-crossed lovers
+- green-eyed monster
+- wild goose chase
+- heart of hearts
+- love is blind
+- sea change
+- melted into thin air
+- vanish into thin air
+- brave new world
+- the stuff dreams are made of
+- stuff of dreams
+- what dreams may come
+- perchance to dream
+- ay there's the rub
+- undiscovered country
+- slings and arrows
+- slings and arrows of outrageous fortune
+- mortal coil
+- shuffle off this mortal coil
+- in my mind's eye
+- mind's eye
+- foregone conclusion
+- good riddance
+- heart of gold
+- tower of strength
+- flesh and blood
+- come full circle
+- muse
+- my muse
+- invoke the muse
+- inspired by the muse
+- muse has left
+- awaiting the muse
+- kiss of the muse
+- dance with the muse
+- court the muse
+- serve the muse
+- poet's soul
+- poet's heart
+- poet's eye
+- poet's pen
+- flow of ink
+- ink on paper
+- words on page
+- blank page
+- empty page
+- white page
+- fill the page
+- pen to paper
+- put pen to paper
+- words flow
+- words pour out
+- words escape me
+- words fail me
+- beyond words
+- lost for words
+- at a loss for words
+- no words
+- mere words
+- just words
+- empty words
+- hollow words
+- weighted words
+- heavy words
+- light words
+- gentle words
+- harsh words
+- bitter words
+- sweet words
+- honeyed words
+- golden words
+- silver tongue
+- gilded tongue
+- forked tongue
+- speak in tongues
+- mother tongue
+- native tongue
+- whispered words
+- spoken word
+- written word
+- word made flesh
+- living word
+- dying word
+- last word
+- first word
+- every word
+- hang on every word
+- word by word
+- line by line
+- verse by verse
+- stanza by stanza
+- page by page
+- chapter by chapter
+- book of life
+- story of my life
+- tale as old as time
+- once upon a time
+- happily ever after
+- the end
+- new beginning
+- alpha and omega
+- beginning and end
+- from the start
+- from the beginning
+- in the beginning
+- at the end
+- at the start
+- dawn of
+- dusk of
+- twilight of
+- midnight of
+- noon of
+- morning of
+- evening of
+- spring of life
+- summer of love
+- autumn of years
+- winter of discontent
+- eternal spring
+- endless summer
+- perpetual autumn
+- forever winter
+- seasons change
+- turning of seasons
+- cycle of seasons
+- wheel of the year
+- passage of seasons
+- breath of spring
+- warmth of summer
+- chill of autumn
+- cold of winter
+- kiss of dawn
+- caress of dusk
+- embrace of night
+- touch of morning
+- light of day
+- shadow of night
+- veil of darkness
+- cloak of night
+- mantle of stars
+- blanket of snow
+- carpet of leaves
+- tapestry of colors
+- quilt of memories
+- fabric of dreams
+- threads of fate
+- weave of destiny
+- loom of time
+- needle of truth
+- thread of life
+- silver cord
+- golden thread
+- scarlet thread
+- blood red
+- snow white
+- midnight black
+- azure blue
+- emerald green
+- golden yellow
+- amber glow
+- silver shimmer
+- pearl white
+- ebony dark
+- ivory pale
+- crimson tide
+- sapphire sea
+- ruby lips
+- diamond tears
+- crystal clear
+- velvet night
+- silk sky
+- satin skin
+- gossamer wings
+- gossamer threads
+- gossamer dreams
+- ethereal beauty
+- ethereal light
+- ethereal being
+- ephemeral moment
+- ephemeral beauty
+- ephemeral joy
+- fleeting moment
+- fleeting glimpse
+- fleeting thought
+- fleeting smile
+- fleeting touch
+- transient beauty
+- transient joy
+- transient peace
+- evanescent
+- whisper of wind
+- sigh of sea
+- song of birds
+- cry of wolves
+- howl of wind
+- moan of trees
+- murmur of streams
+- roar of thunder
+- crash of waves
+- patter of rain
+- rustle of leaves
+- crunch of snow
+- silence of night
+- hush of dawn
+- stillness of evening
+- quiet of morning
+- peace of twilight
+- serenity of dusk
+- calm of midnight
+- tranquility of nature
+- gentle breeze
+- soft wind
+- warm sun
+- cool moon
+- bright stars
+- twinkling stars
+- shimmering stars
+- dancing stars
+- falling stars
+- shooting stars
+- wandering stars
+- distant stars
+- lonely star
+- solitary star
+- guiding star
+- wishing star
+- evening star
+- morning star
+- star of hope
+- star of love
+- star of destiny
+- celestial light
+- celestial beauty
+- celestial music
+- celestial dance
+- heavenly host
+- heavenly choir
+- angelic voice
+- angelic beauty
+- angelic face
+- angelic presence
+- divine light
+- divine love
+- divine grace
+- divine mercy
+- divine wisdom
+- sacred space
+- sacred ground
+- sacred heart
+- sacred love
+- sacred duty
+- holy fire
+- holy light
+- holy water
+- holy ground
+- hallowed ground
+- blessed be
+- blessed art thou
+- blessed among
+- blessed by
+- grace of god
+- gift of god
+- hand of god
+- will of god
+- voice of god
+- eye of god
+- spirit moves
+- spirit whispers
+- spirit guides
+- spirit soars
+- spirit flies
+- soul ascends
+- soul descends
+- soul wanders
+- soul searches
+- soul yearns
+- soul aches
+- soul cries
+- soul sings
+- soul dances
+- soul dreams
+- soul awakens
+- soul slumbers
+- soul rests
+- troubled soul
+- weary soul
+- heavy soul
+- light soul
+- free soul
+- bound soul
+- lost soul
+- found soul
+- wandering soul
+- searching soul
+- kindred soul
+- old soul
+- young soul
+- ancient soul
+- eternal soul
+- immortal soul
+- mortal soul
+- living soul
+- dying soul
+- departed soul
+- ascending soul
+- descending soul
+- tortured soul
+- peaceful soul
+- restless soul
+- quiet soul
+- silent soul
+- singing soul
+- dancing soul
+- dreaming soul
+- sleeping soul
+- waking soul
+- heart and soul
+- body and soul
+- mind and soul
+- spirit and soul
+- eyes of the soul
+- window to soul
+- windows of the soul
+- mirror of soul
+- reflection of soul
+- depth of soul
+- height of soul
+- breadth of soul
+- length of soul
+- expanse of soul
+- vastness of soul
+- infinity of soul
+- eternity of soul
+- immortality of soul
+- mortality of flesh
+- dust to dust
+- ashes to ashes
+- earth to earth
+- born of earth
+- return to earth
+- one with earth
+- child of earth
+- daughter of earth
+- son of earth
+- mother earth
+- father sky
+- brother sun
+- sister moon
+- cosmic dance
+- universal rhythm
+- eternal song
+- timeless melody
+- ageless tune
+- ancient chant
+- primal scream
+- birth cry
+- death rattle
+- last gasp
+- final breath
+- first breath
+- breath of life
+- kiss of life
+- kiss of death
+- embrace of death
+- arms of death
+- shadow of death
+- valley of death
+- river of death
+- sea of death
+- ocean of oblivion
+- depths of despair
+- heights of joy
+- peak of happiness
+- pinnacle of success
+- summit of achievement
+- zenith of power
+- nadir of despair
+- abyss of sorrow
+- pit of darkness
+- well of sadness
+- spring of hope
+- fountain of youth
+- river of life
+- stream of consciousness
+- ocean of emotion
+- sea of troubles
+- lake of tears
+- pool of blood
+- drop of rain
+- tear drop
+- dew drop
+- drop of dew
+- morning dew
+- evening mist
+- morning mist
+- night fog
+- sea mist
+- mountain mist
+- valley fog
+- river mist
+- lake mist
+- veiled in mist
+- shrouded in fog
+- lost in mist
+- emerging from mist
+- fading into mist
+- dissolving into fog
+- melting into air
+- vanishing into thin air
+- disappearing into night
+- fading into darkness
+- swallowed by shadows
+- consumed by darkness
+- embraced by night
+- kissed by moonlight
+- bathed in starlight
+- washed in sunlight
+- touched by dawn
+- caressed by dusk
+- held by twilight
+- cradled in darkness
+- rocked by waves
+- carried by wind
+- lifted by breeze
+- borne aloft
+- soaring high
+- flying free
+- falling fast
+- sinking deep
+- rising slow
+- drifting aimless
+- floating gentle
+- gliding smooth
+- sailing calm
+- riding waves
+- surfing storm
+- weathering storm
+- surviving tempest
+- enduring trial
+- overcoming obstacle
+- conquering fear
+- facing demon
+- battling shadow
+- fighting darkness
+- seeking light
+- finding truth
+- discovering self
+- knowing thyself
+- being true
+- staying real
+- keeping faith
+- holding hope
+- nurturing love
+- cultivating peace
+- growing wisdom
+- gathering strength
+- building courage
+- forging ahead
+- pressing on
+- moving forward
+- looking back
+- remembering past
+- honoring memory
+- cherishing moment
+- treasuring time
+- valuing life
+- embracing death
+- accepting fate
+- surrendering will
+- letting go
+- holding on
+- reaching out
+- pulling back
+- pushing through
+- breaking free
+- setting sail
+- charting course
+- following star
+- chasing dream
+- catching wind
+- riding wave
+- surfing life
+- diving deep
+- climbing high
+- reaching far
+- stretching wide
+- expanding mind
+- opening heart
+- freeing spirit
+- releasing soul
+
+---
+
+## 12. Seasonal Cliches
+
+- winter of discontent
+- spring awakening
+- summer of love
+- autumn of life
+- spring fever
+- spring cleaning
+- spring forward
+- spring into action
+- spring has sprung
+- spring chicken
+- no spring chicken
+- spring in your step
+- spring to mind
+- spring to life
+- spring eternal
+- hope springs eternal
+- spring rain
+- spring showers
+- April showers bring May flowers
+- spring flowers
+- spring bloom
+- spring blossoms
+- spring buds
+- spring green
+- spring thaw
+- spring melt
+- spring flood
+- spring break
+- spring fling
+- spring lamb
+- spring time
+- in the spring
+- smell of spring
+- taste of spring
+- touch of spring
+- breath of spring
+- kiss of spring
+- promise of spring
+- arrival of spring
+- first day of spring
+- vernal equinox
+- rebirth of spring
+- renewal of spring
+- awakening of spring
+- emergence of spring
+- return of spring
+- coming of spring
+- herald of spring
+- harbinger of spring
+- sign of spring
+- spirit of spring
+- joy of spring
+- hope of spring
+- warmth of spring
+- light of spring
+- color of spring
+- beauty of spring
+- magic of spring
+- wonder of spring
+- summer heat
+- summer sun
+- summer breeze
+- summer rain
+- summer storm
+- summer night
+- summer day
+- summer sky
+- summer clouds
+- summer haze
+- summer dream
+- lazy summer
+- endless summer
+- long hot summer
+- dog days of summer
+- summer solstice
+- midsummer
+- midsummer night
+- midsummer dream
+- summer vacation
+- summer holiday
+- summer romance
+- summer fling
+- summer love
+- summer affair
+- summer camp
+- summer school
+- summer job
+- summer intern
+- summer reading
+- summer blockbuster
+- summer hit
+- summer jam
+- summer anthem
+- summer playlist
+- summer vibes
+- summer feeling
+- summer mood
+- summer energy
+- summer spirit
+- summer glow
+- summer tan
+- summer skin
+- summer body
+- summer dress
+- summer clothes
+- summer fashion
+- summer style
+- summer garden
+- summer flowers
+- summer fruit
+- summer harvest
+- summer feast
+- summer picnic
+- summer barbecue
+- summer party
+- summer wedding
+- summer getaway
+- summer escape
+- summer adventure
+- summer journey
+- summer road trip
+- summer vacation
+- first day of summer
+- last day of summer
+- end of summer
+- dog days
+- sweltering summer
+- scorching summer
+- blistering summer
+- blazing summer
+- burning summer
+- sizzling summer
+- steamy summer
+- humid summer
+- sultry summer
+- balmy summer
+- warm summer
+- cool summer evening
+- summer twilight
+- summer dusk
+- summer dawn
+- summer sunrise
+- summer sunset
+- summer moonlight
+- summer starlight
+- summer fireflies
+- summer crickets
+- sounds of summer
+- scent of summer
+- taste of summer
+- feel of summer
+- rhythm of summer
+- song of summer
+- dance of summer
+- autumn leaves
+- falling leaves
+- autumn colors
+- autumn hues
+- autumn palette
+- autumn gold
+- autumn orange
+- autumn red
+- autumn brown
+- autumn harvest
+- autumn bounty
+- autumn feast
+- autumn festival
+- autumn fair
+- autumn celebration
+- autumn equinox
+- first day of fall
+- first day of autumn
+- autumn air
+- autumn chill
+- autumn breeze
+- autumn wind
+- autumn rain
+- autumn storm
+- autumn mist
+- autumn fog
+- autumn frost
+- autumn dew
+- autumn morning
+- autumn evening
+- autumn night
+- autumn twilight
+- autumn dusk
+- autumn dawn
+- autumn sky
+- autumn clouds
+- autumn sun
+- autumn moon
+- autumn stars
+- autumn light
+- autumn shadow
+- autumn glow
+- autumn warmth
+- autumn fire
+- autumn bonfire
+- autumn smoke
+- autumn scent
+- autumn smell
+- autumn fragrance
+- autumn aroma
+- smell of autumn
+- taste of autumn
+- feel of autumn
+- touch of autumn
+- sound of autumn
+- sight of autumn
+- spirit of autumn
+- soul of autumn
+- heart of autumn
+- essence of autumn
+- magic of autumn
+- beauty of autumn
+- wonder of autumn
+- mystery of autumn
+- melancholy of autumn
+- sadness of autumn
+- nostalgia of autumn
+- memory of autumn
+- promise of autumn
+- gift of autumn
+- blessing of autumn
+- harvest moon
+- hunter's moon
+- blood moon
+- autumn moon
+- pumpkin spice
+- apple cider
+- apple picking
+- pumpkin patch
+- hay ride
+- corn maze
+- scarecrow
+- harvest time
+- reaping what you sow
+- gather the harvest
+- fall from grace
+- fall of man
+- fall in love
+- fall apart
+- fall behind
+- fall short
+- fall flat
+- fall down
+- fall back
+- fall asleep
+- fall into place
+- fall on hard times
+- fall through the cracks
+- fall by the wayside
+- let fall
+- rise and fall
+- pride before a fall
+- free fall
+- downfall
+- waterfall
+- windfall
+- snowfall
+- rainfall
+- nightfall
+- footfall
+- pratfall
+- pitfall
+- shortfall
+- winter cold
+- winter chill
+- winter frost
+- winter freeze
+- winter ice
+- winter snow
+- winter storm
+- winter blizzard
+- winter wind
+- winter gale
+- winter night
+- winter day
+- winter morning
+- winter evening
+- winter twilight
+- winter dusk
+- winter dawn
+- winter sky
+- winter clouds
+- winter sun
+- winter moon
+- winter stars
+- winter light
+- winter shadow
+- winter darkness
+- winter gloom
+- dead of winter
+- depth of winter
+- heart of winter
+- middle of winter
+- height of winter
+- dead of winter
+- bitter winter
+- harsh winter
+- cruel winter
+- brutal winter
+- severe winter
+- hard winter
+- long winter
+- endless winter
+- eternal winter
+- nuclear winter
+- winter of discontent
+- winter wonderland
+- winter magic
+- winter beauty
+- winter silence
+- winter stillness
+- winter peace
+- winter calm
+- winter sleep
+- winter slumber
+- winter dream
+- winter solstice
+- shortest day
+- longest night
+- first day of winter
+- last day of winter
+- coming of winter
+- arrival of winter
+- onset of winter
+- beginning of winter
+- end of winter
+- thaw of winter
+- break of winter
+- grip of winter
+- hold of winter
+- clutch of winter
+- embrace of winter
+- kiss of winter
+- bite of winter
+- sting of winter
+- touch of winter
+- breath of winter
+- chill of winter
+- cold of winter
+- ice of winter
+- snow of winter
+- frost of winter
+- wind of winter
+- storm of winter
+- fury of winter
+- wrath of winter
+- vengeance of winter
+- mercy of winter
+- gift of winter
+- blessing of winter
+- curse of winter
+- burden of winter
+- weight of winter
+- blanket of snow
+- carpet of white
+- winter white
+- winter grey
+- winter blue
+- winter pale
+- winter bare
+- winter stark
+- winter bleak
+- winter barren
+- winter desolate
+- winter lonely
+- winter isolated
+- winter quiet
+- winter silent
+- winter hushed
+- winter muted
+- winter muffled
+- winter softened
+- winter gentle
+- winter kind
+- winter cruel
+- winter harsh
+- winter bitter
+- winter sweet
+- winter warm
+- holiday season
+- festive season
+- yuletide
+- Christmas spirit
+- Christmas magic
+- Christmas miracle
+- Christmas cheer
+- Christmas joy
+- Christmas love
+- Christmas peace
+- Christmas hope
+- Christmas wish
+- Christmas dream
+- Christmas memory
+- Christmas tradition
+- Christmas celebration
+- New Year
+- New Year's Eve
+- New Year's Day
+- new year new me
+- ring in the new year
+- year's end
+- year's beginning
+- turn of the year
+- changing of the year
+- passage of the year
+- cycle of the year
+- wheel of the year
+- seasons turn
+- seasons change
+- changing seasons
+- turning seasons
+- passing seasons
+- cycle of seasons
+- wheel of seasons
+- rhythm of seasons
+- dance of seasons
+- song of seasons
+- music of seasons
+- poetry of seasons
+- beauty of seasons
+- wonder of seasons
+- magic of seasons
+- mystery of seasons
+- gift of seasons
+- blessing of seasons
+- lesson of seasons
+- wisdom of seasons
+- teaching of seasons
+- message of seasons
+- reminder of seasons
+- promise of seasons
+- hope of seasons
+
+---
+
+## 13. Action/Movement Cliches
+
+- hit the ground running
+- take the plunge
+- dive in
+- jump in
+- leap of faith
+- take a leap
+- take a chance
+- roll the dice
+- throw the dice
+- spin the wheel
+- take a gamble
+- bet the farm
+- go all in
+- double down
+- raise the stakes
+- up the ante
+- play your cards
+- show your hand
+- tip your hand
+- hold your cards
+- call the bluff
+- fold your hand
+- cash in your chips
+- cut your losses
+- quit while ahead
+- know when to fold
+- know when to hold
+- push forward
+- press on
+- forge ahead
+- march on
+- soldier on
+- trudge on
+- carry on
+- keep going
+- keep moving
+- keep pushing
+- keep fighting
+- keep trying
+- never give up
+- never surrender
+- never quit
+- hang in there
+- stick with it
+- stay the course
+- stay on track
+- stay focused
+- stay strong
+- stay positive
+- stay calm
+- stay cool
+- keep your cool
+- keep your head
+- keep it together
+- hold it together
+- pull yourself together
+- get a grip
+- get your act together
+- get your life together
+- get moving
+- get going
+- get started
+- get cracking
+- get busy
+- get to work
+- buckle down
+- knuckle down
+- hunker down
+- dig in
+- dig deep
+- roll up your sleeves
+- get your hands dirty
+- put in the work
+- put in the time
+- put in the effort
+- give it your all
+- give it everything
+- give one hundred percent
+- go the extra mile
+- go above and beyond
+- go all out
+- pull out all the stops
+- leave no stone unturned
+- leave nothing to chance
+- cover all bases
+- cover your bases
+- dot your i's
+- cross your t's
+- do your homework
+- do your due diligence
+- do the legwork
+- pound the pavement
+- beat the bushes
+- shake the trees
+- turn over every stone
+- search high and low
+- look far and wide
+- leave no corner unsearched
+- comb through
+- sift through
+- sort through
+- wade through
+- plow through
+- power through
+- push through
+- break through
+- burst through
+- crash through
+- smash through
+- tear through
+- rip through
+- cut through
+- slice through
+- carve through
+- hack through
+- work through
+- think through
+- talk through
+- walk through
+- run through
+- go through
+- see through
+- follow through
+- carry through
+- pull through
+- come through
+- get through
+- make it through
+- survive through
+- live through
+- weather through
+- ride it out
+- wait it out
+- tough it out
+- stick it out
+- sweat it out
+- slug it out
+- duke it out
+- hash it out
+- thrash it out
+- iron it out
+- smooth it out
+- work it out
+- figure it out
+- sort it out
+- straighten it out
+- clear it up
+- clean it up
+- wrap it up
+- sum it up
+- boil it down
+- break it down
+- narrow it down
+- pin it down
+- nail it down
+- lock it down
+- tie it down
+- button it down
+- batten down
+- hunker down
+- settle down
+- calm down
+- cool down
+- slow down
+- ease up
+- let up
+- back off
+- back down
+- back away
+- step back
+- step aside
+- step down
+- stand down
+- stand aside
+- move aside
+- clear the way
+- make way
+- give way
+- get out of the way
+- step out of the way
+- move out of the way
+- take a back seat
+- take a step back
+- take five
+- take a breather
+- take a break
+- take a rest
+- catch your breath
+- pause for breath
+- stop and breathe
+- slow your roll
+- pump the brakes
+- hit the brakes
+- slam on the brakes
+- put on the brakes
+- apply the brakes
+- ease off the gas
+- take your foot off the gas
+- coast along
+- cruise along
+- sail along
+- glide along
+- float along
+- drift along
+- meander along
+- wander along
+- stroll along
+- walk along
+- jog along
+- run along
+- race along
+- speed along
+- zoom along
+- fly along
+- soar along
+- tear along
+- barrel along
+- charge along
+- storm along
+- blast along
+- shoot along
+- streak along
+- flash along
+- bolt along
+- dart along
+- dash along
+- rush along
+- hurry along
+- scurry along
+- scramble along
+- hustle along
+- bustle along
+- move along
+- get along
+- come along
+- bring along
+- tag along
+- string along
+- drag along
+- pull along
+- push along
+- shove along
+- nudge along
+- prod along
+- urge along
+- egg on
+- spur on
+- goad on
+- drive on
+- press on
+- push on
+- move on
+- carry on
+- go on
+- keep on
+- hold on
+- hang on
+- cling on
+- latch on
+- grab on
+- hold tight
+- hang tight
+- sit tight
+- stay put
+- stand pat
+- hold fast
+- stand firm
+- stand strong
+- stand tall
+- stand proud
+- stand up
+- stand out
+- stand apart
+- stand alone
+- stand together
+- stand united
+- stand behind
+- stand beside
+- stand with
+- stand for
+- stand against
+- stand by
+- stand in
+- stand down
+- stand off
+- stand up for
+- stand up to
+- rise up
+- rise above
+- rise to the occasion
+- rise to the challenge
+- rise and shine
+- wake up
+- get up
+- jump up
+- spring up
+- pop up
+- shoot up
+- grow up
+- speed up
+- hurry up
+- catch up
+- keep up
+- make up
+- give up
+- throw up
+- show up
+- turn up
+- come up
+- bring up
+- look up
+- speak up
+- step up
+- man up
+- woman up
+- toughen up
+- buck up
+- cheer up
+- brighten up
+- lighten up
+- loosen up
+- warm up
+- heat up
+- fire up
+- rev up
+- gear up
+- suit up
+- load up
+- stock up
+- fill up
+- tank up
+- fuel up
+- charge up
+- power up
+- boot up
+- start up
+- set up
+- build up
+- work up
+- stir up
+- whip up
+- drum up
+- rustle up
+- round up
+- gather up
+- pick up
+- scoop up
+- sweep up
+- clean up
+- clear up
+- tidy up
+- straighten up
+- fix up
+- patch up
+- touch up
+- dress up
+- make up
+- cover up
+- wrap up
+- sum up
+- wind up
+- end up
+- finish up
+- complete up
+- break up
+- split up
+- divide up
+- cut up
+- chop up
+- slice up
+- tear up
+- rip up
+- mess up
+- screw up
+- foul up
+- blow up
+- flare up
+- act up
+- play up
+- ham up
+- big up
+- talk up
+- hype up
+- pump up
+- psych up
+- jazz up
+- spice up
+- liven up
+- perk up
+- pick up steam
+- gain momentum
+- build momentum
+- lose momentum
+- slow momentum
+- stop dead
+- stop short
+- stop cold
+- grind to a halt
+- come to a standstill
+- come to a stop
+- come to rest
+- settle in
+- dig in
+- hunker in
+- bed in
+- sink in
+- soak in
+- take in
+- drink in
+- breathe in
+- pull in
+- draw in
+- reel in
+- bring in
+- usher in
+- ring in
+- phase in
+- ease in
+- work in
+- fit in
+- blend in
+- mix in
+- factor in
+- figure in
+- weigh in
+- chip in
+- pitch in
+- join in
+- jump in
+- dive in
+- wade in
+- step in
+- come in
+- go in
+- get in
+- let in
+- break in
+- burst in
+- barge in
+- crash in
+- storm in
+- sweep in
+- rush in
+- hurry in
+- run in
+- walk in
+- drop in
+- pop in
+- swing in
+- check in
+- sign in
+- log in
+- clock in
+- tune in
+- zero in
+- home in
+- close in
+- move in
+- settle in
+- stay in
+- remain in
+- keep in
+- hold in
+- bottle in
+- pen in
+- box in
+- fence in
+- hem in
+- lock in
+- seal in
+- trap in
+- catch in
+- get caught in
+- stuck in
+- mired in
+- bogged down in
+- knee deep in
+- up to your neck in
+- drowning in
+- swimming in
+- rolling in
+- wallowing in
+- basking in
+- reveling in
+- delighting in
+- rejoicing in
+
+---
+
+## 14. Success/Failure Cliches
+
+- reach for the stars
+- shoot for the moon
+- aim high
+- aim for the stars
+- sky is the limit
+- no limits
+- limitless potential
+- unlimited possibilities
+- world is your oyster
+- seize the day
+- carpe diem
+- make your mark
+- leave your mark
+- make a name for yourself
+- put yourself on the map
+- climb the ladder
+- climb to the top
+- rise to the top
+- cream rises to the top
+- top of the heap
+- top of the pile
+- top of the food chain
+- king of the hill
+- king of the mountain
+- top dog
+- alpha
+- number one
+- first place
+- gold medal
+- grand prize
+- jackpot
+- hit the jackpot
+- strike it rich
+- strike gold
+- hit pay dirt
+- hit the mother lode
+- cash in
+- make a killing
+- make a fortune
+- make it big
+- make it
+- you've made it
+- arrived
+- you've arrived
+- at the top of your game
+- on top of the world
+- sitting pretty
+- living the dream
+- dream come true
+- dreams do come true
+- fairy tale ending
+- happily ever after
+- storybook ending
+- picture perfect
+- perfect ending
+- happy ending
+- success story
+- rags to riches
+- rise from nothing
+- self made
+- self made man
+- self made woman
+- pull yourself up by your bootstraps
+- bootstrap
+- from the ground up
+- build from scratch
+- start from scratch
+- from humble beginnings
+- humble origins
+- modest beginnings
+- come from nothing
+- make something of yourself
+- make your own luck
+- create your own destiny
+- forge your own path
+- blaze your own trail
+- chart your own course
+- write your own story
+- be your own hero
+- master of your fate
+- captain of your soul
+- take control
+- take charge
+- take the reins
+- grab the bull by the horns
+- seize control
+- seize opportunity
+- seize the moment
+- make the most of
+- maximize potential
+- reach potential
+- fulfill potential
+- realize potential
+- unlock potential
+- tap into potential
+- live up to potential
+- exceed expectations
+- surpass expectations
+- blow away expectations
+- knock it out of the park
+- hit it out of the park
+- home run
+- grand slam
+- slam dunk
+- touchdown
+- score
+- winning
+- winner
+- champion
+- victor
+- victorious
+- triumph
+- triumphant
+- conquer
+- overcome
+- prevail
+- succeed
+- successful
+- achievement
+- accomplish
+- accomplishment
+- attain
+- attainment
+- reach
+- goal reached
+- mission accomplished
+- objective met
+- target hit
+- bull's eye
+- nailed it
+- crushed it
+- killed it
+- smashed it
+- aced it
+- owned it
+- mastered it
+- perfected
+- flawless
+- impeccable
+- outstanding
+- exceptional
+- excellent
+- superior
+- remarkable
+- extraordinary
+- phenomenal
+- spectacular
+- magnificent
+- brilliant
+- genius
+- masterstroke
+- masterpiece
+- tour de force
+- crowning achievement
+- crowning glory
+- finest hour
+- shining moment
+- moment of glory
+- glory days
+- golden age
+- heyday
+- prime time
+- in your prime
+- at your peak
+- peak performance
+- personal best
+- new record
+- break records
+- set records
+- make history
+- historic achievement
+- milestone
+- landmark
+- breakthrough
+- game changer
+- paradigm shift
+- turning point
+- watershed moment
+- defining moment
+- pivotal moment
+- back to square one
+- back to the drawing board
+- start over
+- begin again
+- from scratch
+- ground zero
+- rock bottom
+- hit rock bottom
+- bottom of the barrel
+- scraping the bottom
+- lowest point
+- low point
+- nadir
+- depths
+- in the dumps
+- down in the dumps
+- down and out
+- down on your luck
+- hard times
+- tough times
+- rough patch
+- rough times
+- difficult times
+- challenging times
+- trying times
+- dark times
+- dark days
+- bad days
+- worst days
+- nightmare
+- living nightmare
+- disaster
+- catastrophe
+- calamity
+- fiasco
+- debacle
+- train wreck
+- car crash
+- plane crash
+- crash and burn
+- go down in flames
+- flame out
+- burn out
+- fizzle out
+- peter out
+- die out
+- fade away
+- fade into obscurity
+- fall from grace
+- fall from favor
+- fall apart
+- fall to pieces
+- crumble
+- collapse
+- implode
+- explode
+- blow up
+- blow up in your face
+- backfire
+- misfire
+- come undone
+- unravel
+- spiral down
+- downward spiral
+- death spiral
+- nosedive
+- free fall
+- plummet
+- plunge
+- sink
+- drown
+- go under
+- tank
+- bomb
+- flop
+- fail
+- failure
+- failed
+- unsuccessful
+- defeat
+- defeated
+- loss
+- lost
+- loser
+- also ran
+- second place
+- runner up
+- close but no cigar
+- almost
+- nearly
+- so close
+- close call
+- narrow miss
+- near miss
+- missed opportunity
+- missed chance
+- blown chance
+- wasted opportunity
+- squandered
+- frittered away
+- let slip
+- let slide
+- dropped the ball
+- fumble
+- fumbled
+- stumble
+- stumbled
+- trip up
+- tripped up
+- slip up
+- slipped up
+- mess up
+- messed up
+- screw up
+- screwed up
+- foul up
+- fouled up
+- botch
+- botched
+- bungle
+- bungled
+- blunder
+- blundered
+- mistake
+- error
+- misstep
+- miscalculation
+- miscue
+- misjudgment
+- oversight
+- lapse
+- slip
+- fault
+- flaw
+- weak link
+- Achilles heel
+- fatal flaw
+- chink in the armor
+- feet of clay
+- house of cards
+- glass jaw
+- paper tiger
+- all hat no cattle
+- all bark no bite
+- all talk no action
+- all show no go
+- flash in the pan
+- one hit wonder
+- one trick pony
+- fifteen minutes of fame
+- here today gone tomorrow
+- easy come easy go
+- what goes up must come down
+- pride before a fall
+- pride goes before destruction
+- hubris
+- overconfidence
+- overreach
+- overextend
+- bite off more than you can chew
+- in over your head
+- out of your depth
+- out of your league
+- punching above your weight
+- too big for your britches
+- flying too close to the sun
+- Icarus
+- fall of Icarus
+- wax wings melted
+- burn your wings
+- burn your bridges
+- paint yourself into a corner
+- back yourself into a corner
+- dig your own grave
+- shoot yourself in the foot
+- cut off your nose to spite your face
+- throw the baby out with the bathwater
+- penny wise pound foolish
+- win the battle lose the war
+- pyrrhic victory
+- hollow victory
+- empty victory
+- meaningless win
+- at what cost
+- price of success
+- cost of success
+- sacrifice
+- trade off
+- compromise
+- give and take
+- pros and cons
+- ups and downs
+- highs and lows
+- peaks and valleys
+- roller coaster
+- wild ride
+- bumpy road
+- rocky road
+- long road
+- hard road
+- uphill battle
+- uphill climb
+- steep climb
+- mountain to climb
+- obstacle course
+- hurdle
+- barrier
+- roadblock
+- setback
+- stumbling block
+- speed bump
+- pot hole
+- detour
+- dead end
+- brick wall
+- hit a wall
+- hit the wall
+- run into a wall
+- up against a wall
+- back against the wall
+- between a rock and a hard place
+- caught between
+- stuck between
+- damned if you do
+- no win situation
+- lose lose
+- catch 22
+- double bind
+- impossible situation
+- hopeless situation
+- lost cause
+- sinking ship
+- rats leaving a sinking ship
+- going down with the ship
+- abandon ship
+- white flag
+- wave the white flag
+- throw in the towel
+- give up
+- call it quits
+- cry uncle
+- admit defeat
+- accept defeat
+- concede
+- surrender
+- capitulate
+- yield
+- relent
+- cave
+- cave in
+- buckle
+- buckle under
+- break
+- break down
+- crack
+- crack under pressure
+- fold
+- fold under pressure
+- crumble
+- crumble under pressure
+- wilt
+- wither
+- fade
+- weaken
+- falter
+- waver
+- hesitate
+- doubt
+- second guess
+- lose confidence
+- lose faith
+- lose hope
+- lose heart
+- lose steam
+- lose momentum
+- run out of gas
+- run out of steam
+- hit empty
+- tank is empty
+- nothing left
+- depleted
+- exhausted
+- burnt out
+- worn out
+- tapped out
+- maxed out
+- spent
+- done
+- finished
+- over
+- the end
+- game over
+- that's all folks
+- curtain call
+- final bow
+- last hurrah
+- swan song
+- last gasp
+- death rattle
+- death knell
+- kiss of death
+- nail in the coffin
+- final nail
+- the writing is on the wall
+- handwriting on the wall
+- see the writing
+- read the signs
+- know when it's over
+- know when to quit
+- quit while you're ahead
+- quit while you're behind
+- live to fight another day
+- tomorrow is another day
+- this too shall pass
+- every cloud has a silver lining
+- when one door closes another opens
+- blessing in disguise
+- silver lining
+- look on the bright side
+- glass half full
+- make lemonade
+- when life gives you lemons
+- turn lemons into lemonade
+- bounce back
+- rebound
+- recover
+- comeback
+- make a comeback
+- stage a comeback
+- return
+- come back stronger
+- rise again
+- rise from the ashes
+- phoenix rising
+- second chance
+- another chance
+- fresh start
+- new beginning
+- clean slate
+- new lease on life
+- reinvent yourself
+- start fresh
+- turn over a new leaf
+- new chapter
+- new page
+- next chapter
+- moving on
+- moving forward
+- onward and upward
+- eyes on the prize
+- keep your eyes on the prize
+- never lose sight
+- stay focused
+- stay determined
+- stay motivated
+- stay hungry
+- stay humble
+- learn from mistakes
+- learn from failure
+- failure is a teacher
+- fall down seven times stand up eight
+- get back on the horse
+- dust yourself off
+- pick yourself up
+- try try again
+- never say never
+- never say die
+- it's not over till it's over
+- it ain't over till it's over
+- fat lady sings
+- until the fat lady sings
+- still in the game
+- still standing
+- still fighting
+- still breathing
+- where there's life there's hope
+
+---
+
+## 15. Miscellaneous Common Phrases
+
+- at the end of the day
+- when all is said and done
+- when push comes to shove
+- bottom line
+- the bottom line is
+- long story short
+- to make a long story short
+- cut to the chase
+- get to the point
+- the point is
+- the fact of the matter
+- truth be told
+- to be honest
+- honestly speaking
+- frankly speaking
+- in all honesty
+- in truth
+- the truth is
+- plain and simple
+- pure and simple
+- plain as day
+- clear as day
+- crystal clear
+- clear as crystal
+- clear as mud
+- plain as the nose on your face
+- obvious
+- goes without saying
+- needless to say
+- it stands to reason
+- common sense
+- common knowledge
+- everyone knows
+- as we all know
+- it's a known fact
+- fact of life
+- such is life
+- that's life
+- life goes on
+- life is short
+- life is precious
+- life is what you make it
+- that's the way it is
+- it is what it is
+- things happen
+- stuff happens
+- things change
+- times change
+- nothing lasts forever
+- all good things must come to an end
+- every beginning has an ending
+- what comes around goes around
+- what goes around comes around
+- you reap what you sow
+- as you sow so shall you reap
+- karma
+- instant karma
+- karma's a bitch
+- payback
+- payback's a bitch
+- revenge is a dish best served cold
+- an eye for an eye
+- tit for tat
+- give as good as you get
+- taste of your own medicine
+- two wrongs don't make a right
+- turn the other cheek
+- forgive and forget
+- let bygones be bygones
+- water under the bridge
+- bury the hatchet
+- make peace
+- peace offering
+- olive branch
+- extend an olive branch
+- mend fences
+- bridge building
+- meet halfway
+- find common ground
+- agree to disagree
+- live and let live
+- to each their own
+- different strokes for different folks
+- whatever floats your boat
+- whatever tickles your fancy
+- your mileage may vary
+- one man's trash is another man's treasure
+- one man's meat is another man's poison
+- beauty is in the eye of the beholder
+- there's no accounting for taste
+- takes all kinds
+- variety is the spice of life
+- opposites attract
+- birds of a feather flock together
+- like attracts like
+- great minds think alike
+- two heads are better than one
+- many hands make light work
+- too many cooks spoil the broth
+- too many chiefs not enough Indians
+- the more the merrier
+- strength in numbers
+- united we stand divided we fall
+- there's safety in numbers
+- a chain is only as strong as its weakest link
+- you're only as good as your weakest link
+- together we're stronger
+- teamwork makes the dream work
+- no man is an island
+- no I in team
+- there's no I in team
+- pull your weight
+- carry your own weight
+- do your part
+- shoulder to shoulder
+- side by side
+- hand in hand
+- arm in arm
+- joined at the hip
+- thick as thieves
+- peas in a pod
+- two peas in a pod
+- cut from the same cloth
+- chip off the old block
+- apple doesn't fall far from the tree
+- like father like son
+- like mother like daughter
+- runs in the family
+- blood is thicker than water
+- family first
+- blood relatives
+- next of kin
+- nearest and dearest
+- kith and kin
+- close knit
+- tight knit
+- family ties
+- family bonds
+- bound by blood
+- bound together
+- stick together
+- stand together
+- rise together
+- fall together
+- sink or swim together
+- all for one and one for all
+- in this together
+- we're all in this together
+- same boat
+- all in the same boat
+- on the same page
+- on the same wavelength
+- speak the same language
+- see eye to eye
+- of one mind
+- of the same mind
+- in agreement
+- in accord
+- in sync
+- in harmony
+- in tune
+- out of tune
+- out of sync
+- out of step
+- march to a different drummer
+- march to the beat of your own drum
+- dance to your own tune
+- do your own thing
+- be yourself
+- be true to yourself
+- stay true to yourself
+- know yourself
+- to thine own self be true
+- find yourself
+- lose yourself
+- express yourself
+- prove yourself
+- better yourself
+- improve yourself
+- reinvent yourself
+- make yourself
+- unmake yourself
+- question everything
+- think for yourself
+- speak for yourself
+- stand on your own two feet
+- stand alone
+- go it alone
+- lone wolf
+- solo act
+- one man show
+- one woman show
+- single handed
+- on your own
+- by yourself
+- all by yourself
+- all alone
+- lonely at the top
+- heavy is the head that wears the crown
+- with great power comes great responsibility
+- power corrupts
+- absolute power corrupts absolutely
+- money talks
+- money makes the world go round
+- money is the root of all evil
+- love of money is the root of all evil
+- can't buy happiness
+- money can't buy love
+- money can't buy happiness
+- rich or poor
+- from rags to riches
+- born with a silver spoon
+- rolling in dough
+- made of money
+- money to burn
+- filthy rich
+- stinking rich
+- dirt poor
+- poor as a church mouse
+- penny pincher
+- pinching pennies
+- watching your pennies
+- every penny counts
+- a penny saved is a penny earned
+- in for a penny in for a pound
+- penny wise pound foolish
+- dime a dozen
+- two cents
+- my two cents
+- put in your two cents
+- worth every penny
+- not worth a dime
+- nickel and dime
+- dollar short and day late
+- bet your bottom dollar
+- million dollar question
+- sixty four thousand dollar question
+- show me the money
+- follow the money
+- put your money where your mouth is
+- talk is cheap
+- actions speak louder than words
+- walk the walk
+- talk the talk
+- practice what you preach
+- lead by example
+- do as I say not as I do
+- easier said than done
+- the proof is in the pudding
+- the proof of the pudding is in the eating
+- seeing is believing
+- believe it or not
+- believe it when I see it
+- I'll believe it when I see it
+- truth is stranger than fiction
+- you can't make this stuff up
+- stranger things have happened
+- miracles happen
+- anything is possible
+- nothing is impossible
+- sky is the limit
+- reach for the stars
+- dream big
+- think big
+- go big or go home
+- all or nothing
+- make it or break it
+- do or die
+- sink or swim
+- now or never
+- once in a lifetime
+- opportunity of a lifetime
+- chance of a lifetime
+- experience of a lifetime
+- trip of a lifetime
+- adventure of a lifetime
+- best of times
+- worst of times
+- good times and bad
+- through thick and thin
+- for better or worse
+- come what may
+- rain or shine
+- no matter what
+- whatever it takes
+- by any means necessary
+- by hook or by crook
+- fair means or foul
+- the ends justify the means
+- fight fair
+- play fair
+- play by the rules
+- bend the rules
+- break the rules
+- rules are made to be broken
+- rules are meant to be broken
+- exception to the rule
+- rule of thumb
+- golden rule
+- unwritten rule
+- house rules
+- ground rules
+- set the rules
+- make the rules
+- follow the rules
+- color outside the lines
+- think outside the box
+- outside the box
+- box yourself in
+- break the mold
+- cut from a different cloth
+- one of a kind
+- in a class by itself
+- in a league of its own
+- world class
+- top notch
+- first rate
+- second to none
+- best of the best
+- cream of the crop
+- pick of the litter
+- diamond in the rough
+- hidden gem
+- rough around the edges
+- needs work
+- work in progress
+- under construction
+- under development
+- in the works
+- in the pipeline
+- on the horizon
+- coming soon
+- just around the corner
+- any day now
+- any minute now
+- before you know it
+- in no time
+- in the blink of an eye
+- in a flash
+- quick as a wink
+- faster than you can say
+- slow but sure
+- slow and steady
+- slow and steady wins the race
+- haste makes waste
+- more haste less speed
+- look before you leap
+- measure twice cut once
+- better safe than sorry
+- an ounce of prevention is worth a pound of cure
+- prevention is better than cure
+- nip it in the bud
+- a stitch in time saves nine
+- early bird catches the worm
+- the early bird gets the worm
+- first come first served
+- you snooze you lose
+- strike while the iron is hot
+- make hay while the sun shines
+- there's no time like the present
+- no time to waste
+- time is of the essence
+- time waits for no one
+- time and tide wait for no man
+- lost time is never found
+- time is money
+- time is precious
+- time flies
+- time heals all wounds
+- only time will tell
+- give it time
+- all in good time
+- in the fullness of time
+- it's about time
+- high time
+- just in time
+- nick of time
+- ahead of time
+- behind the times
+- sign of the times
+- spirit of the times
+- zeitgeist
+- sign of the ages
+- timeless
+- eternal
+- forever and a day
+- till the end of time
+- from the beginning of time
+- since time immemorial
+- age old
+- old as the hills
+- old as dirt
+- old school
+- new school
+- old guard
+- new guard
+- out with the old in with the new
+- new and improved
+- same old same old
+- same old story
+- history repeats itself
+- those who don't learn from history are doomed to repeat it
+- learn from the past
+- look to the future
+- live in the present
+- here and now
+- in the moment
+- seize the day
+- make every moment count
+- every second counts
+- time is ticking
+- clock is ticking
+- race against time
+- running out of time
+- time is running out
+- borrowed time
+- living on borrowed time
+- time will tell
+- only time will tell
+- the test of time
+- stand the test of time
+- withstand the test of time
+- age like fine wine
+- get better with age
+- like a fine wine
+- vintage
+- classic
+- timeless classic
+- oldie but goodie
+- tried and true
+- tried and tested
+- time tested
+- proven
+- reliable
+- dependable
+- solid
+- rock solid
+- steady as a rock
+- sure thing
+- safe bet
+- good bet
+- bet on it
+- count on it
+- bank on it
+- you can take that to the bank
+- guaranteed
+- without a doubt
+- no doubt about it
+- beyond a shadow of a doubt
+- doubt it
+- I doubt it
+- I have my doubts
+- benefit of the doubt
+- give the benefit of the doubt
+- shadow of a doubt
+- reasonable doubt
+- food for thought
+- something to think about
+- think about it
+- think it over
+- sleep on it
+- let it sink in
+- let it marinate
+- digest it
+- chew on it
+- mull it over
+- ponder
+- consider
+- weigh your options
+- weigh the pros and cons
+- on one hand on the other hand
+- on the flip side
+- on the other side of the coin
+- two sides to every story
+- two sides of the same coin
+- flip of a coin
+- toss up
+- coin toss
+- heads or tails
+- luck of the draw
+- luck of the Irish
+- beginner's luck
+- dumb luck
+- pure luck
+- stroke of luck
+- lucky break
+- lucky streak
+- winning streak
+- losing streak
+- hot streak
+- cold streak
+- on a roll
+- when it rains it pours
+- feast or famine
+- all or nothing
+- boom or bust
+- hit or miss
+- make or break
+- touch and go
+- nip and tuck
+- neck and neck
+- down to the wire
+- right down to the wire
+- photo finish
+- by a hair
+- by a nose
+- by the skin of your teeth
+- close call
+- close shave
+- near miss
+- narrow escape
+- dodged a bullet
+- lucky escape
+- got away with it
+- off the hook
+- let off the hook
+- in the clear
+- home free
+- out of the woods
+- safe and sound
+- safe as houses
+- in safe hands
+- in good hands
+- look after
+- take care of
+- care for
+- watch over
+- keep an eye on
+- keep tabs on
+- stay on top of
+- on top of things
+- in control
+- under control
+- out of control
+- spiraling out of control
+- losing control
+- lost control
+- regain control
+- take back control
+- back in control
+- in the driver's seat
+- behind the wheel
+- at the helm
+- in charge
+- calling the shots
+- running the show
+- in the spotlight
+- center stage
+- front and center
+- take center stage
+- steal the spotlight
+- steal the show
+- show stopper
+- scene stealer
+- star of the show
+- main attraction
+- center of attention
+- all eyes on
+- in the public eye
+- under scrutiny
+- under the microscope
+- under the spotlight
+- in the limelight
+- out of the limelight
+- behind the scenes
+- behind closed doors
+- under the table
+- under wraps
+- under the radar
+- off the record
+- on the record
+- for the record
+- set the record straight
+- on the books
+- by the book
+- by the numbers
+- by the letter
+- to the letter
+- down to the letter
+- dot the i's and cross the t's
+- every i dotted every t crossed
+- thorough
+- meticulous
+- painstaking
+- attention to detail
+- devil is in the details
+- god is in the details
+- big picture
+- see the big picture
+- lose sight of the big picture
+- miss the forest for the trees
+- can't see the forest for the trees
+- zoom in
+- zoom out
+- step back
+- take a step back
+- bird's eye view
+- worm's eye view
+- from above
+- from below
+- from the ground up
+- from top to bottom
+- from head to toe
+- from start to finish
+- from beginning to end
+- from A to Z
+- the whole nine yards
+- the whole enchilada
+- the whole shebang
+- the whole kit and caboodle
+- lock stock and barrel
+- hook line and sinker
+- every last bit
+- every single one
+- each and every
+- one and all
+- all and sundry
+- without exception
+- no exceptions
+- across the board
+- bar none
+- hands down
+- no contest
+- no question
+- no doubt
+- absolutely
+- definitely
+- certainly
+- surely
+- for sure
+- for certain
+- without fail
+- come hell or high water
+- against all odds
+- despite the odds
+- beat the odds
+- odds are
+- odds are in your favor
+- odds are against you
+- long odds
+- slim chance
+- fat chance
+- snowball's chance in hell
+- not a chance
+- no way
+- no way Jose
+- not on your life
+- over my dead body
+- when pigs fly
+- when hell freezes over
+- never in a million years
+- don't hold your breath
+- dream on
+- in your dreams
+- wish upon a star
+- wishing and hoping
+- wishful thinking
+- pipe dream
+- fantasy
+- make believe
+- fairy tale
+- once upon a time
+- happily ever after
+- storybook ending
+- too good to be true
+- pinch me I'm dreaming
+- is this real
+- reality check
+- wake up call
+- rude awakening
+- harsh reality
+- cold hard truth
+- inconvenient truth
+- ugly truth
+- naked truth
+- unvarnished truth
+- whole truth
+- gospel truth
+- honest truth
+- truth hurts
+- bitter pill to swallow
+- hard to swallow
+- tough pill
+- harsh medicine
+- strong medicine
+- dose of reality
+- face the music
+- face the facts
+- face it
+- deal with it
+- get over it
+- move on
+- let it go
+- water off a duck's back
+- roll with the punches
+- go with the flow
+- take it as it comes
+- one day at a time
+- day by day
+- step by step
+- little by little
+- bit by bit
+- inch by inch
+- slowly but surely
+- steady progress
+- making progress
+- getting there
+- almost there
+- so close
+- getting closer
+- closing in
+- within reach
+- within grasp
+- at your fingertips
+- just around the corner
+- light at the end of the tunnel
+- see the light
+- find the light
+- toward the light
+- better days ahead
+- brighter days are coming
+- this too shall pass
+- hang in there
+- keep the faith
+- never lose hope
+- hope for the best
+- prepare for the worst
+- expect the unexpected
+- be prepared
+- stay ready
+- ready for anything
+- bring it on
+- game on
+- let's do this
+- here goes nothing
+- here we go
+- and so it begins
+- the journey begins
+- and so it ends
+- the end is near
+- the beginning of the end
+- the end of an era
+- new era
+- new chapter
+- new beginning
+- fresh start
+- clean slate
+- blank canvas
+- empty page
+- new day
+- new dawn
+- new hope
+- renewed hope
+- second wind
+- second chance
+- another chance
+- one more time
+- once more
+- again and again
+- over and over
+- time after time
+- day after day
+- year after year
+- generation after generation
+- on and on
+- forever and ever
+- world without end
+- amen

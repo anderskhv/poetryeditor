@@ -686,6 +686,52 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
           font-weight: 600 !important;
         }
 
+        /* Dark mode highlight adjustments */
+        :root.dark-mode .scansion-line-highlighted {
+          background-color: rgba(251, 192, 45, 0.25) !important;
+          border-left: 3px solid #FBC02D !important;
+        }
+
+        :root.dark-mode .rhyme-word-highlighted {
+          background-color: rgba(251, 192, 45, 0.35) !important;
+          box-shadow: 0 0 0 2px rgba(251, 192, 45, 0.4);
+          color: #fff !important;
+        }
+
+        :root.dark-mode .meter-line-highlighted {
+          background-color: rgba(102, 126, 234, 0.25) !important;
+        }
+
+        :root.dark-mode .pos-highlighted {
+          background-color: rgba(102, 126, 234, 0.35) !important;
+        }
+
+        :root.dark-mode .passive-voice-highlight {
+          background-color: rgba(249, 168, 37, 0.35) !important;
+          border-bottom-color: #FBC02D !important;
+        }
+
+        :root.dark-mode .tense-verb-highlight {
+          background-color: rgba(186, 104, 200, 0.35) !important;
+          border-bottom-color: #BA68C8 !important;
+        }
+
+        :root.dark-mode .scansion-unstressed {
+          color: #9e9e9e !important;
+        }
+
+        :root.dark-mode .meter-perfect {
+          color: #66BB6A !important;
+        }
+
+        :root.dark-mode .meter-close {
+          color: #FFB74D !important;
+        }
+
+        :root.dark-mode .meter-violation {
+          color: #EF5350 !important;
+        }
+
         /* Remove all boxes, borders, and decorations from Monaco editor */
         .monaco-editor .squiggly-inline-unnecessary,
         .monaco-editor .squiggly-error,
@@ -809,6 +855,13 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
           onChange={(e) => onTitleChange(e.target.value)}
           placeholder="Untitled"
           aria-label="Poem title"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck="false"
+          data-1p-ignore
+          data-lpignore="true"
+          data-form-type="other"
         />
       </div>
       <Editor

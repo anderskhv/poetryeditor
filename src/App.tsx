@@ -22,70 +22,19 @@ interface SavedPoem {
   updatedAt: string;
 }
 
-// Example poems for quick loading
-const EXAMPLE_POEMS: Record<string, { name: string; content: string }> = {
-  haiku: {
-    name: 'Haiku',
-    content: `An old silent pond
-A frog jumps into the pond
-Splash! Silence again`
-  },
-  sonnet: {
-    name: 'Sonnet (Shakespeare)',
-    content: `Shall I compare thee to a summer's day?
-Thou art more lovely and more temperate.
-Rough winds do shake the darling buds of May,
-And summer's lease hath all too short a date.
-Sometime too hot the eye of heaven shines,
-And often is his gold complexion dimmed;
-And every fair from fair sometime declines,
-By chance, or nature's changing course, untrimmed;
-But thy eternal summer shall not fade,
-Nor lose possession of that fair thou ow'st,
-Nor shall death brag thou wand'rest in his shade,
-When in eternal lines to Time thou grow'st.
-So long as men can breathe, or eyes can see,
-So long lives this, and this gives life to thee.`
-  },
-  limerick: {
-    name: 'Limerick',
-    content: `There once was a man from Nantucket
-Who kept all his cash in a bucket
-His daughter named Nan
-Ran away with a man
-And as for the bucket, Nan took it`
-  },
-  freeVerse: {
-    name: 'Free Verse (Whitman)',
-    content: `I celebrate myself, and sing myself,
-And what I assume you shall assume,
-For every atom belonging to me as good belongs to you.
-
-I loafe and invite my soul,
-I lean and loafe at my ease observing a spear of summer grass.`
-  },
-  blankVerse: {
-    name: 'Blank Verse (Milton)',
-    content: `Of Man's first disobedience, and the fruit
-Of that forbidden tree whose mortal taste
-Brought death into the World, and all our woe,
-With loss of Eden, till one greater Man
-Restore us, and regain the blissful seat,
-Sing, Heavenly Muse`
-  }
-};
-
 function App() {
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
   const [, setIsDictionaryLoading] = useState<boolean>(true);
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
+  const [hasEverOpenedPanel, setHasEverOpenedPanel] = useState<boolean>(() => {
+    return localStorage.getItem('hasOpenedAnalysisPanel') === 'true';
+  });
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem('darkMode');
     return saved === 'true';
   });
-  const [showExamples, setShowExamples] = useState<boolean>(false);
   const [showPoemList, setShowPoemList] = useState<boolean>(false);
   const [savedPoems, setSavedPoems] = useState<SavedPoem[]>(() => {
     const saved = localStorage.getItem('savedPoems');
@@ -248,20 +197,6 @@ function App() {
     setLastSavedContent(null);
   };
 
-  const handleLoadExample = (key: string) => {
-    const example = EXAMPLE_POEMS[key];
-    if (example) {
-      if (hasUnsavedChanges && !confirm(`Load "${example.name}" example? You have unsaved changes that will be lost.`)) {
-        return;
-      }
-      setText(example.content);
-      setCurrentPoemId(null); // Examples are not saved poems
-      setPoemTitle(example.name); // Use example name as title
-      setLastSavedContent(null); // Mark as not saved
-      setShowExamples(false);
-    }
-  };
-
   const [showExportMenu, setShowExportMenu] = useState<boolean>(false);
 
   const handleExportPoem = (format: 'txt' | 'md') => {
@@ -350,9 +285,8 @@ function App() {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (!target.closest('.poems-dropdown') && !target.closest('.examples-dropdown') && !target.closest('.export-dropdown')) {
+      if (!target.closest('.poems-dropdown') && !target.closest('.export-dropdown')) {
         setShowPoemList(false);
-        setShowExamples(false);
         setShowExportMenu(false);
       }
     };
@@ -411,29 +345,6 @@ function App() {
             <button onClick={handleSavePoem} className="btn btn-secondary">
               Save
             </button>
-            <div className="examples-dropdown">
-              <button
-                onClick={() => setShowExamples(!showExamples)}
-                className="btn btn-secondary"
-                aria-label="Load example poem"
-                aria-expanded={showExamples}
-              >
-                Examples
-              </button>
-              {showExamples && (
-                <div className="examples-menu">
-                  {Object.entries(EXAMPLE_POEMS).map(([key, poem]) => (
-                    <button
-                      key={key}
-                      className="example-item"
-                      onClick={() => handleLoadExample(key)}
-                    >
-                      {poem.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
             <button onClick={handleNewPoem} className="btn btn-secondary">
               New Poem
             </button>
@@ -499,11 +410,18 @@ function App() {
           />
 
           <button
-            className={`panel-toggle ${isPanelOpen ? 'open' : ''}`}
-            onClick={() => setIsPanelOpen(!isPanelOpen)}
+            className={`panel-toggle ${isPanelOpen ? 'open' : ''} ${!hasEverOpenedPanel && !isPanelOpen ? 'pulse-attention' : ''}`}
+            onClick={() => {
+              const opening = !isPanelOpen;
+              setIsPanelOpen(opening);
+              if (opening && !hasEverOpenedPanel) {
+                setHasEverOpenedPanel(true);
+                localStorage.setItem('hasOpenedAnalysisPanel', 'true');
+              }
+            }}
             title={isPanelOpen ? 'Close analysis panel' : 'Open analysis panel'}
           >
-            {isPanelOpen ? '›' : '‹'}
+            {isPanelOpen ? '›' : <><span className="panel-toggle-text">Analysis</span> ‹</>}
           </button>
         </div>
 
@@ -533,11 +451,10 @@ function App() {
 
       <footer className="app-footer">
         <div className="footer-content">
-          <span>Poetry Editor v1.0</span>
-          <span>•</span>
-          <span>Real-time POS tagging and meter detection</span>
-          <span>•</span>
-          <span>Auto-saves to browser storage</span>
+          <span>Free online poetry analyzer: syllable counter, rhyme scheme detector, scansion tool, meter analysis, and more.</span>
+        </div>
+        <div className="footer-copyright">
+          <span>© {new Date().getFullYear()} poetryeditor.com</span>
         </div>
       </footer>
     </div>

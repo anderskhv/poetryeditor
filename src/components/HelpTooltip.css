@@ -1,0 +1,275 @@
+/* Help Tooltip Component Styles */
+
+/* Info Icon Trigger Button */
+.help-tooltip-trigger {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  padding: 0;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.help-tooltip-trigger:hover {
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.help-tooltip-trigger:focus {
+  outline: none;
+  color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.help-tooltip-trigger svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Modal Backdrop */
+.help-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: backdropFadeIn 0.15s ease;
+  padding: 20px;
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.help-modal {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 480px;
+  width: 100%;
+  max-height: calc(100vh - 40px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: modalSlideIn 0.2s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Modal Header */
+.help-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.help-modal-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  letter-spacing: -0.01em;
+}
+
+.help-modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  padding: 0;
+  margin: -4px -8px -4px 0;
+}
+
+.help-modal-close:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.help-modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Modal Content */
+.help-modal-content {
+  padding: 20px 24px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #374151;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.help-modal-content p {
+  margin: 0 0 14px;
+}
+
+.help-modal-content p:last-child {
+  margin-bottom: 0;
+}
+
+.help-modal-content ul {
+  margin: 12px 0;
+  padding-left: 20px;
+}
+
+.help-modal-content li {
+  margin-bottom: 8px;
+  padding-left: 4px;
+}
+
+.help-modal-content li:last-child {
+  margin-bottom: 0;
+}
+
+.help-modal-content strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+/* Modal Footer */
+.help-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.help-modal-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #667eea;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.help-modal-link:hover {
+  color: #5a6fd6;
+}
+
+.help-modal-link svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Dark Mode Support */
+:root.dark-mode .help-tooltip-trigger {
+  color: #6b7280;
+}
+
+:root.dark-mode .help-tooltip-trigger:hover {
+  color: #818cf8;
+  background: rgba(129, 140, 248, 0.15);
+}
+
+:root.dark-mode .help-modal-backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+:root.dark-mode .help-modal {
+  background: #1f2937;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+:root.dark-mode .help-modal-header {
+  border-bottom-color: #374151;
+}
+
+:root.dark-mode .help-modal-title {
+  color: #f3f4f6;
+}
+
+:root.dark-mode .help-modal-close {
+  color: #9ca3af;
+}
+
+:root.dark-mode .help-modal-close:hover {
+  background: #374151;
+  color: #f3f4f6;
+}
+
+:root.dark-mode .help-modal-content {
+  color: #d1d5db;
+}
+
+:root.dark-mode .help-modal-content strong {
+  color: #f3f4f6;
+}
+
+:root.dark-mode .help-modal-footer {
+  border-top-color: #374151;
+  background: #111827;
+}
+
+:root.dark-mode .help-modal-link {
+  color: #818cf8;
+}
+
+:root.dark-mode .help-modal-link:hover {
+  color: #a5b4fc;
+}
+
+/* Responsive adjustments */
+@media (max-width: 520px) {
+  .help-modal {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .help-modal-header {
+    padding: 16px 20px 12px;
+  }
+
+  .help-modal-title {
+    font-size: 18px;
+  }
+
+  .help-modal-content {
+    padding: 16px 20px;
+    font-size: 14px;
+  }
+
+  .help-modal-footer {
+    padding: 14px 20px;
+  }
+}

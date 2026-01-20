@@ -15,6 +15,11 @@ import { analyzeSoundPatterns } from '../utils/soundPatterns';
 import { analyzeTense, type TenseInstance } from '../utils/tenseChecker';
 import { analyzeScansion, getScansionInstances, type StressedSyllableInstance } from '../utils/scansionAnalyzer';
 import { analyzeMetaphors } from '../utils/metaphorDetector';
+import { analyzeCliches } from '../utils/phraseClicheDetector';
+import { analyzeAbstractConcrete } from '../utils/abstractConcreteAnalyzer';
+import { detectFirstDraftPhrases } from '../utils/firstDraftPhrases';
+import { detectDeadMetaphors, getCategoryDisplayName } from '../utils/deadMetaphors';
+import { HelpTooltip, HELP_CONTENT } from './HelpTooltip';
 import './AnalysisPanel.css';
 
 interface AnalysisPanelProps {
@@ -58,7 +63,7 @@ interface AnalysisPanelProps {
 }
 
 type CategoryTab = 'rhythm' | 'rhymes' | 'words' | 'originality';
-type ExpandedSection = 'syllables' | 'repetition' | 'pos' | 'adverbSuggestions' | 'doubleAdverbs' | 'passiveVoice' | 'rhythmVariation' | 'stanzaStructure' | 'lineLength' | 'punctuation' | 'rhymeScheme' | 'rhymeOverview' | 'internalRhymes' | 'poeticForm' | 'soundPatterns' | 'tenseConsistency' | 'scansion' | 'figurativeLanguage' | null;
+type ExpandedSection = 'syllables' | 'repetition' | 'pos' | 'adverbSuggestions' | 'doubleAdverbs' | 'passiveVoice' | 'rhythmVariation' | 'stanzaStructure' | 'lineLength' | 'punctuation' | 'rhymeScheme' | 'rhymeOverview' | 'internalRhymes' | 'poeticForm' | 'soundPatterns' | 'tenseConsistency' | 'scansion' | 'figurativeLanguage' | 'cliches' | 'abstractConcrete' | 'firstDraftPhrases' | null;
 
 export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllableExpand, onRhythmVariationExpand, onLineLengthExpand, onPunctuationExpand, onSectionCollapse, onHighlightLines, onHighlightWords, onPassiveVoiceExpand, onTenseExpand, onScansionExpand, editorHoveredLine }: AnalysisPanelProps) {
   const [activeCategory, setActiveCategory] = useState<CategoryTab>('rhythm');
@@ -79,6 +84,23 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
     }
     loadSuggestions();
   }, [words]);
+
+  // Clear highlighting and coloring data when section or category changes
+  useEffect(() => {
+    // Clear any existing highlighting when the expanded section changes
+    onHighlightLines?.(null);
+    onHighlightWords?.(null);
+    // Also clear any coloring modes (meter, syllable, etc.)
+    onSectionCollapse?.();
+  }, [expandedSection, activeCategory]);
+
+  // Clear highlighting on unmount
+  useEffect(() => {
+    return () => {
+      onHighlightLines?.(null);
+      onHighlightWords?.(null);
+    };
+  }, [onHighlightLines, onHighlightWords]);
 
   // Wikipedia URLs for poetic forms
   const WIKIPEDIA_URLS: Record<string, string> = {
@@ -154,6 +176,10 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
     const tenseAnalysis = analyzeTense(text);
     const scansionAnalysis = analyzeScansion(text);
     const metaphorAnalysis = analyzeMetaphors(text);
+    const clicheAnalysis = analyzeCliches(text);
+    const abstractConcreteAnalysis = analyzeAbstractConcrete(text);
+    const firstDraftAnalysis = detectFirstDraftPhrases(text);
+    const deadMetaphorAnalysis = detectDeadMetaphors(text);
 
     // If user selected a form, evaluate fit for that specific form
     let manualFormFit: { fit: 'high' | 'medium' | 'low' | 'none'; fitScore?: number; issues?: string[] } | null = null;
@@ -273,6 +299,10 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       tenseAnalysis,
       scansionAnalysis,
       metaphorAnalysis,
+      clicheAnalysis,
+      abstractConcreteAnalysis,
+      firstDraftAnalysis,
+      deadMetaphorAnalysis,
     };
   }, [text, words, selectedForm]);
 
@@ -333,6 +363,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('syllables')} className={`collapsible-header ${analysis.activeForm && isConstrained(analysis.activeForm, 'syllablePattern') ? 'constrained' : ''}`}>
         <span className={`collapse-icon ${expandedSection === 'syllables' ? 'expanded' : ''}`}>▶</span>
         Syllable Pattern
+        <HelpTooltip {...HELP_CONTENT.syllableCount} />
         {getConstraintIcon('syllablePattern', { fitScore: analysis.manualFormFit?.fitScore || analysis.poeticForm.fitScore, fit: analysis.manualFormFit?.fit || analysis.poeticForm.fit })}
       </h3>
       {expandedSection === 'syllables' && (
@@ -414,6 +445,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('pos')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'pos' ? 'expanded' : ''}`}>▶</span>
         Word Types
+        <HelpTooltip {...HELP_CONTENT.wordTypes} />
         {(() => {
           // Check for problematic word type ratios
           const warnings: string[] = [];
@@ -528,9 +560,10 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('adverbSuggestions')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'adverbSuggestions' ? 'expanded' : ''}`}>▶</span>
         Adverb+verb combinations
+        <HelpTooltip {...HELP_CONTENT.adverbUsage} />
         {suggestionsWithAlternatives.length > 0 && (
-          <span className="word-type-warning" title={`${suggestionsWithAlternatives.length} suggestion(s) available`}>
-            💡
+          <span className="issue-count-badge" title={`${suggestionsWithAlternatives.length} suggestion(s) available`}>
+            {suggestionsWithAlternatives.length}
           </span>
         )}
       </h3>
@@ -551,8 +584,11 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
                     <div
                       key={key}
                       className={`adverb-suggestion-item ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
-                      onMouseEnter={() => onHighlightLines?.([suggestion.lineIndex + 1])}
-                      onMouseLeave={() => onHighlightLines?.(null)}
+                      onMouseEnter={() => onHighlightWords?.([
+                        { word: suggestion.adverb, lineNumber: suggestion.lineIndex + 1 },
+                        { word: suggestion.verb, lineNumber: suggestion.lineIndex + 1 }
+                      ])}
+                      onMouseLeave={() => onHighlightWords?.(null)}
                     >
                       <div className="adverb-suggestion-header">
                         <span className="adverb-suggestion-original">
@@ -598,9 +634,10 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('doubleAdverbs')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'doubleAdverbs' ? 'expanded' : ''}`}>▶</span>
         Double Adverbs
+        <HelpTooltip {...HELP_CONTENT.doubleAdverbs} />
         {analysis.doubleAdverbs.length > 0 && (
-          <span className="word-type-warning" title={`${analysis.doubleAdverbs.length} double adverb(s) detected`}>
-            ⚠
+          <span className="issue-count-badge" title={`${analysis.doubleAdverbs.length} double adverb(s) detected`}>
+            {analysis.doubleAdverbs.length}
           </span>
         )}
       </h3>
@@ -620,8 +657,12 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
                   <div
                     key={index}
                     className={`double-adverb-item ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
-                    onMouseEnter={() => onHighlightLines?.([instance.lineIndex + 1])}
-                    onMouseLeave={() => onHighlightLines?.(null)}
+                    onMouseEnter={() => onHighlightWords?.([
+                      { word: instance.adverb1, lineNumber: instance.lineIndex + 1 },
+                      { word: instance.adverb2, lineNumber: instance.lineIndex + 1 },
+                      { word: instance.verb, lineNumber: instance.lineIndex + 1 }
+                    ])}
+                    onMouseLeave={() => onHighlightWords?.(null)}
                   >
                     <div className="double-adverb-header">
                       <span className="double-adverb-phrase">
@@ -649,9 +690,10 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('passiveVoice')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'passiveVoice' ? 'expanded' : ''}`}>▶</span>
         Active vs. Passive Language
+        <HelpTooltip {...HELP_CONTENT.passiveVoice} />
         {analysis.passiveVoiceInstances.length > 0 && (
-          <span className="word-type-warning" title="Passive voice detected">
-            ⚠
+          <span className="issue-count-badge" title={`${analysis.passiveVoiceInstances.length} passive voice instance(s)`}>
+            {analysis.passiveVoiceInstances.length}
           </span>
         )}
       </h3>
@@ -669,8 +711,17 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
                   <div
                     key={lineIndex}
                     className="passive-voice-item"
-                    onMouseEnter={() => onHighlightLines?.([lineIndex + 1])}
-                    onMouseLeave={() => onHighlightLines?.(null)}
+                    onMouseEnter={() => {
+                      // Highlight all passive voice words from all instances on this line
+                      const wordsToHighlight = instances.flatMap(instance =>
+                        instance.text.split(/\s+/).map(word => ({
+                          word: word.replace(/[^a-zA-Z']/g, ''),
+                          lineNumber: lineIndex + 1
+                        }))
+                      ).filter(w => w.word.length > 0);
+                      onHighlightWords?.(wordsToHighlight);
+                    }}
+                    onMouseLeave={() => onHighlightWords?.(null)}
                   >
                     <span className="line-number">Line {lineIndex + 1}:</span>
                     <div className="passive-instances">
@@ -695,9 +746,10 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('soundPatterns')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'soundPatterns' ? 'expanded' : ''}`}>▶</span>
         Sound Patterns
-        {(analysis.soundPatterns.alliterations.length > 0 || analysis.soundPatterns.assonances.length > 0) && (
-          <span className="word-type-warning" title="Sound patterns detected">
-            ✨
+        <HelpTooltip {...HELP_CONTENT.soundPatterns} />
+        {(analysis.soundPatterns.alliterations.length > 0 || analysis.soundPatterns.assonances.length > 0 || analysis.soundPatterns.consonances.length > 0) && (
+          <span className="positive-count-badge" title={`${analysis.soundPatterns.alliterations.length + analysis.soundPatterns.assonances.length + analysis.soundPatterns.consonances.length} sound pattern(s) detected`}>
+            {analysis.soundPatterns.alliterations.length + analysis.soundPatterns.assonances.length + analysis.soundPatterns.consonances.length}
           </span>
         )}
       </h3>
@@ -838,6 +890,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('tenseConsistency')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'tenseConsistency' ? 'expanded' : ''}`}>▶</span>
         Tense Consistency
+        <HelpTooltip {...HELP_CONTENT.tenseConsistency} />
         {!analysis.tenseAnalysis.isConsistent && analysis.tenseAnalysis.instances.length > 0 && (
           <span className="word-type-warning" title="Tense inconsistency detected">
             ⚠
@@ -900,23 +953,6 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
                    analysis.tenseAnalysis.consistency === 'mostly consistent' ? '~ Mostly consistent' : '✗ Mixed tenses'}
                 </div>
               </div>
-              {analysis.tenseAnalysis.inconsistentLines.length > 0 && (
-                <div className="violating-lines">
-                  <div className="violation-header">Lines with tense shifts:</div>
-                  <div className="violation-list">
-                    {analysis.tenseAnalysis.inconsistentLines.map((lineNum) => (
-                      <span
-                        key={lineNum}
-                        className="violation-badge"
-                        onMouseEnter={() => onHighlightLines?.([lineNum + 1])}
-                        onMouseLeave={() => onHighlightLines?.(null)}
-                      >
-                        Line {lineNum + 1}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
             </>
           )}
         </div>
@@ -929,6 +965,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('scansion')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'scansion' ? 'expanded' : ''}`}>▶</span>
         Scansion (Stress Patterns)
+        <HelpTooltip {...HELP_CONTENT.scansion} />
       </h3>
       {expandedSection === 'scansion' && (
         <div className="scansion-info">
@@ -973,7 +1010,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
                   >
                     <span className="scansion-line-label">Line {line.lineIndex + 1}:</span>
                     <span className="scansion-pattern-inline">{line.fullPattern}</span>
-                    <span className="scansion-meter-tag">{line.meterType}</span>
+                    {line.meterType && <span className="scansion-meter-tag">{line.meterType}</span>}
                   </div>
                 ))}
               </div>
@@ -989,9 +1026,10 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('figurativeLanguage')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'figurativeLanguage' ? 'expanded' : ''}`}>▶</span>
         Figurative Language
+        <HelpTooltip {...HELP_CONTENT.figurativeLanguage} />
         {analysis.metaphorAnalysis.instances.length > 0 && (
-          <span className="word-type-warning" title="Figurative language detected">
-            🎭
+          <span className="positive-count-badge" title={`${analysis.metaphorAnalysis.instances.length} figurative language instance(s)`}>
+            {analysis.metaphorAnalysis.instances.length}
           </span>
         )}
       </h3>
@@ -1020,8 +1058,8 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
                   <div
                     key={idx}
                     className="figurative-item"
-                    onMouseEnter={() => onHighlightLines?.([instance.lineIndex + 1])}
-                    onMouseLeave={() => onHighlightLines?.(null)}
+                    onMouseEnter={() => onHighlightWords?.(instance.text.split(/\s+/).map(word => ({ word: word.replace(/[^a-zA-Z]/g, ''), lineNumber: instance.lineIndex + 1 })))}
+                    onMouseLeave={() => onHighlightWords?.(null)}
                   >
                     <div className="figurative-header">
                       <span className={`figurative-type ${instance.type}`}>{instance.type}</span>
@@ -1039,11 +1077,264 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
     </div>
   );
 
+  // Helper function to extract words from a phrase for highlighting
+  const getWordsFromPhrase = (phrase: string, lineNumber: number) => {
+    return phrase.split(/\s+/).map(word => ({
+      word: word.replace(/[^a-zA-Z']/g, ''),
+      lineNumber
+    })).filter(w => w.word.length > 0);
+  };
+
+  // Combined count for cliches and dead metaphors
+  const totalClicheCount = analysis.clicheAnalysis.totalClichesFound + analysis.deadMetaphorAnalysis.count;
+
+  // Cliche Detection Section - Now includes Dead Metaphors
+  const clicheSection = (
+    <div key="cliches" className="analysis-section collapsible">
+      <h3 onClick={() => toggleSection('cliches')} className="collapsible-header">
+        <span className={`collapse-icon ${expandedSection === 'cliches' ? 'expanded' : ''}`}>▶</span>
+        Potential Cliches
+        <HelpTooltip {...HELP_CONTENT.clicheDetection} />
+        {totalClicheCount > 0 && (
+          <span className="cliche-count-badge" title={`${totalClicheCount} potential cliche(s) detected`}>
+            {totalClicheCount}
+          </span>
+        )}
+      </h3>
+      {expandedSection === 'cliches' && (
+        <div className="cliche-detection-info">
+          {totalClicheCount === 0 ? (
+            <div className="cliche-clear">
+              <span className="cliche-clear-icon">✓</span>
+              No common cliches detected. Your language appears fresh and original!
+            </div>
+          ) : (
+            <>
+              <div className="cliche-summary">
+                <div className="cliche-originality-score">
+                  <span className="score-label">Originality Score</span>
+                  <span className={`score-value ${analysis.clicheAnalysis.overallScore >= 80 ? 'high' : analysis.clicheAnalysis.overallScore >= 50 ? 'medium' : 'low'}`}>
+                    {analysis.clicheAnalysis.overallScore}%
+                  </span>
+                </div>
+                <div className="cliche-note">
+                  These phrases may be familiar to readers. Consider if they serve your poem's purpose or could be refreshed.
+                </div>
+              </div>
+              <div className="cliche-list">
+                {/* Show strong cliches first */}
+                {analysis.clicheAnalysis.strongCliches.map((cliche, idx) => (
+                  <div
+                    key={`strong-${idx}`}
+                    className="cliche-item cliche-strong"
+                    onMouseEnter={() => onHighlightWords?.(getWordsFromPhrase(cliche.phrase, cliche.lineNumber))}
+                    onMouseLeave={() => onHighlightWords?.(null)}
+                  >
+                    <div className="cliche-phrase">"{cliche.phrase}"</div>
+                    <div className="cliche-meta">
+                      <span className="cliche-category">{cliche.category}</span>
+                      <span className="cliche-line">Line {cliche.lineNumber}</span>
+                    </div>
+                  </div>
+                ))}
+                {/* Then moderate cliches */}
+                {analysis.clicheAnalysis.moderateCliches.map((cliche, idx) => (
+                  <div
+                    key={`moderate-${idx}`}
+                    className="cliche-item cliche-moderate"
+                    onMouseEnter={() => onHighlightWords?.(getWordsFromPhrase(cliche.phrase, cliche.lineNumber))}
+                    onMouseLeave={() => onHighlightWords?.(null)}
+                  >
+                    <div className="cliche-phrase">"{cliche.phrase}"</div>
+                    <div className="cliche-meta">
+                      <span className="cliche-category">{cliche.category}</span>
+                      <span className="cliche-line">Line {cliche.lineNumber}</span>
+                    </div>
+                  </div>
+                ))}
+                {/* Finally mild cliches */}
+                {analysis.clicheAnalysis.mildCliches.map((cliche, idx) => (
+                  <div
+                    key={`mild-${idx}`}
+                    className="cliche-item cliche-mild"
+                    onMouseEnter={() => onHighlightWords?.(getWordsFromPhrase(cliche.phrase, cliche.lineNumber))}
+                    onMouseLeave={() => onHighlightWords?.(null)}
+                  >
+                    <div className="cliche-phrase">"{cliche.phrase}"</div>
+                    <div className="cliche-meta">
+                      <span className="cliche-category">{cliche.category}</span>
+                      <span className="cliche-line">Line {cliche.lineNumber}</span>
+                    </div>
+                  </div>
+                ))}
+                {/* Dead metaphors section */}
+                {analysis.deadMetaphorAnalysis.count > 0 && (
+                  <>
+                    <div className="dead-metaphor-header-in-cliches">
+                      Dead Metaphors
+                    </div>
+                    <div className="dead-metaphor-note-in-cliches">
+                      Once vivid comparisons, now so common readers no longer "see" the image.
+                    </div>
+                    {analysis.deadMetaphorAnalysis.metaphors.map((metaphor, idx) => (
+                      <div
+                        key={`dead-${idx}`}
+                        className="cliche-item dead-metaphor-item-in-cliches"
+                        onMouseEnter={() => onHighlightWords?.(getWordsFromPhrase(metaphor.phrase, metaphor.lineNumber))}
+                        onMouseLeave={() => onHighlightWords?.(null)}
+                      >
+                        <div className="cliche-phrase">"{metaphor.phrase}"</div>
+                        <div className="dead-metaphor-details">
+                          <div className="dead-metaphor-origin">
+                            <strong>Original image:</strong> {metaphor.originalMeaning}
+                          </div>
+                          <div className="dead-metaphor-suggestion">{metaphor.suggestion}</div>
+                        </div>
+                        <div className="cliche-meta">
+                          <span className="cliche-category">{getCategoryDisplayName(metaphor.category)}</span>
+                          <span className="cliche-line">Line {metaphor.lineNumber}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  // Abstract vs Concrete Language Section
+  const abstractConcreteSection = (
+    <div key="abstractConcrete" className="analysis-section collapsible">
+      <h3 onClick={() => toggleSection('abstractConcrete')} className="collapsible-header">
+        <span className={`collapse-icon ${expandedSection === 'abstractConcrete' ? 'expanded' : ''}`}>▶</span>
+        Abstract vs Concrete
+        <HelpTooltip {...HELP_CONTENT.abstractConcrete} />
+        {analysis.abstractConcreteAnalysis.assessment === 'abstract-heavy' && (
+          <span className="word-type-warning" title="Consider adding more concrete, sensory language">
+            ⚠
+          </span>
+        )}
+      </h3>
+      {expandedSection === 'abstractConcrete' && (
+        <div className="abstract-concrete-info">
+          <div className="abstract-concrete-summary">
+            <div className="ac-score-display">
+              <span className="ac-score-label">Concreteness Score</span>
+              <span className={`ac-score-value ${
+                analysis.abstractConcreteAnalysis.score >= 70 ? 'excellent' :
+                analysis.abstractConcreteAnalysis.score >= 50 ? 'good' :
+                analysis.abstractConcreteAnalysis.score >= 30 ? 'moderate' : 'low'
+              }`}>
+                {analysis.abstractConcreteAnalysis.score}%
+              </span>
+            </div>
+            <div className="ac-ratio">
+              <span className="ac-abstract">Abstract: {analysis.abstractConcreteAnalysis.abstractCount}</span>
+              <span className="ac-divider">|</span>
+              <span className="ac-concrete">Concrete: {analysis.abstractConcreteAnalysis.concreteCount}</span>
+            </div>
+            <div className={`ac-assessment ${analysis.abstractConcreteAnalysis.assessment}`}>
+              {analysis.abstractConcreteAnalysis.assessment === 'excellent' ? '✓ Excellent balance - rich in concrete imagery' :
+               analysis.abstractConcreteAnalysis.assessment === 'good' ? '✓ Good balance of abstract and concrete' :
+               analysis.abstractConcreteAnalysis.assessment === 'moderate' ? '~ Moderate - could use more concrete imagery' :
+               '⚠ Abstract-heavy - consider adding sensory details'}
+            </div>
+          </div>
+          {analysis.abstractConcreteAnalysis.suggestions.length > 0 && (
+            <div className="ac-suggestions">
+              <div className="ac-suggestions-header">Suggestions:</div>
+              <ul className="ac-suggestions-list">
+                {analysis.abstractConcreteAnalysis.suggestions.map((suggestion, idx) => (
+                  <li key={idx}>{suggestion}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {analysis.abstractConcreteAnalysis.abstractWords.length > 0 && (
+            <div className="ac-word-list">
+              <div className="ac-word-header">Abstract words found:</div>
+              <div className="ac-words">
+                {analysis.abstractConcreteAnalysis.abstractWords.slice(0, 10).map((item, idx) => (
+                  <span
+                    key={idx}
+                    className="ac-word abstract"
+                    title={item.category}
+                    onMouseEnter={() => onHighlightWords?.([{ word: item.word, lineNumber: item.lineNumber }])}
+                    onMouseLeave={() => onHighlightWords?.(null)}
+                  >
+                    {item.word}
+                  </span>
+                ))}
+                {analysis.abstractConcreteAnalysis.abstractWords.length > 10 && (
+                  <span className="ac-more">+{analysis.abstractConcreteAnalysis.abstractWords.length - 10} more</span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  // First Draft Phrases Section
+  const firstDraftPhrasesSection = (
+    <div key="firstDraftPhrases" className="analysis-section collapsible">
+      <h3 onClick={() => toggleSection('firstDraftPhrases')} className="collapsible-header">
+        <span className={`collapse-icon ${expandedSection === 'firstDraftPhrases' ? 'expanded' : ''}`}>▶</span>
+        First Draft Phrases
+        <HelpTooltip {...HELP_CONTENT.firstDraftPhrases} />
+        {analysis.firstDraftAnalysis.count > 0 && (
+          <span className="issue-count-badge" title={`${analysis.firstDraftAnalysis.count} potential filler phrase(s)`}>
+            {analysis.firstDraftAnalysis.count}
+          </span>
+        )}
+      </h3>
+      {expandedSection === 'firstDraftPhrases' && (
+        <div className="first-draft-info">
+          {analysis.firstDraftAnalysis.count === 0 ? (
+            <div className="first-draft-clear">
+              <span className="first-draft-clear-icon">✓</span>
+              No filler words or weak phrases detected. Your writing is tight!
+            </div>
+          ) : (
+            <>
+              <div className="first-draft-note">
+                These words often dilute impact. Consider cutting or replacing them.
+              </div>
+              <div className="first-draft-list">
+                {analysis.firstDraftAnalysis.phrases.map((phrase, idx) => (
+                  <div
+                    key={idx}
+                    className={`first-draft-item first-draft-${phrase.category}`}
+                    onMouseEnter={() => onHighlightWords?.(getWordsFromPhrase(phrase.phrase, phrase.lineNumber))}
+                    onMouseLeave={() => onHighlightWords?.(null)}
+                  >
+                    <div className="first-draft-phrase-header">
+                      <span className="first-draft-phrase">"{phrase.phrase}"</span>
+                      <span className="first-draft-category">{phrase.category}</span>
+                    </div>
+                    <div className="first-draft-suggestion">{phrase.suggestion}</div>
+                    <div className="first-draft-line">Line {phrase.lineNumber}</div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   const rhythmVariationSection = (
     <div key="rhythm-variation" className="analysis-section collapsible">
       <h3 onClick={() => toggleSection('rhythmVariation')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'rhythmVariation' ? 'expanded' : ''}`}>▶</span>
         Rhythm Variation
+        <HelpTooltip {...HELP_CONTENT.rhythmVariation} />
       </h3>
       {expandedSection === 'rhythmVariation' && (
         <div className="rhythm-variation-info">
@@ -1084,6 +1375,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('stanzaStructure')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'stanzaStructure' ? 'expanded' : ''}`}>▶</span>
         Stanza Structure
+        <HelpTooltip {...HELP_CONTENT.stanzaStructure} />
       </h3>
       {expandedSection === 'stanzaStructure' && (
         <div className="stanza-structure-info">
@@ -1155,6 +1447,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('lineLength')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'lineLength' ? 'expanded' : ''}`}>▶</span>
         Line Length (Words)
+        <HelpTooltip {...HELP_CONTENT.lineLength} />
       </h3>
       {expandedSection === 'lineLength' && (
         <div className="line-length-info">
@@ -1219,6 +1512,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('punctuation')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'punctuation' ? 'expanded' : ''}`}>▶</span>
         Flow & Punctuation
+        <HelpTooltip {...HELP_CONTENT.punctuation} />
       </h3>
       {expandedSection === 'punctuation' && (
         <div className="punctuation-info">
@@ -1298,6 +1592,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('repetition')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'repetition' ? 'expanded' : ''}`}>▶</span>
         Word Repetition
+        <HelpTooltip {...HELP_CONTENT.repetition} />
       </h3>
       {expandedSection === 'repetition' && (
         <div className="repetition-info">
@@ -1336,6 +1631,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('rhymeScheme')} className={`collapsible-header ${analysis.activeForm && isConstrained(analysis.activeForm, 'rhymeScheme') ? 'constrained' : ''}`}>
         <span className={`collapse-icon ${expandedSection === 'rhymeScheme' ? 'expanded' : ''}`}>▶</span>
         Rhyme Scheme
+        <HelpTooltip {...HELP_CONTENT.rhymeScheme} />
         {getConstraintIcon('rhymeScheme', { fitScore: analysis.manualFormFit?.fitScore || analysis.poeticForm.fitScore, fit: analysis.manualFormFit?.fit || analysis.poeticForm.fit })}
       </h3>
       {expandedSection === 'rhymeScheme' && (
@@ -1374,51 +1670,58 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
                 </div>
               )}
 
-              <div className="meter-details">
-                <div className="meter-stat">
-                  <span className="meter-label">Detected Pattern:</span>
-                  <span className="meter-value">{analysis.rhymeScheme.schemePattern.join('')}</span>
-                </div>
-                {analysis.expectedPattern && (
-                  <div className="meter-stat">
-                    <span className="meter-label">Expected Pattern ({analysis.activeForm}):</span>
-                    <span className="meter-value">{analysis.expectedPattern}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Show line-by-line rhyme scheme with color coding */}
+              {/* Visual rhyme scheme comparison */}
               {analysis.rhymeScheme.lineEndWords.length > 0 && (
-                <div className="rhyme-lines-list">
+                <div className="rhyme-scheme-comparison">
+                  {/* Header row */}
+                  <div className="rhyme-comparison-header">
+                    <span className="rhyme-col-line">Line</span>
+                    <span className="rhyme-col-word">End Word</span>
+                    <span className="rhyme-col-detected">Detected</span>
+                    {analysis.expectedPattern && (
+                      <>
+                        <span className="rhyme-col-expected">Expected</span>
+                        <span className="rhyme-col-status">Match</span>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Line rows */}
                   {analysis.rhymeScheme.lineEndWords.map((word, index) => {
+                    const detectedLetter = analysis.rhymeScheme.schemePattern[index];
+                    const expectedLetter = analysis.expectedPattern ? analysis.expectedPattern[index] : null;
                     const compliance = analysis.rhymeCompliance[index];
-                    let colorClass = '';
-
-                    // For structured forms, show compliance
-                    if (compliance === 'perfect') {
-                      colorClass = 'rhyme-perfect'; // Green
-                    } else if (compliance === 'slant') {
-                      colorClass = 'rhyme-slant'; // Yellow
-                    } else {
-                      colorClass = 'rhyme-none'; // Red
-                    }
-
-                    // Get the actual line number (accounting for blank lines)
                     const actualLineNumber = analysis.rhymeScheme.lineNumbers[index];
-
-                    // Check if this line's word is currently highlighted from editor hover
                     const isHighlightedFromEditor = editorHoveredLine === actualLineNumber;
+
+                    // Determine match status
+                    let matchStatus: 'match' | 'slant' | 'mismatch' | 'none' = 'none';
+                    if (expectedLetter) {
+                      if (compliance === 'perfect') matchStatus = 'match';
+                      else if (compliance === 'slant') matchStatus = 'slant';
+                      else matchStatus = 'mismatch';
+                    }
 
                     return (
                       <div
                         key={index}
-                        className={`rhyme-line-item ${colorClass} ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
+                        className={`rhyme-comparison-row ${matchStatus !== 'none' ? `rhyme-${matchStatus}` : ''} ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
                         onMouseEnter={() => onHighlightWords?.([{ word, lineNumber: actualLineNumber }])}
                         onMouseLeave={() => onHighlightWords?.(null)}
                       >
-                        <span className="line-number">Line {actualLineNumber}:</span>
-                        <span className="rhyme-end-word">{word}</span>
-                        <span className="rhyme-label">{analysis.rhymeScheme.schemePattern[index]}</span>
+                        <span className="rhyme-col-line">{actualLineNumber}</span>
+                        <span className="rhyme-col-word">{word}</span>
+                        <span className="rhyme-col-detected rhyme-letter">{detectedLetter}</span>
+                        {analysis.expectedPattern && (
+                          <>
+                            <span className="rhyme-col-expected rhyme-letter">{expectedLetter || '—'}</span>
+                            <span className={`rhyme-col-status rhyme-status-${matchStatus}`}>
+                              {matchStatus === 'match' && '✓'}
+                              {matchStatus === 'slant' && '~'}
+                              {matchStatus === 'mismatch' && '✗'}
+                            </span>
+                          </>
+                        )}
                       </div>
                     );
                   })}
@@ -1436,6 +1739,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('rhymeOverview')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'rhymeOverview' ? 'expanded' : ''}`}>▶</span>
         Rhyme Overview
+        <HelpTooltip {...HELP_CONTENT.rhymeOverview} />
       </h3>
       {expandedSection === 'rhymeOverview' && analysis.rhymeScheme.rhymeGroups.size > 0 && (
         <div className="rhyme-overview">
@@ -1553,9 +1857,10 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       <h3 onClick={() => toggleSection('internalRhymes')} className="collapsible-header">
         <span className={`collapse-icon ${expandedSection === 'internalRhymes' ? 'expanded' : ''}`}>▶</span>
         Internal Rhymes
+        <HelpTooltip {...HELP_CONTENT.internalRhymes} />
         {analysis.internalRhymes.length > 0 && (
-          <span className="word-type-warning" title={`${analysis.internalRhymes.length} internal rhyme(s) detected`}>
-            ✨
+          <span className="positive-count-badge" title={`${analysis.internalRhymes.length} internal rhyme(s) detected`}>
+            {analysis.internalRhymes.length}
           </span>
         )}
       </h3>
@@ -1755,97 +2060,16 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       {/* Category tabs */}
       <div className="category-tabs">
         <button
-          className={`category-tab ${activeCategory === 'rhythm' ? 'active' : ''} ${analysis.activeForm && (isConstrained(analysis.activeForm, 'meter') || isConstrained(analysis.activeForm, 'syllablePattern')) ? 'has-constraint' : ''}`}
+          className={`category-tab ${activeCategory === 'rhythm' ? 'active' : ''}`}
           onClick={() => setActiveCategory('rhythm')}
         >
           Rhythm
-          {(() => {
-            const formToCheck = analysis.activeForm;
-            if (!formToCheck || formToCheck === 'Free Verse') return null;
-
-            const fitData = {
-              fitScore: analysis.manualFormFit?.fitScore || analysis.poeticForm.fitScore,
-              fit: analysis.manualFormFit?.fit || analysis.poeticForm.fit
-            };
-
-            let worstStatus: 'perfect' | 'good' | 'poor' | 'none' = 'none';
-            let hasConstraints = false;
-
-            const aspects: Array<'meter' | 'syllablePattern'> = ['meter', 'syllablePattern'];
-            for (const aspect of aspects) {
-              if (isConstrained(formToCheck, aspect)) {
-                hasConstraints = true;
-                const poemData = {
-                  lineCount: 0,
-                  fitScore: fitData.fitScore,
-                  fit: fitData.fit
-                };
-                const status = evaluateConstraint(formToCheck, aspect, poemData);
-                if (status === 'poor') worstStatus = 'poor';
-                else if (status === 'good' && worstStatus !== 'poor') worstStatus = 'good';
-                else if (status === 'perfect' && worstStatus === 'none') worstStatus = 'perfect';
-              }
-            }
-
-            if (!hasConstraints || worstStatus === 'none') return null;
-
-            const icon = worstStatus === 'perfect' ? '✓' : worstStatus === 'good' ? '~' : '✗';
-            const color = worstStatus === 'perfect' ? '#2e7d32' : worstStatus === 'good' ? '#f57c00' : '#c62828';
-
-            return (
-              <span
-                style={{
-                  marginLeft: '6px',
-                  fontSize: '13px',
-                  fontWeight: 'bold',
-                  color: color
-                }}
-              >
-                {icon}
-              </span>
-            );
-          })()}
         </button>
         <button
-          className={`category-tab ${activeCategory === 'rhymes' ? 'active' : ''} ${analysis.activeForm && isConstrained(analysis.activeForm, 'rhymeScheme') ? 'has-constraint' : ''}`}
+          className={`category-tab ${activeCategory === 'rhymes' ? 'active' : ''}`}
           onClick={() => setActiveCategory('rhymes')}
         >
           Rhymes
-          {(() => {
-            const formToCheck = analysis.activeForm;
-            if (!formToCheck || formToCheck === 'Free Verse') return null;
-            if (!isConstrained(formToCheck, 'rhymeScheme')) return null;
-
-            const fitData = {
-              fitScore: analysis.manualFormFit?.fitScore || analysis.poeticForm.fitScore,
-              fit: analysis.manualFormFit?.fit || analysis.poeticForm.fit
-            };
-
-            const poemData = {
-              lineCount: 0,
-              fitScore: fitData.fitScore,
-              fit: fitData.fit
-            };
-
-            const status = evaluateConstraint(formToCheck, 'rhymeScheme', poemData);
-            if (status === 'none') return null;
-
-            const icon = status === 'perfect' ? '✓' : status === 'good' ? '~' : '✗';
-            const color = status === 'perfect' ? '#2e7d32' : status === 'good' ? '#f57c00' : '#c62828';
-
-            return (
-              <span
-                style={{
-                  marginLeft: '6px',
-                  fontSize: '13px',
-                  fontWeight: 'bold',
-                  color: color
-                }}
-              >
-                {icon}
-              </span>
-            );
-          })()}
         </button>
         <button
           className={`category-tab ${activeCategory === 'words' ? 'active' : ''}`}
@@ -1887,6 +2111,8 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
           <>
             {repetitionSection}
             {posSection}
+            {abstractConcreteSection}
+            {firstDraftPhrasesSection}
             {adverbSuggestionsSection}
             {doubleAdverbsSection}
             {passiveVoiceSection}
@@ -1896,6 +2122,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
 
         {activeCategory === 'originality' && (
           <>
+            {clicheSection}
             {figurativeLanguageSection}
           </>
         )}

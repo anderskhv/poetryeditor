@@ -1119,6 +1119,86 @@ function analyzeWord(word: string): WordScansion {
 }
 
 /**
+ * Standard metrical patterns for comparison
+ * These are the "famous" meters we want to match against
+ * Only exact or very close matches should be tagged
+ */
+const STANDARD_METERS: Record<string, { pattern: string; name: string; minMatch: number }> = {
+  // Iambic meters (u/u/u/...)
+  'iambic_pentameter': { pattern: 'u/u/u/u/u/', name: 'iambic pentameter', minMatch: 0.9 },
+  'iambic_tetrameter': { pattern: 'u/u/u/u/', name: 'iambic tetrameter', minMatch: 0.9 },
+  'iambic_trimeter': { pattern: 'u/u/u/', name: 'iambic trimeter', minMatch: 0.9 },
+  'iambic_hexameter': { pattern: 'u/u/u/u/u/u/', name: 'iambic hexameter', minMatch: 0.9 },
+
+  // Trochaic meters (/u/u/u...)
+  'trochaic_tetrameter': { pattern: '/u/u/u/u', name: 'trochaic tetrameter', minMatch: 0.9 },
+  'trochaic_pentameter': { pattern: '/u/u/u/u/u', name: 'trochaic pentameter', minMatch: 0.9 },
+  'trochaic_trimeter': { pattern: '/u/u/u', name: 'trochaic trimeter', minMatch: 0.9 },
+  // Trochaic tetrameter catalectic (common - drops final unstressed) - e.g., "The Raven"
+  'trochaic_tetrameter_cat': { pattern: '/u/u/u/', name: 'trochaic tetrameter catalectic', minMatch: 0.9 },
+
+  // Anapestic meters (uu/uu/...)
+  'anapestic_tetrameter': { pattern: 'uu/uu/uu/uu/', name: 'anapestic tetrameter', minMatch: 0.85 },
+  'anapestic_trimeter': { pattern: 'uu/uu/uu/', name: 'anapestic trimeter', minMatch: 0.85 },
+
+  // Dactylic meters (/uu/uu...)
+  'dactylic_hexameter': { pattern: '/uu/uu/uu/uu/uu/u', name: 'dactylic hexameter', minMatch: 0.8 },
+  'dactylic_tetrameter': { pattern: '/uu/uu/uu/uu', name: 'dactylic tetrameter', minMatch: 0.85 },
+
+  // Common ballad meter (alternating tetrameter/trimeter)
+  'common_meter_long': { pattern: 'u/u/u/u/', name: 'common meter (long)', minMatch: 0.9 },
+  'common_meter_short': { pattern: 'u/u/u/', name: 'common meter (short)', minMatch: 0.9 },
+};
+
+/**
+ * Calculate how closely a pattern matches a standard meter
+ * Returns a value from 0 to 1 (1 = perfect match)
+ */
+function calculateMeterMatch(pattern: string, standardPattern: string): number {
+  if (pattern.length !== standardPattern.length) {
+    // Length mismatch - check if off by 1 (catalectic lines are common)
+    if (Math.abs(pattern.length - standardPattern.length) === 1) {
+      // Try matching with the shorter length
+      const minLen = Math.min(pattern.length, standardPattern.length);
+      let matches = 0;
+      for (let i = 0; i < minLen; i++) {
+        if (pattern[i] === standardPattern[i]) matches++;
+      }
+      // Slight penalty for length mismatch
+      return (matches / minLen) * 0.95;
+    }
+    return 0; // Too different in length
+  }
+
+  let matches = 0;
+  for (let i = 0; i < pattern.length; i++) {
+    if (pattern[i] === standardPattern[i]) matches++;
+  }
+  return matches / pattern.length;
+}
+
+/**
+ * Find the best matching standard meter for a pattern
+ * Returns the meter name only if it's a very close match, otherwise null
+ */
+function findBestMeterMatch(pattern: string): string | null {
+  if (pattern.length < 4) return null; // Too short to meaningfully classify
+
+  let bestMatch: { name: string; score: number; minMatch: number } | null = null;
+
+  for (const [, meter] of Object.entries(STANDARD_METERS)) {
+    const score = calculateMeterMatch(pattern, meter.pattern);
+    if (score >= meter.minMatch) {
+      if (!bestMatch || score > bestMatch.score) {
+        bestMatch = { name: meter.name, score, minMatch: meter.minMatch };
+      }
+    }
+  }
+
+  return bestMatch ? bestMatch.name : null;
+}
+
+/**
  * Identify metrical feet from a stress pattern
  */
 function identifyFeet(pattern: string): { feet: string[], meterType: string } {
@@ -1154,49 +1234,12 @@ function identifyFeet(pattern: string): { feet: string[], meterType: string } {
     }
   }
 
-  // Determine dominant meter type
-  const footCounts: Record<string, number> = {};
-  for (const foot of feet) {
-    footCounts[foot] = (footCounts[foot] || 0) + 1;
-  }
+  // Try to find a matching standard meter
+  // Only tag if it's a very close match to a famous meter pattern
+  const matchedMeter = findBestMeterMatch(pattern);
 
-  let dominantFoot = 'iamb';
-  let maxCount = 0;
-  for (const [foot, count] of Object.entries(footCounts)) {
-    if (count > maxCount) {
-      maxCount = count;
-      dominantFoot = foot;
-    }
-  }
-
-  // Determine meter type based on foot count
-  const footCount = feet.length;
-  const footNames: Record<number, string> = {
-    1: 'monometer',
-    2: 'dimeter',
-    3: 'trimeter',
-    4: 'tetrameter',
-    5: 'pentameter',
-    6: 'hexameter',
-    7: 'heptameter',
-    8: 'octameter',
-  };
-
-  const lengthName = footNames[footCount] || `${footCount}-foot`;
-
-  // Foot type names
-  const footTypeNames: Record<string, string> = {
-    'iamb': 'iambic',
-    'trochee': 'trochaic',
-    'spondee': 'spondaic',
-    'pyrrhic': 'pyrrhic',
-    'anapest': 'anapestic',
-    'dactyl': 'dactylic',
-  };
-
-  const meterType = `${footTypeNames[dominantFoot] || dominantFoot} ${lengthName}`;
-
-  return { feet, meterType };
+  // Return the matched meter name, or empty string if no close match
+  return { feet, meterType: matchedMeter || '' };
 }
 
 // Words that can be promoted/demoted in metrical context
@@ -1498,9 +1541,9 @@ function analyzeLine(line: string, lineIndex: number): LineScansion {
   // Identify feet and meter
   const { feet, meterType } = identifyFeet(fullPattern);
 
-  // Check regularity (is it a consistent pattern?)
-  const uniqueFeet = new Set(feet);
-  const isRegular = uniqueFeet.size <= 2 && feet.length >= 2;
+  // A line is "regular" if it matches a known standard meter
+  // (meterType is non-empty only when we have a close match)
+  const isRegular = meterType !== '';
 
   return {
     lineIndex,
