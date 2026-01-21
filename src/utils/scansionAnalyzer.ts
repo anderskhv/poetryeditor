@@ -283,8 +283,6 @@ const STRESS_EXCEPTIONS: Record<string, string> = {
 
   // Additional words that commonly appear in poetry
   'sometime': 'u/',       // some-TIME not SOME-time
-  'upon': 'u/',
-  'within': 'u/',
   'ago': 'u/',
   'today': 'u/',
   'tonight': 'u/',
