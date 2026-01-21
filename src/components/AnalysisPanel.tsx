@@ -63,7 +63,7 @@ interface AnalysisPanelProps {
 }
 
 type CategoryTab = 'rhythm' | 'rhymes' | 'words' | 'originality';
-type ExpandedSection = 'syllables' | 'repetition' | 'pos' | 'adverbSuggestions' | 'doubleAdverbs' | 'passiveVoice' | 'rhythmVariation' | 'stanzaStructure' | 'lineLength' | 'punctuation' | 'rhymeScheme' | 'rhymeOverview' | 'internalRhymes' | 'poeticForm' | 'soundPatterns' | 'tenseConsistency' | 'scansion' | 'figurativeLanguage' | 'cliches' | 'abstractConcrete' | 'firstDraftPhrases' | null;
+type ExpandedSection = 'syllables' | 'repetition' | 'pos' | 'adverbSuggestions' | 'doubleAdverbs' | 'passiveVoice' | 'rhythmVariation' | 'stanzaStructure' | 'lineLength' | 'punctuation' | 'rhymeScheme' | 'rhymeAnalysis' | 'poeticForm' | 'soundPatterns' | 'tenseConsistency' | 'scansion' | 'figurativeLanguage' | 'cliches' | 'abstractConcrete' | 'firstDraftPhrases' | null;
 
 export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllableExpand, onRhythmVariationExpand, onLineLengthExpand, onPunctuationExpand, onSectionCollapse, onHighlightLines, onHighlightWords, onPassiveVoiceExpand, onTenseExpand, onScansionExpand, editorHoveredLine }: AnalysisPanelProps) {
   const [activeCategory, setActiveCategory] = useState<CategoryTab>('rhythm');
@@ -1734,152 +1734,157 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
     </div>
   );
 
-  const rhymeOverviewSection = (
-    <div key="rhymeOverview" className="analysis-section collapsible">
-      <h3 onClick={() => toggleSection('rhymeOverview')} className="collapsible-header">
-        <span className={`collapse-icon ${expandedSection === 'rhymeOverview' ? 'expanded' : ''}`}>▶</span>
-        Rhyme Overview
+  // Build a set of end-line words with their line numbers for filtering
+  const endLineWordSet = new Set<string>();
+  analysis.rhymeScheme.lineNumbers.forEach((lineNum, idx) => {
+    const word = analysis.rhymeScheme.lineEndWords[idx];
+    if (word) {
+      endLineWordSet.add(`${word.toLowerCase()}:${lineNum}`);
+    }
+  });
+
+  // Filter internal rhymes to exclude those where BOTH words are end-line words
+  const filteredInternalRhymes = analysis.internalRhymes.filter(rhyme => {
+    const word1IsEndLine = endLineWordSet.has(`${rhyme.word1.toLowerCase()}:${rhyme.line1}`);
+    const word2IsEndLine = endLineWordSet.has(`${rhyme.word2.toLowerCase()}:${rhyme.line2}`);
+    // Keep the rhyme only if at least one word is NOT an end-line word
+    return !(word1IsEndLine && word2IsEndLine);
+  });
+
+  // Count total rhymes for the badge
+  const endRhymeCount = Array.from(analysis.rhymeScheme.rhymeGroups.entries())
+    .filter(([, lineNumbers]) => lineNumbers.length >= 2).length;
+  const totalRhymeCount = endRhymeCount + filteredInternalRhymes.length;
+
+  const rhymeAnalysisSection = (
+    <div key="rhymeAnalysis" className="analysis-section collapsible">
+      <h3 onClick={() => toggleSection('rhymeAnalysis')} className="collapsible-header">
+        <span className={`collapse-icon ${expandedSection === 'rhymeAnalysis' ? 'expanded' : ''}`}>▶</span>
+        Rhyme Analysis
         <HelpTooltip {...HELP_CONTENT.rhymeOverview} />
-      </h3>
-      {expandedSection === 'rhymeOverview' && analysis.rhymeScheme.rhymeGroups.size > 0 && (
-        <div className="rhyme-overview">
-          <div className="rhyme-groups-list">
-            {Array.from(analysis.rhymeScheme.rhymeGroups.entries()).map(([label, lineNumbers]) => {
-              if (lineNumbers.length < 2) return null; // Skip single-line groups
-
-              // Get the words in this rhyme group, paired with their line numbers
-              // lineNumbers contains original editor line numbers, we need to find the index in lineEndWords
-              const wordLinePairs = lineNumbers
-                .map(lineNum => {
-                  // Find the index in lineEndWords by matching the original line number
-                  const idx = analysis.rhymeScheme.lineNumbers.indexOf(lineNum);
-                  return {
-                    word: idx >= 0 ? analysis.rhymeScheme.lineEndWords[idx] : '',
-                    lineNumber: lineNum
-                  };
-                })
-                .filter(pair => pair.word && pair.word.length > 0);
-
-              const words = wordLinePairs.map(p => p.word);
-              const validLineNumbers = wordLinePairs.map(p => p.lineNumber);
-
-              // Determine quality: check if all pairs within the group rhyme perfectly
-              let allPerfect = true;
-              let hasSlant = false;
-
-              for (let i = 0; i < words.length; i++) {
-                for (let j = i + 1; j < words.length; j++) {
-                  const quality = assessRhymeQuality(words[i], words[j]);
-                  if (quality === 'slant') {
-                    hasSlant = true;
-                    allPerfect = false;
-                  } else if (quality === 'none') {
-                    allPerfect = false;
-                    hasSlant = false; // Mixed quality group
-                  }
-                }
-              }
-
-              const qualityLabel = allPerfect ? 'Perfect' : hasSlant ? 'Slant' : 'Mixed';
-              const qualityClass = allPerfect ? 'rhyme-quality-perfect' : hasSlant ? 'rhyme-quality-slant' : 'rhyme-quality-mixed';
-
-              // Calculate originality score (average of all pairs in the group)
-              let totalOriginality = 0;
-              let pairCount = 0;
-              for (let i = 0; i < words.length; i++) {
-                for (let j = i + 1; j < words.length; j++) {
-                  totalOriginality += getRhymeOriginalityScore(words[i], words[j]);
-                  pairCount++;
-                }
-              }
-              const avgOriginality = pairCount > 0 ? totalOriginality / pairCount : 100;
-              const originalityLabel = getRhymeOriginalityLabel(avgOriginality);
-              // Yellow for mild cliché (20-35), red for strong cliché (<20)
-              const originalityClass =
-                avgOriginality >= 35 ? '' :
-                avgOriginality >= 20 ? 'cliche-mild' : 'cliche-strong';
-
-              // Check if the editor-hovered line is in this rhyme group
-              const isHighlightedFromEditor = editorHoveredLine != null && validLineNumbers.includes(editorHoveredLine);
-
-              return (
-                <div
-                  key={label}
-                  className={`rhyme-group-item ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
-                  onMouseEnter={() => {
-                    // Highlight all rhyming words in this group - use wordLinePairs directly
-                    onHighlightWords?.(wordLinePairs);
-                  }}
-                  onMouseLeave={() => onHighlightWords?.(null)}
-                >
-                  <div className="rhyme-group-header">
-                    <span className="rhyme-group-label">{label}</span>
-                    <span className={`rhyme-quality-badge ${qualityClass}`}>{qualityLabel}</span>
-                    {originalityLabel && (
-                      <span className={`originality-badge ${originalityClass}`} title={`Originality: ${Math.round(avgOriginality)}%`}>
-                        {originalityLabel}
-                      </span>
-                    )}
-                  </div>
-                  <div className="rhyme-group-words">
-                    {wordLinePairs.map((pair, idx) => {
-                      const isWordHighlighted = editorHoveredLine === pair.lineNumber;
-                      return (
-                        <span
-                          key={idx}
-                          className={`rhyme-group-word ${isWordHighlighted ? 'editor-highlighted' : ''}`}
-                          onMouseEnter={(e) => {
-                            e.stopPropagation();
-                            onHighlightWords?.([pair]);
-                          }}
-                          onMouseLeave={(e) => {
-                            e.stopPropagation();
-                            onHighlightWords?.(null);
-                          }}
-                        >
-                          {pair.word}
-                          <span className="rhyme-group-line-ref"> (line {pair.lineNumber})</span>
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
-  const internalRhymesSection = (
-    <div key="internalRhymes" className="analysis-section collapsible">
-      <h3 onClick={() => toggleSection('internalRhymes')} className="collapsible-header">
-        <span className={`collapse-icon ${expandedSection === 'internalRhymes' ? 'expanded' : ''}`}>▶</span>
-        Internal Rhymes
-        <HelpTooltip {...HELP_CONTENT.internalRhymes} />
-        {analysis.internalRhymes.length > 0 && (
-          <span className="positive-count-badge" title={`${analysis.internalRhymes.length} internal rhyme(s) detected`}>
-            {analysis.internalRhymes.length}
+        {totalRhymeCount > 0 && (
+          <span className="positive-count-badge" title={`${totalRhymeCount} rhyme group(s) detected`}>
+            {totalRhymeCount}
           </span>
         )}
       </h3>
-      {expandedSection === 'internalRhymes' && (
-        <div className="internal-rhymes-info">
-          {analysis.internalRhymes.length === 0 ? (
-            <div className="empty-state">No internal rhymes detected</div>
-          ) : (
+      {expandedSection === 'rhymeAnalysis' && (
+        <div className="rhyme-analysis-content">
+          {/* End Rhymes Section */}
+          {analysis.rhymeScheme.rhymeGroups.size > 0 && (
             <>
-              <div className="internal-rhymes-intro">
-                Internal rhymes occur when words rhyme within lines or across lines, but not at line endings. These add musical quality and cohesion to the poem.
+              <div className="rhyme-subsection-header">End Rhymes</div>
+              <div className="rhyme-groups-list">
+                {Array.from(analysis.rhymeScheme.rhymeGroups.entries()).map(([label, lineNumbers]) => {
+                  if (lineNumbers.length < 2) return null; // Skip single-line groups
+
+                  // Get the words in this rhyme group, paired with their line numbers
+                  const wordLinePairs = lineNumbers
+                    .map(lineNum => {
+                      const idx = analysis.rhymeScheme.lineNumbers.indexOf(lineNum);
+                      return {
+                        word: idx >= 0 ? analysis.rhymeScheme.lineEndWords[idx] : '',
+                        lineNumber: lineNum
+                      };
+                    })
+                    .filter(pair => pair.word && pair.word.length > 0);
+
+                  const words = wordLinePairs.map(p => p.word);
+                  const validLineNumbers = wordLinePairs.map(p => p.lineNumber);
+
+                  // Determine quality
+                  let allPerfect = true;
+                  let hasSlant = false;
+
+                  for (let i = 0; i < words.length; i++) {
+                    for (let j = i + 1; j < words.length; j++) {
+                      const quality = assessRhymeQuality(words[i], words[j]);
+                      if (quality === 'slant') {
+                        hasSlant = true;
+                        allPerfect = false;
+                      } else if (quality === 'none') {
+                        allPerfect = false;
+                        hasSlant = false;
+                      }
+                    }
+                  }
+
+                  const qualityLabel = allPerfect ? 'Perfect' : hasSlant ? 'Slant' : 'Mixed';
+                  const qualityClass = allPerfect ? 'rhyme-quality-perfect' : hasSlant ? 'rhyme-quality-slant' : 'rhyme-quality-mixed';
+
+                  // Calculate originality score
+                  let totalOriginality = 0;
+                  let pairCount = 0;
+                  for (let i = 0; i < words.length; i++) {
+                    for (let j = i + 1; j < words.length; j++) {
+                      totalOriginality += getRhymeOriginalityScore(words[i], words[j]);
+                      pairCount++;
+                    }
+                  }
+                  const avgOriginality = pairCount > 0 ? totalOriginality / pairCount : 100;
+                  const originalityLabel = getRhymeOriginalityLabel(avgOriginality);
+                  const originalityClass =
+                    avgOriginality >= 35 ? '' :
+                    avgOriginality >= 20 ? 'cliche-mild' : 'cliche-strong';
+
+                  const isHighlightedFromEditor = editorHoveredLine != null && validLineNumbers.includes(editorHoveredLine);
+
+                  return (
+                    <div
+                      key={label}
+                      className={`rhyme-group-item ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
+                      onMouseEnter={() => onHighlightWords?.(wordLinePairs)}
+                      onMouseLeave={() => onHighlightWords?.(null)}
+                    >
+                      <div className="rhyme-group-header">
+                        <span className="rhyme-group-label">{label}</span>
+                        <span className={`rhyme-quality-badge ${qualityClass}`}>{qualityLabel}</span>
+                        {originalityLabel && (
+                          <span className={`originality-badge ${originalityClass}`} title={`Originality: ${Math.round(avgOriginality)}%`}>
+                            {originalityLabel}
+                          </span>
+                        )}
+                      </div>
+                      <div className="rhyme-group-words">
+                        {wordLinePairs.map((pair, idx) => {
+                          const isWordHighlighted = editorHoveredLine === pair.lineNumber;
+                          return (
+                            <span
+                              key={idx}
+                              className={`rhyme-group-word ${isWordHighlighted ? 'editor-highlighted' : ''}`}
+                              onMouseEnter={(e) => {
+                                e.stopPropagation();
+                                onHighlightWords?.([pair]);
+                              }}
+                              onMouseLeave={(e) => {
+                                e.stopPropagation();
+                                onHighlightWords?.(null);
+                              }}
+                            >
+                              {pair.word}
+                              <span className="rhyme-group-line-ref"> (line {pair.lineNumber})</span>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
+            </>
+          )}
+
+          {/* Internal Rhymes Section */}
+          {filteredInternalRhymes.length > 0 && (
+            <>
+              <div className="rhyme-subsection-header">Internal Rhymes</div>
               <div className="internal-rhymes-list">
-                {analysis.internalRhymes.map((rhyme, index) => {
+                {filteredInternalRhymes.map((rhyme, index) => {
                   const isHighlightedFromEditor = editorHoveredLine === rhyme.line1 || editorHoveredLine === rhyme.line2;
                   return (
                     <div
                       key={index}
-                      className={`internal-rhyme-item ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
+                      className={`rhyme-group-item ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
                       onMouseEnter={() => {
                         onHighlightWords?.([
                           { word: rhyme.word1, lineNumber: rhyme.line1 },
@@ -1888,26 +1893,31 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
                       }}
                       onMouseLeave={() => onHighlightWords?.(null)}
                     >
-                      <div className="internal-rhyme-words">
-                        <span className="internal-rhyme-word">{rhyme.word1}</span>
-                        <span className="internal-rhyme-connector">↔</span>
-                        <span className="internal-rhyme-word">{rhyme.word2}</span>
+                      <div className="rhyme-group-header">
                         <span className={`rhyme-quality-badge ${rhyme.quality === 'perfect' ? 'rhyme-quality-perfect' : 'rhyme-quality-slant'}`}>
                           {rhyme.quality}
                         </span>
                       </div>
-                      <div className="internal-rhyme-lines">
-                        {rhyme.line1 === rhyme.line2 ? (
-                          <span>Line {rhyme.line1}</span>
-                        ) : (
-                          <span>Lines {rhyme.line1} & {rhyme.line2}</span>
-                        )}
+                      <div className="rhyme-group-words">
+                        <span className="rhyme-group-word">
+                          {rhyme.word1}
+                          <span className="rhyme-group-line-ref"> (line {rhyme.line1})</span>
+                        </span>
+                        <span className="rhyme-group-word">
+                          {rhyme.word2}
+                          <span className="rhyme-group-line-ref"> (line {rhyme.line2})</span>
+                        </span>
                       </div>
                     </div>
                   );
                 })}
               </div>
             </>
+          )}
+
+          {/* Empty state */}
+          {analysis.rhymeScheme.rhymeGroups.size === 0 && filteredInternalRhymes.length === 0 && (
+            <div className="empty-state">No rhymes detected</div>
           )}
         </div>
       )}
@@ -2101,8 +2111,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
         {activeCategory === 'rhymes' && (
           <>
             {rhymeSchemeSection}
-            {rhymeOverviewSection}
-            {internalRhymesSection}
+            {rhymeAnalysisSection}
             {soundPatternsSection}
           </>
         )}

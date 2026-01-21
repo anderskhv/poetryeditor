@@ -376,11 +376,17 @@ function App() {
             </div>
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className="btn btn-icon"
+              className={`dark-mode-toggle ${isDarkMode ? 'dark' : ''}`}
               aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
               title={isDarkMode ? 'Light mode' : 'Dark mode'}
             >
-              {isDarkMode ? '☀️' : '🌙'}
+              <div className="toggle-track">
+                <div className="toggle-thumb">
+                  <span className={isDarkMode ? 'moon-icon' : 'sun-icon'}>
+                    {isDarkMode ? '☽' : '☀'}
+                  </span>
+                </div>
+              </div>
             </button>
           </div>
         </div>

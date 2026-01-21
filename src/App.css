@@ -101,6 +101,69 @@
   transform: translateY(-1px);
 }
 
+/* Dark mode toggle slider */
+.dark-mode-toggle {
+  position: relative;
+  width: 56px;
+  height: 30px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  padding: 2px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.dark-mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.dark-mode-toggle.dark {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.toggle-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.dark-mode-toggle.dark .toggle-thumb {
+  left: 26px;
+  background: rgba(226, 232, 240, 0.95);
+}
+
+/* Sun icon for light mode */
+.sun-icon {
+  color: #7c3aed;
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Moon icon for dark mode */
+.moon-icon {
+  color: #667eea;
+  font-size: 13px;
+  line-height: 1;
+}
+
 /* Analyzing indicator */
 .analyzing-indicator {
   display: flex;

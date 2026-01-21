@@ -1520,6 +1520,23 @@
   letter-spacing: 0.5px;
 }
 
+.rhyme-analysis-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rhyme-subsection-header {
+  font-size: 12px;
+  font-weight: 600;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-top: 4px;
+}
+
 .rhyme-groups-list {
   display: flex;
   flex-direction: column;
