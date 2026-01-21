@@ -114,13 +114,14 @@ export function analyzeText(text: string): WordInfo[] {
   let globalOffset = 0;
 
   lines.forEach((line, lineIndex) => {
-    // Match words with apostrophes and hyphens (including em-dash — and en-dash –)
-    const lineWords = line.match(/\b[a-zA-Z]+(?:[''\u2019][a-zA-Z]+|[-\u2013\u2014][a-zA-Z]+)?\b/g) || [];
-    let lineOffset = 0;
+    // Use regex with matchAll to get exact positions of each word
+    const wordRegex = /[a-zA-Z]+(?:[''\u2019][a-zA-Z]+|[-\u2013\u2014][a-zA-Z]+)?/g;
+    const matches = Array.from(line.matchAll(wordRegex));
 
     // Analyze the entire line for context
-    lineWords.forEach((word, wordIndex) => {
-      const startOffset = line.indexOf(word, lineOffset);
+    matches.forEach((match, wordIndex) => {
+      const word = match[0];
+      const startOffset = match.index!;
       const endOffset = startOffset + word.length;
 
       words.push({
@@ -131,8 +132,6 @@ export function analyzeText(text: string): WordInfo[] {
         startOffset: globalOffset + startOffset,
         endOffset: globalOffset + endOffset,
       });
-
-      lineOffset = endOffset;
     });
 
     globalOffset += line.length + 1; // +1 for newline
