@@ -242,6 +242,78 @@ export function stressPatternToString(stresses: number[]): string {
 
 
 /**
+ * Get the rhyming portion of a word (from stressed vowel to end)
+ * This is used to determine rhyme quality
+ */
+export function getRhymePhonemes(word: string): string[] | null {
+  const pronunciations = getPronunciations(word);
+  if (pronunciations.length === 0) return null;
+
+  // Use the first (most common) pronunciation
+  const phones = pronunciations[0].phones;
+
+  // Find the last stressed vowel (stress 1 or 2)
+  // For rhyming, we typically use the last stressed syllable
+  let lastStressIndex = -1;
+  for (let i = phones.length - 1; i >= 0; i--) {
+    const phone = phones[i];
+    // Vowels end with 0, 1, or 2 (stress markers)
+    if (/[12]$/.test(phone)) {
+      lastStressIndex = i;
+      break;
+    }
+  }
+
+  // If no stressed vowel found, use the last vowel
+  if (lastStressIndex === -1) {
+    for (let i = phones.length - 1; i >= 0; i--) {
+      if (/[012]$/.test(phones[i])) {
+        lastStressIndex = i;
+        break;
+      }
+    }
+  }
+
+  if (lastStressIndex === -1) return null;
+
+  // Return phonemes from the stressed vowel to the end (normalized without stress numbers)
+  return phones.slice(lastStressIndex).map(p => p.replace(/[012]$/, ''));
+}
+
+/**
+ * Calculate rhyme quality score between two words
+ * Returns a number from 0 to 1, where 1 is a perfect rhyme
+ */
+export function calculateRhymeQuality(word1: string, word2: string): number {
+  const rhyme1 = getRhymePhonemes(word1);
+  const rhyme2 = getRhymePhonemes(word2);
+
+  if (!rhyme1 || !rhyme2) return 0;
+
+  // Perfect rhyme: all phonemes from stressed vowel match exactly
+  if (rhyme1.length === rhyme2.length) {
+    let matches = 0;
+    for (let i = 0; i < rhyme1.length; i++) {
+      if (rhyme1[i] === rhyme2[i]) matches++;
+    }
+    return matches / rhyme1.length;
+  }
+
+  // Different lengths: compare from the end (the most important part for rhyming)
+  const minLen = Math.min(rhyme1.length, rhyme2.length);
+  let matches = 0;
+  for (let i = 0; i < minLen; i++) {
+    const p1 = rhyme1[rhyme1.length - 1 - i];
+    const p2 = rhyme2[rhyme2.length - 1 - i];
+    if (p1 === p2) matches++;
+  }
+
+  // Penalize length difference
+  const lengthPenalty = minLen / Math.max(rhyme1.length, rhyme2.length);
+  return (matches / minLen) * lengthPenalty;
+}
+
+/**
  * Detect if a sequence of words follows a specific metrical pattern
  */
 export function matchesMeterPattern(

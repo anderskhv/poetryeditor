@@ -4,11 +4,13 @@
  */
 
 import nlp from 'compromise';
+import { calculateRhymeQuality } from './cmuDict';
 
 export interface RhymeWord {
   word: string;
   score: number;
   numSyllables?: number;
+  rhymeQuality?: number; // 0-1, calculated from phonetic comparison
 }
 
 export interface SynonymWord {
@@ -18,6 +20,7 @@ export interface SynonymWord {
 
 /**
  * Fetch words that rhyme with the given word (perfect rhymes only)
+ * Sorts by phonetic rhyme quality, putting true perfect rhymes first
  */
 export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
   try {
@@ -39,11 +42,24 @@ export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
     const data = await response.json();
     console.log(`Received ${data.length} perfect rhymes for "${word}"`);
 
-    return data.map((item: any) => ({
+    // Calculate rhyme quality for each word using CMU dictionary phonetics
+    const rhymesWithQuality = data.map((item: any) => ({
       word: item.word,
       score: item.score || 0,
       numSyllables: item.numSyllables,
+      rhymeQuality: calculateRhymeQuality(word, item.word),
     }));
+
+    // Sort by rhyme quality (perfect rhymes first), then by original API score
+    rhymesWithQuality.sort((a: RhymeWord, b: RhymeWord) => {
+      // Primary sort: rhyme quality (higher is better)
+      const qualityDiff = (b.rhymeQuality || 0) - (a.rhymeQuality || 0);
+      if (Math.abs(qualityDiff) > 0.1) return qualityDiff;
+      // Secondary sort: original API score (higher is more common)
+      return b.score - a.score;
+    });
+
+    return rhymesWithQuality;
   } catch (error) {
     console.error('Error fetching rhymes:', error);
     return [];

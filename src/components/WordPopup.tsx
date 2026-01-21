@@ -189,7 +189,13 @@ export function WordPopup({ word, position, onClose }: WordPopupProps) {
                           </h4>
                           <div className="word-list">
                             {filteredRhymes
-                              .sort((a, b) => b.score - a.score)
+                              .sort((a, b) => {
+                                // Sort by rhyme quality first (higher is better)
+                                const qualityDiff = (b.rhymeQuality || 0) - (a.rhymeQuality || 0);
+                                if (Math.abs(qualityDiff) > 0.1) return qualityDiff;
+                                // Then by word frequency (score)
+                                return b.score - a.score;
+                              })
                               .map((rhyme, idx) => (
                                 <div key={idx} className="word-item">
                                   <span className="word-text">{rhyme.word}</span>

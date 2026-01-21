@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="#2c2c2c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Pencil body -->
+  <path d="M65 10 L85 30 L35 80 L15 85 L20 65 Z"/>
+  <!-- Eraser band -->
+  <line x1="72" y1="17" x2="78" y2="23"/>
+  <!-- Pencil tip -->
+  <path d="M20 65 L15 85 L35 80"/>
+  <!-- Inner lines on pencil body -->
+  <line x1="62" y1="22" x2="30" y2="54"/>
+  <line x1="68" y1="28" x2="36" y2="60"/>
+  <!-- Writing dots -->
+  <circle cx="22" cy="90" r="2" fill="#2c2c2c" stroke="none"/>
+  <circle cx="30" cy="92" r="2" fill="#2c2c2c" stroke="none"/>
+  <circle cx="38" cy="91" r="2" fill="#2c2c2c" stroke="none"/>
+  <circle cx="46" cy="92" r="2" fill="#2c2c2c" stroke="none"/>
+</svg>
