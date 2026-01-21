@@ -9,6 +9,20 @@ import { type TenseInstance } from './utils/tenseChecker';
 import { type StressedSyllableInstance } from './utils/scansionAnalyzer';
 import './App.css';
 
+// Curated font options for poetry
+const FONT_OPTIONS = [
+  { id: 'libre-baskerville', name: 'Libre Baskerville', family: "'Libre Baskerville', serif", googleFont: 'Libre+Baskerville:ital,wght@0,400;0,700;1,400' },
+  { id: 'eb-garamond', name: 'EB Garamond', family: "'EB Garamond', serif", googleFont: 'EB+Garamond:ital,wght@0,400;0,700;1,400' },
+  { id: 'crimson-pro', name: 'Crimson Pro', family: "'Crimson Pro', serif", googleFont: 'Crimson+Pro:ital,wght@0,400;0,700;1,400' },
+  { id: 'lora', name: 'Lora', family: "'Lora', serif", googleFont: 'Lora:ital,wght@0,400;0,700;1,400' },
+  { id: 'merriweather', name: 'Merriweather', family: "'Merriweather', serif", googleFont: 'Merriweather:ital,wght@0,400;0,700;1,400' },
+  { id: 'playfair-display', name: 'Playfair Display', family: "'Playfair Display', serif", googleFont: 'Playfair+Display:ital,wght@0,400;0,700;1,400' },
+  { id: 'source-serif-pro', name: 'Source Serif Pro', family: "'Source Serif 4', serif", googleFont: 'Source+Serif+4:ital,wght@0,400;0,700;1,400' },
+  { id: 'cormorant-garamond', name: 'Cormorant Garamond', family: "'Cormorant Garamond', serif", googleFont: 'Cormorant+Garamond:ital,wght@0,400;0,700;1,400' },
+  { id: 'spectral', name: 'Spectral', family: "'Spectral', serif", googleFont: 'Spectral:ital,wght@0,400;0,700;1,400' },
+  { id: 'georgia', name: 'Georgia', family: "Georgia, serif", googleFont: null },
+];
+
 const SAMPLE_POEM = `Shall I compare thee to a summer's day?
 Thou art more lovely and more temperate.
 Rough winds do shake the darling buds of May,
@@ -35,6 +49,11 @@ function App() {
     const saved = localStorage.getItem('darkMode');
     return saved === 'true';
   });
+  const [selectedFont, setSelectedFont] = useState<string>(() => {
+    return localStorage.getItem('selectedFont') || 'libre-baskerville';
+  });
+  const [showFontMenu, setShowFontMenu] = useState<boolean>(false);
+  const [showThemeMenu, setShowThemeMenu] = useState<boolean>(false);
   const [showPoemList, setShowPoemList] = useState<boolean>(false);
   const [savedPoems, setSavedPoems] = useState<SavedPoem[]>(() => {
     const saved = localStorage.getItem('savedPoems');
@@ -94,6 +113,27 @@ function App() {
     document.documentElement.classList.toggle('dark-mode', isDarkMode);
     localStorage.setItem('darkMode', String(isDarkMode));
   }, [isDarkMode]);
+
+  // Apply selected font and load from Google Fonts if needed
+  useEffect(() => {
+    const font = FONT_OPTIONS.find(f => f.id === selectedFont);
+    if (font) {
+      // Load Google Font if needed
+      if (font.googleFont) {
+        const linkId = `font-${font.id}`;
+        if (!document.getElementById(linkId)) {
+          const link = document.createElement('link');
+          link.id = linkId;
+          link.rel = 'stylesheet';
+          link.href = `https://fonts.googleapis.com/css2?family=${font.googleFont}&display=swap`;
+          document.head.appendChild(link);
+        }
+      }
+      // Apply font to CSS variable
+      document.documentElement.style.setProperty('--font-editor', font.family);
+      localStorage.setItem('selectedFont', selectedFont);
+    }
+  }, [selectedFont]);
 
   // Track analysis state based on text changes
   useEffect(() => {
@@ -200,6 +240,7 @@ function App() {
   const [showExportMenu, setShowExportMenu] = useState<boolean>(false);
 
   const handleExportPoem = (format: 'txt' | 'md') => {
+    setShowExportMenu(false);
     const title = poemTitle.trim() || 'Untitled';
     const safeTitle = title.replace(/[^a-zA-Z0-9-_ ]/g, '').replace(/\s+/g, '-');
 
@@ -228,7 +269,6 @@ function App() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    setShowExportMenu(false);
   };
 
   const handleSavePoem = () => {
@@ -285,10 +325,10 @@ function App() {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (!target.closest('.poems-dropdown') && !target.closest('.export-dropdown')) {
-        setShowPoemList(false);
-        setShowExportMenu(false);
-      }
+      if (!target.closest('.poems-dropdown')) setShowPoemList(false);
+      if (!target.closest('.export-dropdown')) setShowExportMenu(false);
+      if (!target.closest('.font-dropdown')) setShowFontMenu(false);
+      if (!target.closest('.theme-dropdown')) setShowThemeMenu(false);
     };
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
@@ -303,7 +343,6 @@ function App() {
             {isAnalyzing && (
               <span className="analyzing-indicator" title="Analyzing poem...">
                 <span className="analyzing-dot"></span>
-                Analyzing
               </span>
             )}
           </div>
@@ -311,11 +350,11 @@ function App() {
             <div className="poems-dropdown">
               <button
                 onClick={() => setShowPoemList(!showPoemList)}
-                className="btn btn-secondary"
+                className="btn btn-menu"
                 aria-label="View saved poems"
                 aria-expanded={showPoemList}
               >
-                My Poems {savedPoems.length > 0 && `(${savedPoems.length})`}
+                My Poems
               </button>
               {showPoemList && (
                 <div className="poems-menu">
@@ -342,17 +381,17 @@ function App() {
                 </div>
               )}
             </div>
-            <button onClick={handleSavePoem} className="btn btn-secondary">
+            <button onClick={handleSavePoem} className="btn btn-menu">
               Save
             </button>
-            <button onClick={handleNewPoem} className="btn btn-secondary">
-              New Poem
+            <button onClick={handleNewPoem} className="btn btn-menu">
+              New
             </button>
             <div className="export-dropdown">
               <button
                 onClick={() => setShowExportMenu(!showExportMenu)}
-                className="btn btn-primary"
-                aria-label="Export poem"
+                className="btn btn-menu"
+                aria-label="Export options"
                 aria-expanded={showExportMenu}
               >
                 Export
@@ -363,31 +402,76 @@ function App() {
                     className="export-item"
                     onClick={() => handleExportPoem('txt')}
                   >
-                    Plain Text (.txt)
+                    Export as Text
                   </button>
                   <button
                     className="export-item"
                     onClick={() => handleExportPoem('md')}
                   >
-                    Markdown (.md)
+                    Export as Markdown
                   </button>
                 </div>
               )}
             </div>
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`dark-mode-toggle ${isDarkMode ? 'dark' : ''}`}
-              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-              title={isDarkMode ? 'Light mode' : 'Dark mode'}
-            >
-              <div className="toggle-track">
-                <div className="toggle-thumb">
-                  <span className={isDarkMode ? 'moon-icon' : 'sun-icon'}>
-                    {isDarkMode ? '☽' : '☀'}
-                  </span>
+            <div className="font-dropdown">
+              <button
+                onClick={() => setShowFontMenu(!showFontMenu)}
+                className="btn btn-menu"
+                aria-label="Select font"
+                aria-expanded={showFontMenu}
+              >
+                {FONT_OPTIONS.find(f => f.id === selectedFont)?.name || 'Font'}
+              </button>
+              {showFontMenu && (
+                <div className="font-menu">
+                  {FONT_OPTIONS.map(font => (
+                    <button
+                      key={font.id}
+                      className={`font-item ${selectedFont === font.id ? 'active' : ''}`}
+                      onClick={() => {
+                        setSelectedFont(font.id);
+                        setShowFontMenu(false);
+                      }}
+                      style={{ fontFamily: font.family }}
+                    >
+                      {font.name}
+                    </button>
+                  ))}
                 </div>
-              </div>
-            </button>
+              )}
+            </div>
+            <div className="theme-dropdown">
+              <button
+                onClick={() => setShowThemeMenu(!showThemeMenu)}
+                className="btn btn-menu"
+                aria-label="Select theme"
+                aria-expanded={showThemeMenu}
+              >
+                {isDarkMode ? 'Dark' : 'Light'}
+              </button>
+              {showThemeMenu && (
+                <div className="theme-menu">
+                  <button
+                    className={`theme-item ${!isDarkMode ? 'active' : ''}`}
+                    onClick={() => {
+                      setIsDarkMode(false);
+                      setShowThemeMenu(false);
+                    }}
+                  >
+                    Light
+                  </button>
+                  <button
+                    className={`theme-item ${isDarkMode ? 'active' : ''}`}
+                    onClick={() => {
+                      setIsDarkMode(true);
+                      setShowThemeMenu(false);
+                    }}
+                  >
+                    Dark
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -413,21 +497,24 @@ function App() {
             highlightedLines={highlightedLines}
             highlightedWords={highlightedWords}
             onLineHover={setEditorHoveredLine}
+            editorFont={FONT_OPTIONS.find(f => f.id === selectedFont)?.family}
           />
 
           <button
-            className={`panel-toggle ${isPanelOpen ? 'open' : ''} ${!hasEverOpenedPanel && !isPanelOpen ? 'pulse-attention' : ''}`}
+            className={`panel-toggle ${isPanelOpen ? 'open' : ''}`}
             onClick={() => {
-              const opening = !isPanelOpen;
-              setIsPanelOpen(opening);
-              if (opening && !hasEverOpenedPanel) {
+              setIsPanelOpen(!isPanelOpen);
+              if (!hasEverOpenedPanel && !isPanelOpen) {
                 setHasEverOpenedPanel(true);
                 localStorage.setItem('hasOpenedAnalysisPanel', 'true');
               }
             }}
-            title={isPanelOpen ? 'Close analysis panel' : 'Open analysis panel'}
+            title={isPanelOpen ? "Close analysis panel" : "Open analysis panel"}
           >
-            {isPanelOpen ? '›' : <><span className="panel-toggle-text">Analysis</span> ‹</>}
+            <span className="panel-toggle-icon">
+              {isPanelOpen ? '›' : '‹'}
+            </span>
+            <span className="panel-toggle-label">Analysis</span>
           </button>
         </div>
 

@@ -26,6 +26,7 @@ interface AnalysisPanelProps {
   text: string;
   words: WordInfo[];
   lastSaved: Date;
+  onClose?: () => void;
   onHighlightPOS?: (pos: string | null) => void;
   onMeterExpand?: (data: {
     syllableCounts: number[];
@@ -65,7 +66,7 @@ interface AnalysisPanelProps {
 type CategoryTab = 'rhythm' | 'rhymes' | 'words' | 'originality';
 type ExpandedSection = 'syllables' | 'repetition' | 'pos' | 'adverbSuggestions' | 'doubleAdverbs' | 'passiveVoice' | 'rhythmVariation' | 'stanzaStructure' | 'lineLength' | 'punctuation' | 'rhymeScheme' | 'rhymeAnalysis' | 'poeticForm' | 'soundPatterns' | 'tenseConsistency' | 'scansion' | 'figurativeLanguage' | 'cliches' | 'abstractConcrete' | 'firstDraftPhrases' | null;
 
-export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllableExpand, onRhythmVariationExpand, onLineLengthExpand, onPunctuationExpand, onSectionCollapse, onHighlightLines, onHighlightWords, onPassiveVoiceExpand, onTenseExpand, onScansionExpand, editorHoveredLine }: AnalysisPanelProps) {
+export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS, onSyllableExpand, onRhythmVariationExpand, onLineLengthExpand, onPunctuationExpand, onSectionCollapse, onHighlightLines, onHighlightWords, onPassiveVoiceExpand, onTenseExpand, onScansionExpand, editorHoveredLine }: AnalysisPanelProps) {
   const [activeCategory, setActiveCategory] = useState<CategoryTab>('rhythm');
   const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
   const [selectedForm, setSelectedForm] = useState<string | null>(null); // User-selected form (null = Auto-detect)
@@ -135,8 +136,9 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
     const status = evaluateConstraint(formToCheck, aspect, poemData);
     if (status === 'none') return null;
 
-    const icon = status === 'perfect' ? '✓' : status === 'good' ? '~' : '✗';
-    const color = status === 'perfect' ? '#2e7d32' : status === 'good' ? '#f57c00' : '#c62828';
+    // Editorial indicators - dots show consistency, not pass/fail
+    const icon = status === 'perfect' ? '●' : status === 'good' ? '◐' : '○';
+    const color = 'var(--color-ink-base)';
     const description = getConstraintDescription(formToCheck, aspect);
 
     return (
@@ -308,12 +310,12 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
 
   const formatTimeSince = (date: Date) => {
     const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
-    if (seconds < 5) return 'Just now';
-    if (seconds < 60) return `${seconds}s ago`;
+    if (seconds < 5) return 'Last saved just now';
+    if (seconds < 60) return `Last saved ${seconds}s ago`;
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
+    if (minutes < 60) return `Last saved ${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
-    return `${hours}h ago`;
+    return `Last saved ${hours}h ago`;
   };
 
   // Handle section expansion with exclusive expansion logic
@@ -644,7 +646,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       {expandedSection === 'doubleAdverbs' && (
         <div className="double-adverbs-info">
           {analysis.doubleAdverbs.length === 0 ? (
-            <div className="perfect-meter">No double adverbs detected!</div>
+            <div className="perfect-meter">No stacked adverbs found</div>
           ) : (
             <>
               <div className="adverb-suggestions-intro">
@@ -700,7 +702,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
       {expandedSection === 'passiveVoice' && (
         <div className="passive-voice-info">
           {analysis.passiveVoiceInstances.length === 0 ? (
-            <div className="perfect-meter">All sentences use active voice!</div>
+            <div className="perfect-meter">All active voice throughout</div>
           ) : (
             <>
               <div className="passive-voice-summary">
@@ -949,8 +951,8 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
                   </span>
                 </div>
                 <div className={`tense-status ${analysis.tenseAnalysis.consistency}`}>
-                  {analysis.tenseAnalysis.consistency === 'consistent' ? '✓ Consistent' :
-                   analysis.tenseAnalysis.consistency === 'mostly consistent' ? '~ Mostly consistent' : '✗ Mixed tenses'}
+                  {analysis.tenseAnalysis.consistency === 'consistent' ? 'Consistent tense' :
+                   analysis.tenseAnalysis.consistency === 'mostly consistent' ? 'Mostly consistent' : 'Mixed tenses'}
                 </div>
               </div>
             </>
@@ -1105,20 +1107,13 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
         <div className="cliche-detection-info">
           {totalClicheCount === 0 ? (
             <div className="cliche-clear">
-              <span className="cliche-clear-icon">✓</span>
-              No common cliches detected. Your language appears fresh and original!
+              No commonly recognized phrases found
             </div>
           ) : (
             <>
               <div className="cliche-summary">
-                <div className="cliche-originality-score">
-                  <span className="score-label">Originality Score</span>
-                  <span className={`score-value ${analysis.clicheAnalysis.overallScore >= 80 ? 'high' : analysis.clicheAnalysis.overallScore >= 50 ? 'medium' : 'low'}`}>
-                    {analysis.clicheAnalysis.overallScore}%
-                  </span>
-                </div>
                 <div className="cliche-note">
-                  These phrases may be familiar to readers. Consider if they serve your poem's purpose or could be refreshed.
+                  Phrases readers may recognize. Consider whether familiarity serves your intent.
                 </div>
               </div>
               <div className="cliche-list">
@@ -1238,10 +1233,10 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
               <span className="ac-concrete">Concrete: {analysis.abstractConcreteAnalysis.concreteCount}</span>
             </div>
             <div className={`ac-assessment ${analysis.abstractConcreteAnalysis.assessment}`}>
-              {analysis.abstractConcreteAnalysis.assessment === 'excellent' ? '✓ Excellent balance - rich in concrete imagery' :
-               analysis.abstractConcreteAnalysis.assessment === 'good' ? '✓ Good balance of abstract and concrete' :
-               analysis.abstractConcreteAnalysis.assessment === 'moderate' ? '~ Moderate - could use more concrete imagery' :
-               '⚠ Abstract-heavy - consider adding sensory details'}
+              {analysis.abstractConcreteAnalysis.assessment === 'excellent' ? 'Rich in concrete imagery' :
+               analysis.abstractConcreteAnalysis.assessment === 'good' ? 'Good mix of abstract and concrete' :
+               analysis.abstractConcreteAnalysis.assessment === 'moderate' ? 'Could use more sensory detail' :
+               'Leans abstract — consider adding physical imagery'}
             </div>
           </div>
           {analysis.abstractConcreteAnalysis.suggestions.length > 0 && (
@@ -1297,13 +1292,12 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
         <div className="first-draft-info">
           {analysis.firstDraftAnalysis.count === 0 ? (
             <div className="first-draft-clear">
-              <span className="first-draft-clear-icon">✓</span>
-              No filler words or weak phrases detected. Your writing is tight!
+              No common filler words found
             </div>
           ) : (
             <>
               <div className="first-draft-note">
-                These words often dilute impact. Consider cutting or replacing them.
+                Words that sometimes dilute impact. Worth a second look.
               </div>
               <div className="first-draft-list">
                 {analysis.firstDraftAnalysis.phrases.map((phrase, idx) => (
@@ -1360,7 +1354,7 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
             </div>
           )}
           {analysis.activeForm !== 'Free Verse' && analysis.rhythmVariation.outlierLines.length === 0 && analysis.syllableCounts.filter(c => c > 0).length > 0 && (
-            <div className="perfect-meter">All lines are rhythmically consistent!</div>
+            <div className="perfect-meter">Lines show consistent rhythm</div>
           )}
           {analysis.activeForm === 'Free Verse' && (
             <div className="free-verse-note">Variation is expected and intentional in free verse.</div>
@@ -1716,9 +1710,9 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
                           <>
                             <span className="rhyme-col-expected rhyme-letter">{expectedLetter || '—'}</span>
                             <span className={`rhyme-col-status rhyme-status-${matchStatus}`}>
-                              {matchStatus === 'match' && '✓'}
-                              {matchStatus === 'slant' && '~'}
-                              {matchStatus === 'mismatch' && '✗'}
+                              {matchStatus === 'match' && '●'}
+                              {matchStatus === 'slant' && '◐'}
+                              {matchStatus === 'mismatch' && '○'}
                             </span>
                           </>
                         )}
@@ -1927,11 +1921,18 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
   return (
     <div className="analysis-panel">
       <div className="analysis-header">
-        <h2>Poetry Analysis</h2>
-        <div className="save-indicator">
-          <span className="save-dot"></span>
-          Auto-saved {formatTimeSince(lastSaved)}
+        <div className="analysis-header-left">
+          <h2>Analysis</h2>
+          <div className="save-indicator">
+            <span className="save-dot"></span>
+            {formatTimeSince(lastSaved)}
+          </div>
         </div>
+        {onClose && (
+          <button className="panel-close-btn" onClick={onClose} aria-label="Close analysis panel">
+            ×
+          </button>
+        )}
       </div>
 
       {/* Top-level metrics */}
@@ -1994,34 +1995,24 @@ export function AnalysisPanel({ text, words, lastSaved, onHighlightPOS, onSyllab
           </div>
           {!selectedForm && analysis.poeticForm && (
             <div className="auto-detect-result">
-              Detected:
+              Resembles:
               <span className={`fit-badge-inline fit-${analysis.poeticForm.fit || 'medium'}`}>
                 {analysis.poeticForm.form}
               </span>
-              {analysis.poeticForm.fitScore !== undefined && (
-                <span style={{ fontSize: '11px', color: '#888', marginLeft: '4px' }}>
-                  ({analysis.poeticForm.fitScore}/100)
-                </span>
-              )}
             </div>
           )}
           {selectedForm && analysis.manualFormFit && (
             <div className="auto-detect-result">
               {analysis.manualFormFit.fit !== 'none' ? (
                 <>
-                  Fit:
                   <span className={`fit-badge-inline fit-${analysis.manualFormFit.fit}`}>
-                    {analysis.manualFormFit.fit} fit
+                    {analysis.manualFormFit.fit === 'high' ? 'Close match' :
+                     analysis.manualFormFit.fit === 'medium' ? 'Partial match' : 'Loose fit'}
                   </span>
-                  {analysis.manualFormFit.fitScore !== undefined && (
-                    <span style={{ fontSize: '11px', color: '#888', marginLeft: '4px' }}>
-                      ({analysis.manualFormFit.fitScore}/100)
-                    </span>
-                  )}
                 </>
               ) : (
-                <span style={{ fontSize: '12px', color: '#999' }}>
-                  Does not fit this form
+                <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
+                  Structure differs from this form
                 </span>
               )}
             </div>

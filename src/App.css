@@ -1,26 +1,67 @@
+/* ============================================
+   POETRY EDITOR - Editorial Design System
+   ============================================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* CSS Variables for consistent theming */
+:root {
+  /* Light mode colors - warm paper aesthetic */
+  --color-background: #f4f2ef;
+  --color-paper: #fdfcfa;
+  --color-text-primary: #2a2a2a;
+  --color-text-secondary: #6a6a6a;
+  --color-text-muted: #9a9a9a;
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-shadow: rgba(0, 0, 0, 0.04);
+
+  /* Editorial feedback colors - ink density, not traffic lights */
+  --color-ink-base: #7a7a7a;           /* Base informational */
+  --color-ink-emphasis: #5a5a5a;       /* Stronger emphasis */
+  --color-ink-light: #a0a0a0;          /* Lighter, less important */
+  --color-attention: #9a8a7a;          /* Warm beige - "consider this" */
+  --color-attention-bg: rgba(138, 122, 106, 0.06);
+  --color-notation: #8a9a8a;           /* Soft sage - quiet confirmation */
+  --color-notation-bg: rgba(122, 138, 122, 0.06);
+
+  /* Inline feedback - subtle, not alerting */
+  --color-underline: rgba(0, 0, 0, 0.25);
+  --color-underline-dotted: rgba(0, 0, 0, 0.2);
+  --color-highlight-subtle: rgba(0, 0, 0, 0.04);
+
+  /* Typography */
+  --font-serif: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-editor: 'Libre Baskerville', serif;
+
+  /* Spacing */
+  --header-height: 48px;
+}
+
 .app {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  background-color: var(--color-background);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ============================================
+   HEADER - Quiet imprint style
+   ============================================ */
+
 .app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 12px 32px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background-color: var(--color-paper);
+  color: var(--color-text-secondary);
+  padding: 0 32px;
+  height: var(--header-height);
+  border-bottom: 1px solid var(--color-border);
   z-index: 10;
 }
 
@@ -28,6 +69,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 100%;
   max-width: 1800px;
   margin: 0 auto;
 }
@@ -35,288 +77,214 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .app-title {
-  font-size: 20px;
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 400;
   margin: 0;
-  letter-spacing: -0.3px;
+  letter-spacing: 0;
+  color: var(--color-text-muted);
 }
 
 .header-actions {
   display: flex;
-  gap: 8px;
+  gap: 20px;
   align-items: center;
   flex-wrap: nowrap;
 }
 
+/* Header buttons - quiet, text-only style */
 .btn {
-  padding: 8px 14px;
+  padding: 6px 0;
   border: none;
-  border-radius: 6px;
+  border-radius: 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   cursor: pointer;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+  text-transform: none;
+  letter-spacing: 0;
   white-space: nowrap;
   flex-shrink: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
 }
 
-.btn-primary {
-  background-color: white;
-  color: #667eea;
+.btn:hover {
+  color: var(--color-text-primary);
 }
 
-.btn-primary:hover {
-  background-color: #f0f0f0;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
+.btn-primary,
 .btn-secondary {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: none;
 }
 
+.btn-primary:hover,
 .btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
+  color: var(--color-text-primary);
+  background: transparent;
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-icon {
-  padding: 8px 12px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  font-size: 18px;
-  line-height: 1;
+  padding: 4px 8px;
+  font-size: 16px;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
 }
 
 .btn-icon:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
+  color: var(--color-text-primary);
+  background: transparent;
+  transform: none;
 }
 
-/* Dark mode toggle slider */
-.dark-mode-toggle {
-  position: relative;
-  width: 56px;
-  height: 30px;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  cursor: pointer;
-  padding: 2px;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-  box-sizing: border-box;
+/* Overflow menu button (three dots) */
+.btn-overflow {
+  padding: 4px 8px;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
 }
 
-.dark-mode-toggle:hover {
-  background: rgba(255, 255, 255, 0.25);
+.btn-overflow:hover {
+  color: var(--color-text-primary);
 }
 
-.dark-mode-toggle.dark {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.toggle-track {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.toggle-thumb {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-}
-
-.dark-mode-toggle.dark .toggle-thumb {
-  left: 26px;
-  background: rgba(226, 232, 240, 0.95);
-}
-
-/* Sun icon for light mode */
-.sun-icon {
-  color: #7c3aed;
-  font-size: 14px;
-  line-height: 1;
-}
-
-/* Moon icon for dark mode */
-.moon-icon {
-  color: #667eea;
-  font-size: 13px;
-  line-height: 1;
-}
-
-/* Analyzing indicator */
+/* Analyzing indicator - subtle */
 .analyzing-indicator {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  margin-left: 12px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  margin-left: 8px;
 }
 
 .analyzing-dot {
-  width: 8px;
-  height: 8px;
-  background-color: #4caf50;
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-text-muted);
   border-radius: 50%;
-  animation: pulse 1s ease-in-out infinite;
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
-/* Examples dropdown */
-.examples-dropdown {
+/* ============================================
+   DROPDOWN MENUS
+   ============================================ */
+
+.poems-dropdown,
+.export-dropdown,
+.overflow-dropdown {
   position: relative;
 }
 
-.examples-menu {
+.poems-menu,
+.export-menu,
+.overflow-menu,
+.font-menu,
+.theme-menu {
   position: absolute;
   top: 100%;
-  left: 0;
-  margin-top: 4px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  margin-top: 8px;
+  background: var(--color-paper);
+  border-radius: 4px;
+  box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
   min-width: 180px;
   z-index: 1000;
   overflow: hidden;
 }
 
-.example-item {
-  display: block;
-  width: 100%;
-  padding: 12px 16px;
-  border: none;
-  background: none;
-  text-align: left;
-  font-size: 14px;
-  color: #333;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.example-item:hover {
-  background-color: #f5f5f5;
-}
-
-.example-item:not(:last-child) {
-  border-bottom: 1px solid #eee;
-}
-
-/* Export dropdown */
-.export-dropdown {
-  position: relative;
-}
-
-.export-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 4px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  min-width: 160px;
-  z-index: 1000;
-  overflow: hidden;
-}
-
-.export-item {
-  display: block;
-  width: 100%;
-  padding: 12px 16px;
-  border: none;
-  background: none;
-  text-align: left;
-  font-size: 14px;
-  color: #333;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.export-item:hover {
-  background-color: #f5f5f5;
-}
-
-.export-item:not(:last-child) {
-  border-bottom: 1px solid #eee;
-}
-
-/* Poems dropdown (My Poems) */
-.poems-dropdown {
-  position: relative;
-}
-
 .poems-menu {
-  position: absolute;
-  top: 100%;
   left: 0;
-  margin-top: 4px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   min-width: 220px;
   max-height: 300px;
   overflow-y: auto;
-  z-index: 1000;
+}
+
+.export-menu,
+.overflow-menu,
+.theme-menu {
+  right: 0;
+  min-width: 120px;
+}
+
+.font-menu {
+  right: 0;
+  min-width: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.font-dropdown,
+.theme-dropdown {
+  position: relative;
 }
 
 .poems-empty {
   padding: 16px;
-  color: #888;
+  color: var(--color-text-muted);
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-.poem-item {
+.poem-item,
+.export-item,
+.overflow-item,
+.font-item,
+.theme-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  font-size: 14px;
-  color: #333;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--color-text-primary);
   cursor: pointer;
   transition: background-color 0.15s ease;
-  border-bottom: 1px solid #eee;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
 }
 
-.poem-item:last-child {
-  border-bottom: none;
+.poem-item:not(:last-child),
+.export-item:not(:last-child),
+.overflow-item:not(:last-child),
+.font-item:not(:last-child),
+.theme-item:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
 }
 
-.poem-item:hover {
-  background-color: #f5f5f5;
+.poem-item:hover,
+.export-item:hover,
+.overflow-item:hover,
+.font-item:hover,
+.theme-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
-.poem-item.active {
-  background-color: #e8eaf6;
+.poem-item.active,
+.font-item.active,
+.theme-item.active {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .poem-title {
@@ -332,8 +300,8 @@
   height: 24px;
   border: none;
   background: none;
-  color: #999;
-  font-size: 18px;
+  color: var(--color-text-muted);
+  font-size: 16px;
   cursor: pointer;
   border-radius: 4px;
   display: flex;
@@ -344,194 +312,158 @@
 }
 
 .poem-delete:hover {
-  background-color: #ffebee;
-  color: #e53935;
+  background-color: rgba(200, 0, 0, 0.08);
+  color: #c00;
 }
+
+/* ============================================
+   MAIN CONTENT AREA
+   ============================================ */
 
 .app-content {
   flex: 1;
   display: flex;
   overflow: hidden;
   position: relative;
+  background-color: var(--color-background);
 }
 
 .editor-pane {
   flex: 1;
-  background-color: #fafafa;
+  display: flex;
   overflow: hidden;
   position: relative;
+  background-color: var(--color-paper);
 }
 
-/* Poem title input in editor */
+/* Poem writing surface */
+.poetry-editor-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--color-paper);
+}
+
+/* ============================================
+   POEM TITLE
+   ============================================ */
+
 .poem-title-container {
-  padding: 16px 20px 8px 56px; /* 56px left to align with Monaco editor content */
-  background-color: #fafafa;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 40px 60px 20px 60px;
+  background-color: var(--color-paper);
+  border-bottom: none;
 }
 
 .poem-title-editor-input {
   width: 100%;
-  max-width: 600px;
+  max-width: 100%;
   background: transparent;
   border: none;
-  border-bottom: 2px solid transparent;
-  color: #333;
-  font-size: 24px;
-  font-weight: 500;
-  font-family: 'Georgia', 'Times New Roman', serif;
-  padding: 8px 0;
-  transition: border-color 0.2s ease;
+  border-bottom: none;
+  color: var(--color-text-primary);
+  font-size: 28px;
+  font-weight: 400;
+  font-family: var(--font-editor);
+  padding: 0;
+  transition: none;
 }
 
-.poem-title-editor-input:hover {
-  border-bottom-color: #e0e0e0;
-}
-
+.poem-title-editor-input:hover,
 .poem-title-editor-input:focus {
+  border-bottom: none;
   outline: none;
-  border-bottom-color: #667eea;
 }
 
 .poem-title-editor-input::placeholder {
-  color: #999;
-  font-style: italic;
+  color: var(--color-text-muted);
+  font-style: normal;
 }
 
-/* Dark mode for poem title in editor */
 .poem-title-editor-input.dark {
-  color: #e2e8f0;
+  color: var(--color-text-primary);
 }
 
 .poem-title-editor-input.dark::placeholder {
-  color: #718096;
+  color: var(--color-text-muted);
 }
+
+/* ============================================
+   ANALYSIS PANEL TOGGLE - Icon button on edge
+   ============================================ */
 
 .panel-toggle {
   position: absolute;
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  width: 24px;
-  height: 60px;
-  border-radius: 8px 0 0 8px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  font-size: 14px;
+  width: 32px;
+  height: 90px;
+  border-radius: 6px 0 0 6px;
+  background: var(--color-background);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-right: none;
+  font-size: 13px;
+  font-weight: 400;
   cursor: pointer;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.04);
   transition: all 0.2s ease;
   z-index: 100;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 8px 4px;
-}
-
-/* Expanded toggle with text */
-.panel-toggle:not(.open) {
-  width: 32px;
-  height: auto;
-  min-height: 120px;
-}
-
-.panel-toggle-text {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  opacity: 0.95;
+  gap: 6px;
+  padding: 10px 6px;
 }
 
 .panel-toggle:hover {
-  width: 30px;
-  box-shadow: -3px 0 12px rgba(0, 0, 0, 0.2);
+  color: var(--color-text-primary);
+  background: var(--color-paper);
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.08);
 }
 
 .panel-toggle.open {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  width: 24px;
-  height: 60px;
+  right: 0;
+  border-radius: 6px 0 0 6px;
 }
 
-/* Pulse animation to draw attention to Analysis tab on first load */
-.panel-toggle.pulse-attention {
-  animation: pulseAttention 1.5s ease-in-out infinite;
-  width: 36px;
-  min-height: 130px;
+.panel-toggle-icon {
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 300;
 }
 
-@keyframes pulseAttention {
-  0%, 100% {
-    transform: translateY(-50%) scale(1);
-    box-shadow: -2px 0 12px rgba(102, 126, 234, 0.4);
-  }
-  50% {
-    transform: translateY(-50%) scale(1.12);
-    box-shadow: -6px 0 30px rgba(102, 126, 234, 0.7), 0 0 40px rgba(118, 75, 162, 0.5);
-    background: linear-gradient(135deg, #7b8ef8 0%, #8e5fba 100%);
-  }
+.panel-toggle-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
-.panel-toggle.pulse-attention .panel-toggle-text {
-  animation: textGlow 1.5s ease-in-out infinite;
-  font-size: 13px;
-}
-
-@keyframes textGlow {
-  0%, 100% {
-    opacity: 0.95;
-    text-shadow: none;
-  }
-  50% {
-    opacity: 1;
-    text-shadow: 0 0 12px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.6);
-  }
-}
+/* ============================================
+   ANALYSIS SIDE PANEL
+   ============================================ */
 
 .side-panel {
-  width: 450px;
-  background-color: #f9f9f9;
-  border-left: 1px solid #e0e0e0;
+  width: 320px;
+  background-color: var(--color-paper);
+  border-left: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 .panel-tabs {
-  display: flex;
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
-  padding: 0;
+  display: none; /* Hide tabs, show Analysis directly */
 }
 
 .tab {
-  flex: 1;
-  padding: 16px;
-  background: transparent;
-  border: none;
-  border-bottom: 3px solid transparent;
-  font-size: 14px;
-  font-weight: 600;
-  color: #888;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.tab:hover {
-  color: #667eea;
-  background: #fafafa;
-}
-
-.tab.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  display: none;
 }
 
 .panel-content {
@@ -546,36 +478,30 @@
   justify-content: center;
 }
 
+/* ============================================
+   FOOTER - Hidden
+   ============================================ */
+
 .app-footer {
-  background-color: #f5f5f5;
-  border-top: 1px solid #e0e0e0;
-  padding: 12px 32px;
-  font-size: 12px;
-  color: #666;
+  display: none;
 }
 
-.footer-content {
-  text-align: center;
-  max-width: 1800px;
-  margin: 0 auto;
-  line-height: 1.4;
-}
-
+.footer-content,
 .footer-copyright {
-  text-align: center;
-  margin-top: 8px;
-  font-size: 11px;
-  color: #888;
+  display: none;
 }
 
-:root.dark-mode .footer-copyright {
-  color: #718096;
-}
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
 
-/* Responsive design */
 @media (max-width: 1200px) {
   .side-panel {
-    width: 400px;
+    width: 300px;
+  }
+
+  .panel-toggle.open {
+    right: 300px;
   }
 }
 
@@ -586,188 +512,195 @@
     right: 0;
     bottom: 0;
     width: 100%;
-    max-width: 400px;
+    max-width: 360px;
     z-index: 50;
+    box-shadow: -4px 0 20px var(--color-shadow);
   }
 
   .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
   }
 
   .header-actions {
-    width: 100%;
-    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .poem-title-container {
+    padding: 30px 30px 16px 30px;
+  }
+
+  .panel-toggle {
+    right: 0;
+  }
+
+  .panel-toggle.open {
+    right: 0;
+    z-index: 60;
   }
 }
 
 @media (max-width: 600px) {
   .app-header {
-    padding: 16px 20px;
+    padding: 0 16px;
   }
 
   .app-title {
-    font-size: 24px;
+    font-size: 13px;
   }
 
-  .app-subtitle {
-    font-size: 12px;
+  .poem-title-container {
+    padding: 24px 20px 12px 20px;
   }
 
-  .footer-content {
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .footer-content span:nth-child(2n) {
-    display: none;
+  .poem-title-editor-input {
+    font-size: 22px;
   }
 }
 
 /* ============================================
-   DARK MODE
+   DARK MODE - Night paper aesthetic
    ============================================ */
 
 :root.dark-mode {
+  --color-background: #1a1a1f;
+  --color-paper: #242428;
+  --color-text-primary: #d8d8d8;
+  --color-text-secondary: #909090;
+  --color-text-muted: #606060;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-shadow: rgba(0, 0, 0, 0.25);
+
+  /* Editorial feedback colors - dark mode */
+  --color-ink-base: #888888;
+  --color-ink-emphasis: #a0a0a0;
+  --color-ink-light: #606060;
+  --color-attention: #908070;
+  --color-attention-bg: rgba(160, 144, 128, 0.08);
+  --color-notation: #7a8a7a;
+  --color-notation-bg: rgba(138, 154, 138, 0.12);
+
+  /* Inline feedback - dark mode */
+  --color-underline: rgba(255, 255, 255, 0.25);
+  --color-underline-dotted: rgba(255, 255, 255, 0.2);
+  --color-highlight-subtle: rgba(255, 255, 255, 0.04);
+
   color-scheme: dark;
 }
 
 :root.dark-mode .app {
-  background-color: #1a1a2e;
+  background-color: var(--color-background);
 }
 
 :root.dark-mode .app-header {
-  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+  background-color: var(--color-paper);
+  border-bottom-color: var(--color-border);
 }
 
-:root.dark-mode .editor-pane {
-  background-color: #16213e;
+:root.dark-mode .app-title {
+  color: var(--color-text-muted);
 }
 
-:root.dark-mode .poem-title-container {
-  background-color: #16213e;
-  border-bottom-color: #2d3748;
+:root.dark-mode .btn,
+:root.dark-mode .btn-menu {
+  color: var(--color-text-secondary);
 }
 
-:root.dark-mode .poem-title-editor-input {
-  color: #e2e8f0;
+:root.dark-mode .btn:hover,
+:root.dark-mode .btn-menu:hover {
+  color: var(--color-text-primary);
 }
 
-:root.dark-mode .poem-title-editor-input:hover {
-  border-bottom-color: #4a5568;
+:root.dark-mode .analyzing-dot {
+  background-color: var(--color-text-muted);
 }
 
-:root.dark-mode .poem-title-editor-input:focus {
-  border-bottom-color: #667eea;
+:root.dark-mode .poems-menu,
+:root.dark-mode .export-menu,
+:root.dark-mode .overflow-menu,
+:root.dark-mode .font-menu,
+:root.dark-mode .theme-menu {
+  background: var(--color-paper);
+  box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
 }
 
-:root.dark-mode .poem-title-editor-input::placeholder {
-  color: #718096;
+:root.dark-mode .poem-item,
+:root.dark-mode .export-item,
+:root.dark-mode .overflow-item,
+:root.dark-mode .font-item,
+:root.dark-mode .theme-item {
+  color: var(--color-text-primary);
 }
 
-:root.dark-mode .side-panel {
-  background-color: #1a1a2e;
-  border-left-color: #2d3748;
+:root.dark-mode .poem-item:hover,
+:root.dark-mode .export-item:hover,
+:root.dark-mode .overflow-item:hover,
+:root.dark-mode .font-item:hover,
+:root.dark-mode .theme-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
-:root.dark-mode .app-footer {
-  background-color: #16213e;
-  border-top-color: #2d3748;
-  color: #a0aec0;
+:root.dark-mode .poem-item.active,
+:root.dark-mode .font-item.active,
+:root.dark-mode .theme-item.active {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
-:root.dark-mode .panel-toggle {
-  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-}
-
-:root.dark-mode .panel-toggle.open {
-  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-}
-
-:root.dark-mode .examples-menu {
-  background: #2d3748;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-}
-
-:root.dark-mode .example-item {
-  color: #e2e8f0;
-}
-
-:root.dark-mode .example-item:hover {
-  background-color: #4a5568;
-}
-
-:root.dark-mode .example-item:not(:last-child) {
-  border-bottom-color: #4a5568;
-}
-
-:root.dark-mode .export-menu {
-  background: #2d3748;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-}
-
-:root.dark-mode .export-item {
-  color: #e2e8f0;
-}
-
-:root.dark-mode .export-item:hover {
-  background-color: #4a5568;
-}
-
-:root.dark-mode .export-item:not(:last-child) {
-  border-bottom-color: #4a5568;
-}
-
-:root.dark-mode .poems-menu {
-  background-color: #2d3748;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+:root.dark-mode .poem-item:not(:last-child),
+:root.dark-mode .export-item:not(:last-child),
+:root.dark-mode .overflow-item:not(:last-child),
+:root.dark-mode .font-item:not(:last-child),
+:root.dark-mode .theme-item:not(:last-child) {
+  border-bottom-color: var(--color-border);
 }
 
 :root.dark-mode .poems-empty {
-  color: #a0aec0;
-}
-
-:root.dark-mode .poem-item {
-  color: #e2e8f0;
-  border-bottom-color: #4a5568;
-}
-
-:root.dark-mode .poem-item:hover {
-  background-color: #4a5568;
-}
-
-:root.dark-mode .poem-item.active {
-  background-color: #4a5568;
+  color: var(--color-text-muted);
 }
 
 :root.dark-mode .poem-delete {
-  color: #a0aec0;
+  color: var(--color-text-muted);
 }
 
 :root.dark-mode .poem-delete:hover {
-  background-color: rgba(229, 57, 53, 0.2);
-  color: #fc8181;
+  background-color: rgba(200, 100, 100, 0.15);
+  color: #f88;
 }
 
-/* Dark mode panel tabs */
-:root.dark-mode .panel-tabs {
-  background: #1a1a2e;
-  border-bottom-color: #2d3748;
+:root.dark-mode .editor-pane {
+  background-color: var(--color-paper);
 }
 
-:root.dark-mode .tab {
-  color: #a0aec0;
-  background: transparent;
+:root.dark-mode .poetry-editor-container {
+  background-color: var(--color-paper);
 }
 
-:root.dark-mode .tab:hover {
-  color: #818cf8;
-  background: rgba(129, 140, 248, 0.1);
+:root.dark-mode .poem-title-container {
+  background-color: transparent;
 }
 
-:root.dark-mode .tab.active {
-  color: #818cf8;
-  border-bottom-color: #818cf8;
-  background: transparent;
+:root.dark-mode .poem-title-editor-input {
+  color: var(--color-text-primary);
+}
+
+:root.dark-mode .poem-title-editor-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+:root.dark-mode .side-panel {
+  background-color: var(--color-paper);
+  border-left-color: var(--color-border);
+}
+
+:root.dark-mode .panel-toggle {
+  color: var(--color-text-muted);
+  background: var(--color-background);
+  border-color: var(--color-border);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+:root.dark-mode .panel-toggle:hover {
+  color: var(--color-text-primary);
+  background: var(--color-paper);
 }

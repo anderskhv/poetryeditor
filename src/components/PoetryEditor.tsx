@@ -49,6 +49,7 @@ interface PoetryEditorProps {
   highlightedLines?: number[] | null;
   highlightedWords?: { word: string; lineNumber: number }[] | null;
   onLineHover?: (lineNumber: number | null) => void;
+  editorFont?: string;
 }
 
 // Color scheme for POS highlighting - sharper, more vibrant colors
@@ -64,7 +65,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -82,7 +83,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     // Register custom language for poetry
     monaco.languages.register({ id: 'poetry' });
 
-    // Define light theme
+    // Define light theme - warm paper aesthetic
     monaco.editor.defineTheme('poetry-theme', {
       base: 'vs',
       inherit: true,
@@ -94,33 +95,35 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         { token: 'other', foreground: POS_COLORS.Other.substring(1) },
       ],
       colors: {
-        'editor.background': '#fafafa',
-        'editor.foreground': '#333333',
-        'editor.lineHighlightBackground': '#f5f5f5',
-        'editorCursor.foreground': '#333333',
-        'editor.selectionBackground': '#e0e0e0',
+        'editor.background': '#fdfcfa',
+        'editor.foreground': '#2c2c2c',
+        'editor.lineHighlightBackground': '#fdfcfa',
+        'editorCursor.foreground': '#2c2c2c',
+        'editor.selectionBackground': '#e8e6e3',
+        'editorLineNumber.foreground': '#c0c0c0',
+        'editorLineNumber.activeForeground': '#9a9a9a',
       },
     });
 
-    // Define dark theme
+    // Define dark theme - night paper aesthetic
     monaco.editor.defineTheme('poetry-theme-dark', {
       base: 'vs-dark',
       inherit: true,
       rules: [
-        { token: 'noun', foreground: '81C784' },       // lighter green
-        { token: 'verb', foreground: 'CE93D8' },       // lighter purple
-        { token: 'adjective', foreground: 'EF9A9A' }, // lighter red
-        { token: 'adverb', foreground: 'FFB74D' },    // lighter orange
-        { token: 'other', foreground: 'BDBDBD' },     // lighter gray
+        { token: 'noun', foreground: '81C784' },
+        { token: 'verb', foreground: 'CE93D8' },
+        { token: 'adjective', foreground: 'EF9A9A' },
+        { token: 'adverb', foreground: 'FFB74D' },
+        { token: 'other', foreground: 'BDBDBD' },
       ],
       colors: {
-        'editor.background': '#1a1a2e',
-        'editor.foreground': '#e2e8f0',
-        'editor.lineHighlightBackground': '#2d3748',
-        'editorCursor.foreground': '#e2e8f0',
-        'editor.selectionBackground': '#4a5568',
-        'editorLineNumber.foreground': '#718096',
-        'editorLineNumber.activeForeground': '#a0aec0',
+        'editor.background': '#242428',
+        'editor.foreground': '#e0e0e0',
+        'editor.lineHighlightBackground': '#242428',
+        'editorCursor.foreground': '#e0e0e0',
+        'editor.selectionBackground': '#3a3a3e',
+        'editorLineNumber.foreground': '#505050',
+        'editorLineNumber.activeForeground': '#707070',
       },
     });
 
@@ -617,43 +620,42 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
           font-weight: 700 !important;
         }
 
-        /* Meter-based line coloring */
+        /* Meter-based line coloring - editorial ink density */
         .meter-perfect {
-          color: #2E7D32 !important; /* Green - matches meter */
+          color: #5a5a5a !important; /* Base ink - consistent */
           font-weight: 500 !important;
           display: inline !important;
         }
 
         .meter-close {
-          color: #F57C00 !important; /* Orange/Yellow - close to meter (±1 syllable) */
+          color: #7a7a7a !important; /* Lighter ink - slight variation */
           font-weight: 500 !important;
           display: inline !important;
         }
 
         .meter-violation {
-          color: #C62828 !important; /* Red - violates meter */
+          color: #8a7a6a !important; /* Warm tone - attention */
           font-weight: 500 !important;
           display: inline !important;
         }
 
-        /* Highlighted line when hovering badges */
+        /* Highlighted line when hovering - very subtle background shade (2-3%) */
         .meter-line-highlighted {
-          background-color: rgba(102, 126, 234, 0.15) !important;
-          font-weight: 700 !important;
+          background-color: rgba(0, 0, 0, 0.025) !important;
         }
 
-        /* Passive voice highlighting */
+        /* Passive voice highlighting - subtle underline, not background */
         .passive-voice-highlight {
-          background-color: rgba(249, 168, 37, 0.2) !important;
-          border-bottom: 2px solid #f9a825 !important;
+          background-color: transparent !important;
+          border-bottom: 1px dotted rgba(0, 0, 0, 0.4) !important;
           font-weight: 500 !important;
           display: inline !important;
         }
 
-        /* Tense verb highlighting */
+        /* Tense verb highlighting - subtle underline */
         .tense-verb-highlight {
-          background-color: rgba(123, 31, 162, 0.2) !important;
-          border-bottom: 2px solid #7B1FA2 !important;
+          background-color: transparent !important;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.3) !important;
           font-weight: 500 !important;
           display: inline !important;
         }
@@ -661,75 +663,72 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         /* Scansion highlighting - stressed syllables are bold */
         .scansion-stressed {
           font-weight: 700 !important;
-          color: #1565C0 !important;
+          color: #4a4a4a !important;
           display: inline !important;
         }
 
         .scansion-unstressed {
           font-weight: 400 !important;
-          color: #757575 !important;
+          color: #9a9a9a !important;
           display: inline !important;
         }
 
-        /* Scansion line highlight when hovering in analysis panel */
+        /* Scansion line highlight when hovering - very subtle */
         .scansion-line-highlighted {
-          background-color: #FFF9C4 !important;
-          border-left: 3px solid #FBC02D !important;
+          background-color: rgba(0, 0, 0, 0.025) !important;
         }
 
-        /* Rhyme word highlight - word-level highlighting for rhymes */
+        /* Rhyme word highlight - subtle background tint */
         .rhyme-word-highlighted {
-          background-color: #FFF59D !important;
-          border-radius: 3px;
+          background-color: rgba(0, 0, 0, 0.04) !important;
+          border-radius: 2px;
           padding: 1px 2px;
-          box-shadow: 0 0 0 2px rgba(251, 192, 45, 0.5);
-          font-weight: 600 !important;
+          box-shadow: none;
         }
 
-        /* Dark mode highlight adjustments */
+        /* Dark mode highlight adjustments - very subtle */
         :root.dark-mode .scansion-line-highlighted {
-          background-color: rgba(251, 192, 45, 0.25) !important;
-          border-left: 3px solid #FBC02D !important;
+          background-color: rgba(255, 255, 255, 0.03) !important;
         }
 
         :root.dark-mode .rhyme-word-highlighted {
-          background-color: rgba(251, 192, 45, 0.35) !important;
-          box-shadow: 0 0 0 2px rgba(251, 192, 45, 0.4);
-          color: #fff !important;
+          background-color: rgba(255, 255, 255, 0.05) !important;
+          box-shadow: none;
+          color: inherit !important;
         }
 
         :root.dark-mode .meter-line-highlighted {
-          background-color: rgba(102, 126, 234, 0.25) !important;
+          background-color: rgba(255, 255, 255, 0.03) !important;
         }
 
         :root.dark-mode .pos-highlighted {
-          background-color: rgba(102, 126, 234, 0.35) !important;
+          background-color: rgba(255, 255, 255, 0.08) !important;
         }
 
         :root.dark-mode .passive-voice-highlight {
-          background-color: rgba(249, 168, 37, 0.35) !important;
-          border-bottom-color: #FBC02D !important;
+          background-color: transparent !important;
+          border-bottom-color: rgba(255, 255, 255, 0.4) !important;
         }
 
         :root.dark-mode .tense-verb-highlight {
-          background-color: rgba(186, 104, 200, 0.35) !important;
-          border-bottom-color: #BA68C8 !important;
+          background-color: transparent !important;
+          border-bottom-color: rgba(255, 255, 255, 0.3) !important;
         }
 
         :root.dark-mode .scansion-unstressed {
-          color: #9e9e9e !important;
+          color: #707070 !important;
         }
 
         :root.dark-mode .meter-perfect {
-          color: #66BB6A !important;
+          color: #b0b0b0 !important;
         }
 
         :root.dark-mode .meter-close {
-          color: #FFB74D !important;
+          color: #909090 !important;
         }
 
         :root.dark-mode .meter-violation {
-          color: #EF5350 !important;
+          color: #a09080 !important;
         }
 
         /* Remove all boxes, borders, and decorations from Monaco editor */
@@ -846,7 +845,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
   }, [isDarkMode]);
 
   return (
-    <div ref={containerRef} style={{ height: '100%', width: '100%', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+    <div className="poetry-editor-container" ref={containerRef}>
       <div className="poem-title-container">
         <input
           type="text"
@@ -865,24 +864,25 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         />
       </div>
       <Editor
-        height="calc(100% - 60px)"
+        height="calc(100% - 80px)"
         defaultLanguage="poetry"
         value={value}
         onChange={(newValue) => onChange(newValue || '')}
         onMount={handleEditorDidMount}
         options={{
-          fontSize: 16,
-          lineHeight: 24,
-          fontFamily: "'Georgia', 'Times New Roman', serif",
+          fontSize: 17,
+          lineHeight: 32,
+          fontFamily: editorFont || "'Libre Baskerville', Georgia, 'Times New Roman', serif",
           minimap: { enabled: false },
           lineNumbers: 'on',
           wordWrap: 'on',
           wrappingIndent: 'same',
           scrollBeyondLastLine: false,
-          renderLineHighlight: 'line',
+          renderLineHighlight: 'none',
           cursorBlinking: 'smooth',
           smoothScrolling: true,
-          padding: { top: 20, bottom: 20 },
+          padding: { top: 24, bottom: 40 },
+          lineNumbersMinChars: 3,
           // Disable features that show popups/boxes
           quickSuggestions: false,
           suggestOnTriggerCharacters: false,

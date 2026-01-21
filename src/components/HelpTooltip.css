@@ -2,36 +2,34 @@
 
 /* Info Icon Trigger Button */
 .help-tooltip-trigger {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   border: none;
   background: transparent;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: all 0.15s ease;
   padding: 0;
-  margin-left: 8px;
+  margin-left: 6px;
   flex-shrink: 0;
 }
 
 .help-tooltip-trigger:hover {
-  color: #667eea;
-  background: rgba(102, 126, 234, 0.1);
+  color: var(--color-text-secondary);
 }
 
 .help-tooltip-trigger:focus {
   outline: none;
-  color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+  color: var(--color-text-secondary);
 }
 
 .help-tooltip-trigger svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 /* Modal Backdrop */
@@ -41,7 +39,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,10 +59,11 @@
 
 /* Modal Container */
 .help-modal {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 480px;
+  background: var(--color-paper);
+  border-radius: 4px;
+  box-shadow: 0 12px 40px var(--color-shadow);
+  border: 1px solid var(--color-border);
+  max-width: 440px;
   width: 100%;
   max-height: calc(100vh - 40px);
   overflow: hidden;
@@ -76,7 +75,7 @@
 @keyframes modalSlideIn {
   from {
     opacity: 0;
-    transform: scale(0.95) translateY(-10px);
+    transform: scale(0.98) translateY(-8px);
   }
   to {
     opacity: 1;
@@ -89,26 +88,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .help-modal-title {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #1f2937;
-  letter-spacing: -0.01em;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  font-family: var(--font-serif);
 }
 
 .help-modal-close {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border: none;
   background: transparent;
-  color: #6b7280;
+  color: var(--color-text-muted);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,27 +117,27 @@
 }
 
 .help-modal-close:hover {
-  background: #f3f4f6;
-  color: #1f2937;
+  background: var(--color-highlight-subtle);
+  color: var(--color-text-primary);
 }
 
 .help-modal-close svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 /* Modal Content */
 .help-modal-content {
-  padding: 20px 24px;
-  font-size: 15px;
+  padding: 20px;
+  font-size: 14px;
   line-height: 1.65;
-  color: #374151;
+  color: var(--color-text-secondary);
   overflow-y: auto;
   flex: 1;
 }
 
 .help-modal-content p {
-  margin: 0 0 14px;
+  margin: 0 0 12px;
 }
 
 .help-modal-content p:last-child {
@@ -160,116 +159,116 @@
 }
 
 .help-modal-content strong {
-  color: #1f2937;
-  font-weight: 600;
+  color: var(--color-text-primary);
+  font-weight: 500;
 }
 
 /* Modal Footer */
 .help-modal-footer {
-  padding: 16px 24px;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  padding: 14px 20px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-background);
 }
 
 .help-modal-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #667eea;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
   text-decoration: none;
   transition: color 0.15s ease;
 }
 
 .help-modal-link:hover {
-  color: #5a6fd6;
+  color: var(--color-text-primary);
 }
 
 .help-modal-link svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   flex-shrink: 0;
 }
 
 /* Dark Mode Support */
 :root.dark-mode .help-tooltip-trigger {
-  color: #6b7280;
+  color: var(--color-text-muted);
 }
 
 :root.dark-mode .help-tooltip-trigger:hover {
-  color: #818cf8;
-  background: rgba(129, 140, 248, 0.15);
+  color: var(--color-text-secondary);
 }
 
 :root.dark-mode .help-modal-backdrop {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.5);
 }
 
 :root.dark-mode .help-modal {
-  background: #1f2937;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  background: var(--color-paper);
+  box-shadow: 0 12px 40px var(--color-shadow);
+  border-color: var(--color-border);
 }
 
 :root.dark-mode .help-modal-header {
-  border-bottom-color: #374151;
+  border-bottom-color: var(--color-border);
 }
 
 :root.dark-mode .help-modal-title {
-  color: #f3f4f6;
+  color: var(--color-text-primary);
 }
 
 :root.dark-mode .help-modal-close {
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 
 :root.dark-mode .help-modal-close:hover {
-  background: #374151;
-  color: #f3f4f6;
+  background: var(--color-highlight-subtle);
+  color: var(--color-text-primary);
 }
 
 :root.dark-mode .help-modal-content {
-  color: #d1d5db;
+  color: var(--color-text-secondary);
 }
 
 :root.dark-mode .help-modal-content strong {
-  color: #f3f4f6;
+  color: var(--color-text-primary);
 }
 
 :root.dark-mode .help-modal-footer {
-  border-top-color: #374151;
-  background: #111827;
+  border-top-color: var(--color-border);
+  background: var(--color-background);
 }
 
 :root.dark-mode .help-modal-link {
-  color: #818cf8;
+  color: var(--color-text-secondary);
 }
 
 :root.dark-mode .help-modal-link:hover {
-  color: #a5b4fc;
+  color: var(--color-text-primary);
 }
 
 /* Responsive adjustments */
 @media (max-width: 520px) {
   .help-modal {
     max-width: 100%;
-    border-radius: 12px;
+    border-radius: 4px;
   }
 
   .help-modal-header {
-    padding: 16px 20px 12px;
+    padding: 14px 16px;
   }
 
   .help-modal-title {
-    font-size: 18px;
+    font-size: 15px;
   }
 
   .help-modal-content {
-    padding: 16px 20px;
-    font-size: 14px;
+    padding: 16px;
+    font-size: 13px;
   }
 
   .help-modal-footer {
-    padding: 14px 20px;
+    padding: 12px 16px;
   }
 }
