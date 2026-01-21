@@ -4,7 +4,38 @@
  */
 
 import nlp from 'compromise';
-import { calculateRhymeQuality } from './cmuDict';
+import { getRhymePhonemes } from './cmuDict';
+
+/**
+ * Fast rhyme quality calculation - reuses source phonemes
+ */
+function calculateRhymeQualityFast(sourcePhonemes: string[] | null, targetWord: string): number {
+  if (!sourcePhonemes) return 0;
+
+  const targetPhonemes = getRhymePhonemes(targetWord);
+  if (!targetPhonemes) return 0;
+
+  // Perfect rhyme: all phonemes from stressed vowel match exactly
+  if (sourcePhonemes.length === targetPhonemes.length) {
+    let matches = 0;
+    for (let i = 0; i < sourcePhonemes.length; i++) {
+      if (sourcePhonemes[i] === targetPhonemes[i]) matches++;
+    }
+    return matches / sourcePhonemes.length;
+  }
+
+  // Different lengths: compare from the end
+  const minLen = Math.min(sourcePhonemes.length, targetPhonemes.length);
+  let matches = 0;
+  for (let i = 0; i < minLen; i++) {
+    const p1 = sourcePhonemes[sourcePhonemes.length - 1 - i];
+    const p2 = targetPhonemes[targetPhonemes.length - 1 - i];
+    if (p1 === p2) matches++;
+  }
+
+  const lengthPenalty = minLen / Math.max(sourcePhonemes.length, targetPhonemes.length);
+  return (matches / minLen) * lengthPenalty;
+}
 
 export interface RhymeWord {
   word: string;
@@ -27,7 +58,7 @@ export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
     console.log(`Fetching perfect rhymes for: ${word}`);
 
     const response = await fetch(
-      `https://api.datamuse.com/words?rel_rhy=${encodeURIComponent(word)}&max=100`,
+      `https://api.datamuse.com/words?rel_rhy=${encodeURIComponent(word)}&max=50`,
       {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
@@ -42,12 +73,15 @@ export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
     const data = await response.json();
     console.log(`Received ${data.length} perfect rhymes for "${word}"`);
 
+    // Get source word phonemes once, then reuse for all comparisons
+    const sourcePhonemes = getRhymePhonemes(word);
+
     // Calculate rhyme quality for each word using CMU dictionary phonetics
     const rhymesWithQuality = data.map((item: any) => ({
       word: item.word,
       score: item.score || 0,
       numSyllables: item.numSyllables,
-      rhymeQuality: calculateRhymeQuality(word, item.word),
+      rhymeQuality: calculateRhymeQualityFast(sourcePhonemes, item.word),
     }));
 
     // Sort by rhyme quality (perfect rhymes first), then by original API score
