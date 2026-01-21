@@ -21,7 +21,8 @@
       "Bash(npx ts-node:*)",
       "Bash(git remote add:*)",
       "Bash(git push:*)",
-      "Bash(git remote set-url:*)"
+      "Bash(git remote set-url:*)",
+      "Bash(npm install:*)"
     ],
     "additionalDirectories": [
       "/tmp",

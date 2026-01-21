@@ -4,6 +4,7 @@ import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { fetchRhymes, fetchNearAndSlantRhymes, RhymeWord as RhymeWordType } from '../utils/rhymeApi';
 import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables } from '../utils/cmuDict';
+import { getRhymeOriginalityScore } from '../utils/rhymeCliches';
 import './RhymeWord.css';
 
 export function RhymeWord() {
@@ -62,6 +63,28 @@ export function RhymeWord() {
   // Capitalize first letter for display
   const displayWord = decodedWord.charAt(0).toUpperCase() + decodedWord.slice(1);
 
+  // Get originality-based background color (grayscale: darker = more clichéd)
+  const getOriginalityStyle = (rhymeWord: string): React.CSSProperties => {
+    const score = getRhymeOriginalityScore(decodedWord, rhymeWord);
+    // Score: 0-100 (100 = original, 0 = clichéd)
+    // Map to grayscale: high score = white/light, low score = darker gray
+    // Using a subtle range: score 100 = white, score 0 = medium gray (#888)
+    const lightness = Math.round(100 - ((100 - score) * 0.4)); // 60-100% lightness range
+    return {
+      backgroundColor: `hsl(0, 0%, ${lightness}%)`,
+    };
+  };
+
+  // Get originality label for tooltip
+  const getOriginalityLabel = (rhymeWord: string): string => {
+    const score = getRhymeOriginalityScore(decodedWord, rhymeWord);
+    if (score >= 80) return 'Original';
+    if (score >= 60) return 'Fresh';
+    if (score >= 40) return 'Common';
+    if (score >= 20) return 'Overused';
+    return 'Cliché';
+  };
+
   return (
     <Layout>
       <SEOHead
@@ -112,6 +135,13 @@ export function RhymeWord() {
               </button>
             </div>
 
+            <div className="originality-legend">
+              <span className="legend-label">Originality:</span>
+              <span className="legend-item legend-original">Original</span>
+              <span className="legend-gradient"></span>
+              <span className="legend-item legend-cliche">Cliché</span>
+            </div>
+
             {Object.keys(activeResults).length === 0 ? (
               <div className="rhyme-no-results">
                 No {activeTab === 'perfect' ? 'perfect' : 'near'} rhymes found for "{decodedWord}".
@@ -136,6 +166,8 @@ export function RhymeWord() {
                               key={idx}
                               to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
                               className="rhyme-word-item"
+                              style={getOriginalityStyle(rhyme.word)}
+                              title={`Originality: ${getOriginalityLabel(rhyme.word)}`}
                             >
                               {rhyme.word}
                             </Link>
