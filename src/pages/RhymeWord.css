@@ -1,0 +1,325 @@
+/* Individual Rhyme Word Page Styles */
+
+.rhyme-word-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Breadcrumb */
+.rhyme-breadcrumb {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+.rhyme-breadcrumb a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.rhyme-breadcrumb a:hover {
+  color: var(--color-text-primary);
+}
+
+.breadcrumb-separator {
+  margin: 0 8px;
+  color: var(--color-text-muted);
+}
+
+/* Title */
+.rhyme-word-page h1 {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+}
+
+/* Word Info */
+.word-info {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-secondary);
+}
+
+.word-info-item strong {
+  color: var(--color-text-primary);
+}
+
+/* Tabs */
+.rhyme-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rhyme-tab {
+  padding: 12px 20px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-bottom: -1px;
+}
+
+.rhyme-tab:hover {
+  color: var(--color-text-primary);
+}
+
+.rhyme-tab.active {
+  color: var(--color-text-primary);
+  border-bottom-color: var(--color-text-primary);
+}
+
+/* Loading */
+.rhyme-loading {
+  text-align: center;
+  padding: 40px;
+  font-family: var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+/* No Results */
+.rhyme-no-results {
+  text-align: center;
+  padding: 40px;
+  font-family: var(--font-sans);
+  color: var(--color-text-secondary);
+  background: var(--color-paper);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* Results */
+.rhyme-results {
+  margin-bottom: 32px;
+}
+
+.rhyme-syllable-group {
+  margin-bottom: 28px;
+}
+
+.rhyme-syllable-group h2 {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rhyme-word-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rhyme-word-item {
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-primary);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.rhyme-word-item:hover {
+  background: var(--color-background);
+  border-color: var(--color-text-muted);
+}
+
+/* Actions */
+.rhyme-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 40px 0;
+  padding: 32px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.rhyme-cta-button {
+  display: inline-block;
+  padding: 12px 24px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-paper);
+  background: var(--color-text-primary);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.rhyme-cta-button:hover {
+  background: var(--color-text-secondary);
+}
+
+.rhyme-secondary-link {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.rhyme-secondary-link:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+/* Related Searches */
+.related-searches {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--color-border);
+}
+
+.related-searches h3 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px;
+}
+
+.related-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.related-word-link {
+  padding: 8px 16px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.related-word-link:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
+}
+
+/* Back Link */
+.back-to-search {
+  margin-top: 40px;
+}
+
+.back-to-search a {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.back-to-search a:hover {
+  color: var(--color-text-primary);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .rhyme-breadcrumb {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .rhyme-word-page h1 {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .word-info {
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+
+  .rhyme-tabs {
+    overflow-x: auto;
+    gap: 0;
+    margin-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .rhyme-tab {
+    padding: 10px 14px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .rhyme-syllable-group {
+    margin-bottom: 20px;
+  }
+
+  .rhyme-syllable-group h2 {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .rhyme-word-list {
+    gap: 6px;
+  }
+
+  .rhyme-word-item {
+    padding: 5px 10px;
+    font-size: 14px;
+  }
+
+  .rhyme-actions {
+    margin: 32px 0;
+    padding: 24px 16px;
+  }
+
+  .rhyme-cta-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .related-searches {
+    margin-top: 32px;
+    padding-top: 24px;
+  }
+
+  .related-words {
+    gap: 8px;
+  }
+
+  .related-word-link {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,440 @@
+/* Haiku Checker Page Styles */
+
+.haiku-checker {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.haiku-checker h1 {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.haiku-subtitle {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0 0 40px;
+}
+
+/* Form */
+.haiku-form {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.haiku-line-input {
+  margin-bottom: 20px;
+}
+
+.haiku-line-input:last-of-type {
+  margin-bottom: 24px;
+}
+
+.line-label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.line-target {
+  font-weight: 400;
+  color: var(--color-text-muted);
+  margin-left: 8px;
+}
+
+.line-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.line-input {
+  flex: 1;
+  padding: 14px 16px;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  transition: all 0.15s ease;
+}
+
+.line-input:focus {
+  outline: none;
+  border-color: var(--color-text-secondary);
+  background: var(--color-paper);
+}
+
+.line-input.correct {
+  border-color: #4a9;
+  background: rgba(68, 170, 153, 0.05);
+}
+
+.line-input.incorrect {
+  border-color: #c86;
+  background: rgba(204, 136, 102, 0.05);
+}
+
+.syllable-count {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.syllable-count.correct {
+  background: #4a9;
+  color: white;
+}
+
+.syllable-count.incorrect {
+  background: #c86;
+  color: white;
+}
+
+/* Actions */
+.haiku-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.clear-button {
+  padding: 10px 24px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clear-button:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+}
+
+/* Result */
+.haiku-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border-radius: 8px;
+  margin-bottom: 40px;
+}
+
+.haiku-result.valid {
+  background: rgba(68, 170, 153, 0.1);
+  border: 1px solid rgba(68, 170, 153, 0.3);
+}
+
+.haiku-result.invalid {
+  background: rgba(204, 136, 102, 0.1);
+  border: 1px solid rgba(204, 136, 102, 0.3);
+}
+
+.result-icon {
+  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.haiku-result.valid .result-icon {
+  background: #4a9;
+  color: white;
+}
+
+.haiku-result.invalid .result-icon {
+  background: #c86;
+  color: white;
+}
+
+.result-text {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+/* Examples */
+.example-haikus {
+  margin-bottom: 40px;
+}
+
+.example-haikus h2 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+}
+
+.examples-intro {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.example-card {
+  text-align: left;
+  padding: 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.example-card:hover {
+  border-color: var(--color-text-muted);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.example-lines {
+  margin-bottom: 12px;
+}
+
+.example-line {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: var(--color-text-primary);
+  line-height: 1.8;
+}
+
+.example-attribution {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Info Section */
+.haiku-info {
+  padding-top: 40px;
+  border-top: 1px solid var(--color-border);
+  margin-bottom: 40px;
+}
+
+.haiku-info h2 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.info-card {
+  padding: 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.info-card h3 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+}
+
+.info-card p {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* CTA */
+.haiku-cta {
+  text-align: center;
+  padding: 32px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.haiku-cta p {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 14px 28px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  background: var(--color-text-primary);
+  color: var(--color-paper);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.cta-button:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .haiku-checker h1 {
+    font-size: 26px;
+    margin-bottom: 4px;
+  }
+
+  .haiku-subtitle {
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .haiku-form {
+    padding: 20px 16px;
+    margin-bottom: 20px;
+  }
+
+  .haiku-line-input {
+    margin-bottom: 16px;
+  }
+
+  .line-label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .line-target {
+    margin-left: 6px;
+  }
+
+  .line-input-wrapper {
+    gap: 10px;
+  }
+
+  .line-input {
+    font-size: 16px;
+    padding: 12px 14px;
+  }
+
+  .syllable-count {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .clear-button {
+    padding: 8px 20px;
+    font-size: 13px;
+  }
+
+  .haiku-result {
+    padding: 16px;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .result-icon {
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .result-text {
+    font-size: 14px;
+  }
+
+  .example-haikus h2 {
+    font-size: 18px;
+  }
+
+  .examples-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .example-card {
+    padding: 16px;
+  }
+
+  .example-line {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .haiku-info h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .info-card {
+    padding: 16px;
+  }
+
+  .info-card h3 {
+    font-size: 13px;
+  }
+
+  .info-card p {
+    font-size: 13px;
+  }
+
+  .haiku-cta {
+    padding: 24px 16px;
+  }
+
+  .haiku-cta p {
+    font-size: 13px;
+  }
+
+  .cta-button {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+}

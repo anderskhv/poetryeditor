@@ -238,6 +238,7 @@ function App() {
   };
 
   const [showExportMenu, setShowExportMenu] = useState<boolean>(false);
+  const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
 
   const handleExportPoem = (format: 'txt' | 'md') => {
     setShowExportMenu(false);
@@ -329,6 +330,7 @@ function App() {
       if (!target.closest('.export-dropdown')) setShowExportMenu(false);
       if (!target.closest('.font-dropdown')) setShowFontMenu(false);
       if (!target.closest('.theme-dropdown')) setShowThemeMenu(false);
+      if (!target.closest('.mobile-overflow-dropdown')) setShowMobileMenu(false);
     };
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
@@ -468,6 +470,58 @@ function App() {
                     }}
                   >
                     Dark
+                  </button>
+                </div>
+              )}
+            </div>
+            {/* Mobile overflow menu - visible only on small screens */}
+            <div className="mobile-overflow-dropdown">
+              <button
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                className="mobile-overflow-btn"
+                aria-label="More options"
+                aria-expanded={showMobileMenu}
+              >
+                ⋯
+              </button>
+              {showMobileMenu && (
+                <div className="mobile-overflow-menu">
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      handleExportPoem('txt');
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    Export as Text
+                  </button>
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      handleExportPoem('md');
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    Export as Markdown
+                  </button>
+                  <div className="mobile-overflow-item submenu-label">Theme</div>
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      setIsDarkMode(false);
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    {!isDarkMode ? '✓ ' : ''}Light Mode
+                  </button>
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      setIsDarkMode(true);
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    {isDarkMode ? '✓ ' : ''}Dark Mode
                   </button>
                 </div>
               )}

@@ -543,11 +543,32 @@
 
 @media (max-width: 600px) {
   .app-header {
-    padding: 0 16px;
+    padding: 0 12px;
   }
 
   .app-title {
     font-size: 13px;
+  }
+
+  /* Hide less essential buttons on mobile, keep core actions */
+  .header-actions {
+    gap: 8px;
+  }
+
+  .header-actions .font-dropdown,
+  .header-actions .theme-dropdown,
+  .header-actions .export-dropdown {
+    display: none;
+  }
+
+  /* Mobile overflow menu shows hidden items */
+  .mobile-overflow-dropdown {
+    display: block;
+  }
+
+  .btn {
+    padding: 6px 8px;
+    font-size: 12px;
   }
 
   .poem-title-container {
@@ -557,6 +578,86 @@
   .poem-title-editor-input {
     font-size: 22px;
   }
+}
+
+/* Mobile overflow menu - hidden on desktop */
+.mobile-overflow-dropdown {
+  display: none;
+  position: relative;
+}
+
+.mobile-overflow-btn {
+  padding: 6px 10px;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.mobile-overflow-btn:hover {
+  color: var(--color-text-primary);
+}
+
+.mobile-overflow-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: var(--color-paper);
+  border-radius: 4px;
+  box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
+  min-width: 160px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.mobile-overflow-item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.mobile-overflow-item:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mobile-overflow-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.mobile-overflow-item.submenu-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+  padding: 10px 16px 6px;
+  cursor: default;
+}
+
+.mobile-overflow-item.submenu-label:hover {
+  background: none;
+}
+
+:root.dark-mode .mobile-overflow-menu {
+  background: var(--color-paper);
+  box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
+}
+
+:root.dark-mode .mobile-overflow-item {
+  color: var(--color-text-primary);
+}
+
+:root.dark-mode .mobile-overflow-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* ============================================

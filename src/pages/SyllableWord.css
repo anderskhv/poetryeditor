@@ -1,0 +1,377 @@
+/* Individual Syllable Word Page Styles */
+
+.syllable-word-page {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Breadcrumb */
+.syllable-breadcrumb {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+.syllable-breadcrumb a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.syllable-breadcrumb a:hover {
+  color: var(--color-text-primary);
+}
+
+.breadcrumb-separator {
+  margin: 0 8px;
+  color: var(--color-text-muted);
+}
+
+/* Title */
+.syllable-word-page h1 {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 32px;
+  text-align: center;
+}
+
+/* Loading & Not Found */
+.syllable-loading,
+.syllable-not-found {
+  text-align: center;
+  padding: 40px;
+  font-family: var(--font-sans);
+  color: var(--color-text-secondary);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.syllable-not-found p {
+  margin: 0 0 12px;
+}
+
+.try-again-link {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+/* Answer */
+.syllable-answer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  margin-bottom: 32px;
+}
+
+.answer-number {
+  font-family: var(--font-serif);
+  font-size: 72px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.answer-label {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  color: var(--color-text-secondary);
+  margin-top: 8px;
+}
+
+/* Breakdown Section */
+.syllable-breakdown-section {
+  margin-bottom: 32px;
+}
+
+.syllable-breakdown-section h2,
+.pronunciation-section h2,
+.stress-pattern-section h2 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 16px;
+}
+
+.syllable-visual {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.syllable-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.syllable-text {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  padding: 16px 24px;
+  background: var(--color-paper);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.syllable-text.primary {
+  font-weight: 600;
+  border-color: var(--color-text-primary);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.syllable-text.secondary {
+  font-weight: 500;
+  border-color: var(--color-text-secondary);
+}
+
+.syllable-stress {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.syllable-written {
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-secondary);
+}
+
+.syllable-written strong {
+  color: var(--color-text-primary);
+  font-family: var(--font-serif);
+  font-size: 18px;
+}
+
+/* Pronunciation */
+.pronunciation-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.phonemes {
+  font-family: monospace;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.phoneme-note {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* Stress Pattern */
+.stress-pattern-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.stress-visual {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.stress-mark {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-background);
+}
+
+.stress-mark.primary {
+  font-weight: 600;
+  background: var(--color-text-primary);
+  color: var(--color-paper);
+}
+
+.stress-mark.secondary {
+  font-weight: 500;
+  background: var(--color-text-secondary);
+  color: var(--color-paper);
+}
+
+.stress-legend-inline {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* Actions */
+.word-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 40px 0;
+}
+
+.action-button {
+  display: inline-block;
+  padding: 14px 28px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.action-button.primary {
+  background: var(--color-text-primary);
+  color: var(--color-paper);
+}
+
+.action-button.primary:hover {
+  background: var(--color-text-secondary);
+}
+
+.action-button.secondary {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.action-button.secondary:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+}
+
+/* Back Link */
+.back-to-counter {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.back-to-counter a {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.back-to-counter a:hover {
+  color: var(--color-text-primary);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .syllable-breadcrumb {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .syllable-word-page h1 {
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
+
+  .syllable-answer {
+    padding: 28px 20px;
+    margin-bottom: 24px;
+  }
+
+  .answer-number {
+    font-size: 52px;
+  }
+
+  .answer-label {
+    font-size: 18px;
+  }
+
+  .syllable-visual {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .syllable-item {
+    gap: 6px;
+  }
+
+  .syllable-text {
+    font-size: 20px;
+    padding: 10px 14px;
+  }
+
+  .syllable-stress {
+    font-size: 10px;
+  }
+
+  .pronunciation-section,
+  .stress-pattern-section {
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .phonemes {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .stress-visual {
+    gap: 10px;
+  }
+
+  .stress-mark {
+    font-size: 24px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .stress-legend-inline {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .word-actions {
+    margin: 28px 0;
+    gap: 10px;
+  }
+
+  .action-button {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+}
