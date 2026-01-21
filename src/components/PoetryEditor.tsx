@@ -141,7 +141,9 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
           const offset = model.getOffsetAt(position);
 
           // Find word at cursor using our custom regex that handles apostrophes
-          const words = analyzeText(value);
+          // Use model.getValue() to ensure we analyze the actual text in the editor
+          const currentText = model.getValue();
+          const words = analyzeText(currentText);
           const clickedWord = words.find(w => offset >= w.startOffset && offset < w.endOffset);
 
           if (clickedWord && containerRef.current) {
