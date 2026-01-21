@@ -19,7 +19,9 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(npx ts-node:*)",
-      "Bash(git remote add:*)"
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)"
     ],
     "additionalDirectories": [
       "/tmp",

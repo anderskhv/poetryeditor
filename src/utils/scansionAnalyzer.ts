@@ -320,8 +320,8 @@ const POETIC_SYLLABLE_COUNT: Record<string, number> = {
   'reckoning': 2, 'beckoning': 2, 'happening': 2, 'opening': 2,
   'deepening': 2, 'ripening': 2, 'sharpening': 2, 'darkening': 2,
   'wakening': 2, 'slackening': 2, 'quickening': 2, 'thickening': 2,
-  'sickening': 2, 'blackening': 2, 'sweetening': 2, 'threatening': 2,
-  'hastening': 2, 'fastening': 2, 'listening': 2, 'glistening': 2,
+  'sickening': 2, 'blackening': 2, 'sweetening': 2,
+  'hastening': 2, 'fastening': 2,
   'lightening': 2, 'frightening': 2, 'brightening': 2, 'tightening': 2,
   'lengthening': 2, 'strengthening': 2,
 
@@ -330,7 +330,7 @@ const POETIC_SYLLABLE_COUNT: Record<string, number> = {
   'mystery': 2, 'misery': 2, 'slavery': 2, 'bravery': 2,
   'archery': 2, 'butchery': 2, 'cutlery': 2, 'battery': 2,
   'flattery': 2, 'lottery': 2, 'pottery': 2, 'watery': 2,
-  'slavery': 2, 'knavery': 2, 'savagery': 2, 'imagery': 2,
+  'knavery': 2, 'savagery': 2, 'imagery': 2,
   'scenery': 2, 'greenery': 2, 'machinery': 3, 'refinery': 3,
 
   // -ion after vowel = 2 syllables (not 3)

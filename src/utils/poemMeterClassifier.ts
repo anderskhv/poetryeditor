@@ -190,7 +190,7 @@ const EXPLICIT_SYLLABLES: Record<string, number> = {
 
   // -ily words are often 2 syllables
   'busily': 2, 'easily': 2, 'happily': 2, 'readily': 2,
-  'heavily': 2, 'steadily': 2, 'readily': 2,
+  'heavily': 2, 'steadily': 2,
 
   // Island is 2 syllables
   'island': 2, 'islands': 2,

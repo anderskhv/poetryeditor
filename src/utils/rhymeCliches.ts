@@ -434,6 +434,6 @@ export function getRhymesByCategory(category: string): RhymeCliche[] {
  * Get all available categories
  */
 export function getRhymeCategories(): string[] {
-  const categories = new Set(rhymeClicheDatabase.map((e) => e.category).filter(Boolean));
+  const categories = new Set(rhymeClicheDatabase.map((e) => e.category).filter((c): c is string => c !== undefined));
   return Array.from(categories).sort();
 }
