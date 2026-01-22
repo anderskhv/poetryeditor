@@ -249,6 +249,7 @@ export function RhymeWord() {
                                   title={`Originality: ${getOriginalityLabel(rhyme.word)}`}
                                 >
                                   {rhyme.word}
+                                  <span className="originality-score">{getRhymeOriginalityScore(decodedWord, rhyme.word)}</span>
                                 </Link>
                               </DefinitionTooltip>
                             );

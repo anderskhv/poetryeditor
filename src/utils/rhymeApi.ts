@@ -102,12 +102,13 @@ export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
 
 /**
  * Fetch near rhymes and slant rhymes (combined)
+ * Uses rel_nry first, falls back to sounds-like (sl) if empty
  */
 export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]> {
   try {
     console.log(`Fetching near rhymes and slant rhymes for: ${word}`);
 
-    // Fetch near rhymes
+    // First try near rhymes endpoint
     const nearResponse = await fetch(
       `https://api.datamuse.com/words?rel_nry=${encodeURIComponent(word)}&max=100`,
       {
@@ -121,11 +122,30 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
       throw new Error('Failed to fetch near rhymes');
     }
 
-    const nearData = await nearResponse.json();
-    console.log(`Received ${nearData.length} near/slant rhymes for "${word}"`);
+    let nearData = await nearResponse.json();
+    console.log(`Received ${nearData.length} near rhymes for "${word}"`);
 
-    // Datamuse API's rel_nry endpoint already includes slant rhymes
-    // (words that share similar sounds but not perfect rhymes)
+    // If no near rhymes found, try sounds-like as fallback
+    if (nearData.length === 0) {
+      console.log(`No near rhymes found, trying sounds-like fallback for: ${word}`);
+      const slResponse = await fetch(
+        `https://api.datamuse.com/words?sl=${encodeURIComponent(word)}&max=100`,
+        {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        }
+      );
+
+      if (slResponse.ok) {
+        const slData = await slResponse.json();
+        // Filter out exact matches and homophones (score 100)
+        nearData = slData.filter((item: any) =>
+          item.word.toLowerCase() !== word.toLowerCase() && item.score < 100
+        );
+        console.log(`Received ${nearData.length} sounds-like words for "${word}"`);
+      }
+    }
+
     return nearData.map((item: any) => ({
       word: item.word,
       score: item.score || 0,
