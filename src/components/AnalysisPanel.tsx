@@ -63,8 +63,8 @@ interface AnalysisPanelProps {
   editorHoveredLine?: number | null;
 }
 
-type CategoryTab = 'rhythm' | 'rhymes' | 'words' | 'originality';
-type ExpandedSection = 'syllables' | 'repetition' | 'pos' | 'adverbSuggestions' | 'doubleAdverbs' | 'passiveVoice' | 'rhythmVariation' | 'stanzaStructure' | 'lineLength' | 'punctuation' | 'rhymeScheme' | 'rhymeAnalysis' | 'poeticForm' | 'soundPatterns' | 'tenseConsistency' | 'scansion' | 'figurativeLanguage' | 'cliches' | 'abstractConcrete' | 'firstDraftPhrases' | null;
+type CategoryTab = 'rhythm' | 'rhymes' | 'style' | 'originality';
+type ExpandedSection = 'syllables' | 'repetition' | 'pos' | 'adverbs' | 'passiveVoice' | 'rhythmVariation' | 'stanzaStructure' | 'lineLength' | 'punctuation' | 'rhymeScheme' | 'rhymeAnalysis' | 'poeticForm' | 'soundPatterns' | 'tenseConsistency' | 'scansion' | 'figurativeLanguage' | 'cliches' | 'abstractConcrete' | 'firstDraftPhrases' | null;
 
 export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS, onSyllableExpand, onRhythmVariationExpand, onLineLengthExpand, onPunctuationExpand, onSectionCollapse, onHighlightLines, onHighlightWords, onPassiveVoiceExpand, onTenseExpand, onScansionExpand, editorHoveredLine }: AnalysisPanelProps) {
   const [activeCategory, setActiveCategory] = useState<CategoryTab>('rhythm');
@@ -557,129 +557,118 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
     suggestion => suggestion.suggestions.length > 0
   );
 
-  const adverbSuggestionsSection = (
-    <div key="adverbSuggestions" className="analysis-section collapsible">
-      <h3 onClick={() => toggleSection('adverbSuggestions')} className="collapsible-header">
-        <span className={`collapse-icon ${expandedSection === 'adverbSuggestions' ? 'expanded' : ''}`}>▶</span>
-        Adverb+verb combinations
-        <HelpTooltip {...HELP_CONTENT.adverbUsage} />
-        {suggestionsWithAlternatives.length > 0 && (
-          <span className="issue-count-badge" title={`${suggestionsWithAlternatives.length} suggestion(s) available`}>
-            {suggestionsWithAlternatives.length}
-          </span>
-        )}
-      </h3>
-      {expandedSection === 'adverbSuggestions' && (
-        <div className="adverb-suggestions-info">
-          {suggestionsWithAlternatives.length === 0 ? (
-            <div className="empty-state">No suggestions available (only high-quality matches shown)</div>
-          ) : (
-            <>
-              <div className="adverb-suggestions-intro">
-                <strong>Why be careful:</strong> Adverbs often weaken verbs by telling instead of showing. "Walked slowly" is less vivid than "ambled" or "shuffled." Strong, specific verbs carry more emotional weight and create clearer imagery. Consider replacing adverb+verb combinations with single, powerful verbs.
-              </div>
-              <div className="adverb-suggestions-list">
-                {suggestionsWithAlternatives.map((suggestion, index) => {
-                  const key = `${suggestion.adverb}_${suggestion.verb}_${suggestion.lineIndex}_${index}`;
-                  const isHighlightedFromEditor = editorHoveredLine === suggestion.lineIndex + 1;
-                  return (
-                    <div
-                      key={key}
-                      className={`adverb-suggestion-item ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
-                      onMouseEnter={() => onHighlightWords?.([
-                        { word: suggestion.adverb, lineNumber: suggestion.lineIndex + 1 },
-                        { word: suggestion.verb, lineNumber: suggestion.lineIndex + 1 }
-                      ])}
-                      onMouseLeave={() => onHighlightWords?.(null)}
-                    >
-                      <div className="adverb-suggestion-header">
-                        <span className="adverb-suggestion-original">
-                          {suggestion.originalOrder === 'verb-adverb' ? (
-                            <>
-                              <span className="verb-highlight">{suggestion.verb}</span>
-                              {' '}
-                              <span className="adverb-highlight">{suggestion.adverb}</span>
-                            </>
-                          ) : (
-                            <>
-                              <span className="adverb-highlight">{suggestion.adverb}</span>
-                              {' '}
-                              <span className="verb-highlight">{suggestion.verb}</span>
-                            </>
-                          )}
-                        </span>
-                        <span className="adverb-suggestion-line">Line {suggestion.lineIndex + 1}</span>
-                      </div>
-                      <div className="adverb-suggestion-alternatives">
-                        <span className="alternatives-label">Try instead:</span>
-                        <div className="alternatives-list">
-                          {suggestion.suggestions.map((alt, altIndex) => (
-                            <span key={altIndex} className="alternative-word">
-                              {alt}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
+  // Combined count for adverbs section badge
+  const totalAdverbIssues = suggestionsWithAlternatives.length + analysis.doubleAdverbs.length;
 
-  const doubleAdverbsSection = (
-    <div key="doubleAdverbs" className="analysis-section collapsible">
-      <h3 onClick={() => toggleSection('doubleAdverbs')} className="collapsible-header">
-        <span className={`collapse-icon ${expandedSection === 'doubleAdverbs' ? 'expanded' : ''}`}>▶</span>
-        Double Adverbs
-        <HelpTooltip {...HELP_CONTENT.doubleAdverbs} />
-        {analysis.doubleAdverbs.length > 0 && (
-          <span className="issue-count-badge" title={`${analysis.doubleAdverbs.length} double adverb(s) detected`}>
-            {analysis.doubleAdverbs.length}
+  const adverbsSection = (
+    <div key="adverbs" className="analysis-section collapsible">
+      <h3 onClick={() => toggleSection('adverbs')} className="collapsible-header">
+        <span className={`collapse-icon ${expandedSection === 'adverbs' ? 'expanded' : ''}`}>▶</span>
+        Adverbs
+        <HelpTooltip {...HELP_CONTENT.adverbUsage} />
+        {totalAdverbIssues > 0 && (
+          <span className="issue-count-badge" title={`${totalAdverbIssues} adverb issue(s) found`}>
+            {totalAdverbIssues}
           </span>
         )}
       </h3>
-      {expandedSection === 'doubleAdverbs' && (
-        <div className="double-adverbs-info">
-          {analysis.doubleAdverbs.length === 0 ? (
-            <div className="perfect-meter">No stacked adverbs found</div>
+      {expandedSection === 'adverbs' && (
+        <div className="adverb-suggestions-info">
+          {totalAdverbIssues === 0 ? (
+            <div className="empty-state">No adverb issues detected</div>
           ) : (
             <>
               <div className="adverb-suggestions-intro">
-                <strong>Why avoid:</strong> Two adverbs modifying one verb is usually redundant and weakens your writing. Each adverb dilutes the impact. "Very quickly ran" is weaker than simply "sprinted" or "bolted."
+                Adverbs often weaken verbs by telling instead of showing. "Walked slowly" is less vivid than "ambled" or "shuffled." Strong, specific verbs carry more emotional weight.
               </div>
-              <div className="double-adverbs-list">
-                {analysis.doubleAdverbs.map((instance, index) => {
-                  const isHighlightedFromEditor = editorHoveredLine === instance.lineIndex + 1;
-                  return (
-                  <div
-                    key={index}
-                    className={`double-adverb-item ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
-                    onMouseEnter={() => onHighlightWords?.([
-                      { word: instance.adverb1, lineNumber: instance.lineIndex + 1 },
-                      { word: instance.adverb2, lineNumber: instance.lineIndex + 1 },
-                      { word: instance.verb, lineNumber: instance.lineIndex + 1 }
-                    ])}
-                    onMouseLeave={() => onHighlightWords?.(null)}
-                  >
-                    <div className="double-adverb-header">
-                      <span className="double-adverb-phrase">
-                        <span className="adverb-highlight">{instance.adverb1}</span>
-                        {' '}
-                        <span className="adverb-highlight">{instance.adverb2}</span>
-                        {' '}
-                        <span className="verb-highlight">{instance.verb}</span>
-                      </span>
-                      <span className="adverb-suggestion-line">Line {instance.lineIndex + 1}</span>
-                    </div>
+
+              {/* Double adverbs subsection */}
+              {analysis.doubleAdverbs.length > 0 && (
+                <div className="adverb-subsection">
+                  <h4 className="adverb-subsection-title">Stacked adverbs ({analysis.doubleAdverbs.length})</h4>
+                  <div className="double-adverbs-list">
+                    {analysis.doubleAdverbs.map((instance, index) => {
+                      const isHighlightedFromEditor = editorHoveredLine === instance.lineIndex + 1;
+                      return (
+                        <div
+                          key={index}
+                          className={`double-adverb-item ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
+                          onMouseEnter={() => onHighlightWords?.([
+                            { word: instance.adverb1, lineNumber: instance.lineIndex + 1 },
+                            { word: instance.adverb2, lineNumber: instance.lineIndex + 1 },
+                            { word: instance.verb, lineNumber: instance.lineIndex + 1 }
+                          ])}
+                          onMouseLeave={() => onHighlightWords?.(null)}
+                        >
+                          <div className="double-adverb-header">
+                            <span className="double-adverb-phrase">
+                              <span className="adverb-highlight">{instance.adverb1}</span>
+                              {' '}
+                              <span className="adverb-highlight">{instance.adverb2}</span>
+                              {' '}
+                              <span className="verb-highlight">{instance.verb}</span>
+                            </span>
+                            <span className="adverb-suggestion-line">Line {instance.lineIndex + 1}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                  );
-                })}
-              </div>
+                </div>
+              )}
+
+              {/* Adverb+verb suggestions subsection */}
+              {suggestionsWithAlternatives.length > 0 && (
+                <div className="adverb-subsection">
+                  <h4 className="adverb-subsection-title">Adverb+verb combinations ({suggestionsWithAlternatives.length})</h4>
+                  <div className="adverb-suggestions-list">
+                    {suggestionsWithAlternatives.map((suggestion, index) => {
+                      const key = `${suggestion.adverb}_${suggestion.verb}_${suggestion.lineIndex}_${index}`;
+                      const isHighlightedFromEditor = editorHoveredLine === suggestion.lineIndex + 1;
+                      return (
+                        <div
+                          key={key}
+                          className={`adverb-suggestion-item ${isHighlightedFromEditor ? 'editor-highlighted' : ''}`}
+                          onMouseEnter={() => onHighlightWords?.([
+                            { word: suggestion.adverb, lineNumber: suggestion.lineIndex + 1 },
+                            { word: suggestion.verb, lineNumber: suggestion.lineIndex + 1 }
+                          ])}
+                          onMouseLeave={() => onHighlightWords?.(null)}
+                        >
+                          <div className="adverb-suggestion-header">
+                            <span className="adverb-suggestion-original">
+                              {suggestion.originalOrder === 'verb-adverb' ? (
+                                <>
+                                  <span className="verb-highlight">{suggestion.verb}</span>
+                                  {' '}
+                                  <span className="adverb-highlight">{suggestion.adverb}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="adverb-highlight">{suggestion.adverb}</span>
+                                  {' '}
+                                  <span className="verb-highlight">{suggestion.verb}</span>
+                                </>
+                              )}
+                            </span>
+                            <span className="adverb-suggestion-line">Line {suggestion.lineIndex + 1}</span>
+                          </div>
+                          <div className="adverb-suggestion-alternatives">
+                            <span className="alternatives-label">Try instead:</span>
+                            <div className="alternatives-list">
+                              {suggestion.suggestions.map((alt, altIndex) => (
+                                <span key={altIndex} className="alternative-word">
+                                  {alt}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
@@ -2073,10 +2062,10 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
           Rhymes
         </button>
         <button
-          className={`category-tab ${activeCategory === 'words' ? 'active' : ''}`}
-          onClick={() => setActiveCategory('words')}
+          className={`category-tab ${activeCategory === 'style' ? 'active' : ''}`}
+          onClick={() => setActiveCategory('style')}
         >
-          Language
+          Style
         </button>
         <button
           className={`category-tab ${activeCategory === 'originality' ? 'active' : ''}`}
@@ -2107,14 +2096,12 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
           </>
         )}
 
-        {activeCategory === 'words' && (
+        {activeCategory === 'style' && (
           <>
             {repetitionSection}
             {posSection}
             {abstractConcreteSection}
-            {firstDraftPhrasesSection}
-            {adverbSuggestionsSection}
-            {doubleAdverbsSection}
+            {adverbsSection}
             {passiveVoiceSection}
             {tenseConsistencySection}
           </>
@@ -2122,6 +2109,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
 
         {activeCategory === 'originality' && (
           <>
+            {firstDraftPhrasesSection}
             {clicheSection}
             {figurativeLanguageSection}
           </>

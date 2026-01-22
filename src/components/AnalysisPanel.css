@@ -1805,6 +1805,25 @@
   color: #5a5a5a;
 }
 
+.adverb-subsection {
+  margin-bottom: 20px;
+}
+
+.adverb-subsection:last-child {
+  margin-bottom: 0;
+}
+
+.adverb-subsection-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0 0 10px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
 .adverb-suggestions-list {
   display: flex;
   flex-direction: column;
@@ -2754,6 +2773,11 @@
 }
 
 /* Dark mode - Adverb suggestions */
+:root.dark-mode .adverb-subsection-title {
+  color: #a0aec0;
+  border-bottom-color: #3d4a5c;
+}
+
 :root.dark-mode .adverb-suggestions-intro {
   background: rgba(33, 150, 243, 0.15);
   border-left-color: #2196f3;
