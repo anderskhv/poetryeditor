@@ -2,17 +2,23 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
-import { fetchRhymes, fetchNearAndSlantRhymes, RhymeWord as RhymeWordType } from '../utils/rhymeApi';
+import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonyms, fetchAntonyms, RhymeWord as RhymeWordType, SynonymWord } from '../utils/rhymeApi';
 import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables } from '../utils/cmuDict';
 import { getRhymeOriginalityScore } from '../utils/rhymeCliches';
+import { DefinitionTooltip } from '../components/DefinitionTooltip';
 import './RhymeWord.css';
+
+type MeterFilter = 'all' | 'iambic' | 'trochaic';
 
 export function RhymeWord() {
   const { word } = useParams<{ word: string }>();
   const [perfectRhymes, setPerfectRhymes] = useState<RhymeWordType[]>([]);
   const [nearRhymes, setNearRhymes] = useState<RhymeWordType[]>([]);
+  const [synonyms, setSynonyms] = useState<SynonymWord[]>([]);
+  const [antonyms, setAntonyms] = useState<SynonymWord[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'perfect' | 'near'>('perfect');
+  const [meterFilter, setMeterFilter] = useState<MeterFilter>('all');
 
   const decodedWord = word ? decodeURIComponent(word).toLowerCase() : '';
   const stresses = getStressPattern(decodedWord);
@@ -27,12 +33,16 @@ export function RhymeWord() {
 
       if (decodedWord) {
         setLoading(true);
-        const [perfect, near] = await Promise.all([
+        const [perfect, near, syns, ants] = await Promise.all([
           fetchRhymes(decodedWord),
-          fetchNearAndSlantRhymes(decodedWord)
+          fetchNearAndSlantRhymes(decodedWord),
+          fetchSynonyms(decodedWord),
+          fetchAntonyms(decodedWord)
         ]);
         setPerfectRhymes(perfect);
         setNearRhymes(near);
+        setSynonyms(syns);
+        setAntonyms(ants);
         setLoading(false);
       }
     }
@@ -50,29 +60,83 @@ export function RhymeWord() {
     }, {} as Record<number, RhymeWordType[]>);
   };
 
-  const groupedPerfect = groupBySyllables(perfectRhymes);
-  const groupedNear = groupBySyllables(nearRhymes);
+  // Check if a word fits a specific meter pattern
+  const fitsIambic = (rhymeWord: string): boolean => {
+    const stress = getStressPattern(rhymeWord);
+    if (stress.length === 0) return true; // Unknown words pass through
+    if (stress.length === 1) return stress[0] >= 1; // Single syllable: stressed is good
+    // For multi-syllable: last syllable should be stressed (ends on stressed)
+    // Iambic: unstressed-STRESSED pattern
+    return stress[stress.length - 1] >= 1;
+  };
+
+  const fitsTrochaic = (rhymeWord: string): boolean => {
+    const stress = getStressPattern(rhymeWord);
+    if (stress.length === 0) return true; // Unknown words pass through
+    if (stress.length === 1) return stress[0] === 0; // Single syllable: unstressed is good
+    // For multi-syllable: last syllable should be unstressed (ends on unstressed)
+    // Trochaic: STRESSED-unstressed pattern
+    return stress[stress.length - 1] === 0;
+  };
+
+  // Apply meter filter
+  const filterByMeter = (rhymes: RhymeWordType[]): RhymeWordType[] => {
+    if (meterFilter === 'all') return rhymes;
+    if (meterFilter === 'iambic') return rhymes.filter(r => fitsIambic(r.word));
+    if (meterFilter === 'trochaic') return rhymes.filter(r => fitsTrochaic(r.word));
+    return rhymes;
+  };
+
+  const filteredPerfect = filterByMeter(perfectRhymes);
+  const filteredNear = filterByMeter(nearRhymes);
+
+  const groupedPerfect = groupBySyllables(filteredPerfect);
+  const groupedNear = groupBySyllables(filteredNear);
   const activeResults = activeTab === 'perfect' ? groupedPerfect : groupedNear;
 
-  // Get related words for internal linking
-  const relatedWords = perfectRhymes
-    .filter(r => !r.word.includes(' '))
-    .slice(0, 5)
+  // Get related words for internal linking - more varied selection
+  const topRhymes = perfectRhymes
+    .filter(r => !r.word.includes(' ') && r.score > 1000)
+    .slice(0, 8)
     .map(r => r.word);
+
+  // Get rhymes with same syllable count for "Same Length" section
+  const sameSyllableRhymes = perfectRhymes
+    .filter(r => !r.word.includes(' ') && r.numSyllables === syllableCount)
+    .slice(0, 6)
+    .map(r => r.word);
+
+  // Get popular rhyme targets (common words poets search for)
+  const popularRhymeTargets = ['love', 'heart', 'time', 'day', 'night', 'life', 'way', 'soul', 'mind', 'dream']
+    .filter(w => w !== decodedWord)
+    .slice(0, 5);
 
   // Capitalize first letter for display
   const displayWord = decodedWord.charAt(0).toUpperCase() + decodedWord.slice(1);
 
-  // Get originality-based background color (grayscale: darker = more clichéd)
+  // Get originality-based background color (color gradient: green → white → amber → red)
   const getOriginalityStyle = (rhymeWord: string): React.CSSProperties => {
     const score = getRhymeOriginalityScore(decodedWord, rhymeWord);
     // Score: 0-100 (100 = original, 0 = clichéd)
-    // Map to grayscale: high score = white/light, low score = darker gray
-    // Using a subtle range: score 100 = white, score 0 = medium gray (#888)
-    const lightness = Math.round(100 - ((100 - score) * 0.4)); // 60-100% lightness range
-    return {
-      backgroundColor: `hsl(0, 0%, ${lightness}%)`,
-    };
+    // Color mapping:
+    // 80-100: Soft mint green (original)
+    // 60-79: White/neutral (fresh)
+    // 40-59: Soft amber (common)
+    // 20-39: Peachy coral (overused)
+    // 0-19: Muted red (cliché)
+    let backgroundColor: string;
+    if (score >= 80) {
+      backgroundColor = 'hsl(145, 45%, 93%)'; // Soft mint green
+    } else if (score >= 60) {
+      backgroundColor = 'hsl(0, 0%, 100%)'; // White
+    } else if (score >= 40) {
+      backgroundColor = 'hsl(45, 65%, 93%)'; // Soft amber
+    } else if (score >= 20) {
+      backgroundColor = 'hsl(25, 60%, 92%)'; // Peachy coral
+    } else {
+      backgroundColor = 'hsl(0, 45%, 91%)'; // Muted red
+    }
+    return { backgroundColor };
   };
 
   // Get originality label for tooltip
@@ -125,21 +189,46 @@ export function RhymeWord() {
                 className={`rhyme-tab ${activeTab === 'perfect' ? 'active' : ''}`}
                 onClick={() => setActiveTab('perfect')}
               >
-                Perfect Rhymes ({perfectRhymes.length})
+                Perfect Rhymes ({filteredPerfect.length})
               </button>
               <button
                 className={`rhyme-tab ${activeTab === 'near' ? 'active' : ''}`}
                 onClick={() => setActiveTab('near')}
               >
-                Near Rhymes ({nearRhymes.length})
+                Near Rhymes ({filteredNear.length})
               </button>
             </div>
 
-            <div className="originality-legend">
-              <span className="legend-label">Originality:</span>
-              <span className="legend-item legend-original">Original</span>
-              <span className="legend-gradient"></span>
-              <span className="legend-item legend-cliche">Cliché</span>
+            <div className="rhyme-filters">
+              <div className="meter-filter">
+                <span className="filter-label">Meter:</span>
+                <button
+                  className={`filter-btn ${meterFilter === 'all' ? 'active' : ''}`}
+                  onClick={() => setMeterFilter('all')}
+                >
+                  All
+                </button>
+                <button
+                  className={`filter-btn ${meterFilter === 'iambic' ? 'active' : ''}`}
+                  onClick={() => setMeterFilter('iambic')}
+                  title="Words ending on a stressed syllable (da-DUM)"
+                >
+                  Iambic
+                </button>
+                <button
+                  className={`filter-btn ${meterFilter === 'trochaic' ? 'active' : ''}`}
+                  onClick={() => setMeterFilter('trochaic')}
+                  title="Words ending on an unstressed syllable (DUM-da)"
+                >
+                  Trochaic
+                </button>
+              </div>
+              <div className="originality-legend">
+                <span className="legend-label">Originality:</span>
+                <span className="legend-item legend-original">Original</span>
+                <span className="legend-gradient"></span>
+                <span className="legend-item legend-cliche">Cliché</span>
+              </div>
             </div>
 
             {Object.keys(activeResults).length === 0 ? (
@@ -161,17 +250,23 @@ export function RhymeWord() {
                       <div className="rhyme-word-list">
                         {activeResults[Number(sylCount)]
                           .filter(r => !r.word.includes(' '))
-                          .map((rhyme, idx) => (
-                            <Link
-                              key={idx}
-                              to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
-                              className="rhyme-word-item"
-                              style={getOriginalityStyle(rhyme.word)}
-                              title={`Originality: ${getOriginalityLabel(rhyme.word)}`}
-                            >
-                              {rhyme.word}
-                            </Link>
-                          ))}
+                          .map((rhyme, idx) => {
+                            // Determine rarity class based on Datamuse score
+                            // Higher score = more common word
+                            const rarityClass = rhyme.score > 5000 ? 'common' : rhyme.score > 1000 ? '' : 'rare';
+                            return (
+                              <DefinitionTooltip key={idx} word={rhyme.word}>
+                                <Link
+                                  to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
+                                  className={`rhyme-word-item ${rarityClass}`}
+                                  style={getOriginalityStyle(rhyme.word)}
+                                  title={`Originality: ${getOriginalityLabel(rhyme.word)}`}
+                                >
+                                  {rhyme.word}
+                                </Link>
+                              </DefinitionTooltip>
+                            );
+                          })}
                       </div>
                     </div>
                   ))}
@@ -179,26 +274,95 @@ export function RhymeWord() {
             )}
 
             <div className="rhyme-actions">
-              <Link to="/" className="rhyme-cta-button">
-                Use "{decodedWord}" in Poetry Editor
+              <Link to="/" className="rhyme-cta-button-wrapper">
+                <span className="rhyme-cta-button">Open in Poetry Editor</span>
+                <span className="rhyme-cta-tooltip">
+                  Meter • Rhyme schemes • Clichés • Forms
+                </span>
               </Link>
               <Link to={`/syllables/${encodeURIComponent(decodedWord)}`} className="rhyme-secondary-link">
                 View syllable breakdown
               </Link>
             </div>
 
-            {relatedWords.length > 0 && (
-              <div className="related-searches">
-                <h3>Related Rhyme Searches</h3>
+            {(synonyms.length > 0 || antonyms.length > 0) && (
+              <div className="word-relations">
+                {synonyms.length > 0 && (
+                  <div className="relation-group">
+                    <h3>Synonyms</h3>
+                    <p className="relation-hint">Words with similar meaning to "{decodedWord}"</p>
+                    <div className="relation-words">
+                      {synonyms.slice(0, 10).map((syn) => (
+                        <Link key={syn.word} to={`/rhymes/${syn.word}`} className="relation-word-link">
+                          {syn.word}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {antonyms.length > 0 && (
+                  <div className="relation-group">
+                    <h3>Antonyms</h3>
+                    <p className="relation-hint">Words with opposite meaning to "{decodedWord}"</p>
+                    <div className="relation-words">
+                      {antonyms.slice(0, 10).map((ant) => (
+                        <Link key={ant.word} to={`/rhymes/${ant.word}`} className="relation-word-link antonym">
+                          {ant.word}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="related-searches-expanded">
+              {topRhymes.length > 0 && (
+                <div className="related-section">
+                  <h3>Also Try Rhymes With</h3>
+                  <div className="related-words">
+                    {topRhymes.map((w) => (
+                      <Link key={w} to={`/rhymes/${w}`} className="related-word-link">
+                        {w}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {sameSyllableRhymes.length > 0 && syllableCount > 0 && (
+                <div className="related-section">
+                  <h3>{syllableCount}-Syllable Rhymes</h3>
+                  <p className="related-hint">Words with the same length as "{decodedWord}"</p>
+                  <div className="related-words">
+                    {sameSyllableRhymes.map((w) => (
+                      <Link key={w} to={`/rhymes/${w}`} className="related-word-link same-length">
+                        {w}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="related-section">
+                <h3>Popular Searches</h3>
                 <div className="related-words">
-                  {relatedWords.map((w) => (
-                    <Link key={w} to={`/rhymes/${w}`} className="related-word-link">
+                  {popularRhymeTargets.map((w) => (
+                    <Link key={w} to={`/rhymes/${w}`} className="related-word-link popular">
                       {w}
                     </Link>
                   ))}
                 </div>
               </div>
-            )}
+
+              <div className="related-section poet-maker-promo">
+                <h3>Need More Options?</h3>
+                <p className="related-hint">Find words that rhyme AND have a specific meaning</p>
+                <Link to="/poet-maker" className="poet-maker-link">
+                  Try Poet Maker →
+                </Link>
+              </div>
+            </div>
           </>
         )}
 

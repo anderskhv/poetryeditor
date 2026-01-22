@@ -1,0 +1,443 @@
+/* Poet Maker Page Styles */
+
+.poet-maker {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.poet-maker h1 {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.poet-subtitle {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0 0 40px;
+}
+
+/* Form */
+.poet-form {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.search-inputs {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.input-group {
+  flex: 1;
+}
+
+.input-label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.word-input {
+  width: 100%;
+  padding: 14px 16px;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  transition: all 0.15s ease;
+}
+
+.word-input:focus {
+  outline: none;
+  border-color: var(--color-text-secondary);
+  background: var(--color-paper);
+}
+
+.input-connector {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--color-text-muted);
+  padding-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.poet-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.search-button {
+  padding: 12px 32px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-paper);
+  background: var(--color-text-primary);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.search-button:hover:not(:disabled) {
+  background: var(--color-text-secondary);
+}
+
+.search-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.clear-button {
+  padding: 12px 24px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clear-button:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+}
+
+/* Results */
+.results-section {
+  margin-bottom: 40px;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.no-results p {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  margin: 0 0 8px;
+}
+
+.no-results-hint {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.results-header {
+  margin-bottom: 20px;
+}
+
+.results-header h2 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 4px;
+}
+
+.results-description {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.results-description strong {
+  color: var(--color-text-primary);
+}
+
+.results-list {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.syllable-group {
+  margin-bottom: 24px;
+}
+
+.syllable-group:last-child {
+  margin-bottom: 0;
+}
+
+.syllable-group h3 {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.word-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.result-word {
+  padding: 8px 16px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.result-word:hover {
+  border-color: var(--color-text-muted);
+  background: var(--color-paper);
+}
+
+/* Meter indicators */
+.result-word.iambic-friendly {
+  border-left: 3px solid hsl(220, 60%, 60%);
+}
+
+.result-word.trochaic-friendly {
+  border-left: 3px solid hsl(35, 60%, 55%);
+}
+
+/* Examples */
+.example-searches {
+  margin-bottom: 40px;
+}
+
+.example-searches h2 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+}
+
+.examples-intro {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.example-card {
+  text-align: left;
+  padding: 16px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.example-card:hover {
+  border-color: var(--color-text-muted);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.example-query {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+
+.example-query strong {
+  color: var(--color-text-primary);
+}
+
+.example-description {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* Info Section */
+.poet-info {
+  padding-top: 40px;
+  border-top: 1px solid var(--color-border);
+  margin-bottom: 40px;
+}
+
+.poet-info h2 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.info-card {
+  padding: 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.info-card h3 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+}
+
+.info-card p {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* CTA */
+.poet-cta {
+  text-align: center;
+  padding: 32px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.poet-cta p {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 14px 28px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  background: var(--color-text-primary);
+  color: var(--color-paper);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.cta-button:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .poet-maker h1 {
+    font-size: 26px;
+  }
+
+  .poet-subtitle {
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .poet-form {
+    padding: 20px 16px;
+  }
+
+  .search-inputs {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .input-connector {
+    display: none;
+  }
+
+  .word-input {
+    font-size: 16px;
+    padding: 12px 14px;
+  }
+
+  .poet-actions {
+    flex-direction: column;
+  }
+
+  .search-button,
+  .clear-button {
+    width: 100%;
+  }
+
+  .results-list {
+    padding: 16px;
+  }
+
+  .syllable-group h3 {
+    font-size: 12px;
+  }
+
+  .word-list {
+    gap: 6px;
+  }
+
+  .result-word {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  .examples-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .example-card {
+    padding: 14px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-card {
+    padding: 16px;
+  }
+
+  .poet-cta {
+    padding: 24px 16px;
+  }
+}

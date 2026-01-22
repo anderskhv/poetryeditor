@@ -341,7 +341,10 @@ function App() {
       <header className="app-header">
         <div className="header-content">
           <div className="header-left">
-            <h1 className="app-title">Poetry Editor</h1>
+            <div className="app-title-group">
+              <h1 className="app-title">Poetry Editor</h1>
+              <span className="app-subtitle">A Toolbox for Poets</span>
+            </div>
             {isAnalyzing && (
               <span className="analyzing-indicator" title="Analyzing poem...">
                 <span className="analyzing-dot"></span>

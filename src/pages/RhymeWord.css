@@ -81,12 +81,57 @@
   border-bottom-color: var(--color-text-primary);
 }
 
+/* Filters Container */
+.rhyme-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Meter Filter */
+.meter-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.filter-btn {
+  padding: 4px 10px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-btn:hover {
+  border-color: var(--color-text-muted);
+}
+
+.filter-btn.active {
+  background: var(--color-text-primary);
+  color: var(--color-paper);
+  border-color: var(--color-text-primary);
+}
+
 /* Originality Legend */
 .originality-legend {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 24px;
   font-family: var(--font-sans);
   font-size: 12px;
   color: var(--color-text-muted);
@@ -103,20 +148,27 @@
 }
 
 .legend-original {
-  background: hsl(0, 0%, 100%);
-  border: 1px solid var(--color-border);
+  background: hsl(145, 45%, 93%);
+  border: 1px solid hsl(145, 30%, 85%);
   color: #333;
 }
 
 .legend-cliche {
-  background: hsl(0, 0%, 70%);
+  background: hsl(0, 45%, 91%);
+  border: 1px solid hsl(0, 30%, 85%);
   color: #333;
 }
 
 .legend-gradient {
-  width: 60px;
+  width: 80px;
   height: 12px;
-  background: linear-gradient(to right, hsl(0, 0%, 100%), hsl(0, 0%, 70%));
+  background: linear-gradient(to right,
+    hsl(145, 45%, 93%),
+    hsl(0, 0%, 100%) 25%,
+    hsl(45, 65%, 93%) 50%,
+    hsl(25, 60%, 92%) 75%,
+    hsl(0, 45%, 91%)
+  );
   border-radius: 2px;
   border: 1px solid var(--color-border);
 }
@@ -188,8 +240,19 @@
   transition: all 0.15s ease;
 }
 
+/* Common words are bold for easy recognition */
+.rhyme-word-item.common {
+  font-weight: 600;
+}
+
+/* Rare words are dimmed to indicate less common usage */
+.rhyme-word-item.rare {
+  opacity: 0.55;
+  font-size: 14px;
+}
+
 .rhyme-word-item:hover {
-  opacity: 0.85;
+  opacity: 1;
   border-color: var(--color-text-muted);
 }
 
@@ -206,6 +269,14 @@
   border-radius: 8px;
 }
 
+.rhyme-cta-button-wrapper {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+}
+
 .rhyme-cta-button {
   display: inline-block;
   padding: 12px 24px;
@@ -219,8 +290,53 @@
   transition: background-color 0.15s ease;
 }
 
-.rhyme-cta-button:hover {
+.rhyme-cta-button-wrapper:hover .rhyme-cta-button {
   background: var(--color-text-secondary);
+}
+
+.rhyme-cta-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.rhyme-cta-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--color-border);
+}
+
+.rhyme-cta-tooltip::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--color-paper);
+  z-index: 1;
+}
+
+.rhyme-cta-button-wrapper:hover .rhyme-cta-tooltip {
+  opacity: 1;
+  visibility: visible;
 }
 
 .rhyme-secondary-link {
@@ -235,35 +351,118 @@
   text-decoration: underline;
 }
 
-/* Related Searches */
-.related-searches {
+/* Word Relations (Synonyms/Antonyms) */
+.word-relations {
+  margin-top: 32px;
+  padding: 24px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.relation-group {
+  margin-bottom: 20px;
+}
+
+.relation-group:last-child {
+  margin-bottom: 0;
+}
+
+.relation-group h3 {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 4px;
+}
+
+.relation-hint {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0 0 12px;
+}
+
+.relation-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.relation-word-link {
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background: hsl(210, 40%, 96%);
+  border: 1px solid hsl(210, 30%, 90%);
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.relation-word-link:hover {
+  color: var(--color-text-primary);
+  border-color: hsl(210, 40%, 70%);
+  background: hsl(210, 50%, 94%);
+}
+
+.relation-word-link.antonym {
+  background: hsl(350, 40%, 96%);
+  border-color: hsl(350, 30%, 90%);
+}
+
+.relation-word-link.antonym:hover {
+  border-color: hsl(350, 40%, 70%);
+  background: hsl(350, 50%, 94%);
+}
+
+/* Expanded Related Searches */
+.related-searches-expanded {
   margin-top: 40px;
   padding-top: 32px;
   border-top: 1px solid var(--color-border);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
 }
 
-.related-searches h3 {
+.related-section {
+  padding: 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.related-section h3 {
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-text-secondary);
-  margin: 0 0 16px;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+}
+
+.related-hint {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0 0 12px;
 }
 
 .related-words {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .related-word-link {
-  padding: 8px 16px;
+  padding: 6px 14px;
   font-family: var(--font-sans);
   font-size: 14px;
   color: var(--color-text-secondary);
-  background: var(--color-paper);
+  background: var(--color-background);
   border: 1px solid var(--color-border);
-  border-radius: 20px;
+  border-radius: 4px;
   text-decoration: none;
   transition: all 0.15s ease;
 }
@@ -271,6 +470,36 @@
 .related-word-link:hover {
   color: var(--color-text-primary);
   border-color: var(--color-text-secondary);
+  background: var(--color-paper);
+}
+
+.related-word-link.same-length {
+  border-left: 3px solid hsl(145, 50%, 55%);
+}
+
+.related-word-link.popular {
+  border-left: 3px solid hsl(35, 60%, 55%);
+}
+
+/* Poet Maker Promo */
+.poet-maker-promo {
+  display: flex;
+  flex-direction: column;
+}
+
+.poet-maker-link {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.poet-maker-link:hover {
+  color: hsl(220, 60%, 50%);
 }
 
 /* Back Link */
@@ -321,10 +550,24 @@
     white-space: nowrap;
   }
 
+  .rhyme-filters {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .meter-filter {
+    gap: 6px;
+  }
+
+  .filter-btn {
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+
   .originality-legend {
     font-size: 11px;
     gap: 6px;
-    margin-bottom: 20px;
   }
 
   .legend-item {
@@ -333,8 +576,13 @@
   }
 
   .legend-gradient {
-    width: 40px;
+    width: 50px;
     height: 10px;
+  }
+
+  .rhyme-cta-tooltip {
+    font-size: 11px;
+    padding: 6px 10px;
   }
 
   .rhyme-syllable-group {
@@ -365,17 +613,49 @@
     font-size: 14px;
   }
 
-  .related-searches {
+  .word-relations {
+    margin-top: 24px;
+    padding: 16px;
+  }
+
+  .relation-group h3 {
+    font-size: 15px;
+  }
+
+  .relation-words {
+    gap: 6px;
+  }
+
+  .relation-word-link {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+
+  .related-searches-expanded {
+    grid-template-columns: 1fr;
+    gap: 16px;
     margin-top: 32px;
     padding-top: 24px;
   }
 
+  .related-section {
+    padding: 16px;
+  }
+
+  .related-section h3 {
+    font-size: 13px;
+  }
+
+  .related-hint {
+    font-size: 11px;
+  }
+
   .related-words {
-    gap: 8px;
+    gap: 6px;
   }
 
   .related-word-link {
-    padding: 6px 12px;
+    padding: 5px 10px;
     font-size: 13px;
   }
 }

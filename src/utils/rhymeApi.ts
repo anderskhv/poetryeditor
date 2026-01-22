@@ -348,3 +348,36 @@ export async function fetchSimilarWords(word: string): Promise<SynonymWord[]> {
     return [];
   }
 }
+
+/**
+ * Fetch antonyms (words with opposite meaning)
+ */
+export async function fetchAntonyms(word: string): Promise<SynonymWord[]> {
+  try {
+    console.log(`Fetching antonyms for: ${word}`);
+
+    const response = await fetch(
+      `https://api.datamuse.com/words?rel_ant=${encodeURIComponent(word)}&max=20`,
+      {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }
+    );
+
+    if (!response.ok) {
+      console.error(`Antonym API response not OK: ${response.status} ${response.statusText}`);
+      throw new Error('Failed to fetch antonyms');
+    }
+
+    const data = await response.json();
+    console.log(`Received ${data.length} antonyms for "${word}"`);
+
+    return data.map((item: any) => ({
+      word: item.word,
+      score: item.score || 0,
+    }));
+  } catch (error) {
+    console.error('Error fetching antonyms:', error);
+    return [];
+  }
+}
