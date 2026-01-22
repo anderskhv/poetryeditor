@@ -148,26 +148,23 @@
 }
 
 .legend-original {
-  background: hsl(145, 45%, 93%);
-  border: 1px solid hsl(145, 30%, 85%);
+  background: hsl(0, 0%, 98%);
+  border: 1px solid hsl(0, 0%, 90%);
   color: #333;
 }
 
 .legend-cliche {
-  background: hsl(0, 45%, 91%);
-  border: 1px solid hsl(0, 30%, 85%);
-  color: #333;
+  background: hsl(0, 0%, 55%);
+  border: 1px solid hsl(0, 0%, 45%);
+  color: #fff;
 }
 
-.legend-gradient {
+.legend-gradient-grayscale {
   width: 80px;
   height: 12px;
   background: linear-gradient(to right,
-    hsl(145, 45%, 93%),
-    hsl(0, 0%, 100%) 25%,
-    hsl(45, 65%, 93%) 50%,
-    hsl(25, 60%, 92%) 75%,
-    hsl(0, 45%, 91%)
+    hsl(0, 0%, 98%),
+    hsl(0, 0%, 55%)
   );
   border-radius: 2px;
   border: 1px solid var(--color-border);

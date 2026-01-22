@@ -421,41 +421,6 @@ function App() {
                 </div>
               )}
             </div>
-            <div className="tools-dropdown">
-              <button
-                onClick={() => setShowToolsMenu(!showToolsMenu)}
-                className="btn btn-menu"
-                aria-label="Tools"
-                aria-expanded={showToolsMenu}
-              >
-                Tools
-              </button>
-              {showToolsMenu && (
-                <div className="tools-menu">
-                  <Link to="/rhymes" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Rhyme Dictionary
-                  </Link>
-                  <Link to="/syllables" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Syllable Counter
-                  </Link>
-                  <Link to="/haiku-checker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Haiku Checker
-                  </Link>
-                  <Link to="/meter-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Meter Analyzer
-                  </Link>
-                  <Link to="/rhyme-scheme-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Rhyme Scheme Analyzer
-                  </Link>
-                  <Link to="/sonnet-checker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Sonnet Checker
-                  </Link>
-                  <Link to="/poet-maker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Poet Maker
-                  </Link>
-                </div>
-              )}
-            </div>
             <div className="font-dropdown">
               <button
                 onClick={() => setShowFontMenu(!showFontMenu)}
@@ -512,6 +477,41 @@ function App() {
                   >
                     Dark
                   </button>
+                </div>
+              )}
+            </div>
+            <div className="tools-dropdown">
+              <button
+                onClick={() => setShowToolsMenu(!showToolsMenu)}
+                className="btn btn-tools"
+                aria-label="Tools"
+                aria-expanded={showToolsMenu}
+              >
+                Tools
+              </button>
+              {showToolsMenu && (
+                <div className="tools-menu">
+                  <Link to="/rhymes" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Rhyme Dictionary
+                  </Link>
+                  <Link to="/syllables" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Syllable Counter
+                  </Link>
+                  <Link to="/haiku-checker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Haiku Checker
+                  </Link>
+                  <Link to="/meter-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Meter Analyzer
+                  </Link>
+                  <Link to="/rhyme-scheme-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Rhyme Scheme Analyzer
+                  </Link>
+                  <Link to="/sonnet-checker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Sonnet Checker
+                  </Link>
+                  <Link to="/poet-maker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Poet Maker
+                  </Link>
                 </div>
               )}
             </div>

@@ -82,8 +82,9 @@
 
 .app-title-group {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .app-title {
@@ -93,16 +94,16 @@
   margin: 0;
   letter-spacing: 0;
   color: var(--color-text-muted);
-  line-height: 1.2;
+  line-height: 1;
 }
 
 .app-subtitle {
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
   color: var(--color-text-muted);
-  opacity: 0.7;
-  line-height: 1.2;
+  opacity: 0.6;
+  line-height: 1;
 }
 
 .header-actions {
@@ -288,6 +289,24 @@
   background-color: rgba(0, 0, 0, 0.03);
 }
 
+/* Tools button - distinct gray style */
+.btn-tools {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #666;
+  color: #fff;
+}
+
+.btn-tools:hover {
+  background: #555;
+  color: #fff;
+}
+
 :root.dark-mode .tools-menu {
   background: var(--color-paper);
   box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
@@ -299,6 +318,16 @@
 
 :root.dark-mode .tools-item:hover {
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+:root.dark-mode .btn-tools {
+  background: #555;
+  color: #fff;
+}
+
+:root.dark-mode .btn-tools:hover {
+  background: #666;
+  color: #fff;
 }
 
 .poems-empty {
@@ -503,8 +532,8 @@
   font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-transform: none;
 }
 
 /* ============================================

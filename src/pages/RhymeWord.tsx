@@ -114,28 +114,14 @@ export function RhymeWord() {
   // Capitalize first letter for display
   const displayWord = decodedWord.charAt(0).toUpperCase() + decodedWord.slice(1);
 
-  // Get originality-based background color (color gradient: green → white → amber → red)
+  // Get originality-based background color (grayscale: light = original, dark = cliché)
   const getOriginalityStyle = (rhymeWord: string): React.CSSProperties => {
     const score = getRhymeOriginalityScore(decodedWord, rhymeWord);
-    // Score: 0-100 (100 = original, 0 = clichéd)
-    // Color mapping:
-    // 80-100: Soft mint green (original)
-    // 60-79: White/neutral (fresh)
-    // 40-59: Soft amber (common)
-    // 20-39: Peachy coral (overused)
-    // 0-19: Muted red (cliché)
-    let backgroundColor: string;
-    if (score >= 80) {
-      backgroundColor = 'hsl(145, 45%, 93%)'; // Soft mint green
-    } else if (score >= 60) {
-      backgroundColor = 'hsl(0, 0%, 100%)'; // White
-    } else if (score >= 40) {
-      backgroundColor = 'hsl(45, 65%, 93%)'; // Soft amber
-    } else if (score >= 20) {
-      backgroundColor = 'hsl(25, 60%, 92%)'; // Peachy coral
-    } else {
-      backgroundColor = 'hsl(0, 45%, 91%)'; // Muted red
-    }
+    // Score: 0-100 (100 = original/good, 0 = clichéd/bad)
+    // Grayscale mapping: high score = lighter (more original), low score = darker (more clichéd)
+    // Map score 0-100 to lightness 55%-98%
+    const lightness = 55 + (score * 0.43); // 0 → 55%, 100 → 98%
+    const backgroundColor = `hsl(0, 0%, ${lightness}%)`;
     return { backgroundColor };
   };
 
@@ -226,7 +212,7 @@ export function RhymeWord() {
               <div className="originality-legend">
                 <span className="legend-label">Originality:</span>
                 <span className="legend-item legend-original">Original</span>
-                <span className="legend-gradient"></span>
+                <span className="legend-gradient-grayscale"></span>
                 <span className="legend-item legend-cliche">Cliché</span>
               </div>
             </div>
