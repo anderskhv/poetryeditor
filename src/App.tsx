@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { PoetryEditor } from './components/PoetryEditor';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { useDebouncedLocalStorage } from './hooks/useLocalStorage';
@@ -54,6 +55,7 @@ function App() {
   });
   const [showFontMenu, setShowFontMenu] = useState<boolean>(false);
   const [showThemeMenu, setShowThemeMenu] = useState<boolean>(false);
+  const [showToolsMenu, setShowToolsMenu] = useState<boolean>(false);
   const [showPoemList, setShowPoemList] = useState<boolean>(false);
   const [savedPoems, setSavedPoems] = useState<SavedPoem[]>(() => {
     const saved = localStorage.getItem('savedPoems');
@@ -330,6 +332,7 @@ function App() {
       if (!target.closest('.export-dropdown')) setShowExportMenu(false);
       if (!target.closest('.font-dropdown')) setShowFontMenu(false);
       if (!target.closest('.theme-dropdown')) setShowThemeMenu(false);
+      if (!target.closest('.tools-dropdown')) setShowToolsMenu(false);
       if (!target.closest('.mobile-overflow-dropdown')) setShowMobileMenu(false);
     };
     document.addEventListener('click', handleClickOutside);
@@ -343,7 +346,7 @@ function App() {
           <div className="header-left">
             <div className="app-title-group">
               <h1 className="app-title">Poetry Editor</h1>
-              <span className="app-subtitle">A Toolbox for Poets</span>
+              <span className="app-subtitle">a toolbox for poets</span>
             </div>
             {isAnalyzing && (
               <span className="analyzing-indicator" title="Analyzing poem...">
@@ -418,6 +421,41 @@ function App() {
                 </div>
               )}
             </div>
+            <div className="tools-dropdown">
+              <button
+                onClick={() => setShowToolsMenu(!showToolsMenu)}
+                className="btn btn-menu"
+                aria-label="Tools"
+                aria-expanded={showToolsMenu}
+              >
+                Tools
+              </button>
+              {showToolsMenu && (
+                <div className="tools-menu">
+                  <Link to="/rhymes" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Rhyme Dictionary
+                  </Link>
+                  <Link to="/syllables" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Syllable Counter
+                  </Link>
+                  <Link to="/haiku-checker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Haiku Checker
+                  </Link>
+                  <Link to="/meter-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Meter Analyzer
+                  </Link>
+                  <Link to="/rhyme-scheme-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Rhyme Scheme Analyzer
+                  </Link>
+                  <Link to="/sonnet-checker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Sonnet Checker
+                  </Link>
+                  <Link to="/poet-maker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Poet Maker
+                  </Link>
+                </div>
+              )}
+            </div>
             <div className="font-dropdown">
               <button
                 onClick={() => setShowFontMenu(!showFontMenu)}
@@ -425,7 +463,7 @@ function App() {
                 aria-label="Select font"
                 aria-expanded={showFontMenu}
               >
-                {FONT_OPTIONS.find(f => f.id === selectedFont)?.name || 'Font'}
+                Font
               </button>
               {showFontMenu && (
                 <div className="font-menu">
@@ -452,7 +490,7 @@ function App() {
                 aria-label="Select theme"
                 aria-expanded={showThemeMenu}
               >
-                {isDarkMode ? 'Dark' : 'Light'}
+                Theme
               </button>
               {showThemeMenu && (
                 <div className="theme-menu">
