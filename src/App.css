@@ -1105,66 +1105,9 @@
 
 /* ============================================
    YELLOW MODE - Warm parchment aesthetic
+   Only applies to editor area within .app
+   Does NOT change global CSS variables to avoid affecting tools pages
    ============================================ */
-
-:root.yellow-mode {
-  --color-background: #e8ddb5;
-  --color-paper: #f5e6b8;
-  --color-text-primary: #3a3020;
-  --color-text-secondary: #5a5040;
-  --color-text-muted: #8a7a60;
-  --color-border: rgba(60, 50, 30, 0.12);
-  --color-shadow: rgba(60, 50, 30, 0.08);
-
-  /* Editorial feedback colors - yellow mode */
-  --color-ink-base: #6a5a4a;
-  --color-ink-emphasis: #4a3a2a;
-  --color-ink-light: #9a8a7a;
-  --color-attention: #8a6a4a;
-  --color-attention-bg: rgba(138, 106, 74, 0.1);
-  --color-notation: #6a7a5a;
-  --color-notation-bg: rgba(106, 122, 90, 0.1);
-
-  /* Inline feedback - yellow mode */
-  --color-underline: rgba(60, 50, 30, 0.3);
-  --color-underline-dotted: rgba(60, 50, 30, 0.25);
-  --color-highlight-subtle: rgba(60, 50, 30, 0.06);
-
-  /* Interactive highlight colors - yellow mode */
-  --color-highlight-active: hsl(40, 50%, 85%);
-  --color-highlight-active-border: hsl(40, 40%, 60%);
-  --color-highlight-active-glow: hsl(40, 45%, 80%);
-  --color-accent-synonym: hsl(40, 40%, 88%);
-  --color-accent-synonym-border: hsl(40, 30%, 75%);
-  --color-accent-antonym: hsl(20, 40%, 88%);
-  --color-accent-antonym-border: hsl(20, 30%, 75%);
-
-  /* Score badges - yellow mode */
-  --color-score-excellent: hsl(145, 45%, 40%);
-  --color-score-good: hsl(80, 45%, 40%);
-  --color-score-fair: hsl(40, 60%, 45%);
-  --color-score-needs-work: hsl(0, 45%, 50%);
-
-  /* Syllable badges - yellow mode */
-  --color-syllable-good-bg: hsl(145, 35%, 85%);
-  --color-syllable-good-text: hsl(145, 45%, 30%);
-  --color-syllable-off-bg: hsl(40, 45%, 85%);
-  --color-syllable-off-text: hsl(40, 55%, 30%);
-
-  /* Issues section - yellow mode */
-  --color-issues-bg: hsl(40, 45%, 90%);
-  --color-issues-border: hsl(40, 35%, 75%);
-  --color-issues-title: hsl(40, 45%, 30%);
-  --color-issues-text: hsl(40, 35%, 25%);
-
-  /* Button colors - yellow mode */
-  --color-btn-tools-bg: #7a6a5a;
-  --color-btn-tools-hover-bg: #6a5a4a;
-  --color-btn-tools-text: #ffffff;
-  --color-panel-toggle-bg: #5a4a3a;
-  --color-panel-toggle-hover-bg: #4a3a2a;
-  --color-panel-toggle-text: #f5e6b8;
-}
 
 /* Yellow mode: Keep header in light mode, only editor area gets yellow */
 :root.yellow-mode .app {

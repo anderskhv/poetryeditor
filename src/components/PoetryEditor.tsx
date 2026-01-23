@@ -51,6 +51,7 @@ interface PoetryEditorProps {
   onLineHover?: (lineNumber: number | null) => void;
   editorFont?: string;
   paragraphAlign?: 'left' | 'center';
+  editorTheme?: 'light' | 'dark' | 'yellow';
 }
 
 // Color scheme for POS highlighting - sharper, more vibrant colors
@@ -66,7 +67,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left' }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light' }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -128,7 +129,31 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       },
     });
 
-    monaco.editor.setTheme(isDarkMode ? 'poetry-theme-dark' : 'poetry-theme');
+    // Define yellow/parchment theme
+    monaco.editor.defineTheme('poetry-theme-yellow', {
+      base: 'vs',
+      inherit: true,
+      rules: [
+        { token: 'noun', foreground: POS_COLORS.Noun.substring(1) },
+        { token: 'verb', foreground: POS_COLORS.Verb.substring(1) },
+        { token: 'adjective', foreground: POS_COLORS.Adjective.substring(1) },
+        { token: 'adverb', foreground: POS_COLORS.Adverb.substring(1) },
+        { token: 'other', foreground: POS_COLORS.Other.substring(1) },
+      ],
+      colors: {
+        'editor.background': '#f5e6b8',
+        'editor.foreground': '#3a3020',
+        'editor.lineHighlightBackground': '#f5e6b8',
+        'editorCursor.foreground': '#3a3020',
+        'editor.selectionBackground': '#e8d8a0',
+        'editorLineNumber.foreground': '#b0a080',
+        'editorLineNumber.activeForeground': '#8a7a60',
+      },
+    });
+
+    // Set initial theme
+    const themeName = editorTheme === 'dark' ? 'poetry-theme-dark' : editorTheme === 'yellow' ? 'poetry-theme-yellow' : 'poetry-theme';
+    monaco.editor.setTheme(themeName);
 
     // Handle click events to show word popup
     editor.onMouseDown((e) => {
@@ -840,12 +865,13 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     updateDecorations();
   }, [scansionColoringData]);
 
-  // Switch theme when dark mode changes
+  // Switch theme when editorTheme changes
   useEffect(() => {
     if (monacoRef.current) {
-      monacoRef.current.editor.setTheme(isDarkMode ? 'poetry-theme-dark' : 'poetry-theme');
+      const themeName = editorTheme === 'dark' ? 'poetry-theme-dark' : editorTheme === 'yellow' ? 'poetry-theme-yellow' : 'poetry-theme';
+      monacoRef.current.editor.setTheme(themeName);
     }
-  }, [isDarkMode]);
+  }, [editorTheme]);
 
   // Build container class based on paragraph settings (only title centering works with Monaco)
   const containerClasses = [

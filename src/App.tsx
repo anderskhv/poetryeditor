@@ -775,6 +775,7 @@ function App() {
             onWordsAnalyzed={handleWordsAnalyzed}
             highlightedPOS={highlightedPOS}
             isDarkMode={theme === 'dark'}
+            editorTheme={theme}
             meterColoringData={meterColoringData}
             syllableColoringData={syllableColoringData}
             rhythmVariationColoringData={rhythmVariationColoringData}
