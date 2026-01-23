@@ -1,38 +1,108 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { loadCMUDictionary, isDictionaryLoaded } from '../utils/cmuDict';
-import { detectRhymeScheme, detectInternalRhymes, InternalRhyme } from '../utils/rhymeScheme';
+import { detectRhymeScheme, detectInternalRhymes, InternalRhyme, assessRhymeQuality } from '../utils/rhymeScheme';
+import { useDebounce } from '../hooks/useDebounce';
 import './RhymeSchemeAnalyzer.css';
+
+// Poetry form definitions with rhyme schemes
+interface PoetryForm {
+  id: string;
+  name: string;
+  scheme: string;
+  lineCount: number;
+  description: string;
+  stanzaBreaks?: number[]; // Line indices where stanza breaks occur
+}
+
+const POETRY_FORMS: PoetryForm[] = [
+  {
+    id: 'limerick',
+    name: 'Limerick',
+    scheme: 'AABBA',
+    lineCount: 5,
+    description: 'A humorous five-line poem with a bouncy rhythm',
+  },
+  {
+    id: 'quatrain-abab',
+    name: 'Quatrain (ABAB)',
+    scheme: 'ABAB',
+    lineCount: 4,
+    description: 'Four lines with alternating rhymes',
+  },
+  {
+    id: 'quatrain-abba',
+    name: 'Quatrain (ABBA)',
+    scheme: 'ABBA',
+    lineCount: 4,
+    description: 'Four lines with enclosed rhymes',
+  },
+  {
+    id: 'couplets',
+    name: 'Couplets',
+    scheme: 'AABBCC',
+    lineCount: 6,
+    description: 'Pairs of rhyming lines',
+  },
+  {
+    id: 'shakespearean-sonnet',
+    name: 'Shakespearean Sonnet',
+    scheme: 'ABABCDCDEFEFGG',
+    lineCount: 14,
+    description: 'Three quatrains and a couplet',
+    stanzaBreaks: [4, 8, 12],
+  },
+  {
+    id: 'petrarchan-sonnet',
+    name: 'Petrarchan Sonnet',
+    scheme: 'ABBAABBACDCDCD',
+    lineCount: 14,
+    description: 'Octave and sestet structure',
+    stanzaBreaks: [8],
+  },
+  {
+    id: 'terza-rima',
+    name: 'Terza Rima',
+    scheme: 'ABABCBCDC',
+    lineCount: 9,
+    description: 'Interlocking tercets',
+    stanzaBreaks: [3, 6],
+  },
+  {
+    id: 'free-verse',
+    name: 'Free Verse',
+    scheme: '',
+    lineCount: 0,
+    description: 'No fixed rhyme scheme - analyze any text',
+  },
+];
 
 const EXAMPLE_POEMS = [
   {
     title: 'Shakespearean Sonnet',
     author: 'William Shakespeare',
-    meter: 'ABAB CDCD EFEF GG',
+    formId: 'shakespearean-sonnet',
     poem: `Shall I compare thee to a summer's day?
 Thou art more lovely and more temperate.
 Rough winds do shake the darling buds of May,
 And summer's lease hath all too short a date.
-
 Sometime too hot the eye of heaven shines,
 And often is his gold complexion dimmed;
 And every fair from fair sometime declines,
 By chance, or nature's changing course, untrimmed;
-
 But thy eternal summer shall not fade,
 Nor lose possession of that fair thou ow'st,
 Nor shall death brag thou wand'rest in his shade,
 When in eternal lines to Time thou grow'st.
-
 So long as men can breathe, or eyes can see,
 So long lives this, and this gives life to thee.`,
   },
   {
     title: 'Limerick',
     author: 'Edward Lear',
-    meter: 'AABBA',
+    formId: 'limerick',
     poem: `There was an Old Man with a beard,
 Who said, "It is just as I feared!
 Two Owls and a Hen,
@@ -42,7 +112,7 @@ Have all built their nests in my beard!"`,
   {
     title: 'Alternate Rhyme',
     author: 'Robert Frost',
-    meter: 'ABAB',
+    formId: 'quatrain-abab',
     poem: `Whose woods these are I think I know.
 His house is in the village though;
 He will not see me stopping here
@@ -51,7 +121,7 @@ To watch his woods fill up with snow.`,
   {
     title: 'Enclosed Rhyme',
     author: 'Alfred, Lord Tennyson',
-    meter: 'ABBA',
+    formId: 'quatrain-abba',
     poem: `Ring out, wild bells, to the wild sky,
 The flying cloud, the frosty light:
 The year is dying in the night;
@@ -85,12 +155,163 @@ function getColorForLabel(label: string): string {
   return RHYME_COLORS[index % RHYME_COLORS.length];
 }
 
+// Get the last word from a line
+function getLastWord(line: string): string {
+  const trimmed = line.trim();
+  if (!trimmed) return '';
+  const withoutPunctuation = trimmed.replace(/[.,!?;:'")\]}>]+$/, '');
+  const words = withoutPunctuation.split(/\s+/);
+  return words[words.length - 1]?.toLowerCase() || '';
+}
+
+// Analyze rhyme compliance for form-based mode
+interface LineAnalysis {
+  lineIndex: number;
+  expectedLabel: string;
+  actualLabel: string;
+  endWord: string;
+  rhymeStatus: 'correct' | 'slant' | 'incorrect' | 'pending';
+  rhymesWithLines: number[];
+}
+
+function analyzeFormCompliance(
+  lines: string[],
+  form: PoetryForm
+): LineAnalysis[] {
+  const expectedScheme = form.scheme.split('');
+  const analyses: LineAnalysis[] = [];
+
+  // Build a map of which lines should rhyme together based on the expected scheme
+  const expectedRhymeGroups: Map<string, number[]> = new Map();
+  expectedScheme.forEach((label, idx) => {
+    if (!expectedRhymeGroups.has(label)) {
+      expectedRhymeGroups.set(label, []);
+    }
+    expectedRhymeGroups.get(label)!.push(idx);
+  });
+
+  // Get end words for each line
+  const endWords = lines.map(line => getLastWord(line));
+
+  // Analyze each line
+  for (let i = 0; i < form.lineCount; i++) {
+    const expectedLabel = expectedScheme[i] || '';
+    const endWord = endWords[i] || '';
+    const lineText = lines[i] || '';
+
+    // Find which lines this should rhyme with
+    const shouldRhymeWith = (expectedRhymeGroups.get(expectedLabel) || [])
+      .filter(idx => idx !== i && idx < i);
+
+    let rhymeStatus: 'correct' | 'slant' | 'incorrect' | 'pending' = 'pending';
+    const rhymesWithLines: number[] = [];
+
+    if (!lineText.trim() || !endWord) {
+      rhymeStatus = 'pending';
+    } else if (shouldRhymeWith.length === 0) {
+      // This is the first line with this label - check if later lines will rhyme
+      const futureRhymes = (expectedRhymeGroups.get(expectedLabel) || [])
+        .filter(idx => idx > i);
+
+      if (futureRhymes.length === 0) {
+        // No other lines share this label (shouldn't happen in well-formed schemes)
+        rhymeStatus = 'pending';
+      } else {
+        // Check against future lines that are already filled in
+        let foundRhyme = false;
+        for (const futureIdx of futureRhymes) {
+          const futureWord = endWords[futureIdx];
+          if (futureWord) {
+            const quality = assessRhymeQuality(endWord, futureWord);
+            if (quality === 'perfect') {
+              rhymeStatus = 'correct';
+              rhymesWithLines.push(futureIdx + 1);
+              foundRhyme = true;
+            } else if (quality === 'slant' && rhymeStatus !== 'correct') {
+              rhymeStatus = 'slant';
+              rhymesWithLines.push(futureIdx + 1);
+              foundRhyme = true;
+            }
+          }
+        }
+        if (!foundRhyme) {
+          // No future lines filled yet, check if any future lines have content
+          const anyFutureFilled = futureRhymes.some(idx => endWords[idx]);
+          if (anyFutureFilled) {
+            rhymeStatus = 'incorrect';
+          } else {
+            rhymeStatus = 'pending';
+          }
+        }
+      }
+    } else {
+      // Check if this line rhymes with previous lines it should
+      let bestQuality: 'perfect' | 'slant' | 'none' = 'none';
+
+      for (const prevIdx of shouldRhymeWith) {
+        const prevWord = endWords[prevIdx];
+        if (prevWord) {
+          const quality = assessRhymeQuality(endWord, prevWord);
+          if (quality === 'perfect') {
+            bestQuality = 'perfect';
+            rhymesWithLines.push(prevIdx + 1);
+          } else if (quality === 'slant' && bestQuality !== 'perfect') {
+            bestQuality = 'slant';
+            rhymesWithLines.push(prevIdx + 1);
+          }
+        }
+      }
+
+      if (bestQuality === 'perfect') {
+        rhymeStatus = 'correct';
+      } else if (bestQuality === 'slant') {
+        rhymeStatus = 'slant';
+      } else {
+        // Check if any previous lines are filled
+        const anyPrevFilled = shouldRhymeWith.some(idx => endWords[idx]);
+        rhymeStatus = anyPrevFilled ? 'incorrect' : 'pending';
+      }
+    }
+
+    analyses.push({
+      lineIndex: i,
+      expectedLabel,
+      actualLabel: '', // Will be filled from detection
+      endWord,
+      rhymeStatus,
+      rhymesWithLines,
+    });
+  }
+
+  return analyses;
+}
+
 export function RhymeSchemeAnalyzer() {
-  const [poem, setPoem] = useState('');
-  const [result, setResult] = useState<RhymeResult | null>(null);
-  const [internalRhymes, setInternalRhymes] = useState<InternalRhyme[]>([]);
+  const [selectedForm, setSelectedForm] = useState<PoetryForm>(POETRY_FORMS[0]);
+  const [lines, setLines] = useState<string[]>([]);
   const [dictionaryLoaded, setDictionaryLoaded] = useState(isDictionaryLoaded());
   const [showInternalRhymes, setShowInternalRhymes] = useState(false);
+
+  // Initialize lines based on selected form
+  useEffect(() => {
+    if (selectedForm.lineCount > 0) {
+      setLines(prev => {
+        const newLines = [...prev];
+        while (newLines.length < selectedForm.lineCount) {
+          newLines.push('');
+        }
+        return newLines.slice(0, selectedForm.lineCount);
+      });
+    }
+  }, [selectedForm]);
+
+  // For free verse mode, join lines into text
+  const poemText = useMemo(() => lines.join('\n'), [lines]);
+  const debouncedPoemText = useDebounce(poemText, 300);
+
+  // Result for free verse mode
+  const [freeVerseResult, setFreeVerseResult] = useState<RhymeResult | null>(null);
+  const [internalRhymes, setInternalRhymes] = useState<InternalRhyme[]>([]);
 
   useEffect(() => {
     async function loadDict() {
@@ -102,69 +323,264 @@ export function RhymeSchemeAnalyzer() {
     loadDict();
   }, []);
 
+  // Analyze for free verse mode
   useEffect(() => {
-    if (dictionaryLoaded && poem.trim()) {
-      const schemeResult = detectRhymeScheme(poem);
-      setResult(schemeResult);
-      const internal = detectInternalRhymes(poem);
+    if (dictionaryLoaded && debouncedPoemText.trim() && selectedForm.id === 'free-verse') {
+      const schemeResult = detectRhymeScheme(debouncedPoemText);
+      setFreeVerseResult(schemeResult);
+      const internal = detectInternalRhymes(debouncedPoemText);
       setInternalRhymes(internal);
     } else {
-      setResult(null);
+      setFreeVerseResult(null);
       setInternalRhymes([]);
     }
-  }, [poem, dictionaryLoaded]);
+  }, [debouncedPoemText, dictionaryLoaded, selectedForm.id]);
+
+  // Analyze for form-based mode
+  const formAnalysis = useMemo(() => {
+    if (!dictionaryLoaded || selectedForm.id === 'free-verse') return null;
+    return analyzeFormCompliance(lines, selectedForm);
+  }, [lines, selectedForm, dictionaryLoaded]);
+
+  // Progress stats for form-based mode
+  const progressStats = useMemo(() => {
+    if (!formAnalysis) return null;
+
+    const filledLines = formAnalysis.filter(a => a.endWord);
+    const correct = formAnalysis.filter(a => a.rhymeStatus === 'correct').length;
+    const slant = formAnalysis.filter(a => a.rhymeStatus === 'slant').length;
+    const incorrect = formAnalysis.filter(a => a.rhymeStatus === 'incorrect').length;
+    const pending = formAnalysis.filter(a => a.rhymeStatus === 'pending').length;
+
+    return { filled: filledLines.length, total: formAnalysis.length, correct, slant, incorrect, pending };
+  }, [formAnalysis]);
+
+  const handleLineChange = useCallback((index: number, value: string) => {
+    setLines(prev => {
+      const newLines = [...prev];
+      newLines[index] = value;
+      return newLines;
+    });
+  }, []);
+
+  const handleFormSelect = (form: PoetryForm) => {
+    if (lines.some(l => l.trim()) && !window.confirm('Changing forms will adjust the number of lines. Continue?')) {
+      return;
+    }
+    setSelectedForm(form);
+    if (form.lineCount > 0) {
+      setLines(Array(form.lineCount).fill(''));
+    } else {
+      // Free verse - keep existing or start with some empty lines
+      setLines(prev => prev.length > 0 ? prev : Array(8).fill(''));
+    }
+  };
 
   const loadExample = (example: typeof EXAMPLE_POEMS[0]) => {
-    setPoem(example.poem);
+    if (lines.some(l => l.trim()) && !window.confirm('This will replace your current text. Continue?')) {
+      return;
+    }
+    const form = POETRY_FORMS.find(f => f.id === example.formId) || POETRY_FORMS[0];
+    setSelectedForm(form);
+    const exampleLines = example.poem.split('\n');
+    if (form.lineCount > 0) {
+      setLines(exampleLines.slice(0, form.lineCount));
+    } else {
+      setLines(exampleLines);
+    }
   };
 
   const clearAll = () => {
-    setPoem('');
-    setResult(null);
+    if (selectedForm.lineCount > 0) {
+      setLines(Array(selectedForm.lineCount).fill(''));
+    } else {
+      setLines(Array(8).fill(''));
+    }
+    setFreeVerseResult(null);
     setInternalRhymes([]);
   };
 
-  const lines = poem.split('\n');
+  const addLine = () => {
+    setLines(prev => [...prev, '']);
+  };
+
+  const isFreeVerse = selectedForm.id === 'free-verse';
+
+  // Determine placeholder text for each line
+  const getPlaceholder = (index: number): string => {
+    if (isFreeVerse) return 'Type your line...';
+    const label = selectedForm.scheme[index];
+    if (!label) return 'Type your line...';
+
+    // Find other lines with the same label
+    const sameLabel = selectedForm.scheme
+      .split('')
+      .map((l, i) => ({ label: l, index: i }))
+      .filter(item => item.label === label && item.index !== index);
+
+    if (sameLabel.length === 0) {
+      return `Line ${index + 1} - rhyme group ${label}`;
+    }
+
+    const otherLineNums = sameLabel.map(item => item.index + 1).join(', ');
+    return `Rhymes with line${sameLabel.length > 1 ? 's' : ''} ${otherLineNums}`;
+  };
 
   return (
     <Layout>
       <SEOHead
-        title="Rhyme Scheme Analyzer - Detect ABAB, AABB, Sonnet Patterns"
-        description="Free online rhyme scheme analyzer. Detect ABAB, AABB, ABBA, and sonnet patterns instantly. Visualize rhyme groups with color-coded line endings."
+        title="Rhyme Scheme Maker - Create Limericks, Sonnets, and More"
+        description="Interactive rhyme scheme maker for poetry. Write limericks, sonnets, quatrains with real-time rhyme guidance. See correct and incorrect rhymes highlighted as you type."
         canonicalPath="/rhyme-scheme-analyzer"
-        keywords="rhyme scheme analyzer, rhyme scheme detector, ABAB pattern, AABB pattern, sonnet rhyme scheme, poem rhyme scheme, rhyme pattern finder"
+        keywords="rhyme scheme maker, limerick generator, sonnet writer, rhyme pattern, ABAB rhyme, poetry form, rhyme helper"
       />
 
       <div className="rhyme-scheme-analyzer">
-        <h1>Rhyme Scheme Analyzer</h1>
+        <h1>Rhyme Scheme Maker</h1>
         <p className="analyzer-subtitle">
-          Detect and visualize rhyme patterns in poetry
+          Create poetry with guided rhyme schemes
         </p>
 
-        <div className="analyzer-form">
-          <label className="input-label">
-            Enter your poem
-          </label>
-          <textarea
-            value={poem}
-            onChange={(e) => setPoem(e.target.value)}
-            placeholder="Paste or type your poem here..."
-            className="poem-input"
-            rows={10}
-          />
-
-          <div className="analyzer-actions">
-            <button onClick={clearAll} className="clear-button">
-              Clear
-            </button>
+        {/* Form Selector */}
+        <div className="form-selector">
+          <span className="form-selector-label">Choose a poetry form:</span>
+          <div className="form-selector-grid">
+            {POETRY_FORMS.map(form => (
+              <button
+                key={form.id}
+                className={`form-option ${selectedForm.id === form.id ? 'selected' : ''}`}
+                onClick={() => handleFormSelect(form)}
+              >
+                <span className="form-option-name">{form.name}</span>
+                {form.scheme && (
+                  <span className="form-option-scheme">{form.scheme}</span>
+                )}
+                {form.lineCount > 0 && (
+                  <span className="form-option-lines">{form.lineCount} lines</span>
+                )}
+              </button>
+            ))}
           </div>
         </div>
 
-        {result && result.schemePattern.length > 0 && (
+        {/* Interactive Editor Section */}
+        <div className="rhyme-editor-section">
+          <div className="editor-header">
+            <span className="editor-label">
+              {isFreeVerse
+                ? 'Write your poem (rhyme scheme will be detected)'
+                : `Write your ${selectedForm.name}`
+              }
+            </span>
+            <div className="editor-actions">
+              <button onClick={clearAll} className="clear-button">
+                Clear
+              </button>
+              {isFreeVerse && (
+                <button onClick={addLine} className="load-example-button">
+                  Add Line
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="rhyme-editor-container">
+            <div className="rhyme-editor-lines">
+              {lines.map((line, index) => {
+                const analysis = formAnalysis?.[index];
+                const expectedLabel = analysis?.expectedLabel || '';
+                const rhymeStatus = analysis?.rhymeStatus || 'pending';
+                const endWord = analysis?.endWord || getLastWord(line);
+
+                // Check for stanza breaks
+                const isAfterStanzaBreak = selectedForm.stanzaBreaks?.includes(index);
+
+                return (
+                  <div key={index}>
+                    {isAfterStanzaBreak && <div className="stanza-separator" />}
+                    <div className="editor-line">
+                      <div className="line-guidance">
+                        {!isFreeVerse && expectedLabel && (
+                          <span
+                            className={`expected-scheme-label rhyme-${rhymeStatus}`}
+                            title={`Expected rhyme: ${expectedLabel}`}
+                          >
+                            {expectedLabel}
+                          </span>
+                        )}
+                        {isFreeVerse && (
+                          <span className="line-number-display">{index + 1}</span>
+                        )}
+                      </div>
+                      <div className="line-input-wrapper">
+                        <input
+                          type="text"
+                          className="line-input"
+                          value={line}
+                          onChange={(e) => handleLineChange(index, e.target.value)}
+                          placeholder={getPlaceholder(index)}
+                        />
+                      </div>
+                      <div className="line-end-word">
+                        {endWord && !isFreeVerse && (
+                          <span
+                            className={`end-word-display rhyme-${rhymeStatus}`}
+                            title={
+                              rhymeStatus === 'correct' ? 'Perfect rhyme match' :
+                              rhymeStatus === 'slant' ? 'Slant rhyme (close match)' :
+                              rhymeStatus === 'incorrect' ? 'Does not match expected rhyme' :
+                              'Waiting for matching line'
+                            }
+                          >
+                            {endWord}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Progress Summary for form-based mode */}
+          {!isFreeVerse && progressStats && (
+            <div className="progress-summary">
+              <div className="progress-item">
+                <span className="progress-dot correct" />
+                <span className="progress-label">Correct:</span>
+                <span className="progress-count">{progressStats.correct}</span>
+              </div>
+              <div className="progress-item">
+                <span className="progress-dot slant" />
+                <span className="progress-label">Slant:</span>
+                <span className="progress-count">{progressStats.slant}</span>
+              </div>
+              <div className="progress-item">
+                <span className="progress-dot incorrect" />
+                <span className="progress-label">Incorrect:</span>
+                <span className="progress-count">{progressStats.incorrect}</span>
+              </div>
+              <div className="progress-item">
+                <span className="progress-dot pending" />
+                <span className="progress-label">Pending:</span>
+                <span className="progress-count">{progressStats.pending}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Free Verse Analysis Results */}
+        {isFreeVerse && freeVerseResult && freeVerseResult.schemePattern.length > 0 && (
           <div className="analysis-results">
             <div className="overall-scheme">
               <span className="scheme-label">Detected Pattern:</span>
-              <span className="scheme-value">{result.scheme}</span>
+              <span className="scheme-value">{freeVerseResult.scheme}</span>
+              {freeVerseResult.scheme.includes('X') && (
+                <span className="scheme-hint">
+                  (X = no rhyme found for that line)
+                </span>
+              )}
             </div>
 
             <div className="line-analyses">
@@ -175,13 +591,12 @@ export function RhymeSchemeAnalyzer() {
                     return <div key={idx} className="poem-line empty-line">&nbsp;</div>;
                   }
 
-                  // Find the index in non-empty lines
-                  const nonEmptyIndex = result.lineNumbers.indexOf(idx + 1);
+                  const nonEmptyIndex = freeVerseResult.lineNumbers.indexOf(idx + 1);
                   if (nonEmptyIndex === -1) return null;
 
-                  const label = result.schemePattern[nonEmptyIndex];
-                  const endWord = result.lineEndWords[nonEmptyIndex];
-                  const quality = result.rhymeQualities[nonEmptyIndex];
+                  const label = freeVerseResult.schemePattern[nonEmptyIndex];
+                  const endWord = freeVerseResult.lineEndWords[nonEmptyIndex];
+                  const quality = freeVerseResult.rhymeQualities[nonEmptyIndex];
                   const color = label !== 'X' ? getColorForLabel(label) : 'var(--color-text-muted)';
 
                   return (
@@ -191,7 +606,9 @@ export function RhymeSchemeAnalyzer() {
                       <span
                         className={`rhyme-label ${quality}`}
                         style={{ backgroundColor: color }}
-                        title={`"${endWord}" - ${quality === 'perfect' ? 'Perfect rhyme' : quality === 'slant' ? 'Slant rhyme' : 'Unique ending'}`}
+                        title={label === 'X'
+                          ? `"${endWord}" - No rhyme found (unique line ending)`
+                          : `"${endWord}" - ${quality === 'perfect' ? 'Perfect rhyme' : quality === 'slant' ? 'Slant rhyme' : 'Unique ending'}`}
                       >
                         {label}
                       </span>
@@ -204,13 +621,13 @@ export function RhymeSchemeAnalyzer() {
             <div className="rhyme-groups-section">
               <h2>Rhyme Groups</h2>
               <div className="rhyme-groups-grid">
-                {Array.from(result.rhymeGroups.entries())
+                {Array.from(freeVerseResult.rhymeGroups.entries())
                   .filter(([, lineNums]) => lineNums.length > 1)
                   .map(([label, lineNums]) => {
                     const color = getColorForLabel(label);
                     const words = lineNums.map(lineNum => {
-                      const idx = result.lineNumbers.indexOf(lineNum);
-                      return result.lineEndWords[idx];
+                      const idx = freeVerseResult.lineNumbers.indexOf(lineNum);
+                      return freeVerseResult.lineEndWords[idx];
                     });
 
                     return (
@@ -255,7 +672,7 @@ export function RhymeSchemeAnalyzer() {
                     {internalRhymes.slice(0, 10).map((rhyme, idx) => (
                       <div key={idx} className="internal-rhyme-item">
                         <span className="internal-word">{rhyme.word1}</span>
-                        <span className="internal-arrow">↔</span>
+                        <span className="internal-arrow">-</span>
                         <span className="internal-word">{rhyme.word2}</span>
                         <span className="internal-lines">
                           (lines {rhyme.line1} & {rhyme.line2})
@@ -280,17 +697,20 @@ export function RhymeSchemeAnalyzer() {
             Click to load a classic poem and see its rhyme scheme:
           </p>
           <div className="examples-grid">
-            {EXAMPLE_POEMS.map((example, idx) => (
-              <button
-                key={idx}
-                onClick={() => loadExample(example)}
-                className="example-card"
-              >
-                <div className="example-title">{example.title}</div>
-                <div className="example-meter">{example.meter}</div>
-                <div className="example-attribution">— {example.author}</div>
-              </button>
-            ))}
+            {EXAMPLE_POEMS.map((example, idx) => {
+              const form = POETRY_FORMS.find(f => f.id === example.formId);
+              return (
+                <button
+                  key={idx}
+                  onClick={() => loadExample(example)}
+                  className="example-card"
+                >
+                  <div className="example-title">{example.title}</div>
+                  <div className="example-meter">{form?.scheme || ''}</div>
+                  <div className="example-attribution">{example.author}</div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -343,7 +763,7 @@ export function RhymeSchemeAnalyzer() {
         </div>
 
         <div className="analyzer-cta">
-          <p>Want meter analysis, cliché detection, and more?</p>
+          <p>Want meter analysis, cliche detection, and more?</p>
           <Link to="/" className="cta-button">
             Open Poetry Editor
           </Link>

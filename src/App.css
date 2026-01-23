@@ -33,6 +33,45 @@
   --color-underline-dotted: rgba(0, 0, 0, 0.2);
   --color-highlight-subtle: rgba(0, 0, 0, 0.04);
 
+  /* Status colors with fallbacks */
+  --color-success: #4a9;
+  --color-success-bg: rgba(68, 170, 153, 0.08);
+  --color-success-border: rgba(68, 170, 153, 0.3);
+  --color-warning: #c86;
+  --color-warning-bg: rgba(204, 136, 102, 0.08);
+  --color-warning-border: rgba(204, 136, 102, 0.3);
+
+  /* Interactive highlight colors */
+  --color-highlight-active: hsl(210, 60%, 94%);
+  --color-highlight-active-border: hsl(210, 50%, 70%);
+  --color-highlight-active-glow: hsl(210, 50%, 85%);
+  --color-accent-synonym: hsl(210, 40%, 96%);
+  --color-accent-synonym-border: hsl(210, 30%, 88%);
+  --color-accent-antonym: hsl(350, 40%, 96%);
+  --color-accent-antonym-border: hsl(350, 30%, 88%);
+  --color-accent-same-length: hsl(145, 50%, 55%);
+  --color-accent-popular: hsl(35, 60%, 55%);
+
+  /* Score badges (Sonnet/Haiku checkers) */
+  --color-score-excellent: hsl(145, 50%, 45%);
+  --color-score-good: hsl(80, 50%, 45%);
+  --color-score-fair: hsl(40, 70%, 50%);
+  --color-score-needs-work: hsl(0, 50%, 55%);
+  --color-check-correct: hsl(145, 50%, 40%);
+  --color-check-incorrect: hsl(0, 50%, 50%);
+
+  /* Syllable badges */
+  --color-syllable-good-bg: hsl(145, 40%, 90%);
+  --color-syllable-good-text: hsl(145, 50%, 35%);
+  --color-syllable-off-bg: hsl(40, 50%, 90%);
+  --color-syllable-off-text: hsl(40, 60%, 35%);
+
+  /* Issues section */
+  --color-issues-bg: hsl(40, 50%, 97%);
+  --color-issues-border: hsl(40, 40%, 85%);
+  --color-issues-title: hsl(40, 50%, 35%);
+  --color-issues-text: hsl(40, 40%, 30%);
+
   /* Typography */
   --font-serif: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
@@ -40,6 +79,28 @@
 
   /* Spacing */
   --header-height: 48px;
+
+  /* Z-index layers - clear stacking hierarchy */
+  --z-index-base: 1;
+  --z-index-header: 10;
+  --z-index-side-panel: 50;
+  --z-index-panel-toggle: 60;
+  --z-index-mobile-overlay: 90;
+  --z-index-mobile-menu: 100;
+  --z-index-mobile-toggle: 101;
+  --z-index-popup-overlay: 500;
+  --z-index-popup: 510;
+  --z-index-dropdown: 520;
+  --z-index-tooltip: 530;
+  --z-index-modal: 9999;
+
+  /* Button colors */
+  --color-btn-tools-bg: #888888;
+  --color-btn-tools-hover-bg: #777777;
+  --color-btn-tools-text: #ffffff;
+  --color-panel-toggle-bg: #5a5a5a;
+  --color-panel-toggle-hover-bg: #4a4a4a;
+  --color-panel-toggle-text: #ffffff;
 }
 
 .app {
@@ -62,7 +123,7 @@
   padding: 0 32px;
   height: var(--header-height);
   border-bottom: 1px solid var(--color-border);
-  z-index: 10;
+  z-index: var(--z-index-header);
 }
 
 .header-content {
@@ -226,7 +287,7 @@
   border-radius: 4px;
   box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
   min-width: 180px;
-  z-index: 1000;
+  z-index: var(--z-index-dropdown);
   overflow: hidden;
 }
 
@@ -266,7 +327,7 @@
   border-radius: 4px;
   box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
   min-width: 200px;
-  z-index: 1000;
+  z-index: var(--z-index-dropdown);
   overflow: hidden;
 }
 
@@ -289,6 +350,22 @@
   background-color: rgba(0, 0, 0, 0.03);
 }
 
+/* Form-specific tools (Haiku, Sonnet) - styled distinctly */
+.tools-item.form-tool {
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
+  margin-top: 4px;
+  padding-top: 14px;
+}
+
+.tools-item.form-tool:first-of-type {
+  margin-top: 0;
+}
+
+:root.dark-mode .tools-item.form-tool {
+  color: var(--color-text-muted);
+}
+
 /* Tools button - distinct gray style */
 .btn-tools {
   padding: 6px 12px;
@@ -298,13 +375,13 @@
   font-weight: 400;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: #666;
-  color: #fff;
+  background: var(--color-btn-tools-bg, #666666);
+  color: var(--color-btn-tools-text, #ffffff);
 }
 
 .btn-tools:hover {
-  background: #555;
-  color: #fff;
+  background: var(--color-btn-tools-hover-bg, #555555);
+  color: var(--color-btn-tools-text, #ffffff);
 }
 
 :root.dark-mode .tools-menu {
@@ -321,13 +398,13 @@
 }
 
 :root.dark-mode .btn-tools {
-  background: #555;
-  color: #fff;
+  background: var(--color-btn-tools-bg);
+  color: var(--color-btn-tools-text);
 }
 
 :root.dark-mode .btn-tools:hover {
-  background: #666;
-  color: #fff;
+  background: var(--color-btn-tools-hover-bg);
+  color: var(--color-btn-tools-text);
 }
 
 .poems-empty {
@@ -466,6 +543,10 @@
   outline: none;
 }
 
+.poem-title-editor-input:focus-visible {
+  box-shadow: 0 1px 0 0 var(--color-text-muted);
+}
+
 .poem-title-editor-input::placeholder {
   color: var(--color-text-muted);
   font-style: normal;
@@ -491,15 +572,15 @@
   width: 32px;
   height: 90px;
   border-radius: 6px 0 0 6px;
-  background: #5a5a5a;
-  color: #ffffff;
+  background: var(--color-panel-toggle-bg);
+  color: var(--color-panel-toggle-text);
   border: none;
   font-size: 13px;
   font-weight: 400;
   cursor: pointer;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
-  z-index: 100;
+  z-index: var(--z-index-panel-toggle);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -509,15 +590,15 @@
 }
 
 .panel-toggle:hover {
-  background: #4a4a4a;
-  color: #ffffff;
+  background: var(--color-panel-toggle-hover-bg);
+  color: var(--color-panel-toggle-text);
   box-shadow: -2px 0 12px rgba(0, 0, 0, 0.2);
 }
 
 .panel-toggle.open {
   right: 0;
   border-radius: 6px 0 0 6px;
-  background: #4a4a4a;
+  background: var(--color-panel-toggle-hover-bg);
 }
 
 .panel-toggle-icon {
@@ -598,13 +679,15 @@
 
 @media (max-width: 900px) {
   .side-panel {
-    position: absolute;
+    position: fixed;
     top: 0;
+    left: 0;
     right: 0;
     bottom: 0;
     width: 100%;
     max-width: 100%;
-    z-index: 50;
+    height: 100%;
+    z-index: var(--z-index-side-panel);
     box-shadow: none;
   }
 
@@ -627,8 +710,23 @@
   }
 
   .panel-toggle.open {
+    position: fixed;
     right: 0;
-    z-index: 60;
+    top: 10px;
+    transform: none;
+    z-index: calc(var(--z-index-side-panel) + 1);
+    border-radius: 0 0 0 6px;
+    height: auto;
+    padding: 8px;
+    width: auto;
+  }
+
+  .panel-toggle.open .panel-toggle-label {
+    display: none;
+  }
+
+  .panel-toggle.open .panel-toggle-icon {
+    font-size: 20px;
   }
 }
 
@@ -704,7 +802,7 @@
   border-radius: 4px;
   box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
   min-width: 160px;
-  z-index: 1000;
+  z-index: var(--z-index-dropdown);
   overflow: hidden;
 }
 
@@ -763,9 +861,9 @@
   --color-background: #1a1a1f;
   --color-paper: #242428;
   --color-text-primary: #d8d8d8;
-  --color-text-secondary: #909090;
-  --color-text-muted: #606060;
-  --color-border: rgba(255, 255, 255, 0.06);
+  --color-text-secondary: #a0a0a0;  /* Increased from #909090 for better contrast */
+  --color-text-muted: #707070;      /* Increased from #606060 for better contrast */
+  --color-border: rgba(255, 255, 255, 0.08);
   --color-shadow: rgba(0, 0, 0, 0.25);
 
   /* Editorial feedback colors - dark mode */
@@ -781,6 +879,45 @@
   --color-underline: rgba(255, 255, 255, 0.25);
   --color-underline-dotted: rgba(255, 255, 255, 0.2);
   --color-highlight-subtle: rgba(255, 255, 255, 0.04);
+
+  /* Interactive highlight colors - dark mode */
+  --color-highlight-active: hsl(210, 40%, 25%);
+  --color-highlight-active-border: hsl(210, 40%, 45%);
+  --color-highlight-active-glow: hsl(210, 40%, 30%);
+  --color-accent-synonym: hsl(210, 30%, 22%);
+  --color-accent-synonym-border: hsl(210, 25%, 35%);
+  --color-accent-antonym: hsl(350, 30%, 22%);
+  --color-accent-antonym-border: hsl(350, 25%, 35%);
+  --color-accent-same-length: hsl(145, 40%, 40%);
+  --color-accent-popular: hsl(35, 50%, 45%);
+
+  /* Score badges - dark mode */
+  --color-score-excellent: hsl(145, 45%, 40%);
+  --color-score-good: hsl(80, 45%, 40%);
+  --color-score-fair: hsl(40, 60%, 45%);
+  --color-score-needs-work: hsl(0, 45%, 50%);
+  --color-check-correct: hsl(145, 45%, 50%);
+  --color-check-incorrect: hsl(0, 45%, 55%);
+
+  /* Syllable badges - dark mode */
+  --color-syllable-good-bg: hsl(145, 30%, 22%);
+  --color-syllable-good-text: hsl(145, 40%, 60%);
+  --color-syllable-off-bg: hsl(40, 30%, 22%);
+  --color-syllable-off-text: hsl(40, 50%, 60%);
+
+  /* Issues section - dark mode */
+  --color-issues-bg: hsl(40, 30%, 18%);
+  --color-issues-border: hsl(40, 25%, 30%);
+  --color-issues-title: hsl(40, 40%, 60%);
+  --color-issues-text: hsl(40, 30%, 65%);
+
+  /* Button colors - dark mode */
+  --color-btn-tools-bg: #555555;
+  --color-btn-tools-hover-bg: #666666;
+  --color-btn-tools-text: #ffffff;
+  --color-panel-toggle-bg: #6a6a6a;
+  --color-panel-toggle-hover-bg: #7a7a7a;
+  --color-panel-toggle-text: #ffffff;
 
   color-scheme: dark;
 }
@@ -890,13 +1027,13 @@
 }
 
 :root.dark-mode .panel-toggle {
-  background: #6a6a6a;
-  color: #ffffff;
+  background: var(--color-panel-toggle-bg);
+  color: var(--color-panel-toggle-text);
   border: none;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
 }
 
 :root.dark-mode .panel-toggle:hover {
-  background: #7a7a7a;
-  color: #ffffff;
+  background: var(--color-panel-toggle-hover-bg);
+  color: var(--color-panel-toggle-text);
 }

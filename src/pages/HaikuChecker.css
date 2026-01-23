@@ -19,7 +19,84 @@
   font-size: 16px;
   color: var(--color-text-secondary);
   text-align: center;
-  margin: 0 0 40px;
+  margin: 0 0 32px;
+}
+
+/* Haiku Explainer Box */
+.haiku-explainer {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.haiku-explainer h2 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+}
+
+.haiku-explainer > p {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px;
+}
+
+.pattern-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.pattern-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--color-background);
+  border-radius: 6px;
+}
+
+.pattern-count {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  width: 28px;
+  text-align: center;
+}
+
+.pattern-label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  width: 60px;
+}
+
+.pattern-example {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.explainer-note {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.explainer-note em {
+  font-style: italic;
 }
 
 /* Form */
@@ -27,42 +104,71 @@
   background: var(--color-paper);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: 32px;
+  padding: 24px;
   margin-bottom: 24px;
 }
 
-.haiku-line-input {
-  margin-bottom: 20px;
-}
-
-.haiku-line-input:last-of-type {
-  margin-bottom: 24px;
-}
-
-.line-label {
-  display: block;
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  margin-bottom: 8px;
-}
-
-.line-target {
-  font-weight: 400;
-  color: var(--color-text-muted);
-  margin-left: 8px;
-}
-
-.line-input-wrapper {
+/* Line Row with Left Syllable Counter */
+.haiku-line-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.haiku-line-row:last-of-type {
+  margin-bottom: 24px;
+}
+
+.syllable-indicator {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  min-width: 60px;
+  justify-content: center;
+}
+
+.syllable-current {
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.syllable-current.empty {
+  color: var(--color-text-muted);
+}
+
+.syllable-current.correct {
+  color: var(--color-success, #4a9);
+}
+
+.syllable-current.incorrect {
+  color: var(--color-warning, #c86);
+}
+
+.syllable-separator {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.syllable-target {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.line-input-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .line-input {
-  flex: 1;
-  padding: 14px 16px;
+  width: 100%;
+  padding: 14px 40px 14px 16px;
   font-family: var(--font-serif);
   font-size: 18px;
   border: 2px solid var(--color-border);
@@ -76,39 +182,36 @@
   outline: none;
   border-color: var(--color-text-secondary);
   background: var(--color-paper);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.line-input.empty {
+  border-color: var(--color-border);
 }
 
 .line-input.correct {
-  border-color: #4a9;
-  background: rgba(68, 170, 153, 0.05);
+  border-color: var(--color-success, #4a9);
+  background: var(--color-success-bg, rgba(68, 170, 153, 0.05));
 }
 
 .line-input.incorrect {
-  border-color: #c86;
-  background: rgba(204, 136, 102, 0.05);
+  border-color: var(--color-warning, #c86);
+  background: var(--color-warning-bg, rgba(204, 136, 102, 0.05));
 }
 
-.syllable-count {
-  font-family: var(--font-sans);
+.status-icon {
+  position: absolute;
+  right: 14px;
   font-size: 16px;
   font-weight: 600;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  flex-shrink: 0;
 }
 
-.syllable-count.correct {
-  background: #4a9;
-  color: white;
+.status-icon.correct {
+  color: var(--color-success, #4a9);
 }
 
-.syllable-count.incorrect {
-  background: #c86;
-  color: white;
+.status-icon.incorrect {
+  color: var(--color-warning, #c86);
 }
 
 /* Actions */
@@ -145,13 +248,13 @@
 }
 
 .haiku-result.valid {
-  background: rgba(68, 170, 153, 0.1);
-  border: 1px solid rgba(68, 170, 153, 0.3);
+  background: var(--color-success-bg, rgba(68, 170, 153, 0.1));
+  border: 1px solid var(--color-success-border, rgba(68, 170, 153, 0.3));
 }
 
 .haiku-result.invalid {
-  background: rgba(204, 136, 102, 0.1);
-  border: 1px solid rgba(204, 136, 102, 0.3);
+  background: var(--color-warning-bg, rgba(204, 136, 102, 0.1));
+  border: 1px solid var(--color-warning-border, rgba(204, 136, 102, 0.3));
 }
 
 .result-icon {
@@ -166,13 +269,13 @@
 }
 
 .haiku-result.valid .result-icon {
-  background: #4a9;
-  color: white;
+  background: var(--color-success, #4a9);
+  color: #ffffff;
 }
 
 .haiku-result.invalid .result-icon {
-  background: #c86;
-  color: white;
+  background: var(--color-warning, #c86);
+  color: #ffffff;
 }
 
 .result-text {
@@ -328,7 +431,39 @@
 
   .haiku-subtitle {
     font-size: 14px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
+  }
+
+  .haiku-explainer {
+    padding: 20px 16px;
+    margin-bottom: 24px;
+  }
+
+  .haiku-explainer h2 {
+    font-size: 16px;
+  }
+
+  .haiku-explainer > p {
+    font-size: 13px;
+  }
+
+  .pattern-line {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .pattern-count {
+    font-size: 18px;
+    width: 24px;
+  }
+
+  .pattern-label {
+    font-size: 12px;
+    width: 50px;
+  }
+
+  .pattern-example {
+    font-size: 12px;
   }
 
   .haiku-form {
@@ -336,31 +471,31 @@
     margin-bottom: 20px;
   }
 
-  .haiku-line-input {
-    margin-bottom: 16px;
+  .haiku-line-row {
+    gap: 12px;
+    margin-bottom: 14px;
   }
 
-  .line-label {
+  .syllable-indicator {
+    min-width: 50px;
+  }
+
+  .syllable-current {
+    font-size: 18px;
+  }
+
+  .syllable-separator,
+  .syllable-target {
     font-size: 12px;
-    margin-bottom: 6px;
-  }
-
-  .line-target {
-    margin-left: 6px;
-  }
-
-  .line-input-wrapper {
-    gap: 10px;
   }
 
   .line-input {
     font-size: 16px;
-    padding: 12px 14px;
+    padding: 12px 36px 12px 14px;
   }
 
-  .syllable-count {
-    width: 32px;
-    height: 32px;
+  .status-icon {
+    right: 12px;
     font-size: 14px;
   }
 

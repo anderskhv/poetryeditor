@@ -25,8 +25,14 @@
 /* Search Form */
 .rhyme-search-form {
   display: flex;
+  flex-direction: column;
   gap: 12px;
   margin-bottom: 40px;
+}
+
+.search-row {
+  display: flex;
+  gap: 12px;
 }
 
 .rhyme-search-input {
@@ -62,6 +68,185 @@
 
 .rhyme-search-button:hover {
   background: var(--color-text-secondary, #6a6a6a);
+}
+
+/* Filter Toggle */
+.filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.filter-toggle-btn:hover {
+  color: var(--color-text-primary);
+}
+
+.filter-badge {
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-paper);
+  background: var(--color-text-secondary);
+  border-radius: 10px;
+}
+
+/* Filter Panel */
+.filter-panel {
+  padding: 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.filter-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.filter-input {
+  padding: 10px 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  transition: border-color 0.15s ease;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: var(--color-text-secondary);
+}
+
+.filter-select {
+  padding: 10px 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--color-text-secondary);
+}
+
+.filter-hint {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.filter-checkbox input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.filter-hint-inline {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-left: 4px;
+}
+
+.clear-filters-btn {
+  padding: 6px 12px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-left: auto;
+}
+
+.clear-filters-btn:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+}
+
+/* Results Header */
+.results-header {
+  margin-bottom: 24px;
+}
+
+.topic-tag {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  margin-left: 8px;
+}
+
+.filtered-count {
+  color: var(--color-text-muted);
+}
+
+/* Word styling */
+.rhyme-word-item.iambic-friendly {
+  border-left: 2px solid var(--color-text-muted);
+}
+
+.rhyme-word-item.trochaic-friendly {
+  border-left: 2px solid var(--color-border);
+}
+
+.rhyme-word-item.cliche {
+  opacity: 0.6;
+}
+
+.rhyme-word-item.original {
+  background: var(--color-notation-bg, rgba(122, 138, 122, 0.08));
+}
+
+.cliche-indicator {
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--color-text-muted);
 }
 
 /* Popular Searches */
@@ -241,6 +426,38 @@
   }
 
   .rhyme-dictionary-subtitle {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .search-row {
+    flex-direction: column;
+  }
+
+  .filter-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .filter-checkbox {
+    flex-wrap: wrap;
+  }
+
+  .filter-hint-inline {
+    width: 100%;
+    margin-left: 24px;
+    margin-top: 4px;
+  }
+
+  .clear-filters-btn {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+
+  .topic-tag {
+    display: block;
+    margin-left: 0;
+    margin-top: 4px;
     font-size: 14px;
     margin-bottom: 24px;
   }

@@ -19,7 +19,171 @@
   font-size: 16px;
   color: var(--color-text-secondary);
   text-align: center;
-  margin: 0 0 40px;
+  margin: 0 0 32px;
+}
+
+/* Sonnet Explainer Box */
+.sonnet-explainer {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.sonnet-explainer h2 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+}
+
+.sonnet-explainer > p {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0 0 20px;
+}
+
+/* Sonnet Type Selector */
+.sonnet-type-selector {
+  margin-bottom: 20px;
+}
+
+.selector-label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.type-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.type-button {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 16px;
+  background: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.type-button:hover {
+  border-color: var(--color-text-muted);
+}
+
+.type-button.active {
+  border-color: var(--color-text-primary);
+  background: var(--color-paper);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.type-name {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+
+.type-scheme {
+  display: block;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.5px;
+}
+
+/* Sonnet Structure Visual */
+.sonnet-structure {
+  background: var(--color-background);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.sonnet-structure h3 {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+}
+
+.structure-details {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.structure-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.structure-icon {
+  font-family: var(--font-mono, monospace);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: var(--color-paper);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.structure-text {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.rhyme-pattern-visual {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pattern-label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.pattern-display {
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  letter-spacing: 1px;
+}
+
+.explainer-note {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.explainer-note em {
+  font-style: italic;
 }
 
 /* Form */
@@ -58,6 +222,7 @@
   outline: none;
   border-color: var(--color-text-secondary);
   background: var(--color-paper);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 .sonnet-actions {
@@ -112,23 +277,23 @@
 }
 
 .score-badge.excellent {
-  background: hsl(145, 50%, 45%);
-  color: white;
+  background: var(--color-score-excellent, hsl(145, 50%, 45%));
+  color: #ffffff;
 }
 
 .score-badge.good {
-  background: hsl(80, 50%, 45%);
-  color: white;
+  background: var(--color-score-good, hsl(80, 50%, 45%));
+  color: #ffffff;
 }
 
 .score-badge.fair {
-  background: hsl(40, 70%, 50%);
-  color: white;
+  background: var(--color-score-fair, hsl(40, 70%, 50%));
+  color: #ffffff;
 }
 
 .score-badge.needs-work {
-  background: hsl(0, 50%, 55%);
-  color: white;
+  background: var(--color-score-needs-work, hsl(0, 50%, 55%));
+  color: #ffffff;
 }
 
 .score-number {
@@ -175,18 +340,18 @@
 }
 
 .detail-value.correct {
-  color: hsl(145, 50%, 40%);
+  color: var(--color-check-correct, hsl(145, 50%, 40%));
 }
 
 .detail-value.incorrect {
-  color: hsl(0, 50%, 50%);
+  color: var(--color-check-incorrect, hsl(0, 50%, 50%));
 }
 
 /* Issues Section */
 .issues-section {
   padding: 20px;
-  background: hsl(40, 50%, 97%);
-  border: 1px solid hsl(40, 40%, 85%);
+  background: var(--color-issues-bg, hsl(40, 50%, 97%));
+  border: 1px solid var(--color-issues-border, hsl(40, 40%, 85%));
   border-radius: 8px;
   margin-bottom: 24px;
 }
@@ -195,7 +360,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 500;
-  color: hsl(40, 50%, 35%);
+  color: var(--color-issues-title, hsl(40, 50%, 35%));
   margin: 0 0 12px;
 }
 
@@ -204,7 +369,7 @@
   padding-left: 20px;
   font-family: var(--font-sans);
   font-size: 13px;
-  color: hsl(40, 40%, 30%);
+  color: var(--color-issues-text, hsl(40, 40%, 30%));
   line-height: 1.6;
 }
 
@@ -297,13 +462,230 @@
 }
 
 .syllable-badge.good {
-  background: hsl(145, 40%, 90%);
-  color: hsl(145, 50%, 35%);
+  background: var(--color-syllable-good-bg, hsl(145, 40%, 90%));
+  color: var(--color-syllable-good-text, hsl(145, 50%, 35%));
 }
 
 .syllable-badge.off {
-  background: hsl(40, 50%, 90%);
-  color: hsl(40, 60%, 35%);
+  background: var(--color-syllable-off-bg, hsl(40, 50%, 90%));
+  color: var(--color-syllable-off-text, hsl(40, 60%, 35%));
+}
+
+/* Compliance Legend */
+.compliance-legend {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.legend-check {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.legend-check.compliant {
+  background: var(--color-success-bg, hsl(145, 40%, 90%));
+  color: var(--color-success, hsl(145, 50%, 40%));
+}
+
+.legend-check.non-compliant {
+  background: var(--color-warning-bg, hsl(40, 50%, 90%));
+  color: var(--color-warning, hsl(40, 60%, 40%));
+}
+
+/* Enhanced Poem Line */
+.poem-line-enhanced {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 8px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  transition: background-color 0.15s ease;
+}
+
+.poem-line-enhanced.compliant {
+  background: transparent;
+}
+
+.poem-line-enhanced.has-issues {
+  background: var(--color-warning-bg, rgba(204, 136, 102, 0.05));
+  border-left: 3px solid var(--color-warning, hsl(40, 60%, 50%));
+}
+
+.poem-line-enhanced.hovered {
+  background: var(--color-hover-bg, rgba(0, 0, 0, 0.03));
+}
+
+.poem-line-enhanced.has-issues.hovered {
+  background: var(--color-warning-bg, rgba(204, 136, 102, 0.1));
+}
+
+.poem-line-enhanced .line-num {
+  padding-top: 2px;
+}
+
+.line-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.stress-pattern {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  letter-spacing: 1px;
+}
+
+/* Compliance Checks */
+.compliance-checks {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: help;
+}
+
+.check-item.pass {
+  background: var(--color-success-bg, hsl(145, 40%, 93%));
+}
+
+.check-item.fail {
+  background: var(--color-warning-bg, hsl(40, 50%, 93%));
+}
+
+.check-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.check-value {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.check-icon {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.check-item.pass .check-icon {
+  color: var(--color-success, hsl(145, 50%, 40%));
+}
+
+.check-item.fail .check-icon {
+  color: var(--color-warning, hsl(40, 60%, 45%));
+}
+
+.rhyme-badge-small {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  color: white;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+
+/* Compliance Tooltip */
+.compliance-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 32px;
+  right: 12px;
+  z-index: 100;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 12px 16px;
+  margin-top: 4px;
+}
+
+.tooltip-header {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tooltip-issues {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tooltip-issues li {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.tooltip-issues li:last-child {
+  margin-bottom: 0;
+}
+
+.tooltip-issues strong {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.rhyme-help-link {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--color-link, hsl(220, 60%, 50%));
+  text-decoration: none;
+  padding: 2px 8px;
+  background: var(--color-link-bg, hsl(220, 60%, 97%));
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.rhyme-help-link:hover {
+  background: var(--color-link-hover-bg, hsl(220, 60%, 94%));
+  text-decoration: underline;
 }
 
 /* Rhyme Scheme Display */
@@ -508,7 +890,56 @@
 
   .sonnet-subtitle {
     font-size: 14px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
+  }
+
+  /* Explainer responsive */
+  .sonnet-explainer {
+    padding: 20px 16px;
+    margin-bottom: 24px;
+  }
+
+  .sonnet-explainer h2 {
+    font-size: 16px;
+  }
+
+  .sonnet-explainer > p {
+    font-size: 13px;
+  }
+
+  .type-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .type-button {
+    min-width: auto;
+    padding: 10px 14px;
+  }
+
+  .type-name {
+    font-size: 13px;
+  }
+
+  .type-scheme {
+    font-size: 10px;
+  }
+
+  .sonnet-structure {
+    padding: 12px;
+  }
+
+  .structure-details {
+    gap: 12px;
+  }
+
+  .structure-icon {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+
+  .structure-text {
+    font-size: 12px;
   }
 
   .sonnet-form {
@@ -552,6 +983,76 @@
     padding: 16px;
   }
 
+  .compliance-legend {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    font-size: 11px;
+  }
+
+  .poem-line-enhanced {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 8px;
+  }
+
+  .poem-line-enhanced .line-num {
+    position: absolute;
+    left: 8px;
+    top: 10px;
+  }
+
+  .line-main {
+    padding-left: 28px;
+  }
+
+  .compliance-checks {
+    padding-left: 28px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .check-item {
+    padding: 3px 6px;
+  }
+
+  .check-label {
+    font-size: 9px;
+  }
+
+  .check-value {
+    font-size: 11px;
+  }
+
+  .rhyme-badge-small {
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+  }
+
+  .compliance-tooltip {
+    left: 8px;
+    right: 8px;
+    padding: 10px 12px;
+  }
+
+  .tooltip-header {
+    font-size: 11px;
+  }
+
+  .tooltip-issues li {
+    font-size: 12px;
+  }
+
+  .rhyme-help-link {
+    display: block;
+    margin-left: 0;
+    margin-top: 6px;
+    text-align: center;
+  }
+
   .poem-line {
     gap: 8px;
     padding: 6px 0;
@@ -559,6 +1060,10 @@
 
   .line-content {
     font-size: 14px;
+  }
+
+  .stress-pattern {
+    font-size: 10px;
   }
 
   .rhyme-badge,

@@ -2,8 +2,11 @@ import { useState, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PoetryEditor } from './components/PoetryEditor';
 import { AnalysisPanel } from './components/AnalysisPanel';
+import { CollectionPanel } from './components/collection/CollectionPanel';
 import { useDebouncedLocalStorage } from './hooks/useLocalStorage';
+import { useCollection } from './hooks/useCollection';
 import { WordInfo } from './types';
+import { CollectionPoem } from './types/collection';
 import { loadCMUDictionary } from './utils/cmuDict';
 import { type PassiveVoiceInstance } from './utils/passiveVoiceDetector';
 import { type TenseInstance } from './utils/tenseChecker';
@@ -42,6 +45,22 @@ function App() {
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
   const [, setIsDictionaryLoading] = useState<boolean>(true);
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
+  const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
+
+  // Collection management
+  const {
+    addSection,
+    updateSection,
+    deleteSection,
+    toggleSectionExpanded,
+    importFiles,
+    deletePoem,
+    buildTree,
+    getPoemById,
+    reorderPoem,
+    movePoemToSection,
+    exportCollection,
+  } = useCollection();
   const [hasEverOpenedPanel, setHasEverOpenedPanel] = useState<boolean>(() => {
     return localStorage.getItem('hasOpenedAnalysisPanel') === 'true';
   });
@@ -324,6 +343,48 @@ function App() {
     }
   };
 
+  // Collection panel handlers
+  const handleCollectionPoemSelect = useCallback((poem: CollectionPoem) => {
+    if (hasUnsavedChanges && !confirm(`Load "${poem.title}"? You have unsaved changes that will be lost.`)) {
+      return;
+    }
+    setText(poem.content);
+    setCurrentPoemId(poem.id);
+    setPoemTitle(poem.title);
+    setLastSavedContent(poem.content);
+  }, [hasUnsavedChanges, setText]);
+
+  const handleCollectionImport = useCallback(async (files: FileList) => {
+    const result = await importFiles(files);
+    if (result.failed.length > 0) {
+      alert(`Failed to import ${result.failed.length} file(s):\n${result.failed.map(f => `${f.filename}: ${f.error}`).join('\n')}`);
+    }
+    if (result.success.length > 0) {
+      // Optionally load the first imported poem
+      const firstPoem = result.success[0];
+      setText(firstPoem.content);
+      setCurrentPoemId(firstPoem.id);
+      setPoemTitle(firstPoem.title);
+      setLastSavedContent(firstPoem.content);
+    }
+  }, [importFiles, setText]);
+
+  const handleCollectionDeletePoem = useCallback((poemId: string) => {
+    const poem = getPoemById(poemId);
+    if (!poem || !confirm(`Delete "${poem.title}" from collection?`)) return;
+    deletePoem(poemId);
+    if (currentPoemId === poemId) {
+      setCurrentPoemId(null);
+      setText('');
+      setPoemTitle('Untitled');
+      setLastSavedContent(null);
+    }
+  }, [getPoemById, deletePoem, currentPoemId, setText]);
+
+  const handleRenameSection = useCallback((id: string, name: string) => {
+    updateSection(id, { name });
+  }, [updateSection]);
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -355,6 +416,14 @@ function App() {
             )}
           </div>
           <div className="header-actions">
+            <button
+              onClick={() => setIsCollectionOpen(!isCollectionOpen)}
+              className={`btn btn-menu ${isCollectionOpen ? 'active' : ''}`}
+              aria-label="Toggle collection panel"
+              aria-expanded={isCollectionOpen}
+            >
+              Collection
+            </button>
             <div className="poems-dropdown">
               <button
                 onClick={() => setShowPoemList(!showPoemList)}
@@ -494,11 +563,11 @@ function App() {
                   <Link to="/rhymes" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Rhyme Dictionary
                   </Link>
+                  <Link to="/thesaurus" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Thesaurus
+                  </Link>
                   <Link to="/syllables" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Syllable Counter
-                  </Link>
-                  <Link to="/haiku-checker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Haiku Checker
                   </Link>
                   <Link to="/meter-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Meter Analyzer
@@ -506,11 +575,11 @@ function App() {
                   <Link to="/rhyme-scheme-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Rhyme Scheme Analyzer
                   </Link>
-                  <Link to="/sonnet-checker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Sonnet Checker
+                  <Link to="/haiku-checker" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
+                    Haiku Checker
                   </Link>
-                  <Link to="/poet-maker" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Poet Maker
+                  <Link to="/sonnet-checker" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
+                    Sonnet Checker
                   </Link>
                 </div>
               )}
@@ -572,6 +641,23 @@ function App() {
       </header>
 
       <div className="app-content">
+        <CollectionPanel
+          isOpen={isCollectionOpen}
+          treeNodes={buildTree()}
+          currentPoemId={currentPoemId}
+          onPoemSelect={handleCollectionPoemSelect}
+          onSectionToggle={toggleSectionExpanded}
+          onImportFiles={handleCollectionImport}
+          onAddSection={addSection}
+          onRenameSection={handleRenameSection}
+          onDeleteSection={deleteSection}
+          onDeletePoem={handleCollectionDeletePoem}
+          onReorderPoem={reorderPoem}
+          onMovePoemToSection={movePoemToSection}
+          onExportAll={exportCollection}
+          onClose={() => setIsCollectionOpen(false)}
+          isDarkMode={isDarkMode}
+        />
         <div className="editor-pane">
           <PoetryEditor
             value={text}

@@ -4,6 +4,7 @@ import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { loadCMUDictionary, isDictionaryLoaded } from '../utils/cmuDict';
 import { countLineSyllables } from '../utils/syllableCounter';
+import { useDebounce } from '../hooks/useDebounce';
 import './HaikuChecker.css';
 
 const HAIKU_PATTERN = [5, 7, 5];
@@ -30,6 +31,7 @@ interface LineResult {
 
 export function HaikuChecker() {
   const [lines, setLines] = useState(['', '', '']);
+  const debouncedLines = useDebounce(lines, 300);
   const [results, setResults] = useState<LineResult[]>([]);
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [dictionaryLoaded, setDictionaryLoaded] = useState(isDictionaryLoaded());
@@ -47,7 +49,7 @@ export function HaikuChecker() {
   const checkHaiku = () => {
     if (!dictionaryLoaded) return;
 
-    const lineResults: LineResult[] = lines.map((line, idx) => {
+    const lineResults: LineResult[] = debouncedLines.map((line, idx) => {
       const syllables = countLineSyllables(line);
       const target = HAIKU_PATTERN[idx];
       return {
@@ -59,18 +61,18 @@ export function HaikuChecker() {
     });
 
     setResults(lineResults);
-    setIsValid(lineResults.every((r) => r.isCorrect) && lines.every((l) => l.trim()));
+    setIsValid(lineResults.every((r) => r.isCorrect) && debouncedLines.every((l) => l.trim()));
   };
 
-  // Check on every change
+  // Check on every change with debounce
   useEffect(() => {
-    if (dictionaryLoaded && lines.some((l) => l.trim())) {
+    if (dictionaryLoaded && debouncedLines.some((l) => l.trim())) {
       checkHaiku();
     } else {
       setResults([]);
       setIsValid(null);
     }
-  }, [lines, dictionaryLoaded]);
+  }, [debouncedLines, dictionaryLoaded]);
 
   const handleLineChange = (index: number, value: string) => {
     const newLines = [...lines];
@@ -79,6 +81,9 @@ export function HaikuChecker() {
   };
 
   const loadExample = (example: typeof EXAMPLE_HAIKUS[0]) => {
+    if (lines.some(l => l.trim()) && !window.confirm('This will replace your current text. Continue?')) {
+      return;
+    }
     setLines(example.lines);
   };
 
@@ -95,6 +100,44 @@ export function HaikuChecker() {
         description="Free online haiku checker. Validate your haiku's 5-7-5 syllable pattern instantly. Get real-time feedback on each line's syllable count."
         canonicalPath="/haiku-checker"
         keywords="haiku checker, 5-7-5 syllable counter, haiku validator, haiku syllables, write haiku, haiku format"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the 5-7-5 syllable pattern in haiku?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A haiku follows a 5-7-5 syllable pattern: 5 syllables in the first line, 7 syllables in the second line, and 5 syllables in the third line. This pattern creates the distinctive rhythm of traditional haiku poetry."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I check if my haiku is correct?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Enter each line of your haiku into our checker and it will instantly count the syllables for each line. Green indicates the correct syllable count, while red shows lines that need adjustment. A valid haiku shows a checkmark when all three lines match the 5-7-5 pattern."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What makes a good haiku besides the syllable count?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Traditional haiku include a 'kigo' (seasonal reference) and focus on nature. They also often contain a 'kireji' (cutting word) that creates a pause or juxtaposition between two images. The poem should capture a moment of awareness or insight."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I write haiku in English?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! While haiku originated in Japan, English-language haiku are popular worldwide. The 5-7-5 syllable pattern is an approximation of the Japanese 'mora' system, and many modern English haiku poets follow this pattern or adapt it slightly."
+              }
+            }
+          ]
+        }}
       />
 
       <div className="haiku-checker">
@@ -103,33 +146,75 @@ export function HaikuChecker() {
           Validate your haiku's 5-7-5 syllable pattern
         </p>
 
-        <div className="haiku-form">
-          {lines.map((line, idx) => (
-            <div key={idx} className="haiku-line-input">
-              <label className="line-label">
-                Line {idx + 1}
-                <span className="line-target">({HAIKU_PATTERN[idx]} syllables)</span>
-              </label>
-              <div className="line-input-wrapper">
-                <input
-                  type="text"
-                  value={line}
-                  onChange={(e) => handleLineChange(idx, e.target.value)}
-                  placeholder={`Enter line ${idx + 1}...`}
-                  className={`line-input ${results[idx] ? (results[idx].isCorrect ? 'correct' : 'incorrect') : ''}`}
-                />
-                {results[idx] && (
-                  <span className={`syllable-count ${results[idx].isCorrect ? 'correct' : 'incorrect'}`}>
-                    {results[idx].syllables}
-                  </span>
-                )}
-              </div>
+        {/* Haiku Explanation Box */}
+        <div className="haiku-explainer">
+          <h2>What is a Haiku?</h2>
+          <p>
+            A haiku is a traditional Japanese poem with a strict syllable structure.
+            Each haiku has exactly <strong>three lines</strong> following a <strong>5-7-5</strong> pattern:
+          </p>
+          <div className="pattern-visual">
+            <div className="pattern-line">
+              <span className="pattern-count">5</span>
+              <span className="pattern-label">syllables</span>
+              <span className="pattern-example">First line</span>
             </div>
-          ))}
+            <div className="pattern-line">
+              <span className="pattern-count">7</span>
+              <span className="pattern-label">syllables</span>
+              <span className="pattern-example">Second line (the longest)</span>
+            </div>
+            <div className="pattern-line">
+              <span className="pattern-count">5</span>
+              <span className="pattern-label">syllables</span>
+              <span className="pattern-example">Third line</span>
+            </div>
+          </div>
+          <p className="explainer-note">
+            Traditional haiku often include a <em>kigo</em> (seasonal reference) and a <em>kireji</em> (cutting word)
+            that creates a pause or juxtaposition between images.
+          </p>
+        </div>
+
+        <div className="haiku-form">
+          {lines.map((line, idx) => {
+            const result = results[idx];
+            const syllables = result?.syllables ?? 0;
+            const target = HAIKU_PATTERN[idx];
+            const hasText = line.trim().length > 0;
+            const isCorrect = result?.isCorrect ?? false;
+            const status = !hasText ? 'empty' : isCorrect ? 'correct' : 'incorrect';
+
+            return (
+              <div key={idx} className={`haiku-line-row ${status}`}>
+                <div className="syllable-indicator">
+                  <span className={`syllable-current ${status}`}>
+                    {hasText ? syllables : '—'}
+                  </span>
+                  <span className="syllable-separator">/</span>
+                  <span className="syllable-target">{target}</span>
+                </div>
+                <div className="line-input-container">
+                  <input
+                    type="text"
+                    value={line}
+                    onChange={(e) => handleLineChange(idx, e.target.value)}
+                    placeholder={`Line ${idx + 1}: ${target} syllables...`}
+                    className={`line-input ${status}`}
+                  />
+                  {hasText && (
+                    <span className={`status-icon ${status}`}>
+                      {isCorrect ? '✓' : '×'}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
 
           <div className="haiku-actions">
             <button onClick={clearAll} className="clear-button">
-              Clear
+              Clear All
             </button>
           </div>
         </div>
@@ -149,7 +234,7 @@ export function HaikuChecker() {
                   {results.map((r, idx) => {
                     if (!r.isCorrect && r.text.trim()) {
                       const diff = r.syllables - r.target;
-                      return ` Line ${idx + 1} has ${r.syllables} syllables (${diff > 0 ? `${diff} too many` : `${Math.abs(diff)} too few`}).`;
+                      return ` Line ${idx + 1}: ${r.syllables} syllables (${diff > 0 ? `${diff} too many` : `${Math.abs(diff)} too few`}).`;
                     }
                     return '';
                   }).join('')}
@@ -185,28 +270,27 @@ export function HaikuChecker() {
         </div>
 
         <div className="haiku-info">
-          <h2>About Haiku</h2>
+          <h2>Tips for Writing Haiku</h2>
           <div className="info-grid">
             <div className="info-card">
-              <h3>The 5-7-5 Pattern</h3>
+              <h3>Focus on a Moment</h3>
               <p>
-                Traditional Japanese haiku follow a 5-7-5 mora pattern. In English,
-                we approximate this with syllables: 5 syllables in the first line,
-                7 in the second, and 5 in the third.
+                Haiku capture a single moment in time. Focus on one image or sensation
+                rather than telling a story.
               </p>
             </div>
             <div className="info-card">
-              <h3>Nature & Seasons</h3>
+              <h3>Use Concrete Images</h3>
               <p>
-                Classic haiku often include a "kigo" (seasonal reference) and focus
-                on nature. The poem captures a moment of awareness or insight.
+                Show, don't tell. Use specific, sensory details rather than abstract
+                concepts or emotions.
               </p>
             </div>
             <div className="info-card">
-              <h3>The Turn</h3>
+              <h3>Include Nature</h3>
               <p>
-                Many haiku include a "kireji" (cutting word) that creates a pause
-                or juxtaposition between two images or ideas.
+                Traditional haiku reference nature and the seasons. Consider including
+                a kigo (seasonal word) in your haiku.
               </p>
             </div>
           </div>

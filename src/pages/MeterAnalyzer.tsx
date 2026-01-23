@@ -4,7 +4,8 @@ import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { loadCMUDictionary, isDictionaryLoaded } from '../utils/cmuDict';
 import { detectMeter } from '../utils/meterDetector';
-import { analyzeTextStress, createStressVisualization, StressVisualization } from '../utils/stressAnalyzer';
+import { analyzeTextStress, createStressVisualization, StressVisualization, detectMeterFromStress } from '../utils/stressAnalyzer';
+import { useDebounce } from '../hooks/useDebounce';
 import './MeterAnalyzer.css';
 
 const EXAMPLE_POEMS = [
@@ -46,6 +47,7 @@ interface LineAnalysis {
 
 export function MeterAnalyzer() {
   const [text, setText] = useState('');
+  const debouncedText = useDebounce(text, 300);
   const [analysis, setAnalysis] = useState<{
     overallMeter: string;
     lines: LineAnalysis[];
@@ -63,40 +65,32 @@ export function MeterAnalyzer() {
   }, []);
 
   useEffect(() => {
-    if (dictionaryLoaded && text.trim()) {
+    if (dictionaryLoaded && debouncedText.trim()) {
       analyzePoem();
     } else {
       setAnalysis(null);
     }
-  }, [text, dictionaryLoaded]);
+  }, [debouncedText, dictionaryLoaded]);
 
   const analyzePoem = () => {
-    if (!dictionaryLoaded || !text.trim()) return;
+    if (!dictionaryLoaded || !debouncedText.trim()) return;
 
-    const overallMeter = detectMeter(text);
-    const stressAnalyses = analyzeTextStress(text);
-    const lines = text.split('\n').filter(line => line.trim());
+    const overallMeter = detectMeter(debouncedText);
+    const stressAnalyses = analyzeTextStress(debouncedText);
+    const lines = debouncedText.split('\n').filter(line => line.trim());
 
     const lineAnalyses: LineAnalysis[] = lines.map((line, idx) => {
       const stressInfo = stressAnalyses[idx] || { stresses: [], words: [] };
       const visualization = createStressVisualization(line);
 
-      // Determine line-specific meter based on stress pattern
-      let lineMeter = 'Free verse';
+      // Determine line-specific meter based on actual stress patterns
       const syllableCount = stressInfo.stresses.length;
       const stressPattern = stressInfo.stresses;
 
-      if (syllableCount === 10) {
-        // Check for iambic pentameter pattern
-        const isIambic = stressPattern.every((s, i) =>
-          i % 2 === 0 ? s === 0 : s >= 1
-        ) || stressPattern.filter((_, i) => i % 2 === 1).every(s => s >= 1);
-        if (isIambic) lineMeter = 'Iambic Pentameter';
-      } else if (syllableCount === 8) {
-        lineMeter = 'Tetrameter (8 syllables)';
-      } else if (syllableCount === 12) {
-        lineMeter = 'Hexameter (12 syllables)';
-      }
+      // Use detectMeterFromStress for accurate stress-based detection
+      const lineMeter = stressPattern.length > 0
+        ? detectMeterFromStress(stressPattern)
+        : 'Free verse';
 
       return {
         text: line,
@@ -113,6 +107,9 @@ export function MeterAnalyzer() {
   };
 
   const loadExample = (example: typeof EXAMPLE_POEMS[0]) => {
+    if (text.trim() && !window.confirm('This will replace your current text. Continue?')) {
+      return;
+    }
     setText(example.text);
   };
 
@@ -128,6 +125,44 @@ export function MeterAnalyzer() {
         description="Free online meter analyzer. Detect iambic pentameter, trochaic, anapestic, and dactylic meters. Visualize stress patterns in your poetry instantly."
         canonicalPath="/meter-analyzer"
         keywords="meter analyzer, iambic pentameter checker, scansion tool, stress pattern analyzer, poetry meter, trochaic meter, anapestic meter"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is iambic pentameter?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Iambic pentameter is a meter consisting of five 'iambs' per line, where an iamb is an unstressed syllable followed by a stressed syllable (da-DUM). It creates a rhythm like 'shall I comPARE thee TO a SUMmer's DAY?' and is the most common meter in English poetry, used by Shakespeare, Milton, and many others."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What are the different types of poetic meter?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The four main types are: Iambic (da-DUM) - unstressed then stressed; Trochaic (DUM-da) - stressed then unstressed; Anapestic (da-da-DUM) - two unstressed then stressed; Dactylic (DUM-da-da) - stressed then two unstressed. The number of feet determines if it's trimeter (3), tetrameter (4), pentameter (5), or hexameter (6)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I analyze the meter of a poem?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To analyze meter: 1) Identify the stressed and unstressed syllables in each line by reading aloud. 2) Mark stressed syllables with / and unstressed with u. 3) Look for repeating patterns (feet). 4) Count the feet per line. Our meter analyzer automates this process using pronunciation data."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is scansion in poetry?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Scansion is the process of marking the stressed and unstressed syllables in a line of poetry to reveal its metrical pattern. Stressed syllables are typically marked with / and unstressed with u. This helps identify the meter and understand the poem's rhythmic structure."
+              }
+            }
+          ]
+        }}
       />
 
       <div className="meter-analyzer">
@@ -162,33 +197,50 @@ export function MeterAnalyzer() {
             </div>
 
             <div className="line-analyses">
-              <h2>Line-by-Line Analysis</h2>
-              {analysis.lines.map((line, idx) => (
-                <div key={idx} className="line-analysis">
-                  <div className="line-header">
-                    <span className="line-number">Line {idx + 1}</span>
-                    <span className="line-syllables">{line.stresses.length} syllables</span>
+              <div className="line-analyses-header">
+                <h2>Line-by-Line Analysis</h2>
+                <span className="hover-hint">Hover over a line to see stress patterns</span>
+              </div>
+              <div className="line-analyses-content">
+                {analysis.lines.map((line, idx) => (
+                  <div key={idx} className="line-row">
+                    <span className="line-number">{idx + 1}</span>
+                    <div className="line-text-container">
+                      <div className="line-text">{line.text}</div>
+                      <div className="stress-tooltip">
+                        <div className="stress-tooltip-title">Stress Pattern</div>
+                        <div className="stress-visualization">
+                          {line.visualization.map((item, vidx) => (
+                            <span
+                              key={vidx}
+                              className={`syllable ${item.stress >= 1 ? 'stressed' : 'unstressed'}${item.isUnknown ? ' unknown' : ''}`}
+                            >
+                              {item.text}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="stress-pattern">
+                          {line.stresses.map((s, i) => (
+                            <span key={i} className={`stress-mark ${s >= 1 ? 'strong' : 'weak'}`}>
+                              {s >= 1 ? '/' : 'u'}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="stress-legend">
+                          <span className="legend-item">
+                            <span className="legend-symbol stressed">/</span> = stressed
+                          </span>
+                          <span className="legend-item">
+                            <span className="legend-symbol unstressed">u</span> = unstressed
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <span className="line-syllable-count">{line.stresses.length} syl</span>
+                    <span className="line-meter-type">{line.meter}</span>
                   </div>
-                  <div className="line-text">{line.text}</div>
-                  <div className="stress-visualization">
-                    {line.visualization.map((item, idx) => (
-                      <span
-                        key={idx}
-                        className={`syllable ${item.stress >= 1 ? 'stressed' : 'unstressed'}${item.isUnknown ? ' unknown' : ''}`}
-                      >
-                        {item.text}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="stress-pattern">
-                    {line.stresses.map((s, i) => (
-                      <span key={i} className={`stress-mark ${s >= 1 ? 'strong' : 'weak'}`}>
-                        {s >= 1 ? '/' : 'u'}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
