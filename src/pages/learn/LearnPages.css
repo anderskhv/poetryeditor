@@ -785,7 +785,11 @@
     font-size: 16px;
   }
 
-  .info-grid.two-col,
+  .info-grid.two-col {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
   .info-grid.three-col {
     grid-template-columns: 1fr;
   }
@@ -805,11 +809,13 @@
   }
 
   .cta-buttons {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .cta-button {
-    width: 100%;
+    flex: 1;
+    min-width: 120px;
     text-align: center;
   }
 

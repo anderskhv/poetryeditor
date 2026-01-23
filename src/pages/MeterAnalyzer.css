@@ -519,9 +519,9 @@
   }
 
   .overall-meter {
-    flex-direction: column;
-    gap: 4px;
-    padding: 16px;
+    flex-direction: row;
+    gap: 8px;
+    padding: 14px 16px;
   }
 
   .meter-value {

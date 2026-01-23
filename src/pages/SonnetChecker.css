@@ -908,13 +908,14 @@
   }
 
   .type-buttons {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
 
   .type-button {
     min-width: auto;
-    padding: 10px 14px;
+    padding: 10px 12px;
   }
 
   .type-name {

@@ -568,6 +568,9 @@ function App() {
                   <Link to="/synonyms" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Synonyms
                   </Link>
+                  <Link to="/imagery" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Imagery
+                  </Link>
                   <Link to="/syllables" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Syllable Counter
                   </Link>

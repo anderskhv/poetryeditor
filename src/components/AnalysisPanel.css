@@ -3953,25 +3953,28 @@
 }
 
 @media (max-width: 480px) {
+  /* Keep 4-column grid as 2x2 on small screens */
   .stats-grid-4 {
-    grid-template-columns: 1fr;
-  }
-
-  .stats-grid-3 {
-    grid-template-columns: 1fr;
-  }
-
-  .stat-item {
-    text-align: left;
-    flex-direction: row;
-    align-items: center;
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    padding: 6px 0;
   }
 
-  .stat-label {
-    margin-bottom: 0;
-    min-width: 100px;
+  /* Keep 3-column grid compact - these are just numbers */
+  .stats-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+
+  .stats-grid-3 .stat-item {
+    padding: 4px 2px;
+  }
+
+  .stats-grid-3 .stat-label {
+    font-size: 10px;
+  }
+
+  .stats-grid-3 .stat-value {
+    font-size: 14px;
   }
 
   .stat-value {

@@ -3,6 +3,7 @@ import App from './App';
 import { RhymeDictionary } from './pages/RhymeDictionary';
 import { RhymeWord } from './pages/RhymeWord';
 import { Thesaurus, ThesaurusWord } from './pages/Thesaurus';
+import { Imagery, ImageryWord } from './pages/Imagery';
 import { SyllableCounter } from './pages/SyllableCounter';
 import { SyllableWord } from './pages/SyllableWord';
 import { HaikuChecker } from './pages/HaikuChecker';
@@ -34,6 +35,14 @@ export const router = createBrowserRouter([
   {
     path: '/synonyms/:word',
     element: <ThesaurusWord />,
+  },
+  {
+    path: '/imagery',
+    element: <Imagery />,
+  },
+  {
+    path: '/imagery/:word',
+    element: <ImageryWord />,
   },
   {
     path: '/syllables',

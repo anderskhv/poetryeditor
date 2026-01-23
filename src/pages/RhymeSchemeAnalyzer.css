@@ -862,9 +862,11 @@
   }
 
   .overall-scheme {
-    flex-direction: column;
-    gap: 4px;
-    padding: 16px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 16px;
   }
 
   .scheme-value {
@@ -962,7 +964,7 @@
   }
 
   .mode-toggle {
-    flex-direction: column;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 8px 12px;
   }
 }

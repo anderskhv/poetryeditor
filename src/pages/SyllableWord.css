@@ -360,8 +360,9 @@
   }
 
   .stress-legend-inline {
-    flex-direction: column;
-    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 20px;
     font-size: 12px;
   }
 

@@ -420,3 +420,158 @@ export async function fetchAntonyms(word: string): Promise<SynonymWord[]> {
     return [];
   }
 }
+
+export interface ImageryWord {
+  word: string;
+  score: number;
+}
+
+/**
+ * Fetch hyponyms (more specific/concrete examples)
+ * Uses Datamuse rel_gen endpoint which returns specific types/instances
+ * e.g., "tree" → "oak", "willow", "birch", "palm"
+ * e.g., "bird" → "sparrow", "hawk", "parrot", "hen"
+ *
+ * For adjectives and other words without hyponyms, falls back to:
+ * 1. rel_jjb (adjectives used to describe nouns) for nouns
+ * 2. ml (means like) for semantic associations
+ *
+ * Note: Despite the name "rel_gen" (more general), Datamuse returns
+ * words that are hyponyms (more specific instances) of the query word.
+ */
+export async function fetchHyponyms(word: string): Promise<ImageryWord[]> {
+  try {
+    console.log(`Fetching concrete examples for: ${word}`);
+
+    // Primary: try hyponyms (specific types/instances)
+    const hyponymResponse = await fetch(
+      `https://api.datamuse.com/words?rel_gen=${encodeURIComponent(word)}&max=100`,
+      {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }
+    );
+
+    if (!hyponymResponse.ok) {
+      console.error(`Imagery API response not OK: ${hyponymResponse.status} ${hyponymResponse.statusText}`);
+      throw new Error('Failed to fetch concrete examples');
+    }
+
+    const hyponymData = await hyponymResponse.json();
+    console.log(`Received ${hyponymData.length} hyponyms for "${word}"`);
+
+    // If we got good results, return them
+    if (hyponymData.length >= 5) {
+      return hyponymData.map((item: any) => ({
+        word: item.word,
+        score: item.score || 0,
+      }));
+    }
+
+    // Fallback 1: For adjectives/descriptors, try "nouns described by this adjective"
+    // rel_jjb returns nouns that are often described by the adjective
+    const jjbResponse = await fetch(
+      `https://api.datamuse.com/words?rel_jjb=${encodeURIComponent(word)}&max=50`,
+      {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }
+    );
+
+    if (jjbResponse.ok) {
+      const jjbData = await jjbResponse.json();
+      console.log(`Received ${jjbData.length} nouns described by "${word}"`);
+
+      if (jjbData.length >= 3) {
+        // Combine hyponyms with described nouns
+        const combined = [
+          ...hyponymData.map((item: any) => ({ word: item.word, score: item.score || 0 })),
+          ...jjbData.map((item: any) => ({ word: item.word, score: item.score || 0 }))
+        ];
+        // Remove duplicates
+        const seen = new Set<string>();
+        return combined.filter(item => {
+          if (seen.has(item.word)) return false;
+          seen.add(item.word);
+          return true;
+        });
+      }
+    }
+
+    // Fallback 2: Try "means like" for semantic associations
+    const mlResponse = await fetch(
+      `https://api.datamuse.com/words?ml=${encodeURIComponent(word)}&max=50`,
+      {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }
+    );
+
+    if (mlResponse.ok) {
+      const mlData = await mlResponse.json();
+      console.log(`Received ${mlData.length} semantically related words for "${word}"`);
+
+      // Combine all results
+      const combined = [
+        ...hyponymData.map((item: any) => ({ word: item.word, score: item.score || 0 })),
+        ...mlData.slice(0, 30).map((item: any) => ({ word: item.word, score: item.score || 0 }))
+      ];
+      // Remove duplicates and the original word
+      const seen = new Set<string>();
+      seen.add(word.toLowerCase());
+      return combined.filter(item => {
+        const lower = item.word.toLowerCase();
+        if (seen.has(lower)) return false;
+        seen.add(lower);
+        return true;
+      });
+    }
+
+    // Return whatever hyponyms we got
+    return hyponymData.map((item: any) => ({
+      word: item.word,
+      score: item.score || 0,
+    }));
+  } catch (error) {
+    console.error('Error fetching concrete examples:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch hypernyms (more general/abstract categories)
+ * Uses Datamuse rel_spc endpoint which returns generalizations
+ * e.g., "oak" → "tree", "plant"
+ *
+ * Note: Despite the name "rel_spc" (more specific), Datamuse returns
+ * words that are hypernyms (more general categories) of the query word.
+ */
+export async function fetchHypernyms(word: string): Promise<ImageryWord[]> {
+  try {
+    console.log(`Fetching general categories for: ${word}`);
+
+    const response = await fetch(
+      `https://api.datamuse.com/words?rel_spc=${encodeURIComponent(word)}&max=20`,
+      {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }
+    );
+
+    if (!response.ok) {
+      console.error(`Hypernym API response not OK: ${response.status} ${response.statusText}`);
+      throw new Error('Failed to fetch categories');
+    }
+
+    const data = await response.json();
+    console.log(`Received ${data.length} general categories for "${word}"`);
+
+    return data.map((item: any) => ({
+      word: item.word,
+      score: item.score || 0,
+    }));
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
+}

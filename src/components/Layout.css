@@ -354,7 +354,9 @@
   }
 
   .layout-footer-links {
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 20px;
   }
 }

@@ -351,13 +351,13 @@
   }
 
   .thesaurus-tabs {
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 6px;
   }
 
   .thesaurus-tab {
-    width: 100%;
-    text-align: center;
+    padding: 8px 14px;
+    font-size: 13px;
   }
 
   .thesaurus-syllable-group h3 {
