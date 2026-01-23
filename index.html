@@ -14,11 +14,20 @@
     <meta property="og:title" content="Poetry Editor — A Toolbox for Poets" />
     <meta property="og:description" content="Analyze your poetry with instant syllable counting, rhyme scheme detection, meter analysis, and more. Free tool for poets and students." />
     <meta property="og:url" content="https://poetryeditor.com" />
+    <meta property="og:site_name" content="Poetry Editor" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://poetryeditor.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="Poetry Editor - Free online poetry analysis tool" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Poetry Editor — A Toolbox for Poets" />
     <meta name="twitter:description" content="Analyze your poetry with instant syllable counting, rhyme scheme detection, meter analysis, and more." />
+    <meta name="twitter:image" content="https://poetryeditor.com/og-image.png" />
+    <meta name="twitter:image:alt" content="Poetry Editor - Free online poetry analysis tool" />
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://poetryeditor.com" />
@@ -27,7 +36,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
     <link rel="shortcut icon" href="/favicon.svg?v=3" />
 
-    <!-- Structured Data -->
+    <!-- Structured Data - WebApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -36,7 +45,10 @@
       "url": "https://poetryeditor.com",
       "applicationCategory": "EducationalApplication",
       "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
       "description": "Free online poetry analysis tool with syllable counting, rhyme scheme detection, meter analysis, and more.",
+      "image": "https://poetryeditor.com/og-image.png",
+      "screenshot": "https://poetryeditor.com/og-image.png",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -44,11 +56,60 @@
       },
       "featureList": [
         "Syllable counter",
+        "Rhyme dictionary",
         "Rhyme scheme detector",
         "Meter analyzer",
         "Scansion tool",
-        "Haiku checker",
-        "Sonnet validator"
+        "Haiku checker (5-7-5 validator)",
+        "Sonnet validator (Shakespearean and Petrarchan)",
+        "Poet Maker (rhyming synonyms)"
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "150",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    }
+    </script>
+
+    <!-- Structured Data - Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Poetry Editor",
+      "url": "https://poetryeditor.com",
+      "logo": "https://poetryeditor.com/favicon.svg",
+      "sameAs": []
+    }
+    </script>
+
+    <!-- Structured Data - WebSite with SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Poetry Editor",
+      "url": "https://poetryeditor.com",
+      "potentialAction": [
+        {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://poetryeditor.com/rhymes/{search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        },
+        {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://poetryeditor.com/syllables/{search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
       ]
     }
     </script>

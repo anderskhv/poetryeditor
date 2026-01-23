@@ -84,17 +84,20 @@
 /* Filters Container */
 .rhyme-filters {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  gap: 12px;
   margin-bottom: 24px;
+  padding: 16px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
 }
 
-/* Meter Filter */
-.meter-filter {
+/* Filter Group */
+.filter-group {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -103,6 +106,7 @@
   font-size: 12px;
   font-weight: 500;
   color: var(--color-text-muted);
+  min-width: 70px;
 }
 
 .filter-btn {
@@ -110,7 +114,7 @@
   font-family: var(--font-sans);
   font-size: 12px;
   color: var(--color-text-secondary);
-  background: var(--color-paper);
+  background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: 4px;
   cursor: pointer;
@@ -118,7 +122,8 @@
 }
 
 .filter-btn:hover {
-  border-color: var(--color-text-muted);
+  border-color: var(--color-text-secondary);
+  background: var(--color-highlight-subtle);
 }
 
 .filter-btn.active {
@@ -127,55 +132,49 @@
   border-color: var(--color-text-primary);
 }
 
-/* Originality Legend */
-.originality-legend {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  color: var(--color-text-muted);
-}
-
-.legend-label {
-  font-weight: 500;
-}
-
-.legend-item {
-  padding: 3px 8px;
-  border-radius: 3px;
-  font-size: 11px;
-}
-
-.legend-original {
-  background: hsl(0, 0%, 98%);
-  border: 1px solid hsl(0, 0%, 90%);
-  color: #333;
-}
-
-.legend-cliche {
-  background: hsl(0, 0%, 55%);
-  border: 1px solid hsl(0, 0%, 45%);
-  color: #fff;
-}
-
-.legend-gradient-grayscale {
-  width: 80px;
-  height: 12px;
-  background: linear-gradient(to right,
-    hsl(0, 0%, 98%),
-    hsl(0, 0%, 55%)
-  );
-  border-radius: 2px;
-  border: 1px solid var(--color-border);
-}
-
 /* Loading */
 .rhyme-loading {
   text-align: center;
   padding: 40px;
   font-family: var(--font-sans);
   color: var(--color-text-secondary);
+}
+
+/* Error */
+.rhyme-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 40px;
+  font-family: var(--font-sans);
+  color: var(--color-text-secondary);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.error-icon {
+  font-size: 24px;
+}
+
+.retry-button {
+  padding: 8px 16px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background: var(--color-paper);
+  border: 1px solid var(--color-text-secondary);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.retry-button:hover {
+  background: var(--color-text-primary);
+  color: var(--color-paper);
 }
 
 /* No Results */
@@ -229,7 +228,7 @@
   padding: 6px 14px;
   font-family: var(--font-sans);
   font-size: 15px;
-  color: #333;
+  color: var(--color-text-primary);
   background: var(--color-paper);
   border: 1px solid var(--color-border);
   border-radius: 4px;
@@ -253,12 +252,16 @@
   border-color: var(--color-text-muted);
 }
 
-.originality-score {
-  margin-left: 6px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  opacity: 0.7;
+/* Highlight state (when hovering over a filter option) */
+.rhyme-word-item.highlighted {
+  background: var(--color-highlight-active);
+  border-color: var(--color-highlight-active-border);
+  box-shadow: 0 0 0 2px var(--color-highlight-active-glow);
+}
+
+/* Dimmed state (when hovering over a filter option and this word doesn't match) */
+.rhyme-word-item.dimmed {
+  opacity: 0.3;
 }
 
 /* Actions */
@@ -399,8 +402,8 @@
   font-family: var(--font-sans);
   font-size: 14px;
   color: var(--color-text-secondary);
-  background: hsl(210, 40%, 96%);
-  border: 1px solid hsl(210, 30%, 90%);
+  background: var(--color-accent-synonym);
+  border: 1px solid var(--color-accent-synonym-border);
   border-radius: 4px;
   text-decoration: none;
   transition: all 0.15s ease;
@@ -408,18 +411,18 @@
 
 .relation-word-link:hover {
   color: var(--color-text-primary);
-  border-color: hsl(210, 40%, 70%);
-  background: hsl(210, 50%, 94%);
+  border-color: var(--color-highlight-active-border);
+  background: var(--color-highlight-active);
 }
 
 .relation-word-link.antonym {
-  background: hsl(350, 40%, 96%);
-  border-color: hsl(350, 30%, 90%);
+  background: var(--color-accent-antonym);
+  border-color: var(--color-accent-antonym-border);
 }
 
 .relation-word-link.antonym:hover {
-  border-color: hsl(350, 40%, 70%);
-  background: hsl(350, 50%, 94%);
+  border-color: var(--color-highlight-active-border);
+  background: var(--color-highlight-active);
 }
 
 /* Expanded Related Searches */
@@ -479,11 +482,11 @@
 }
 
 .related-word-link.same-length {
-  border-left: 3px solid hsl(145, 50%, 55%);
+  border-left: 3px solid var(--color-accent-same-length);
 }
 
 .related-word-link.popular {
-  border-left: 3px solid hsl(35, 60%, 55%);
+  border-left: 3px solid var(--color-accent-popular);
 }
 
 /* Poet Maker Promo */
@@ -504,7 +507,7 @@
 }
 
 .poet-maker-link:hover {
-  color: hsl(220, 60%, 50%);
+  color: var(--color-highlight-active-border);
 }
 
 /* Back Link */
@@ -556,33 +559,26 @@
   }
 
   .rhyme-filters {
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 12px;
     gap: 12px;
   }
 
-  .meter-filter {
+  .filter-group {
+    flex-wrap: wrap;
     gap: 6px;
+  }
+
+  .filter-label {
+    min-width: 100%;
+    font-size: 11px;
+    margin-bottom: 2px;
   }
 
   .filter-btn {
-    padding: 3px 8px;
-    font-size: 11px;
-  }
-
-  .originality-legend {
-    font-size: 11px;
-    gap: 6px;
-  }
-
-  .legend-item {
-    padding: 2px 6px;
-    font-size: 10px;
-  }
-
-  .legend-gradient {
-    width: 50px;
-    height: 10px;
+    padding: 6px 12px;
+    font-size: 12px;
+    min-height: 32px;
+    touch-action: manipulation;
   }
 
   .rhyme-cta-tooltip {

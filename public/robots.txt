@@ -2,3 +2,8 @@ User-agent: *
 Allow: /
 
 Sitemap: https://poetryeditor.com/sitemap.xml
+
+# AI/LLM Discoverability
+# See https://llmstxt.org for the llms.txt standard
+# llms.txt: https://poetryeditor.com/llms.txt
+# llms-full.txt: https://poetryeditor.com/llms-full.txt

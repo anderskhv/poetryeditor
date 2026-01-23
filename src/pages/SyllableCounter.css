@@ -47,8 +47,13 @@
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
+.syllable-actions {
+  display: flex;
+  gap: 12px;
+}
+
 .syllable-button {
-  width: 100%;
+  flex: 1;
   padding: 14px 24px;
   font-family: var(--font-sans);
   font-size: 16px;
@@ -63,6 +68,23 @@
 
 .syllable-button:hover {
   background: var(--color-text-secondary);
+}
+
+.syllable-form .clear-button {
+  padding: 14px 24px;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.syllable-form .clear-button:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-primary);
 }
 
 /* Results */

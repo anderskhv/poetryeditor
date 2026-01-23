@@ -9,6 +9,28 @@ import { DefinitionTooltip } from '../components/DefinitionTooltip';
 import './RhymeWord.css';
 
 type MeterFilter = 'all' | 'iambic' | 'trochaic';
+type OriginalityFilter = 'all' | 'original' | 'fresh' | 'common' | 'overused' | 'cliche';
+type WordTypeFilter = 'all' | 'noun' | 'verb' | 'adjective' | 'adverb';
+
+// Map Datamuse tags to human-readable labels
+const POS_LABELS: Record<string, string> = {
+  n: 'noun',
+  v: 'verb',
+  adj: 'adjective',
+  adv: 'adverb',
+  u: 'unknown',
+  prop: 'proper noun',
+};
+
+// Get word type from parts of speech array
+function getWordType(partsOfSpeech?: string[]): string {
+  if (!partsOfSpeech || partsOfSpeech.length === 0) return 'unknown';
+  // Return the first recognized part of speech
+  for (const pos of partsOfSpeech) {
+    if (POS_LABELS[pos]) return POS_LABELS[pos];
+  }
+  return 'unknown';
+}
 
 export function RhymeWord() {
   const { word } = useParams<{ word: string }>();
@@ -17,8 +39,15 @@ export function RhymeWord() {
   const [synonyms, setSynonyms] = useState<SynonymWord[]>([]);
   const [antonyms, setAntonyms] = useState<SynonymWord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'perfect' | 'near'>('perfect');
   const [meterFilter, setMeterFilter] = useState<MeterFilter>('all');
+  const [originalityFilter, setOriginalityFilter] = useState<OriginalityFilter>('all');
+  const [wordTypeFilter, setWordTypeFilter] = useState<WordTypeFilter>('all');
+  // Hover states for highlighting (not filtering yet)
+  const [hoverMeter, setHoverMeter] = useState<MeterFilter | null>(null);
+  const [hoverOriginality, setHoverOriginality] = useState<OriginalityFilter | null>(null);
+  const [hoverWordType, setHoverWordType] = useState<WordTypeFilter | null>(null);
 
   const decodedWord = word ? decodeURIComponent(word).toLowerCase() : '';
   const stresses = getStressPattern(decodedWord);
@@ -27,22 +56,38 @@ export function RhymeWord() {
 
   useEffect(() => {
     async function loadData() {
-      if (!isDictionaryLoaded()) {
-        await loadCMUDictionary();
-      }
+      try {
+        setError(null);
 
-      if (decodedWord) {
-        setLoading(true);
-        const [perfect, near, syns, ants] = await Promise.all([
-          fetchRhymes(decodedWord),
-          fetchNearAndSlantRhymes(decodedWord),
-          fetchSynonyms(decodedWord),
-          fetchAntonyms(decodedWord)
-        ]);
-        setPerfectRhymes(perfect);
-        setNearRhymes(near);
-        setSynonyms(syns);
-        setAntonyms(ants);
+        if (!isDictionaryLoaded()) {
+          await loadCMUDictionary();
+        }
+
+        if (decodedWord) {
+          setLoading(true);
+          const [perfect, near, syns, ants] = await Promise.all([
+            fetchRhymes(decodedWord),
+            fetchNearAndSlantRhymes(decodedWord),
+            fetchSynonyms(decodedWord),
+            fetchAntonyms(decodedWord)
+          ]);
+
+          // Check if all results are empty (potential API failure)
+          if (perfect.length === 0 && near.length === 0 && syns.length === 0 && ants.length === 0) {
+            // Could be a word with no rhymes, or API failure
+            // Only show error if we expected results
+            console.warn(`No results found for "${decodedWord}" - this may be expected for unusual words`);
+          }
+
+          setPerfectRhymes(perfect);
+          setNearRhymes(near);
+          setSynonyms(syns);
+          setAntonyms(ants);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error('Error loading rhyme data:', err);
+        setError('Unable to load rhyme data. Please check your internet connection and try again.');
         setLoading(false);
       }
     }
@@ -79,16 +124,74 @@ export function RhymeWord() {
     return stress[stress.length - 1] === 0;
   };
 
-  // Apply meter filter
-  const filterByMeter = (rhymes: RhymeWordType[]): RhymeWordType[] => {
-    if (meterFilter === 'all') return rhymes;
-    if (meterFilter === 'iambic') return rhymes.filter(r => fitsIambic(r.word));
-    if (meterFilter === 'trochaic') return rhymes.filter(r => fitsTrochaic(r.word));
-    return rhymes;
+  // Get originality category for a word
+  const getOriginalityCategory = (rhymeWord: string): OriginalityFilter => {
+    const score = getRhymeOriginalityScore(decodedWord, rhymeWord);
+    if (score >= 80) return 'original';
+    if (score >= 60) return 'fresh';
+    if (score >= 40) return 'common';
+    if (score >= 20) return 'overused';
+    return 'cliche';
   };
 
-  const filteredPerfect = filterByMeter(perfectRhymes);
-  const filteredNear = filterByMeter(nearRhymes);
+  // Get word type category for a rhyme word
+  const getWordTypeCategory = (rhyme: RhymeWordType): WordTypeFilter => {
+    const wordType = getWordType(rhyme.partsOfSpeech);
+    if (wordType === 'noun' || wordType === 'proper noun') return 'noun';
+    if (wordType === 'verb') return 'verb';
+    if (wordType === 'adjective') return 'adjective';
+    if (wordType === 'adverb') return 'adverb';
+    return 'all'; // unknown words pass all word type filters
+  };
+
+  // Check if a word matches a specific meter
+  const matchesMeter = (rhymeWord: string, meter: MeterFilter): boolean => {
+    if (meter === 'all') return true;
+    if (meter === 'iambic') return fitsIambic(rhymeWord);
+    if (meter === 'trochaic') return fitsTrochaic(rhymeWord);
+    return true;
+  };
+
+  // Check if a word matches a specific originality level
+  const matchesOriginality = (rhymeWord: string, originality: OriginalityFilter): boolean => {
+    if (originality === 'all') return true;
+    return getOriginalityCategory(rhymeWord) === originality;
+  };
+
+  // Check if a rhyme matches a specific word type
+  const matchesWordType = (rhyme: RhymeWordType, wordType: WordTypeFilter): boolean => {
+    if (wordType === 'all') return true;
+    const category = getWordTypeCategory(rhyme);
+    return category === wordType || category === 'all'; // unknown words match all
+  };
+
+  // Apply all filters
+  const applyAllFilters = (rhymes: RhymeWordType[]): RhymeWordType[] => {
+    return rhymes.filter(r =>
+      matchesMeter(r.word, meterFilter) &&
+      matchesOriginality(r.word, originalityFilter) &&
+      matchesWordType(r, wordTypeFilter)
+    );
+  };
+
+  // Check if a word should be highlighted (based on hover state)
+  const shouldHighlight = (rhyme: RhymeWordType): boolean => {
+    // If no hover state, no highlight
+    if (!hoverMeter && !hoverOriginality && !hoverWordType) return false;
+
+    // Check each hover filter - word must match ALL hovered filters
+    if (hoverMeter && hoverMeter !== 'all' && !matchesMeter(rhyme.word, hoverMeter)) return false;
+    if (hoverOriginality && hoverOriginality !== 'all' && !matchesOriginality(rhyme.word, hoverOriginality)) return false;
+    if (hoverWordType && hoverWordType !== 'all' && !matchesWordType(rhyme, hoverWordType)) return false;
+
+    return true;
+  };
+
+  // Check if ANY hover state is active (to dim non-matching words)
+  const isHoverActive = hoverMeter !== null || hoverOriginality !== null || hoverWordType !== null;
+
+  const filteredPerfect = applyAllFilters(perfectRhymes);
+  const filteredNear = applyAllFilters(nearRhymes);
 
   const groupedPerfect = groupBySyllables(filteredPerfect);
   const groupedNear = groupBySyllables(filteredNear);
@@ -113,27 +216,6 @@ export function RhymeWord() {
 
   // Capitalize first letter for display
   const displayWord = decodedWord.charAt(0).toUpperCase() + decodedWord.slice(1);
-
-  // Get originality-based background color (grayscale: light = original, dark = cliché)
-  const getOriginalityStyle = (rhymeWord: string): React.CSSProperties => {
-    const score = getRhymeOriginalityScore(decodedWord, rhymeWord);
-    // Score: 0-100 (100 = original/good, 0 = clichéd/bad)
-    // Grayscale mapping: high score = lighter (more original), low score = darker (more clichéd)
-    // Map score 0-100 to lightness 55%-98%
-    const lightness = 55 + (score * 0.43); // 0 → 55%, 100 → 98%
-    const backgroundColor = `hsl(0, 0%, ${lightness}%)`;
-    return { backgroundColor };
-  };
-
-  // Get originality label for tooltip
-  const getOriginalityLabel = (rhymeWord: string): string => {
-    const score = getRhymeOriginalityScore(decodedWord, rhymeWord);
-    if (score >= 80) return 'Original';
-    if (score >= 60) return 'Fresh';
-    if (score >= 40) return 'Common';
-    if (score >= 20) return 'Overused';
-    return 'Cliché';
-  };
 
   return (
     <Layout>
@@ -166,7 +248,15 @@ export function RhymeWord() {
           </div>
         )}
 
-        {loading ? (
+        {error ? (
+          <div className="rhyme-error">
+            <span className="error-icon">⚠</span>
+            <span>{error}</span>
+            <button onClick={() => window.location.reload()} className="retry-button">
+              Try Again
+            </button>
+          </div>
+        ) : loading ? (
           <div className="rhyme-loading">Finding rhymes for "{decodedWord}"...</div>
         ) : (
           <>
@@ -186,17 +276,21 @@ export function RhymeWord() {
             </div>
 
             <div className="rhyme-filters">
-              <div className="meter-filter">
+              <div className="filter-group">
                 <span className="filter-label">Meter:</span>
                 <button
                   className={`filter-btn ${meterFilter === 'all' ? 'active' : ''}`}
                   onClick={() => setMeterFilter('all')}
+                  onMouseEnter={() => setHoverMeter('all')}
+                  onMouseLeave={() => setHoverMeter(null)}
                 >
                   All
                 </button>
                 <button
                   className={`filter-btn ${meterFilter === 'iambic' ? 'active' : ''}`}
                   onClick={() => setMeterFilter('iambic')}
+                  onMouseEnter={() => setHoverMeter('iambic')}
+                  onMouseLeave={() => setHoverMeter(null)}
                   title="Words ending on a stressed syllable (da-DUM)"
                 >
                   Iambic
@@ -204,16 +298,108 @@ export function RhymeWord() {
                 <button
                   className={`filter-btn ${meterFilter === 'trochaic' ? 'active' : ''}`}
                   onClick={() => setMeterFilter('trochaic')}
+                  onMouseEnter={() => setHoverMeter('trochaic')}
+                  onMouseLeave={() => setHoverMeter(null)}
                   title="Words ending on an unstressed syllable (DUM-da)"
                 >
                   Trochaic
                 </button>
               </div>
-              <div className="originality-legend">
-                <span className="legend-label">Originality:</span>
-                <span className="legend-item legend-original">Original</span>
-                <span className="legend-gradient-grayscale"></span>
-                <span className="legend-item legend-cliche">Cliché</span>
+
+              <div className="filter-group">
+                <span className="filter-label">Originality:</span>
+                <button
+                  className={`filter-btn ${originalityFilter === 'all' ? 'active' : ''}`}
+                  onClick={() => setOriginalityFilter('all')}
+                  onMouseEnter={() => setHoverOriginality('all')}
+                  onMouseLeave={() => setHoverOriginality(null)}
+                >
+                  All
+                </button>
+                <button
+                  className={`filter-btn ${originalityFilter === 'original' ? 'active' : ''}`}
+                  onClick={() => setOriginalityFilter('original')}
+                  onMouseEnter={() => setHoverOriginality('original')}
+                  onMouseLeave={() => setHoverOriginality(null)}
+                  title="Unique, unexpected rhyme pairings"
+                >
+                  Original
+                </button>
+                <button
+                  className={`filter-btn ${originalityFilter === 'fresh' ? 'active' : ''}`}
+                  onClick={() => setOriginalityFilter('fresh')}
+                  onMouseEnter={() => setHoverOriginality('fresh')}
+                  onMouseLeave={() => setHoverOriginality(null)}
+                  title="Less common rhyme pairings"
+                >
+                  Fresh
+                </button>
+                <button
+                  className={`filter-btn ${originalityFilter === 'common' ? 'active' : ''}`}
+                  onClick={() => setOriginalityFilter('common')}
+                  onMouseEnter={() => setHoverOriginality('common')}
+                  onMouseLeave={() => setHoverOriginality(null)}
+                  title="Frequently used rhyme pairings"
+                >
+                  Common
+                </button>
+                <button
+                  className={`filter-btn ${originalityFilter === 'cliche' ? 'active' : ''}`}
+                  onClick={() => setOriginalityFilter('cliche')}
+                  onMouseEnter={() => setHoverOriginality('cliche')}
+                  onMouseLeave={() => setHoverOriginality(null)}
+                  title="Overused rhyme pairings"
+                >
+                  Cliché
+                </button>
+              </div>
+
+              <div className="filter-group">
+                <span className="filter-label">Word Type:</span>
+                <button
+                  className={`filter-btn ${wordTypeFilter === 'all' ? 'active' : ''}`}
+                  onClick={() => setWordTypeFilter('all')}
+                  onMouseEnter={() => setHoverWordType('all')}
+                  onMouseLeave={() => setHoverWordType(null)}
+                >
+                  All
+                </button>
+                <button
+                  className={`filter-btn ${wordTypeFilter === 'noun' ? 'active' : ''}`}
+                  onClick={() => setWordTypeFilter('noun')}
+                  onMouseEnter={() => setHoverWordType('noun')}
+                  onMouseLeave={() => setHoverWordType(null)}
+                  title="Nouns (person, place, thing)"
+                >
+                  Noun
+                </button>
+                <button
+                  className={`filter-btn ${wordTypeFilter === 'verb' ? 'active' : ''}`}
+                  onClick={() => setWordTypeFilter('verb')}
+                  onMouseEnter={() => setHoverWordType('verb')}
+                  onMouseLeave={() => setHoverWordType(null)}
+                  title="Verbs (action words)"
+                >
+                  Verb
+                </button>
+                <button
+                  className={`filter-btn ${wordTypeFilter === 'adjective' ? 'active' : ''}`}
+                  onClick={() => setWordTypeFilter('adjective')}
+                  onMouseEnter={() => setHoverWordType('adjective')}
+                  onMouseLeave={() => setHoverWordType(null)}
+                  title="Adjectives (describe nouns)"
+                >
+                  Adjective
+                </button>
+                <button
+                  className={`filter-btn ${wordTypeFilter === 'adverb' ? 'active' : ''}`}
+                  onClick={() => setWordTypeFilter('adverb')}
+                  onMouseEnter={() => setHoverWordType('adverb')}
+                  onMouseLeave={() => setHoverWordType(null)}
+                  title="Adverbs (describe verbs)"
+                >
+                  Adverb
+                </button>
               </div>
             </div>
 
@@ -240,16 +426,17 @@ export function RhymeWord() {
                             // Determine rarity class based on Datamuse score
                             // Higher score = more common word
                             const rarityClass = rhyme.score > 5000 ? 'common' : rhyme.score > 1000 ? '' : 'rare';
+                            // Determine if this word should be highlighted or dimmed
+                            const highlighted = shouldHighlight(rhyme);
+                            const dimmed = isHoverActive && !highlighted;
+
                             return (
                               <DefinitionTooltip key={idx} word={rhyme.word}>
                                 <Link
                                   to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
-                                  className={`rhyme-word-item ${rarityClass}`}
-                                  style={getOriginalityStyle(rhyme.word)}
-                                  title={`Originality: ${getOriginalityLabel(rhyme.word)}`}
+                                  className={`rhyme-word-item ${rarityClass} ${highlighted ? 'highlighted' : ''} ${dimmed ? 'dimmed' : ''}`}
                                 >
                                   {rhyme.word}
-                                  <span className="originality-score">{getRhymeOriginalityScore(decodedWord, rhyme.word)}</span>
                                 </Link>
                               </DefinitionTooltip>
                             );
@@ -342,11 +529,11 @@ export function RhymeWord() {
                 </div>
               </div>
 
-              <div className="related-section poet-maker-promo">
+              <div className="related-section topic-filter-promo">
                 <h3>Need More Options?</h3>
-                <p className="related-hint">Find words that rhyme AND have a specific meaning</p>
-                <Link to="/poet-maker" className="poet-maker-link">
-                  Try Poet Maker →
+                <p className="related-hint">Use the topic filter on the Rhyme Dictionary to find words that rhyme AND have a specific meaning</p>
+                <Link to="/rhymes" className="topic-filter-link">
+                  Use Topic Filter →
                 </Link>
               </div>
             </div>

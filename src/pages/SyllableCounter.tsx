@@ -102,6 +102,44 @@ export function SyllableCounter() {
         description="Free online syllable counter. Count syllables in words, sentences, or poems. See syllable breakdown and stress patterns for poetry and songwriting."
         canonicalPath="/syllables"
         keywords="syllable counter, count syllables, how many syllables, syllable breakdown, stress pattern, poetry syllables"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do you count syllables in a word?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Count the vowel sounds (not letters) in the word. Subtract silent vowels (like the 'e' at the end of 'cake') and vowel pairs that make one sound (like 'ou' in 'soup'). Our syllable counter uses the CMU Pronouncing Dictionary for accurate counts based on actual pronunciation."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a stress pattern in poetry?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A stress pattern shows which syllables are emphasized (stressed) when pronouncing a word. Primary stress is the main emphasis, secondary stress is a lighter emphasis, and unstressed syllables are spoken more softly. Understanding stress patterns helps with writing metered poetry."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why do some words have different syllable counts?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Some words vary in syllable count based on dialect or speech patterns. For example, 'caramel' can be 2 or 3 syllables, 'fire' can be 1 or 2, and 'comfortable' can be 3 or 4. Our counter uses standard American English pronunciation."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How many syllables are in common tricky words?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Some commonly mispronounced words: 'beautiful' has 3 syllables, 'interesting' has 4, 'chocolate' has 3, 'different' has 3, 'business' has 2, 'poem' has 2, 'fire' has 1 (in most American dialects), and 'hour' has 1."
+              }
+            }
+          ]
+        }}
       />
 
       <div className="syllable-counter">
@@ -118,9 +156,20 @@ export function SyllableCounter() {
             className="syllable-input"
             rows={4}
           />
-          <button type="submit" className="syllable-button">
-            {input.trim() && !input.includes(' ') ? 'View Details' : 'Count Syllables'}
-          </button>
+          <div className="syllable-actions">
+            <button type="submit" className="syllable-button">
+              {input.trim() && !input.includes(' ') ? 'View Details' : 'Count Syllables'}
+            </button>
+            {input.trim() && (
+              <button
+                type="button"
+                onClick={() => { setInput(''); setResults([]); setTotalSyllables(0); }}
+                className="clear-button"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </form>
 
         {totalSyllables > 0 && (

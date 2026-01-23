@@ -42,6 +42,7 @@ export interface RhymeWord {
   score: number;
   numSyllables?: number;
   rhymeQuality?: number; // 0-1, calculated from phonetic comparison
+  partsOfSpeech?: string[]; // e.g., ['n', 'v'] for noun/verb
 }
 
 export interface SynonymWord {
@@ -57,8 +58,9 @@ export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
   try {
     console.log(`Fetching perfect rhymes for: ${word}`);
 
+    // Add md=p to get parts of speech metadata
     const response = await fetch(
-      `https://api.datamuse.com/words?rel_rhy=${encodeURIComponent(word)}&max=50`,
+      `https://api.datamuse.com/words?rel_rhy=${encodeURIComponent(word)}&md=p&max=50`,
       {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
@@ -77,12 +79,21 @@ export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
     const sourcePhonemes = getRhymePhonemes(word);
 
     // Calculate rhyme quality for each word using CMU dictionary phonetics
-    const rhymesWithQuality = data.map((item: any) => ({
-      word: item.word,
-      score: item.score || 0,
-      numSyllables: item.numSyllables,
-      rhymeQuality: calculateRhymeQualityFast(sourcePhonemes, item.word),
-    }));
+    // Also extract parts of speech from tags
+    const rhymesWithQuality = data.map((item: any) => {
+      // Extract parts of speech from tags (e.g., ["n", "v"])
+      const partsOfSpeech = item.tags?.filter((tag: string) =>
+        ['n', 'v', 'adj', 'adv', 'u', 'prop'].includes(tag)
+      ) || [];
+
+      return {
+        word: item.word,
+        score: item.score || 0,
+        numSyllables: item.numSyllables,
+        rhymeQuality: calculateRhymeQualityFast(sourcePhonemes, item.word),
+        partsOfSpeech,
+      };
+    });
 
     // Sort by rhyme quality (perfect rhymes first), then by original API score
     rhymesWithQuality.sort((a: RhymeWord, b: RhymeWord) => {
@@ -108,9 +119,9 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
   try {
     console.log(`Fetching near rhymes and slant rhymes for: ${word}`);
 
-    // First try near rhymes endpoint
+    // First try near rhymes endpoint with parts of speech metadata
     const nearResponse = await fetch(
-      `https://api.datamuse.com/words?rel_nry=${encodeURIComponent(word)}&max=100`,
+      `https://api.datamuse.com/words?rel_nry=${encodeURIComponent(word)}&md=p&max=100`,
       {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
@@ -129,7 +140,7 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
     if (nearData.length === 0) {
       console.log(`No near rhymes found, trying sounds-like fallback for: ${word}`);
       const slResponse = await fetch(
-        `https://api.datamuse.com/words?sl=${encodeURIComponent(word)}&max=100`,
+        `https://api.datamuse.com/words?sl=${encodeURIComponent(word)}&md=p&max=100`,
         {
           method: 'GET',
           headers: { 'Accept': 'application/json' }
@@ -146,11 +157,19 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
       }
     }
 
-    return nearData.map((item: any) => ({
-      word: item.word,
-      score: item.score || 0,
-      numSyllables: item.numSyllables,
-    }));
+    return nearData.map((item: any) => {
+      // Extract parts of speech from tags
+      const partsOfSpeech = item.tags?.filter((tag: string) =>
+        ['n', 'v', 'adj', 'adv', 'u', 'prop'].includes(tag)
+      ) || [];
+
+      return {
+        word: item.word,
+        score: item.score || 0,
+        numSyllables: item.numSyllables,
+        partsOfSpeech,
+      };
+    });
   } catch (error) {
     console.error('Error fetching near/slant rhymes:', error);
     return [];

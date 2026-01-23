@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, ReactNode } from 'react';
+import { useState, useRef, useEffect, ReactNode, useCallback } from 'react';
 import { fetchWordInfo, WordDefinition } from '../utils/wordInfoApi';
 import './DefinitionTooltip.css';
 
@@ -11,46 +11,86 @@ interface DefinitionTooltipProps {
 const definitionCache = new Map<string, WordDefinition[] | null>();
 
 export function DefinitionTooltip({ word, children }: DefinitionTooltipProps) {
-  const [isHovering, setIsHovering] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [definitions, setDefinitions] = useState<WordDefinition[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [position, setPosition] = useState<'above' | 'below'>('above');
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLSpanElement>(null);
 
-  const handleMouseEnter = () => {
-    // Delay showing tooltip to avoid accidental triggers
-    hoverTimeoutRef.current = setTimeout(() => {
-      setIsHovering(true);
+  const showTooltip = useCallback(() => {
+    setIsVisible(true);
 
-      // Check position relative to viewport
-      if (wrapperRef.current) {
-        const rect = wrapperRef.current.getBoundingClientRect();
-        const spaceAbove = rect.top;
-        setPosition(spaceAbove < 150 ? 'below' : 'above');
-      }
+    // Check position relative to viewport
+    if (wrapperRef.current) {
+      const rect = wrapperRef.current.getBoundingClientRect();
+      const spaceAbove = rect.top;
+      setPosition(spaceAbove < 150 ? 'below' : 'above');
+    }
 
-      // Fetch definitions if not cached
-      if (!definitionCache.has(word)) {
-        setLoading(true);
-        fetchWordInfo(word).then((info) => {
-          const defs = info?.definitions || null;
-          definitionCache.set(word, defs);
-          setDefinitions(defs);
-          setLoading(false);
-        });
-      } else {
-        setDefinitions(definitionCache.get(word) || null);
-      }
-    }, 300); // 300ms delay before showing
-  };
+    // Fetch definitions if not cached
+    if (!definitionCache.has(word)) {
+      setLoading(true);
+      fetchWordInfo(word).then((info) => {
+        const defs = info?.definitions || null;
+        definitionCache.set(word, defs);
+        setDefinitions(defs);
+        setLoading(false);
+      });
+    } else {
+      setDefinitions(definitionCache.get(word) || null);
+    }
+  }, [word]);
 
-  const handleMouseLeave = () => {
+  const hideTooltip = useCallback(() => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
-    setIsHovering(false);
+    setIsVisible(false);
+  }, []);
+
+  const handleMouseEnter = () => {
+    // Delay showing tooltip to avoid accidental triggers
+    hoverTimeoutRef.current = setTimeout(showTooltip, 300);
   };
+
+  const handleMouseLeave = () => {
+    hideTooltip();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    // Prevent default to avoid triggering mouse events
+    e.stopPropagation();
+
+    if (isVisible) {
+      // If already visible, hide it
+      hideTooltip();
+    } else {
+      // Show tooltip immediately on touch
+      showTooltip();
+    }
+  };
+
+  // Close tooltip when clicking outside on touch devices
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const handleTouchOutside = (e: TouchEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        hideTooltip();
+      }
+    };
+
+    // Add listener with a small delay to avoid immediate close
+    const timeout = setTimeout(() => {
+      document.addEventListener('touchstart', handleTouchOutside);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeout);
+      document.removeEventListener('touchstart', handleTouchOutside);
+    };
+  }, [isVisible, hideTooltip]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -67,9 +107,10 @@ export function DefinitionTooltip({ word, children }: DefinitionTooltipProps) {
       className="definition-tooltip-wrapper"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
     >
       {children}
-      {isHovering && (
+      {isVisible && (
         <div className={`definition-tooltip ${position}`}>
           <div className="tooltip-word">{word}</div>
           {loading ? (
