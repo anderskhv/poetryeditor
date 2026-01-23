@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { PoetryEditor } from './components/PoetryEditor';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
+import { ShareModal } from './components/ShareModal';
 import { useDebouncedLocalStorage } from './hooks/useLocalStorage';
 import { useCollection } from './hooks/useCollection';
 import { WordInfo } from './types';
@@ -260,6 +261,7 @@ function App() {
 
   const [showExportMenu, setShowExportMenu] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
+  const [showShareModal, setShowShareModal] = useState<boolean>(false);
 
   const handleExportPoem = (format: 'txt' | 'md') => {
     setShowExportMenu(false);
@@ -492,6 +494,13 @@ function App() {
                 </div>
               )}
             </div>
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="btn btn-menu"
+              aria-label="Share poem"
+            >
+              Share
+            </button>
             <div className="font-dropdown">
               <button
                 onClick={() => setShowFontMenu(!showFontMenu)}
@@ -738,6 +747,13 @@ function App() {
           <span>© {new Date().getFullYear()} poetryeditor.com</span>
         </div>
       </footer>
+
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        poemTitle={poemTitle}
+        poemText={text}
+      />
     </div>
   );
 }

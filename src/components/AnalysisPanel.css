@@ -3450,6 +3450,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s ease;
+  text-decoration: none;
 }
 
 .ac-word.abstract {
@@ -3465,6 +3466,30 @@
   font-size: 11px;
   color: #888;
   padding: 3px 8px;
+}
+
+.ac-tool-link {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.ac-tool-link .tool-link {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  padding: 6px 12px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.ac-tool-link .tool-link:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+  background: var(--color-background);
 }
 
 /* ========================================

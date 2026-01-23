@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { WordInfo } from '../types';
 import { getSyllableCounts } from '../utils/syllableCounter';
 import { getPOSDistribution } from '../utils/nlpProcessor';
@@ -1243,19 +1244,25 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
               <div className="ac-word-header">Abstract words found:</div>
               <div className="ac-words">
                 {analysis.abstractConcreteAnalysis.abstractWords.slice(0, 10).map((item, idx) => (
-                  <span
+                  <Link
                     key={idx}
+                    to={`/imagery/${encodeURIComponent(item.word)}`}
                     className="ac-word abstract"
-                    title={item.category}
+                    title={`${item.category} — click to find concrete alternatives`}
                     onMouseEnter={() => onHighlightWords?.([{ word: item.word, lineNumber: item.lineNumber }])}
                     onMouseLeave={() => onHighlightWords?.(null)}
                   >
                     {item.word}
-                  </span>
+                  </Link>
                 ))}
                 {analysis.abstractConcreteAnalysis.abstractWords.length > 10 && (
                   <span className="ac-more">+{analysis.abstractConcreteAnalysis.abstractWords.length - 10} more</span>
                 )}
+              </div>
+              <div className="ac-tool-link">
+                <Link to="/imagery" className="tool-link">
+                  Imagery Tool — find concrete alternatives
+                </Link>
               </div>
             </div>
           )}
