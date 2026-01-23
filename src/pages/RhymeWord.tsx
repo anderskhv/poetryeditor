@@ -44,10 +44,6 @@ export function RhymeWord() {
   const [meterFilter, setMeterFilter] = useState<MeterFilter>('all');
   const [originalityFilter, setOriginalityFilter] = useState<OriginalityFilter>('all');
   const [wordTypeFilter, setWordTypeFilter] = useState<WordTypeFilter>('all');
-  // Hover states for highlighting (not filtering yet)
-  const [hoverMeter, setHoverMeter] = useState<MeterFilter | null>(null);
-  const [hoverOriginality, setHoverOriginality] = useState<OriginalityFilter | null>(null);
-  const [hoverWordType, setHoverWordType] = useState<WordTypeFilter | null>(null);
 
   const decodedWord = word ? decodeURIComponent(word).toLowerCase() : '';
   const stresses = getStressPattern(decodedWord);
@@ -174,22 +170,6 @@ export function RhymeWord() {
     );
   };
 
-  // Check if a word should be highlighted (based on hover state)
-  const shouldHighlight = (rhyme: RhymeWordType): boolean => {
-    // If no hover state, no highlight
-    if (!hoverMeter && !hoverOriginality && !hoverWordType) return false;
-
-    // Check each hover filter - word must match ALL hovered filters
-    if (hoverMeter && hoverMeter !== 'all' && !matchesMeter(rhyme.word, hoverMeter)) return false;
-    if (hoverOriginality && hoverOriginality !== 'all' && !matchesOriginality(rhyme.word, hoverOriginality)) return false;
-    if (hoverWordType && hoverWordType !== 'all' && !matchesWordType(rhyme, hoverWordType)) return false;
-
-    return true;
-  };
-
-  // Check if ANY hover state is active (to dim non-matching words)
-  const isHoverActive = hoverMeter !== null || hoverOriginality !== null || hoverWordType !== null;
-
   const filteredPerfect = applyAllFilters(perfectRhymes);
   const filteredNear = applyAllFilters(nearRhymes);
 
@@ -275,132 +255,64 @@ export function RhymeWord() {
               </button>
             </div>
 
-            <div className="rhyme-filters">
-              <div className="filter-group">
-                <span className="filter-label">Meter:</span>
-                <button
-                  className={`filter-btn ${meterFilter === 'all' ? 'active' : ''}`}
-                  onClick={() => setMeterFilter('all')}
-                  onMouseEnter={() => setHoverMeter('all')}
-                  onMouseLeave={() => setHoverMeter(null)}
+            <div className="filter-bar">
+              <div className="filter-item">
+                <label className="filter-label">Meter</label>
+                <select
+                  value={meterFilter}
+                  onChange={(e) => setMeterFilter(e.target.value as MeterFilter)}
+                  className="filter-select"
                 >
-                  All
-                </button>
-                <button
-                  className={`filter-btn ${meterFilter === 'iambic' ? 'active' : ''}`}
-                  onClick={() => setMeterFilter('iambic')}
-                  onMouseEnter={() => setHoverMeter('iambic')}
-                  onMouseLeave={() => setHoverMeter(null)}
-                  title="Words ending on a stressed syllable (da-DUM)"
-                >
-                  Iambic
-                </button>
-                <button
-                  className={`filter-btn ${meterFilter === 'trochaic' ? 'active' : ''}`}
-                  onClick={() => setMeterFilter('trochaic')}
-                  onMouseEnter={() => setHoverMeter('trochaic')}
-                  onMouseLeave={() => setHoverMeter(null)}
-                  title="Words ending on an unstressed syllable (DUM-da)"
-                >
-                  Trochaic
-                </button>
+                  <option value="all">Any</option>
+                  <option value="iambic">Iambic</option>
+                  <option value="trochaic">Trochaic</option>
+                </select>
               </div>
 
-              <div className="filter-group">
-                <span className="filter-label">Originality:</span>
-                <button
-                  className={`filter-btn ${originalityFilter === 'all' ? 'active' : ''}`}
-                  onClick={() => setOriginalityFilter('all')}
-                  onMouseEnter={() => setHoverOriginality('all')}
-                  onMouseLeave={() => setHoverOriginality(null)}
+              <div className="filter-item">
+                <label className="filter-label">Originality</label>
+                <select
+                  value={originalityFilter}
+                  onChange={(e) => setOriginalityFilter(e.target.value as OriginalityFilter)}
+                  className="filter-select"
                 >
-                  All
-                </button>
-                <button
-                  className={`filter-btn ${originalityFilter === 'original' ? 'active' : ''}`}
-                  onClick={() => setOriginalityFilter('original')}
-                  onMouseEnter={() => setHoverOriginality('original')}
-                  onMouseLeave={() => setHoverOriginality(null)}
-                  title="Unique, unexpected rhyme pairings"
-                >
-                  Original
-                </button>
-                <button
-                  className={`filter-btn ${originalityFilter === 'fresh' ? 'active' : ''}`}
-                  onClick={() => setOriginalityFilter('fresh')}
-                  onMouseEnter={() => setHoverOriginality('fresh')}
-                  onMouseLeave={() => setHoverOriginality(null)}
-                  title="Less common rhyme pairings"
-                >
-                  Fresh
-                </button>
-                <button
-                  className={`filter-btn ${originalityFilter === 'common' ? 'active' : ''}`}
-                  onClick={() => setOriginalityFilter('common')}
-                  onMouseEnter={() => setHoverOriginality('common')}
-                  onMouseLeave={() => setHoverOriginality(null)}
-                  title="Frequently used rhyme pairings"
-                >
-                  Common
-                </button>
-                <button
-                  className={`filter-btn ${originalityFilter === 'cliche' ? 'active' : ''}`}
-                  onClick={() => setOriginalityFilter('cliche')}
-                  onMouseEnter={() => setHoverOriginality('cliche')}
-                  onMouseLeave={() => setHoverOriginality(null)}
-                  title="Overused rhyme pairings"
-                >
-                  Cliché
-                </button>
+                  <option value="all">Any</option>
+                  <option value="original">Original</option>
+                  <option value="fresh">Fresh</option>
+                  <option value="common">Common</option>
+                  <option value="overused">Overused</option>
+                  <option value="cliche">Cliché</option>
+                </select>
               </div>
 
-              <div className="filter-group">
-                <span className="filter-label">Word Type:</span>
-                <button
-                  className={`filter-btn ${wordTypeFilter === 'all' ? 'active' : ''}`}
-                  onClick={() => setWordTypeFilter('all')}
-                  onMouseEnter={() => setHoverWordType('all')}
-                  onMouseLeave={() => setHoverWordType(null)}
+              <div className="filter-item">
+                <label className="filter-label">Word Type</label>
+                <select
+                  value={wordTypeFilter}
+                  onChange={(e) => setWordTypeFilter(e.target.value as WordTypeFilter)}
+                  className="filter-select"
                 >
-                  All
-                </button>
-                <button
-                  className={`filter-btn ${wordTypeFilter === 'noun' ? 'active' : ''}`}
-                  onClick={() => setWordTypeFilter('noun')}
-                  onMouseEnter={() => setHoverWordType('noun')}
-                  onMouseLeave={() => setHoverWordType(null)}
-                  title="Nouns (person, place, thing)"
-                >
-                  Noun
-                </button>
-                <button
-                  className={`filter-btn ${wordTypeFilter === 'verb' ? 'active' : ''}`}
-                  onClick={() => setWordTypeFilter('verb')}
-                  onMouseEnter={() => setHoverWordType('verb')}
-                  onMouseLeave={() => setHoverWordType(null)}
-                  title="Verbs (action words)"
-                >
-                  Verb
-                </button>
-                <button
-                  className={`filter-btn ${wordTypeFilter === 'adjective' ? 'active' : ''}`}
-                  onClick={() => setWordTypeFilter('adjective')}
-                  onMouseEnter={() => setHoverWordType('adjective')}
-                  onMouseLeave={() => setHoverWordType(null)}
-                  title="Adjectives (describe nouns)"
-                >
-                  Adjective
-                </button>
-                <button
-                  className={`filter-btn ${wordTypeFilter === 'adverb' ? 'active' : ''}`}
-                  onClick={() => setWordTypeFilter('adverb')}
-                  onMouseEnter={() => setHoverWordType('adverb')}
-                  onMouseLeave={() => setHoverWordType(null)}
-                  title="Adverbs (describe verbs)"
-                >
-                  Adverb
-                </button>
+                  <option value="all">Any</option>
+                  <option value="noun">Noun</option>
+                  <option value="verb">Verb</option>
+                  <option value="adjective">Adjective</option>
+                  <option value="adverb">Adverb</option>
+                </select>
               </div>
+
+              {(meterFilter !== 'all' || originalityFilter !== 'all' || wordTypeFilter !== 'all') && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMeterFilter('all');
+                    setOriginalityFilter('all');
+                    setWordTypeFilter('all');
+                  }}
+                  className="clear-filters-btn"
+                >
+                  Clear
+                </button>
+              )}
             </div>
 
             {Object.keys(activeResults).length === 0 ? (
@@ -426,15 +338,12 @@ export function RhymeWord() {
                             // Determine rarity class based on Datamuse score
                             // Higher score = more common word
                             const rarityClass = rhyme.score > 5000 ? 'common' : rhyme.score > 1000 ? '' : 'rare';
-                            // Determine if this word should be highlighted or dimmed
-                            const highlighted = shouldHighlight(rhyme);
-                            const dimmed = isHoverActive && !highlighted;
 
                             return (
                               <DefinitionTooltip key={idx} word={rhyme.word}>
                                 <Link
                                   to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
-                                  className={`rhyme-word-item ${rarityClass} ${highlighted ? 'highlighted' : ''} ${dimmed ? 'dimmed' : ''}`}
+                                  className={`rhyme-word-item ${rarityClass}`}
                                 >
                                   {rhyme.word}
                                 </Link>

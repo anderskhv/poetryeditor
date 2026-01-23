@@ -19,12 +19,14 @@ interface EnhancedRhymeWord extends RhymeWord {
   isCliche?: boolean;
 }
 
+type WordTypeFilter = 'all' | 'noun' | 'verb' | 'adjective' | 'adverb';
+
 export function RhymeDictionary() {
   const [searchWord, setSearchWord] = useState('');
   const [topicWord, setTopicWord] = useState('');
-  const [syllableFilter, setSyllableFilter] = useState<number | null>(null);
-  const [avoidCliches, setAvoidCliches] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
+  const [syllableFilter, setSyllableFilter] = useState<string>('all');
+  const [clicheFilter, setClicheFilter] = useState<string>('all');
+  const [wordTypeFilter, setWordTypeFilter] = useState<WordTypeFilter>('all');
   const [results, setResults] = useState<EnhancedRhymeWord[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -96,7 +98,7 @@ export function RhymeDictionary() {
     if (!word) return;
 
     // If no filters are applied, navigate to the word page for SEO
-    if (!topicWord.trim() && syllableFilter === null && !avoidCliches) {
+    if (!topicWord.trim() && syllableFilter === 'all' && clicheFilter === 'all' && wordTypeFilter === 'all') {
       navigate(`/rhymes/${encodeURIComponent(word)}`);
     } else {
       // Perform search with filters
@@ -110,21 +112,38 @@ export function RhymeDictionary() {
 
   const clearFilters = () => {
     setTopicWord('');
-    setSyllableFilter(null);
-    setAvoidCliches(false);
+    setSyllableFilter('all');
+    setClicheFilter('all');
+    setWordTypeFilter('all');
   };
 
   // Apply filters to results
   const filteredResults = results.filter(rhyme => {
     // Syllable filter
-    if (syllableFilter !== null) {
+    if (syllableFilter !== 'all') {
       const sylCount = rhyme.numSyllables || getSyllables(rhyme.word).length || 0;
-      if (sylCount !== syllableFilter) return false;
+      if (sylCount !== Number(syllableFilter)) return false;
     }
 
     // Cliché filter
-    if (avoidCliches && rhyme.isCliche) {
+    if (clicheFilter === 'yes' && rhyme.isCliche) {
       return false;
+    }
+    if (clicheFilter === 'no' && !rhyme.isCliche) {
+      return false;
+    }
+
+    // Word type filter
+    if (wordTypeFilter !== 'all') {
+      const posMap: Record<string, string[]> = {
+        'noun': ['n', 'prop'],
+        'verb': ['v'],
+        'adjective': ['adj'],
+        'adverb': ['adv'],
+      };
+      const allowedTags = posMap[wordTypeFilter] || [];
+      const hasPOS = rhyme.partsOfSpeech?.some(pos => allowedTags.includes(pos));
+      if (!hasPOS) return false;
     }
 
     return true;
@@ -143,7 +162,7 @@ export function RhymeDictionary() {
     r.numSyllables || getSyllables(r.word).length || 0
   ))].sort((a, b) => a - b);
 
-  const hasActiveFilters = topicWord.trim() || syllableFilter !== null || avoidCliches;
+  const hasActiveFilters = topicWord.trim() || syllableFilter !== 'all' || clicheFilter !== 'all' || wordTypeFilter !== 'all';
 
   return (
     <Layout>
@@ -205,63 +224,66 @@ export function RhymeDictionary() {
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setShowFilters(!showFilters)}
-            className="filter-toggle-btn"
-          >
-            {showFilters ? '▾ Hide Filters' : '▸ Show Filters'} {hasActiveFilters && <span className="filter-badge">Active</span>}
-          </button>
-
-          {showFilters && (
-            <div className="filter-panel">
-              <div className="filter-row">
-                <div className="filter-group">
-                  <label className="filter-label">About (topic)</label>
-                  <input
-                    type="text"
-                    value={topicWord}
-                    onChange={(e) => setTopicWord(e.target.value)}
-                    placeholder="e.g., ocean, love, darkness..."
-                    className="filter-input"
-                  />
-                  <span className="filter-hint">Find rhymes related to this meaning</span>
-                </div>
-
-                <div className="filter-group">
-                  <label className="filter-label">Syllables</label>
-                  <select
-                    value={syllableFilter ?? ''}
-                    onChange={(e) => setSyllableFilter(e.target.value ? Number(e.target.value) : null)}
-                    className="filter-select"
-                  >
-                    <option value="">Any</option>
-                    {[1, 2, 3, 4, 5, 6].map(n => (
-                      <option key={n} value={n}>{n} {n === 1 ? 'syllable' : 'syllables'}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="filter-row">
-                <label className="filter-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={avoidCliches}
-                    onChange={(e) => setAvoidCliches(e.target.checked)}
-                  />
-                  <span>Avoid clichés</span>
-                  <span className="filter-hint-inline">Hide overused rhyme pairs like love/above</span>
-                </label>
-
-                {hasActiveFilters && (
-                  <button type="button" onClick={clearFilters} className="clear-filters-btn">
-                    Clear filters
-                  </button>
-                )}
-              </div>
+          <div className="filter-bar">
+            <div className="filter-item">
+              <label className="filter-label">Syllables</label>
+              <select
+                value={syllableFilter}
+                onChange={(e) => setSyllableFilter(e.target.value)}
+                className="filter-select"
+              >
+                <option value="all">Any</option>
+                {[1, 2, 3, 4, 5, 6].map(n => (
+                  <option key={n} value={n}>{n}</option>
+                ))}
+              </select>
             </div>
-          )}
+
+            <div className="filter-item">
+              <label className="filter-label">Clichés</label>
+              <select
+                value={clicheFilter}
+                onChange={(e) => setClicheFilter(e.target.value)}
+                className="filter-select"
+              >
+                <option value="all">Show all</option>
+                <option value="yes">Hide clichés</option>
+                <option value="no">Only clichés</option>
+              </select>
+            </div>
+
+            <div className="filter-item">
+              <label className="filter-label">Word Type</label>
+              <select
+                value={wordTypeFilter}
+                onChange={(e) => setWordTypeFilter(e.target.value as WordTypeFilter)}
+                className="filter-select"
+              >
+                <option value="all">Any</option>
+                <option value="noun">Noun</option>
+                <option value="verb">Verb</option>
+                <option value="adjective">Adjective</option>
+                <option value="adverb">Adverb</option>
+              </select>
+            </div>
+
+            <div className="filter-item filter-item-topic">
+              <label className="filter-label">Topic</label>
+              <input
+                type="text"
+                value={topicWord}
+                onChange={(e) => setTopicWord(e.target.value)}
+                placeholder="e.g., ocean, love..."
+                className="filter-input"
+              />
+            </div>
+
+            {hasActiveFilters && (
+              <button type="button" onClick={clearFilters} className="clear-filters-btn">
+                Clear
+              </button>
+            )}
+          </div>
         </form>
 
         {!searched && (

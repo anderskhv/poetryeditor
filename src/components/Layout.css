@@ -10,45 +10,53 @@
 .layout-header {
   background: var(--color-paper, #fdfcfa);
   border-bottom: 1px solid var(--color-border, rgba(0, 0, 0, 0.06));
-  padding: 0 24px;
-  height: 56px;
+  padding: 0 32px;
+  height: var(--header-height, 48px);
   display: flex;
   align-items: center;
 }
 
 .layout-header-content {
-  max-width: 1200px;
+  max-width: 1800px;
   width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
 }
 
 .layout-logo-group {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
   text-decoration: none;
 }
 
 .layout-logo {
   font-family: var(--font-serif, 'Libre Baskerville', Georgia, serif);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
-  color: var(--color-text-primary, #2a2a2a);
+  color: var(--color-text-muted, #9a9a9a);
   line-height: 1;
+  letter-spacing: 0;
+  margin: 0;
 }
 
 .layout-subtitle {
   font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
   font-size: 11px;
+  font-weight: 400;
   color: var(--color-text-muted, #9a9a9a);
+  opacity: 0.6;
   line-height: 1;
 }
 
-.layout-logo-group:hover .layout-logo {
+.layout-logo-group:hover .layout-logo,
+.layout-logo-group:hover .layout-subtitle {
   color: var(--color-text-secondary, #6a6a6a);
+  opacity: 1;
 }
 
 /* Navigation */
@@ -249,6 +257,7 @@
 @media (max-width: 768px) {
   .layout-header {
     padding: 0 16px;
+    height: 48px;
   }
 
   .mobile-menu-toggle {
@@ -257,7 +266,7 @@
 
   .layout-nav {
     position: fixed;
-    top: 56px;
+    top: 48px;
     left: 0;
     right: 0;
     background: var(--color-paper, #fdfcfa);
@@ -328,7 +337,7 @@
   .mobile-menu-overlay {
     display: block;
     position: fixed;
-    top: 56px;
+    top: 48px;
     left: 0;
     right: 0;
     bottom: 0;
