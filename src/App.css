@@ -313,9 +313,61 @@
 }
 
 .font-dropdown,
+.paragraph-dropdown,
 .theme-dropdown,
 .tools-dropdown {
   position: relative;
+}
+
+.paragraph-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: var(--color-paper);
+  border-radius: 4px;
+  box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
+  min-width: 180px;
+  z-index: var(--z-index-dropdown);
+  overflow: hidden;
+}
+
+.paragraph-menu-section {
+  padding: 8px 0;
+}
+
+.paragraph-menu-section:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.paragraph-menu-label {
+  padding: 4px 16px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.paragraph-item {
+  width: 100%;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.paragraph-item:hover {
+  background: var(--color-background);
+}
+
+.paragraph-item.active {
+  background: var(--color-background);
+  font-weight: 500;
 }
 
 .tools-menu {
@@ -511,6 +563,35 @@
   flex-direction: column;
   overflow: hidden;
   background-color: var(--color-paper);
+}
+
+/* Paragraph alignment - center */
+.poetry-editor-container.align-center .monaco-editor .view-lines {
+  text-align: center !important;
+}
+
+.poetry-editor-container.align-center .poem-title-container {
+  text-align: center;
+}
+
+.poetry-editor-container.align-center .poem-title-editor-input {
+  text-align: center;
+}
+
+/* Paragraph indent - every other line */
+.poetry-editor-container.indent-alternate .monaco-editor .view-line:nth-child(even) {
+  padding-left: 2em !important;
+}
+
+/* Paragraph indent - first line of stanza (after blank lines) */
+.poetry-editor-container.indent-stanza .monaco-editor .view-line {
+  /* Default: indented */
+  padding-left: 2em !important;
+}
+
+.poetry-editor-container.indent-stanza .monaco-editor .view-line:first-child {
+  /* First line of poem: not indented */
+  padding-left: 0 !important;
 }
 
 /* ============================================
@@ -953,6 +1034,7 @@
 :root.dark-mode .export-menu,
 :root.dark-mode .overflow-menu,
 :root.dark-mode .font-menu,
+:root.dark-mode .paragraph-menu,
 :root.dark-mode .theme-menu {
   background: var(--color-paper);
   box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
@@ -962,6 +1044,7 @@
 :root.dark-mode .export-item,
 :root.dark-mode .overflow-item,
 :root.dark-mode .font-item,
+:root.dark-mode .paragraph-item,
 :root.dark-mode .theme-item {
   color: var(--color-text-primary);
 }
@@ -970,12 +1053,14 @@
 :root.dark-mode .export-item:hover,
 :root.dark-mode .overflow-item:hover,
 :root.dark-mode .font-item:hover,
+:root.dark-mode .paragraph-item:hover,
 :root.dark-mode .theme-item:hover {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
 :root.dark-mode .poem-item.active,
 :root.dark-mode .font-item.active,
+:root.dark-mode .paragraph-item.active,
 :root.dark-mode .theme-item.active {
   background-color: rgba(255, 255, 255, 0.08);
 }
@@ -1036,4 +1121,190 @@
 :root.dark-mode .panel-toggle:hover {
   background: var(--color-panel-toggle-hover-bg);
   color: var(--color-panel-toggle-text);
+}
+
+/* ============================================
+   YELLOW MODE - Warm parchment aesthetic
+   ============================================ */
+
+:root.yellow-mode {
+  --color-background: #e8ddb5;
+  --color-paper: #f5e6b8;
+  --color-text-primary: #3a3020;
+  --color-text-secondary: #5a5040;
+  --color-text-muted: #8a7a60;
+  --color-border: rgba(60, 50, 30, 0.12);
+  --color-shadow: rgba(60, 50, 30, 0.08);
+
+  /* Editorial feedback colors - yellow mode */
+  --color-ink-base: #6a5a4a;
+  --color-ink-emphasis: #4a3a2a;
+  --color-ink-light: #9a8a7a;
+  --color-attention: #8a6a4a;
+  --color-attention-bg: rgba(138, 106, 74, 0.1);
+  --color-notation: #6a7a5a;
+  --color-notation-bg: rgba(106, 122, 90, 0.1);
+
+  /* Inline feedback - yellow mode */
+  --color-underline: rgba(60, 50, 30, 0.3);
+  --color-underline-dotted: rgba(60, 50, 30, 0.25);
+  --color-highlight-subtle: rgba(60, 50, 30, 0.06);
+
+  /* Interactive highlight colors - yellow mode */
+  --color-highlight-active: hsl(40, 50%, 85%);
+  --color-highlight-active-border: hsl(40, 40%, 60%);
+  --color-highlight-active-glow: hsl(40, 45%, 80%);
+  --color-accent-synonym: hsl(40, 40%, 88%);
+  --color-accent-synonym-border: hsl(40, 30%, 75%);
+  --color-accent-antonym: hsl(20, 40%, 88%);
+  --color-accent-antonym-border: hsl(20, 30%, 75%);
+
+  /* Score badges - yellow mode */
+  --color-score-excellent: hsl(145, 45%, 40%);
+  --color-score-good: hsl(80, 45%, 40%);
+  --color-score-fair: hsl(40, 60%, 45%);
+  --color-score-needs-work: hsl(0, 45%, 50%);
+
+  /* Syllable badges - yellow mode */
+  --color-syllable-good-bg: hsl(145, 35%, 85%);
+  --color-syllable-good-text: hsl(145, 45%, 30%);
+  --color-syllable-off-bg: hsl(40, 45%, 85%);
+  --color-syllable-off-text: hsl(40, 55%, 30%);
+
+  /* Issues section - yellow mode */
+  --color-issues-bg: hsl(40, 45%, 90%);
+  --color-issues-border: hsl(40, 35%, 75%);
+  --color-issues-title: hsl(40, 45%, 30%);
+  --color-issues-text: hsl(40, 35%, 25%);
+
+  /* Button colors - yellow mode */
+  --color-btn-tools-bg: #7a6a5a;
+  --color-btn-tools-hover-bg: #6a5a4a;
+  --color-btn-tools-text: #ffffff;
+  --color-panel-toggle-bg: #5a4a3a;
+  --color-panel-toggle-hover-bg: #4a3a2a;
+  --color-panel-toggle-text: #f5e6b8;
+}
+
+:root.yellow-mode .app {
+  background-color: var(--color-background);
+}
+
+:root.yellow-mode .app-header {
+  background-color: var(--color-paper);
+  border-bottom-color: var(--color-border);
+}
+
+:root.yellow-mode .app-title {
+  color: var(--color-text-muted);
+}
+
+:root.yellow-mode .btn,
+:root.yellow-mode .btn-menu {
+  color: var(--color-text-secondary);
+}
+
+:root.yellow-mode .btn:hover,
+:root.yellow-mode .btn-menu:hover {
+  color: var(--color-text-primary);
+}
+
+:root.yellow-mode .poems-menu,
+:root.yellow-mode .export-menu,
+:root.yellow-mode .overflow-menu,
+:root.yellow-mode .font-menu,
+:root.yellow-mode .paragraph-menu,
+:root.yellow-mode .theme-menu {
+  background: var(--color-paper);
+  border-color: var(--color-border);
+}
+
+:root.yellow-mode .poem-item,
+:root.yellow-mode .export-item,
+:root.yellow-mode .overflow-item,
+:root.yellow-mode .font-item,
+:root.yellow-mode .paragraph-item,
+:root.yellow-mode .theme-item {
+  color: var(--color-text-secondary);
+}
+
+:root.yellow-mode .poem-item:hover,
+:root.yellow-mode .export-item:hover,
+:root.yellow-mode .overflow-item:hover,
+:root.yellow-mode .font-item:hover,
+:root.yellow-mode .paragraph-item:hover,
+:root.yellow-mode .theme-item:hover {
+  background: var(--color-background);
+}
+
+:root.yellow-mode .poem-item.active,
+:root.yellow-mode .font-item.active,
+:root.yellow-mode .paragraph-item.active,
+:root.yellow-mode .theme-item.active {
+  background: var(--color-background);
+}
+
+:root.yellow-mode .editor-pane {
+  background-color: var(--color-paper);
+}
+
+:root.yellow-mode .poetry-editor-container {
+  background-color: var(--color-paper);
+}
+
+:root.yellow-mode .poem-title-container {
+  border-bottom-color: var(--color-border);
+}
+
+:root.yellow-mode .poem-title-editor-input {
+  color: var(--color-text-primary);
+}
+
+:root.yellow-mode .side-panel {
+  background-color: var(--color-paper);
+  border-left-color: var(--color-border);
+}
+
+:root.yellow-mode .panel-toggle {
+  background: var(--color-panel-toggle-bg);
+  color: var(--color-panel-toggle-text);
+}
+
+:root.yellow-mode .panel-toggle:hover {
+  background: var(--color-panel-toggle-hover-bg);
+}
+
+:root.yellow-mode .tools-menu {
+  background: var(--color-paper);
+  border-color: var(--color-border);
+}
+
+:root.yellow-mode .tools-item {
+  color: var(--color-text-secondary);
+}
+
+:root.yellow-mode .tools-item:hover {
+  background: var(--color-background);
+}
+
+:root.yellow-mode .btn-tools {
+  background: var(--color-btn-tools-bg);
+  color: var(--color-btn-tools-text);
+}
+
+:root.yellow-mode .btn-tools:hover {
+  background: var(--color-btn-tools-hover-bg);
+}
+
+:root.yellow-mode .mobile-overflow-menu {
+  background: var(--color-paper);
+  border-color: var(--color-border);
+}
+
+:root.yellow-mode .mobile-overflow-item {
+  color: var(--color-text-secondary);
+}
+
+:root.yellow-mode .mobile-overflow-item:hover {
+  background: var(--color-background);
 }

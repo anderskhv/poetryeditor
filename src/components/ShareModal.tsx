@@ -8,7 +8,7 @@ interface ShareModalProps {
   poemText: string;
 }
 
-type ShareFormat = 'instagram-square' | 'instagram-story' | 'tiktok';
+type ShareFormat = 'instagram-square' | 'instagram-story' | 'tiktok-x';
 
 interface FormatConfig {
   name: string;
@@ -22,16 +22,16 @@ const FORMATS: Record<ShareFormat, FormatConfig> = {
     name: 'Instagram Feed',
     width: 1080,
     height: 1080,
-    description: 'Square post (1:1)',
+    description: 'Square (1:1)',
   },
   'instagram-story': {
-    name: 'Instagram Story/Reel',
+    name: 'Story/Reel',
     width: 1080,
     height: 1920,
     description: 'Vertical (9:16)',
   },
-  'tiktok': {
-    name: 'TikTok',
+  'tiktok-x': {
+    name: 'TikTok / X',
     width: 1080,
     height: 1920,
     description: 'Vertical (9:16)',
@@ -41,26 +41,113 @@ const FORMATS: Record<ShareFormat, FormatConfig> = {
 const BACKGROUND_COLORS = [
   { name: 'Cream', value: '#fdfcfa', textColor: '#2a2a2a' },
   { name: 'White', value: '#ffffff', textColor: '#1a1a1a' },
+  { name: 'Yellow', value: '#f5e6b8', textColor: '#3a3020' },
+  { name: 'Parchment', value: '#f4eed8', textColor: '#3a3a3a' },
   { name: 'Black', value: '#1a1a1a', textColor: '#f5f5f5' },
   { name: 'Navy', value: '#1a2744', textColor: '#e8e8e8' },
   { name: 'Forest', value: '#1e3a2f', textColor: '#e8e8e8' },
   { name: 'Burgundy', value: '#4a1c2b', textColor: '#e8e8e8' },
-  { name: 'Slate', value: '#3a3f4b', textColor: '#e8e8e8' },
-  { name: 'Parchment', value: '#f4eed8', textColor: '#3a3a3a' },
 ];
+
+interface PageContent {
+  lines: string[];
+  pageNumber: number;
+  totalPages: number;
+}
 
 export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalProps) {
   const [selectedFormat, setSelectedFormat] = useState<ShareFormat>('instagram-square');
   const [selectedBgIndex, setSelectedBgIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pages, setPages] = useState<PageContent[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const previewRef = useRef<HTMLCanvasElement>(null);
 
   const selectedBg = BACKGROUND_COLORS[selectedBgIndex];
   const format = FORMATS[selectedFormat];
 
+  // Calculate how content splits across pages
+  const calculatePages = useCallback((scale: number = 1): PageContent[] => {
+    const padding = 80 * scale;
+    const titleFontSize = 32 * scale;
+    const poemFontSize = 24 * scale;
+    const lineHeight = 1.9;
+    const maxWidth = format.width * scale - (padding * 2);
+    const availableHeight = format.height * scale - (padding * 2) - 40 * scale; // Leave room for watermark
+
+    // Create a temp canvas to measure text
+    const tempCanvas = document.createElement('canvas');
+    const ctx = tempCanvas.getContext('2d');
+    if (!ctx) return [{ lines: [], pageNumber: 1, totalPages: 1 }];
+
+    ctx.font = `${poemFontSize}px 'Libre Baskerville', Georgia, serif`;
+
+    // Process all lines including wrapping
+    const allLines: string[] = [];
+    const rawLines = poemText.split('\n');
+
+    rawLines.forEach((line) => {
+      if (line.trim() === '') {
+        allLines.push(''); // Preserve blank lines
+        return;
+      }
+
+      // Check if line needs wrapping
+      if (ctx.measureText(line).width > maxWidth) {
+        const words = line.split(' ');
+        let currentLine = '';
+
+        words.forEach((word) => {
+          const testLine = currentLine + (currentLine ? ' ' : '') + word;
+          if (ctx.measureText(testLine).width > maxWidth && currentLine) {
+            allLines.push(currentLine);
+            currentLine = '    ' + word; // Indent wrapped lines
+          } else {
+            currentLine = testLine;
+          }
+        });
+
+        if (currentLine) {
+          allLines.push(currentLine);
+        }
+      } else {
+        allLines.push(line);
+      }
+    });
+
+    // Calculate lines per page
+    const poemLineHeight = poemFontSize * lineHeight;
+    const titleHeight = poemTitle && poemTitle.trim() !== 'Untitled' ? titleFontSize + 30 * scale : 0;
+    const firstPageLines = Math.floor((availableHeight - titleHeight) / poemLineHeight);
+    const subsequentPageLines = Math.floor(availableHeight / poemLineHeight);
+
+    // Split into pages
+    const pagesList: PageContent[] = [];
+    let currentLineIndex = 0;
+
+    while (currentLineIndex < allLines.length) {
+      const isFirstPage = pagesList.length === 0;
+      const linesForThisPage = isFirstPage ? firstPageLines : subsequentPageLines;
+      const pageLines = allLines.slice(currentLineIndex, currentLineIndex + linesForThisPage);
+
+      pagesList.push({
+        lines: pageLines,
+        pageNumber: pagesList.length + 1,
+        totalPages: 0, // Will update after
+      });
+
+      currentLineIndex += linesForThisPage;
+    }
+
+    // Update total pages
+    pagesList.forEach(p => p.totalPages = pagesList.length);
+
+    return pagesList.length > 0 ? pagesList : [{ lines: [], pageNumber: 1, totalPages: 1 }];
+  }, [format, poemTitle, poemText]);
+
   // Generate the poem image on canvas
-  const generateImage = useCallback((canvas: HTMLCanvasElement, scale: number = 1) => {
+  const generateImage = useCallback((canvas: HTMLCanvasElement, scale: number = 1, pageIndex: number = 0) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -75,100 +162,90 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
 
     // Text settings
     const padding = 80 * scale;
-    const titleFontSize = 36 * scale;
-    const poemFontSize = 28 * scale;
-    const lineHeight = 1.8;
-    const maxWidth = width - (padding * 2);
+    const titleFontSize = 32 * scale;
+    const poemFontSize = 24 * scale;
+    const lineHeight = 1.9;
 
     ctx.fillStyle = selectedBg.textColor;
-    ctx.textAlign = 'center';
+    ctx.textAlign = 'left'; // Left-align like the editor
 
-    // Calculate poem lines
-    const lines = poemText.split('\n').filter(line => line.trim() !== '' || poemText.split('\n').indexOf(line) > 0);
+    const pageData = pages[pageIndex];
+    if (!pageData) return;
 
-    // Calculate total content height
-    const titleHeight = poemTitle ? titleFontSize + 40 * scale : 0;
-    const poemLineHeight = poemFontSize * lineHeight;
-    const totalPoemHeight = lines.length * poemLineHeight;
-    const watermarkHeight = 30 * scale;
-    const totalContentHeight = titleHeight + totalPoemHeight + watermarkHeight;
+    let y = padding;
 
-    // Start Y position to center content vertically
-    let y = (height - totalContentHeight) / 2;
-
-    // Draw title
-    if (poemTitle && poemTitle.trim() !== 'Untitled') {
+    // Draw title only on first page
+    if (pageIndex === 0 && poemTitle && poemTitle.trim() !== 'Untitled') {
       ctx.font = `italic ${titleFontSize}px 'Libre Baskerville', Georgia, serif`;
-      ctx.fillText(poemTitle, width / 2, y + titleFontSize);
-      y += titleHeight;
+      ctx.fillText(poemTitle, padding, y + titleFontSize);
+      y += titleFontSize + 30 * scale;
     }
 
     // Draw poem lines
     ctx.font = `${poemFontSize}px 'Libre Baskerville', Georgia, serif`;
+    const poemLineHeight = poemFontSize * lineHeight;
 
-    lines.forEach((line) => {
+    pageData.lines.forEach((line) => {
       y += poemLineHeight;
-
-      // Handle long lines by wrapping
-      if (ctx.measureText(line).width > maxWidth) {
-        const words = line.split(' ');
-        let currentLine = '';
-
-        words.forEach((word) => {
-          const testLine = currentLine + (currentLine ? ' ' : '') + word;
-          if (ctx.measureText(testLine).width > maxWidth && currentLine) {
-            ctx.fillText(currentLine, width / 2, y);
-            y += poemLineHeight;
-            currentLine = word;
-          } else {
-            currentLine = testLine;
-          }
-        });
-
-        if (currentLine) {
-          ctx.fillText(currentLine, width / 2, y);
-        }
-      } else {
-        ctx.fillText(line, width / 2, y);
-      }
+      ctx.fillText(line, padding, y);
     });
 
     // Watermark
+    ctx.textAlign = 'center';
     ctx.font = `${14 * scale}px -apple-system, BlinkMacSystemFont, sans-serif`;
     ctx.globalAlpha = 0.4;
-    ctx.fillText('poetryeditor.com', width / 2, height - padding / 2);
+
+    let watermarkText = 'poetryeditor.com';
+    if (pages.length > 1) {
+      watermarkText = `${pageData.pageNumber}/${pageData.totalPages} · poetryeditor.com`;
+    }
+    ctx.fillText(watermarkText, width / 2, height - padding / 2);
     ctx.globalAlpha = 1;
-  }, [format, selectedBg, poemTitle, poemText]);
+  }, [format, selectedBg, poemTitle, pages]);
+
+  // Recalculate pages when format or content changes
+  useEffect(() => {
+    if (!isOpen) return;
+    const newPages = calculatePages(1);
+    setPages(newPages);
+    setCurrentPage(0);
+  }, [isOpen, calculatePages]);
 
   // Update preview whenever settings change
   useEffect(() => {
-    if (!isOpen || !previewRef.current) return;
+    if (!isOpen || !previewRef.current || pages.length === 0) return;
 
-    // Use a smaller scale for preview
     const previewScale = 0.25;
-    generateImage(previewRef.current, previewScale);
-  }, [isOpen, generateImage]);
+    generateImage(previewRef.current, previewScale, currentPage);
+  }, [isOpen, generateImage, currentPage, pages]);
 
-  // Download the image
+  // Download all images
   const handleDownload = async () => {
     if (!canvasRef.current) return;
 
     setIsGenerating(true);
 
-    // Small delay to show loading state
     await new Promise(resolve => setTimeout(resolve, 100));
 
     try {
-      generateImage(canvasRef.current, 1);
+      for (let i = 0; i < pages.length; i++) {
+        generateImage(canvasRef.current, 1, i);
 
-      const link = document.createElement('a');
-      const filename = poemTitle && poemTitle !== 'Untitled'
-        ? `${poemTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${selectedFormat}.png`
-        : `poem-${selectedFormat}.png`;
+        const link = document.createElement('a');
+        const baseName = poemTitle && poemTitle !== 'Untitled'
+          ? poemTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()
+          : 'poem';
 
-      link.download = filename;
-      link.href = canvasRef.current.toDataURL('image/png');
-      link.click();
+        const pageIndicator = pages.length > 1 ? `-${i + 1}of${pages.length}` : '';
+        link.download = `${baseName}-${selectedFormat}${pageIndicator}.png`;
+        link.href = canvasRef.current.toDataURL('image/png');
+        link.click();
+
+        // Small delay between downloads
+        if (i < pages.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 300));
+        }
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -198,6 +275,28 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
                 className="share-preview-canvas"
               />
             </div>
+
+            {pages.length > 1 && (
+              <div className="share-page-nav">
+                <button
+                  className="share-page-btn"
+                  onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
+                  disabled={currentPage === 0}
+                >
+                  ‹
+                </button>
+                <span className="share-page-indicator">
+                  Page {currentPage + 1} of {pages.length}
+                </span>
+                <button
+                  className="share-page-btn"
+                  onClick={() => setCurrentPage(p => Math.min(pages.length - 1, p + 1))}
+                  disabled={currentPage === pages.length - 1}
+                >
+                  ›
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="share-options-section">
@@ -236,14 +335,20 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
 
         <div className="share-modal-footer">
           <p className="share-instructions">
-            Download the image, then share it on your favorite platform
+            {pages.length > 1
+              ? `Your poem spans ${pages.length} images. All will be downloaded.`
+              : 'Download the image, then share it on your favorite platform'}
           </p>
           <button
             className="share-download-btn"
             onClick={handleDownload}
             disabled={isGenerating}
           >
-            {isGenerating ? 'Generating...' : 'Download Image'}
+            {isGenerating
+              ? 'Generating...'
+              : pages.length > 1
+                ? `Download ${pages.length} Images`
+                : 'Download Image'}
           </button>
         </div>
 

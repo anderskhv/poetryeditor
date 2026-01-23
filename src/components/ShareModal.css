@@ -85,6 +85,44 @@
   object-fit: contain;
 }
 
+.share-page-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.share-page-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  background: var(--color-paper, #fdfcfa);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--color-text-primary, #2a2a2a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.share-page-btn:hover:not(:disabled) {
+  background: var(--color-background, #f4f2ef);
+}
+
+.share-page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.share-page-indicator {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-secondary, #6a6a6a);
+}
+
 .share-options-section {
   display: flex;
   flex-direction: column;

@@ -50,6 +50,8 @@ interface PoetryEditorProps {
   highlightedWords?: { word: string; lineNumber: number }[] | null;
   onLineHover?: (lineNumber: number | null) => void;
   editorFont?: string;
+  paragraphAlign?: 'left' | 'center';
+  paragraphIndent?: 'none' | 'alternate' | 'stanza';
 }
 
 // Color scheme for POS highlighting - sharper, more vibrant colors
@@ -65,7 +67,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', paragraphIndent = 'none' }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -846,8 +848,15 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     }
   }, [isDarkMode]);
 
+  // Build container class based on paragraph settings
+  const containerClasses = [
+    'poetry-editor-container',
+    paragraphAlign === 'center' ? 'align-center' : '',
+    paragraphIndent !== 'none' ? `indent-${paragraphIndent}` : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className="poetry-editor-container" ref={containerRef}>
+    <div className={containerClasses} ref={containerRef}>
       <div className="poem-title-container">
         <input
           type="text"

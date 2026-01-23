@@ -66,15 +66,26 @@ function App() {
     return localStorage.getItem('hasOpenedAnalysisPanel') === 'true';
   });
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    const saved = localStorage.getItem('darkMode');
-    return saved === 'true';
+  const [theme, setTheme] = useState<'light' | 'dark' | 'yellow'>(() => {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || saved === 'yellow') return saved;
+    // Migrate from old darkMode setting
+    const oldDarkMode = localStorage.getItem('darkMode');
+    if (oldDarkMode === 'true') return 'dark';
+    return 'light';
   });
   const [selectedFont, setSelectedFont] = useState<string>(() => {
     return localStorage.getItem('selectedFont') || 'libre-baskerville';
   });
   const [showFontMenu, setShowFontMenu] = useState<boolean>(false);
   const [showThemeMenu, setShowThemeMenu] = useState<boolean>(false);
+  const [showParagraphMenu, setShowParagraphMenu] = useState<boolean>(false);
+  const [paragraphIndent, setParagraphIndent] = useState<'none' | 'alternate' | 'stanza'>(() => {
+    return (localStorage.getItem('paragraphIndent') as 'none' | 'alternate' | 'stanza') || 'none';
+  });
+  const [paragraphAlign, setParagraphAlign] = useState<'left' | 'center'>(() => {
+    return (localStorage.getItem('paragraphAlign') as 'left' | 'center') || 'left';
+  });
   const [showToolsMenu, setShowToolsMenu] = useState<boolean>(false);
   const [showPoemList, setShowPoemList] = useState<boolean>(false);
   const [savedPoems, setSavedPoems] = useState<SavedPoem[]>(() => {
@@ -130,11 +141,25 @@ function App() {
       });
   }, []);
 
-  // Apply dark mode class to document
+  // Apply theme class to document
   useEffect(() => {
-    document.documentElement.classList.toggle('dark-mode', isDarkMode);
-    localStorage.setItem('darkMode', String(isDarkMode));
-  }, [isDarkMode]);
+    document.documentElement.classList.remove('dark-mode', 'yellow-mode');
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark-mode');
+    } else if (theme === 'yellow') {
+      document.documentElement.classList.add('yellow-mode');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  // Save paragraph settings
+  useEffect(() => {
+    localStorage.setItem('paragraphIndent', paragraphIndent);
+  }, [paragraphIndent]);
+
+  useEffect(() => {
+    localStorage.setItem('paragraphAlign', paragraphAlign);
+  }, [paragraphAlign]);
 
   // Apply selected font and load from Google Fonts if needed
   useEffect(() => {
@@ -395,6 +420,7 @@ function App() {
       if (!target.closest('.export-dropdown')) setShowExportMenu(false);
       if (!target.closest('.font-dropdown')) setShowFontMenu(false);
       if (!target.closest('.theme-dropdown')) setShowThemeMenu(false);
+      if (!target.closest('.paragraph-dropdown')) setShowParagraphMenu(false);
       if (!target.closest('.tools-dropdown')) setShowToolsMenu(false);
       if (!target.closest('.mobile-overflow-dropdown')) setShowMobileMenu(false);
     };
@@ -528,6 +554,71 @@ function App() {
                 </div>
               )}
             </div>
+            <div className="paragraph-dropdown">
+              <button
+                onClick={() => setShowParagraphMenu(!showParagraphMenu)}
+                className="btn btn-menu"
+                aria-label="Paragraph formatting"
+                aria-expanded={showParagraphMenu}
+              >
+                Paragraph
+              </button>
+              {showParagraphMenu && (
+                <div className="paragraph-menu">
+                  <div className="paragraph-menu-section">
+                    <div className="paragraph-menu-label">Alignment</div>
+                    <button
+                      className={`paragraph-item ${paragraphAlign === 'left' ? 'active' : ''}`}
+                      onClick={() => {
+                        setParagraphAlign('left');
+                        setShowParagraphMenu(false);
+                      }}
+                    >
+                      Left
+                    </button>
+                    <button
+                      className={`paragraph-item ${paragraphAlign === 'center' ? 'active' : ''}`}
+                      onClick={() => {
+                        setParagraphAlign('center');
+                        setShowParagraphMenu(false);
+                      }}
+                    >
+                      Center
+                    </button>
+                  </div>
+                  <div className="paragraph-menu-section">
+                    <div className="paragraph-menu-label">Line Indent</div>
+                    <button
+                      className={`paragraph-item ${paragraphIndent === 'none' ? 'active' : ''}`}
+                      onClick={() => {
+                        setParagraphIndent('none');
+                        setShowParagraphMenu(false);
+                      }}
+                    >
+                      None
+                    </button>
+                    <button
+                      className={`paragraph-item ${paragraphIndent === 'alternate' ? 'active' : ''}`}
+                      onClick={() => {
+                        setParagraphIndent('alternate');
+                        setShowParagraphMenu(false);
+                      }}
+                    >
+                      Every Other Line
+                    </button>
+                    <button
+                      className={`paragraph-item ${paragraphIndent === 'stanza' ? 'active' : ''}`}
+                      onClick={() => {
+                        setParagraphIndent('stanza');
+                        setShowParagraphMenu(false);
+                      }}
+                    >
+                      First Line of Stanza
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="theme-dropdown">
               <button
                 onClick={() => setShowThemeMenu(!showThemeMenu)}
@@ -540,18 +631,27 @@ function App() {
               {showThemeMenu && (
                 <div className="theme-menu">
                   <button
-                    className={`theme-item ${!isDarkMode ? 'active' : ''}`}
+                    className={`theme-item ${theme === 'light' ? 'active' : ''}`}
                     onClick={() => {
-                      setIsDarkMode(false);
+                      setTheme('light');
                       setShowThemeMenu(false);
                     }}
                   >
                     Light
                   </button>
                   <button
-                    className={`theme-item ${isDarkMode ? 'active' : ''}`}
+                    className={`theme-item ${theme === 'yellow' ? 'active' : ''}`}
                     onClick={() => {
-                      setIsDarkMode(true);
+                      setTheme('yellow');
+                      setShowThemeMenu(false);
+                    }}
+                  >
+                    Yellow
+                  </button>
+                  <button
+                    className={`theme-item ${theme === 'dark' ? 'active' : ''}`}
+                    onClick={() => {
+                      setTheme('dark');
                       setShowThemeMenu(false);
                     }}
                   >
@@ -632,20 +732,29 @@ function App() {
                   <button
                     className="mobile-overflow-item"
                     onClick={() => {
-                      setIsDarkMode(false);
+                      setTheme('light');
                       setShowMobileMenu(false);
                     }}
                   >
-                    {!isDarkMode ? '✓ ' : ''}Light Mode
+                    {theme === 'light' ? '✓ ' : ''}Light Mode
                   </button>
                   <button
                     className="mobile-overflow-item"
                     onClick={() => {
-                      setIsDarkMode(true);
+                      setTheme('yellow');
                       setShowMobileMenu(false);
                     }}
                   >
-                    {isDarkMode ? '✓ ' : ''}Dark Mode
+                    {theme === 'yellow' ? '✓ ' : ''}Yellow Mode
+                  </button>
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      setTheme('dark');
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    {theme === 'dark' ? '✓ ' : ''}Dark Mode
                   </button>
                 </div>
               )}
@@ -671,7 +780,7 @@ function App() {
           onMovePoemToSection={movePoemToSection}
           onExportAll={exportCollection}
           onClose={() => setIsCollectionOpen(false)}
-          isDarkMode={isDarkMode}
+          isDarkMode={theme === 'dark'}
         />
         */}
         <div className="editor-pane">
@@ -682,7 +791,7 @@ function App() {
             onTitleChange={setPoemTitle}
             onWordsAnalyzed={handleWordsAnalyzed}
             highlightedPOS={highlightedPOS}
-            isDarkMode={isDarkMode}
+            isDarkMode={theme === 'dark'}
             meterColoringData={meterColoringData}
             syllableColoringData={syllableColoringData}
             rhythmVariationColoringData={rhythmVariationColoringData}
@@ -695,6 +804,8 @@ function App() {
             highlightedWords={highlightedWords}
             onLineHover={setEditorHoveredLine}
             editorFont={FONT_OPTIONS.find(f => f.id === selectedFont)?.family}
+            paragraphAlign={paragraphAlign}
+            paragraphIndent={paragraphIndent}
           />
 
           <button
