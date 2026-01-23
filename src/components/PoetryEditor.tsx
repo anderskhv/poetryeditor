@@ -51,7 +51,6 @@ interface PoetryEditorProps {
   onLineHover?: (lineNumber: number | null) => void;
   editorFont?: string;
   paragraphAlign?: 'left' | 'center';
-  paragraphIndent?: 'none' | 'alternate' | 'stanza';
 }
 
 // Color scheme for POS highlighting - sharper, more vibrant colors
@@ -67,7 +66,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', paragraphIndent = 'none' }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left' }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -848,11 +847,10 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     }
   }, [isDarkMode]);
 
-  // Build container class based on paragraph settings
+  // Build container class based on paragraph settings (only title centering works with Monaco)
   const containerClasses = [
     'poetry-editor-container',
     paragraphAlign === 'center' ? 'align-center' : '',
-    paragraphIndent !== 'none' ? `indent-${paragraphIndent}` : '',
   ].filter(Boolean).join(' ');
 
   return (

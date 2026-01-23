@@ -565,33 +565,13 @@
   background-color: var(--color-paper);
 }
 
-/* Paragraph alignment - center */
-.poetry-editor-container.align-center .monaco-editor .view-lines {
-  text-align: center !important;
-}
-
+/* Paragraph alignment - center (title only, Monaco doesn't support text-align) */
 .poetry-editor-container.align-center .poem-title-container {
   text-align: center;
 }
 
 .poetry-editor-container.align-center .poem-title-editor-input {
   text-align: center;
-}
-
-/* Paragraph indent - every other line */
-.poetry-editor-container.indent-alternate .monaco-editor .view-line:nth-child(even) {
-  padding-left: 2em !important;
-}
-
-/* Paragraph indent - first line of stanza (after blank lines) */
-.poetry-editor-container.indent-stanza .monaco-editor .view-line {
-  /* Default: indented */
-  padding-left: 2em !important;
-}
-
-.poetry-editor-container.indent-stanza .monaco-editor .view-line:first-child {
-  /* First line of poem: not indented */
-  padding-left: 0 !important;
 }
 
 /* ============================================
@@ -1186,37 +1166,39 @@
   --color-panel-toggle-text: #f5e6b8;
 }
 
+/* Yellow mode: Keep header in light mode, only editor area gets yellow */
 :root.yellow-mode .app {
-  background-color: var(--color-background);
+  background-color: #f4f2ef; /* Light mode background */
 }
 
 :root.yellow-mode .app-header {
-  background-color: var(--color-paper);
-  border-bottom-color: var(--color-border);
+  background-color: #fdfcfa; /* Light mode paper */
+  border-bottom-color: rgba(0, 0, 0, 0.06);
 }
 
 :root.yellow-mode .app-title {
-  color: var(--color-text-muted);
+  color: #9a9a9a;
 }
 
 :root.yellow-mode .btn,
 :root.yellow-mode .btn-menu {
-  color: var(--color-text-secondary);
+  color: #6a6a6a;
 }
 
 :root.yellow-mode .btn:hover,
 :root.yellow-mode .btn-menu:hover {
-  color: var(--color-text-primary);
+  color: #2a2a2a;
 }
 
+/* Menus stay in light mode style */
 :root.yellow-mode .poems-menu,
 :root.yellow-mode .export-menu,
 :root.yellow-mode .overflow-menu,
 :root.yellow-mode .font-menu,
 :root.yellow-mode .paragraph-menu,
 :root.yellow-mode .theme-menu {
-  background: var(--color-paper);
-  border-color: var(--color-border);
+  background: #fdfcfa;
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
 :root.yellow-mode .poem-item,
@@ -1225,7 +1207,7 @@
 :root.yellow-mode .font-item,
 :root.yellow-mode .paragraph-item,
 :root.yellow-mode .theme-item {
-  color: var(--color-text-secondary);
+  color: #6a6a6a;
 }
 
 :root.yellow-mode .poem-item:hover,
@@ -1234,77 +1216,80 @@
 :root.yellow-mode .font-item:hover,
 :root.yellow-mode .paragraph-item:hover,
 :root.yellow-mode .theme-item:hover {
-  background: var(--color-background);
+  background: #f4f2ef;
 }
 
 :root.yellow-mode .poem-item.active,
 :root.yellow-mode .font-item.active,
 :root.yellow-mode .paragraph-item.active,
 :root.yellow-mode .theme-item.active {
-  background: var(--color-background);
+  background: #f4f2ef;
 }
 
+/* Editor area gets yellow/parchment color */
 :root.yellow-mode .editor-pane {
-  background-color: var(--color-paper);
+  background-color: #f5e6b8;
 }
 
 :root.yellow-mode .poetry-editor-container {
-  background-color: var(--color-paper);
+  background-color: #f5e6b8;
 }
 
 :root.yellow-mode .poem-title-container {
-  border-bottom-color: var(--color-border);
+  background-color: #f5e6b8;
+  border-bottom-color: rgba(60, 50, 30, 0.12);
 }
 
 :root.yellow-mode .poem-title-editor-input {
-  color: var(--color-text-primary);
+  color: #3a3020;
 }
 
+/* Side panel stays in light mode style */
 :root.yellow-mode .side-panel {
-  background-color: var(--color-paper);
-  border-left-color: var(--color-border);
+  background-color: #fdfcfa;
+  border-left-color: rgba(0, 0, 0, 0.06);
 }
 
 :root.yellow-mode .panel-toggle {
-  background: var(--color-panel-toggle-bg);
-  color: var(--color-panel-toggle-text);
+  background: #5a5a5a;
+  color: #ffffff;
 }
 
 :root.yellow-mode .panel-toggle:hover {
-  background: var(--color-panel-toggle-hover-bg);
+  background: #4a4a4a;
 }
 
 :root.yellow-mode .tools-menu {
-  background: var(--color-paper);
-  border-color: var(--color-border);
+  background: #fdfcfa;
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
 :root.yellow-mode .tools-item {
-  color: var(--color-text-secondary);
+  color: #6a6a6a;
 }
 
 :root.yellow-mode .tools-item:hover {
-  background: var(--color-background);
+  background: #f4f2ef;
 }
 
 :root.yellow-mode .btn-tools {
-  background: var(--color-btn-tools-bg);
-  color: var(--color-btn-tools-text);
+  background: #888888;
+  color: #ffffff;
 }
 
 :root.yellow-mode .btn-tools:hover {
-  background: var(--color-btn-tools-hover-bg);
+  background: #777777;
 }
 
 :root.yellow-mode .mobile-overflow-menu {
-  background: var(--color-paper);
-  border-color: var(--color-border);
+  background: #fdfcfa;
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
 :root.yellow-mode .mobile-overflow-item {
-  color: var(--color-text-secondary);
+  color: #6a6a6a;
 }
 
 :root.yellow-mode .mobile-overflow-item:hover {
-  background: var(--color-background);
+  background: #f4f2ef;
 }

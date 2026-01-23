@@ -80,9 +80,6 @@ function App() {
   const [showFontMenu, setShowFontMenu] = useState<boolean>(false);
   const [showThemeMenu, setShowThemeMenu] = useState<boolean>(false);
   const [showParagraphMenu, setShowParagraphMenu] = useState<boolean>(false);
-  const [paragraphIndent, setParagraphIndent] = useState<'none' | 'alternate' | 'stanza'>(() => {
-    return (localStorage.getItem('paragraphIndent') as 'none' | 'alternate' | 'stanza') || 'none';
-  });
   const [paragraphAlign, setParagraphAlign] = useState<'left' | 'center'>(() => {
     return (localStorage.getItem('paragraphAlign') as 'left' | 'center') || 'left';
   });
@@ -153,10 +150,6 @@ function App() {
   }, [theme]);
 
   // Save paragraph settings
-  useEffect(() => {
-    localStorage.setItem('paragraphIndent', paragraphIndent);
-  }, [paragraphIndent]);
-
   useEffect(() => {
     localStorage.setItem('paragraphAlign', paragraphAlign);
   }, [paragraphAlign]);
@@ -488,45 +481,65 @@ function App() {
                 </div>
               )}
             </div>
-            <button onClick={handleSavePoem} className="btn btn-menu">
-              Save
-            </button>
-            <button onClick={handleNewPoem} className="btn btn-menu">
-              New
-            </button>
             <div className="export-dropdown">
               <button
                 onClick={() => setShowExportMenu(!showExportMenu)}
                 className="btn btn-menu"
-                aria-label="Export options"
+                aria-label="File options"
                 aria-expanded={showExportMenu}
               >
-                Export
+                File
               </button>
               {showExportMenu && (
                 <div className="export-menu">
                   <button
                     className="export-item"
-                    onClick={() => handleExportPoem('txt')}
+                    onClick={() => {
+                      handleNewPoem();
+                      setShowExportMenu(false);
+                    }}
+                  >
+                    New
+                  </button>
+                  <button
+                    className="export-item"
+                    onClick={() => {
+                      handleSavePoem();
+                      setShowExportMenu(false);
+                    }}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="export-item"
+                    onClick={() => {
+                      handleExportPoem('txt');
+                      setShowExportMenu(false);
+                    }}
                   >
                     Export as Text
                   </button>
                   <button
                     className="export-item"
-                    onClick={() => handleExportPoem('md')}
+                    onClick={() => {
+                      handleExportPoem('md');
+                      setShowExportMenu(false);
+                    }}
                   >
                     Export as Markdown
+                  </button>
+                  <button
+                    className="export-item"
+                    onClick={() => {
+                      setShowShareModal(true);
+                      setShowExportMenu(false);
+                    }}
+                  >
+                    Share Image
                   </button>
                 </div>
               )}
             </div>
-            <button
-              onClick={() => setShowShareModal(true)}
-              className="btn btn-menu"
-              aria-label="Share poem"
-            >
-              Share
-            </button>
             <div className="font-dropdown">
               <button
                 onClick={() => setShowFontMenu(!showFontMenu)}
@@ -558,7 +571,7 @@ function App() {
               <button
                 onClick={() => setShowParagraphMenu(!showParagraphMenu)}
                 className="btn btn-menu"
-                aria-label="Paragraph formatting"
+                aria-label="Title alignment"
                 aria-expanded={showParagraphMenu}
               >
                 Paragraph
@@ -566,7 +579,7 @@ function App() {
               {showParagraphMenu && (
                 <div className="paragraph-menu">
                   <div className="paragraph-menu-section">
-                    <div className="paragraph-menu-label">Alignment</div>
+                    <div className="paragraph-menu-label">Title Alignment</div>
                     <button
                       className={`paragraph-item ${paragraphAlign === 'left' ? 'active' : ''}`}
                       onClick={() => {
@@ -586,36 +599,6 @@ function App() {
                       Center
                     </button>
                   </div>
-                  <div className="paragraph-menu-section">
-                    <div className="paragraph-menu-label">Line Indent</div>
-                    <button
-                      className={`paragraph-item ${paragraphIndent === 'none' ? 'active' : ''}`}
-                      onClick={() => {
-                        setParagraphIndent('none');
-                        setShowParagraphMenu(false);
-                      }}
-                    >
-                      None
-                    </button>
-                    <button
-                      className={`paragraph-item ${paragraphIndent === 'alternate' ? 'active' : ''}`}
-                      onClick={() => {
-                        setParagraphIndent('alternate');
-                        setShowParagraphMenu(false);
-                      }}
-                    >
-                      Every Other Line
-                    </button>
-                    <button
-                      className={`paragraph-item ${paragraphIndent === 'stanza' ? 'active' : ''}`}
-                      onClick={() => {
-                        setParagraphIndent('stanza');
-                        setShowParagraphMenu(false);
-                      }}
-                    >
-                      First Line of Stanza
-                    </button>
-                  </div>
                 </div>
               )}
             </div>
@@ -623,10 +606,10 @@ function App() {
               <button
                 onClick={() => setShowThemeMenu(!showThemeMenu)}
                 className="btn btn-menu"
-                aria-label="Select theme"
+                aria-label="Select background"
                 aria-expanded={showThemeMenu}
               >
-                Theme
+                Background
               </button>
               {showThemeMenu && (
                 <div className="theme-menu">
@@ -805,7 +788,6 @@ function App() {
             onLineHover={setEditorHoveredLine}
             editorFont={FONT_OPTIONS.find(f => f.id === selectedFont)?.family}
             paragraphAlign={paragraphAlign}
-            paragraphIndent={paragraphIndent}
           />
 
           <button
