@@ -416,6 +416,7 @@ function App() {
             )}
           </div>
           <div className="header-actions">
+            {/* Collection panel hidden for now - not ready for release
             <button
               onClick={() => setIsCollectionOpen(!isCollectionOpen)}
               className={`btn btn-menu ${isCollectionOpen ? 'active' : ''}`}
@@ -424,6 +425,7 @@ function App() {
             >
               Collection
             </button>
+            */}
             <div className="poems-dropdown">
               <button
                 onClick={() => setShowPoemList(!showPoemList)}
@@ -641,6 +643,7 @@ function App() {
       </header>
 
       <div className="app-content">
+        {/* Collection panel hidden for now - not ready for release
         <CollectionPanel
           isOpen={isCollectionOpen}
           treeNodes={buildTree()}
@@ -658,6 +661,7 @@ function App() {
           onClose={() => setIsCollectionOpen(false)}
           isDarkMode={isDarkMode}
         />
+        */}
         <div className="editor-pane">
           <PoetryEditor
             value={text}
