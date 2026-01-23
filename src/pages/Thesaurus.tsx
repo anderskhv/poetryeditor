@@ -13,6 +13,9 @@ const POPULAR_WORDS = [
   'hot', 'old', 'new', 'hard', 'soft', 'loud', 'quiet', 'rich'
 ];
 
+// Page title for display
+const PAGE_TITLE = 'Synonyms & Antonyms';
+
 interface ThesaurusResult {
   synonyms: SynonymWord[];
   antonyms: SynonymWord[];
@@ -70,11 +73,11 @@ export function Thesaurus() {
     if (!word) return;
 
     // Navigate to the word page for SEO
-    navigate(`/thesaurus/${encodeURIComponent(word)}`);
+    navigate(`/synonyms/${encodeURIComponent(word)}`);
   };
 
   const handleQuickSearch = (word: string) => {
-    navigate(`/thesaurus/${encodeURIComponent(word)}`);
+    navigate(`/synonyms/${encodeURIComponent(word)}`);
   };
 
   // Group words by syllable count
@@ -94,13 +97,13 @@ export function Thesaurus() {
   return (
     <Layout>
       <SEOHead
-        title={urlWord ? `${urlWord} - Synonyms & Antonyms | Thesaurus for Poets` : 'Thesaurus - Find Synonyms & Antonyms for Poetry'}
+        title={urlWord ? `${urlWord} - Synonyms & Antonyms for Poetry` : 'Synonyms & Antonyms - Find Alternative Words for Poetry'}
         description={urlWord
           ? `Find synonyms and antonyms for "${urlWord}". Discover alternative words organized by syllable count, perfect for poets and songwriters.`
-          : 'Free online thesaurus for poets. Find synonyms and antonyms organized by syllable count. Discover the perfect word for your poem or song.'
+          : 'Free synonym and antonym finder for poets. Find alternative words organized by syllable count. Discover the perfect word for your poem or song.'
         }
-        canonicalPath={urlWord ? `/thesaurus/${urlWord}` : '/thesaurus'}
-        keywords="thesaurus, synonyms, antonyms, poetry words, word alternatives, similar words, opposite words, poet thesaurus"
+        canonicalPath={urlWord ? `/synonyms/${urlWord}` : '/synonyms'}
+        keywords="synonyms, antonyms, poetry words, word alternatives, similar words, opposite words, thesaurus for poets"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "FAQPage",
@@ -134,9 +137,9 @@ export function Thesaurus() {
       />
 
       <div className="thesaurus-page">
-        <h1>Thesaurus</h1>
+        <h1>{PAGE_TITLE}</h1>
         <p className="thesaurus-subtitle">
-          Find synonyms and antonyms for any word, organized by syllable count
+          Find alternative words for any word, organized by syllable count
         </p>
 
         <form onSubmit={handleSearch} className="thesaurus-search-form">

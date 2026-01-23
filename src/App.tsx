@@ -563,8 +563,8 @@ function App() {
                   <Link to="/rhymes" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Rhyme Dictionary
                   </Link>
-                  <Link to="/thesaurus" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Thesaurus
+                  <Link to="/synonyms" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                    Synonyms
                   </Link>
                   <Link to="/syllables" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Syllable Counter

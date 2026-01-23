@@ -28,11 +28,11 @@ export const router = createBrowserRouter([
     element: <RhymeWord />,
   },
   {
-    path: '/thesaurus',
+    path: '/synonyms',
     element: <Thesaurus />,
   },
   {
-    path: '/thesaurus/:word',
+    path: '/synonyms/:word',
     element: <ThesaurusWord />,
   },
   {

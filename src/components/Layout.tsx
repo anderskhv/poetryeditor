@@ -8,7 +8,7 @@ interface LayoutProps {
 
 const TOOLS = [
   { path: '/rhymes', label: 'Rhyme Dictionary' },
-  { path: '/thesaurus', label: 'Thesaurus' },
+  { path: '/synonyms', label: 'Synonyms' },
   { path: '/syllables', label: 'Syllable Counter' },
   { path: '/meter-analyzer', label: 'Meter Analyzer' },
   { path: '/rhyme-scheme-analyzer', label: 'Rhyme Scheme Analyzer' },
@@ -87,7 +87,7 @@ export function Layout({ children }: LayoutProps) {
           <div className="layout-footer-links">
             <Link to="/">Poetry Editor</Link>
             <Link to="/rhymes">Rhyme Dictionary</Link>
-            <Link to="/thesaurus">Thesaurus</Link>
+            <Link to="/synonyms">Synonyms</Link>
             <Link to="/syllables">Syllable Counter</Link>
             <Link to="/haiku-checker">Haiku Checker</Link>
             <Link to="/meter-analyzer">Meter Analyzer</Link>
