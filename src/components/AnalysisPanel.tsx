@@ -1246,9 +1246,9 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                 {analysis.abstractConcreteAnalysis.abstractWords.slice(0, 10).map((item, idx) => (
                   <Link
                     key={idx}
-                    to={`/imagery/${encodeURIComponent(item.word)}`}
+                    to={`/synonyms/${encodeURIComponent(item.word)}`}
                     className="ac-word abstract"
-                    title={`${item.category} — click to find concrete alternatives`}
+                    title={`${item.category} — click to find concrete alternatives (hyponyms)`}
                     onMouseEnter={() => onHighlightWords?.([{ word: item.word, lineNumber: item.lineNumber }])}
                     onMouseLeave={() => onHighlightWords?.(null)}
                   >
@@ -1260,8 +1260,8 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                 )}
               </div>
               <div className="ac-tool-link">
-                <Link to="/imagery" className="tool-link">
-                  Imagery Tool — find concrete alternatives
+                <Link to="/synonyms" className="tool-link">
+                  Thesaurus — find concrete alternatives
                 </Link>
               </div>
             </div>

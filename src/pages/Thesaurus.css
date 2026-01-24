@@ -152,6 +152,17 @@
   border-color: var(--color-border);
 }
 
+.thesaurus-tab-description {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: -16px 0 20px;
+  padding: 10px 14px;
+  background: var(--color-background);
+  border-radius: 6px;
+  line-height: 1.5;
+}
+
 .thesaurus-results-count {
   font-family: var(--font-sans);
   font-size: 14px;

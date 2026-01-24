@@ -1,9 +1,8 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
 import { RhymeDictionary } from './pages/RhymeDictionary';
 import { RhymeWord } from './pages/RhymeWord';
 import { Thesaurus, ThesaurusWord } from './pages/Thesaurus';
-import { Imagery, ImageryWord } from './pages/Imagery';
 import { SyllableCounter } from './pages/SyllableCounter';
 import { SyllableWord } from './pages/SyllableWord';
 import { HaikuChecker } from './pages/HaikuChecker';
@@ -38,11 +37,11 @@ export const router = createBrowserRouter([
   },
   {
     path: '/imagery',
-    element: <Imagery />,
+    element: <Navigate to="/synonyms" replace />,
   },
   {
     path: '/imagery/:word',
-    element: <ImageryWord />,
+    element: <Navigate to="/synonyms" replace />,
   },
   {
     path: '/syllables',

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
-import { fetchSynonyms, fetchAntonyms, SynonymWord } from '../utils/rhymeApi';
+import { fetchSynonyms, fetchAntonyms, fetchHyponyms, SynonymWord, ImageryWord } from '../utils/rhymeApi';
 import { getSyllables } from '../utils/cmuDict';
 import { DefinitionTooltip } from '../components/DefinitionTooltip';
 import './Thesaurus.css';
@@ -14,10 +14,13 @@ const POPULAR_WORDS = [
 ];
 
 // Page title for display
-const PAGE_TITLE = 'Synonyms & Antonyms';
+const PAGE_TITLE = 'Word Alternatives';
+
+type TabType = 'synonyms' | 'hyponyms' | 'antonyms';
 
 interface ThesaurusResult {
   synonyms: SynonymWord[];
+  hyponyms: ImageryWord[];
   antonyms: SynonymWord[];
 }
 
@@ -27,7 +30,7 @@ export function Thesaurus() {
   const [results, setResults] = useState<ThesaurusResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
-  const [activeTab, setActiveTab] = useState<'synonyms' | 'antonyms'>('synonyms');
+  const [activeTab, setActiveTab] = useState<TabType>('synonyms');
   const navigate = useNavigate();
 
   const performSearch = useCallback(async (word: string) => {
@@ -37,23 +40,28 @@ export function Thesaurus() {
     setSearched(true);
 
     try {
-      // Fetch both synonyms and antonyms in parallel
-      const [synonyms, antonyms] = await Promise.all([
+      // Fetch synonyms, hyponyms, and antonyms in parallel
+      const [synonyms, hyponyms, antonyms] = await Promise.all([
         fetchSynonyms(word),
+        fetchHyponyms(word),
         fetchAntonyms(word),
       ]);
 
-      setResults({ synonyms, antonyms });
+      setResults({ synonyms, hyponyms, antonyms });
 
-      // Default to antonyms tab if no synonyms but has antonyms
-      if (synonyms.length === 0 && antonyms.length > 0) {
+      // Default to the first tab with results
+      if (synonyms.length > 0) {
+        setActiveTab('synonyms');
+      } else if (hyponyms.length > 0) {
+        setActiveTab('hyponyms');
+      } else if (antonyms.length > 0) {
         setActiveTab('antonyms');
       } else {
         setActiveTab('synonyms');
       }
     } catch (error) {
       console.error('Error searching thesaurus:', error);
-      setResults({ synonyms: [], antonyms: [] });
+      setResults({ synonyms: [], hyponyms: [], antonyms: [] });
     } finally {
       setLoading(false);
     }
@@ -80,7 +88,16 @@ export function Thesaurus() {
     navigate(`/synonyms/${encodeURIComponent(word)}`);
   }, [navigate]);
 
-  const currentWords = results ? (activeTab === 'synonyms' ? results.synonyms : results.antonyms) : [];
+  const currentWords = useMemo(() => {
+    if (!results) return [];
+    switch (activeTab) {
+      case 'synonyms': return results.synonyms;
+      case 'hyponyms': return results.hyponyms;
+      case 'antonyms': return results.antonyms;
+      default: return [];
+    }
+  }, [results, activeTab]);
+
   const displayWord = urlWord || searchWord;
 
   // Memoize grouped words to avoid expensive syllable calculations on every render
@@ -90,19 +107,19 @@ export function Thesaurus() {
       if (!acc[sylCount]) acc[sylCount] = [];
       acc[sylCount].push(word);
       return acc;
-    }, {} as Record<number, SynonymWord[]>);
+    }, {} as Record<number, (SynonymWord | ImageryWord)[]>);
   }, [currentWords]);
 
   return (
     <Layout>
       <SEOHead
-        title={urlWord ? `${urlWord} - Synonyms & Antonyms for Poetry` : 'Synonyms & Antonyms - Find Alternative Words for Poetry'}
+        title={urlWord ? `${urlWord} - Synonyms, Hyponyms & Antonyms for Poetry` : 'Word Alternatives - Synonyms, Hyponyms & Antonyms for Poetry'}
         description={urlWord
-          ? `Find synonyms and antonyms for "${urlWord}". Discover alternative words organized by syllable count, perfect for poets and songwriters.`
-          : 'Free synonym and antonym finder for poets. Find alternative words organized by syllable count. Discover the perfect word for your poem or song.'
+          ? `Find synonyms, specific examples (hyponyms), and antonyms for "${urlWord}". Discover alternative words organized by syllable count, perfect for poets and songwriters.`
+          : 'Free thesaurus for poets. Find synonyms, specific examples (hyponyms), and antonyms organized by syllable count. Discover the perfect word for your poem or song.'
         }
         canonicalPath={urlWord ? `/synonyms/${urlWord}` : '/synonyms'}
-        keywords="synonyms, antonyms, poetry words, word alternatives, similar words, opposite words, thesaurus for poets"
+        keywords="synonyms, hyponyms, antonyms, poetry words, word alternatives, similar words, specific words, opposite words, thesaurus for poets, concrete imagery"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "FAQPage",
@@ -138,7 +155,7 @@ export function Thesaurus() {
       <div className="thesaurus-page">
         <h1>{PAGE_TITLE}</h1>
         <p className="thesaurus-subtitle">
-          Find alternative words for any word, organized by syllable count
+          Find synonyms, specific examples, and opposites for any word
         </p>
 
         <form onSubmit={handleSearch} className="thesaurus-search-form">
@@ -188,6 +205,13 @@ export function Thesaurus() {
                 Synonyms ({results.synonyms.length})
               </button>
               <button
+                className={`thesaurus-tab ${activeTab === 'hyponyms' ? 'active' : ''}`}
+                onClick={() => setActiveTab('hyponyms')}
+                title="More specific examples of this word"
+              >
+                Hyponyms ({results.hyponyms.length})
+              </button>
+              <button
                 className={`thesaurus-tab ${activeTab === 'antonyms' ? 'active' : ''}`}
                 onClick={() => setActiveTab('antonyms')}
               >
@@ -195,14 +219,23 @@ export function Thesaurus() {
               </button>
             </div>
 
+            {activeTab === 'hyponyms' && (
+              <p className="thesaurus-tab-description">
+                Hyponyms are more specific examples. For "tree" → oak, willow, birch. For "bird" → sparrow, hawk, parrot.
+              </p>
+            )}
+
             {currentWords.length === 0 ? (
               <div className="thesaurus-no-results">
                 No {activeTab} found for "{displayWord}".
-                {activeTab === 'synonyms' && results.antonyms.length > 0 && (
-                  <> Try checking the antonyms tab.</>
+                {activeTab === 'synonyms' && (results.hyponyms.length > 0 || results.antonyms.length > 0) && (
+                  <> Try checking the other tabs.</>
                 )}
-                {activeTab === 'antonyms' && results.synonyms.length > 0 && (
-                  <> Try checking the synonyms tab.</>
+                {activeTab === 'hyponyms' && (results.synonyms.length > 0 || results.antonyms.length > 0) && (
+                  <> Try checking the synonyms or antonyms tabs.</>
+                )}
+                {activeTab === 'antonyms' && (results.synonyms.length > 0 || results.hyponyms.length > 0) && (
+                  <> Try checking the other tabs.</>
                 )}
               </div>
             ) : (
@@ -252,7 +285,7 @@ export function Thesaurus() {
         )}
 
         <div className="thesaurus-info">
-          <h2>About Thesaurus</h2>
+          <h2>About Word Alternatives</h2>
           <div className="thesaurus-info-grid">
             <div className="thesaurus-info-card">
               <h3>Synonyms</h3>
@@ -262,17 +295,17 @@ export function Thesaurus() {
               </p>
             </div>
             <div className="thesaurus-info-card">
+              <h3>Hyponyms</h3>
+              <p>
+                More specific examples of a word. "Tree" → oak, willow, birch.
+                Use hyponyms to replace abstract words with vivid, concrete imagery.
+              </p>
+            </div>
+            <div className="thesaurus-info-card">
               <h3>Antonyms</h3>
               <p>
                 Words with opposite meanings. Antonyms are powerful tools for creating
                 contrast, tension, or emphasizing differences in poetry.
-              </p>
-            </div>
-            <div className="thesaurus-info-card">
-              <h3>Syllable Grouping</h3>
-              <p>
-                Words are organized by syllable count to help you maintain consistent
-                meter when substituting words in your verses.
               </p>
             </div>
           </div>
