@@ -1951,7 +1951,6 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
         {/* Poetic Form Selector */}
         <div className="form-selector">
           <div className="form-selector-row">
-            <label htmlFor="poetic-form-select" className="form-selector-label">Poetic Form:</label>
             <select
               id="poetic-form-select"
               className="form-selector-dropdown"
@@ -1961,7 +1960,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                 setSelectedForm(value === 'Auto-detect' ? null : value);
               }}
             >
-              <option value="Auto-detect">Auto-detect</option>
+              <option value="Auto-detect">Form: Auto-detect</option>
               <option value="Free Verse">Free Verse</option>
               <option value="Blank Verse">Blank Verse</option>
               <option value="Shakespearean Sonnet">Shakespearean Sonnet</option>
@@ -1983,9 +1982,9 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                 target="_blank"
                 rel="noopener noreferrer"
                 className="wikipedia-link"
-                title={`Learn more about ${analysis.activeForm} on Wikipedia`}
+                title={`Learn about ${analysis.activeForm}`}
               >
-                ?
+                <span className="wikipedia-icon">i</span>
               </a>
             )}
           </div>
