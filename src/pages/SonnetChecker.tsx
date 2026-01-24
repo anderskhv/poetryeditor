@@ -542,6 +542,14 @@ export function SonnetChecker() {
             </button>
           </div>
           <div className="sonnet-lines-editor">
+            <div className="editor-header-row">
+              <div className="header-rhyme">Rhyme</div>
+              <div className="header-line">Line</div>
+              <div className="header-metrics">
+                <span className="header-syllables">Syllables</span>
+                <span className="header-meter">Meter</span>
+              </div>
+            </div>
             {lines.map((line, idx) => {
               const compliance = analysis?.lineCompliances[idx];
               const expectedLabel = SONNET_TYPES[selectedSonnetType].scheme[idx];
@@ -637,9 +645,9 @@ export function SonnetChecker() {
                         value={line}
                         onChange={(e) => handleLineChange(idx, e.target.value)}
                         placeholder={`Line ${idx + 1}: rhymes with ${expectedLabel}...`}
-                        className={`line-input ${status} ${hasText && compliance?.stressVisualization ? 'has-display' : ''}`}
+                        className={`line-input ${status} ${hasText && compliance?.stressVisualization && compliance.stressVisualization.length > 0 ? 'has-display' : ''}`}
                       />
-                      {hasText && compliance?.stressVisualization && (
+                      {hasText && compliance?.stressVisualization && compliance.stressVisualization.length > 0 && (
                         <div className={`line-display ${status}`}>
                           {renderStressedLine()}
                         </div>

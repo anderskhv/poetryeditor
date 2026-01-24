@@ -210,6 +210,67 @@
   background: var(--color-text-muted);
 }
 
+/* Editor header row */
+.editor-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0 8px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 8px;
+}
+
+.header-rhyme {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.header-line {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex: 1;
+}
+
+.header-metrics {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 70px;
+  flex-shrink: 0;
+  justify-content: flex-end;
+}
+
+.header-syllables,
+.header-meter {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header-syllables {
+  min-width: 36px;
+  text-align: right;
+}
+
+.header-meter {
+  width: 18px;
+  text-align: center;
+}
+
 .sonnet-line-row {
   display: flex;
   align-items: center;
