@@ -503,6 +503,7 @@ export function SonnetChecker() {
               const expectedLabel = SONNET_TYPES[selectedSonnetType].scheme[idx];
               const syllables = compliance?.syllableCount ?? 0;
               const hasText = line.trim().length > 0;
+              const isHovered = hoveredLine === idx;
 
               // Determine status
               let status = 'empty';
@@ -516,7 +517,11 @@ export function SonnetChecker() {
               return (
                 <div key={idx}>
                   {isStanzaBreak && idx > 0 && <div className="stanza-separator" />}
-                  <div className={`sonnet-line-row ${status}`}>
+                  <div
+                    className={`sonnet-line-row ${status} ${isHovered ? 'hovered' : ''}`}
+                    onMouseEnter={() => setHoveredLine(idx)}
+                    onMouseLeave={() => setHoveredLine(null)}
+                  >
                     <div className="line-guidance">
                       <span
                         className={`expected-scheme-label rhyme-${status}`}
@@ -533,6 +538,16 @@ export function SonnetChecker() {
                         placeholder={`Line ${idx + 1}: rhymes with ${expectedLabel}...`}
                         className={`line-input ${status}`}
                       />
+                      {/* Show stress pattern on hover */}
+                      {isHovered && hasText && compliance?.stressString && (
+                        <div className="line-stress-tooltip">
+                          <span className="stress-label">Stress:</span>
+                          <span className="stress-display">{compliance.stressString}</span>
+                          {!compliance.stressCompliant && (
+                            <span className="stress-hint">Expected iambic: u / u / u / u / u /</span>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div className="line-metrics">
                       <span className={`syllable-count ${hasText && compliance ? (compliance.syllableCompliant ? 'correct' : 'incorrect') : 'empty'}`}>

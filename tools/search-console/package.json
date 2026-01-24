@@ -1,0 +1,16 @@
+{
+  "name": "poetry-editor-search-console",
+  "version": "1.0.0",
+  "description": "CLI tool to fetch Google Search Console data for Poetry Editor",
+  "type": "module",
+  "scripts": {
+    "auth": "node auth.js",
+    "stats": "node index.js",
+    "queries": "node index.js --queries",
+    "pages": "node index.js --pages"
+  },
+  "dependencies": {
+    "googleapis": "^144.0.0",
+    "open": "^10.1.0"
+  }
+}

@@ -22,7 +22,15 @@
       "Bash(git remote add:*)",
       "Bash(git push:*)",
       "Bash(git remote set-url:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(python3:*)",
+      "Bash(dig:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(git fetch:*)",
+      "Bash(claude /plugin marketplace add anthropics/skills)",
+      "Bash(git reset:*)",
+      "Bash(xmllint:*)",
+      "Bash(git config:*)"
     ],
     "additionalDirectories": [
       "/tmp",
