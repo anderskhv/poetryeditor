@@ -22,61 +22,58 @@
   margin: 0 0 32px;
 }
 
-/* Sonnet Explainer Box */
+/* Sonnet Explainer Box - Compact collapsible design */
 .sonnet-explainer {
-  background: var(--color-paper);
+  background: var(--color-background);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 32px;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
 }
 
 .sonnet-explainer h2 {
-  font-family: var(--font-serif);
-  font-size: 18px;
-  font-weight: 400;
-  color: var(--color-text-primary);
-  margin: 0 0 12px;
-}
-
-.sonnet-explainer > p {
-  font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
-  margin: 0 0 20px;
-}
-
-/* Sonnet Type Selector */
-.sonnet-type-selector {
-  margin-bottom: 20px;
-}
-
-.selector-label {
-  display: block;
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 500;
   color: var(--color-text-secondary);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.sonnet-explainer > p {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  margin: 0 0 12px;
+}
+
+/* Sonnet Type Selector - Inline compact style */
+.sonnet-type-selector {
   margin-bottom: 12px;
+}
+
+.selector-label {
+  display: none;
 }
 
 .type-buttons {
   display: flex;
-  gap: 12px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .type-button {
   flex: 1;
-  min-width: 140px;
-  padding: 12px 16px;
-  background: var(--color-background);
-  border: 2px solid var(--color-border);
-  border-radius: 8px;
+  min-width: 100px;
+  padding: 8px 12px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
-  text-align: left;
+  text-align: center;
 }
 
 .type-button:hover {
@@ -85,71 +82,37 @@
 
 .type-button.active {
   border-color: var(--color-text-primary);
-  background: var(--color-paper);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: var(--color-text-primary);
+}
+
+.type-button.active .type-name {
+  color: var(--color-paper);
+}
+
+.type-button.active .type-scheme {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .type-name {
   display: block;
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--color-text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .type-scheme {
   display: block;
   font-family: var(--font-mono, monospace);
-  font-size: 11px;
+  font-size: 10px;
   color: var(--color-text-muted);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
-/* Sonnet Structure Visual */
+/* Sonnet Structure Visual - Hidden, info shown inline */
 .sonnet-structure {
-  background: var(--color-background);
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
-}
-
-.sonnet-structure h3 {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-text-primary);
-  margin: 0 0 12px;
-}
-
-.structure-details {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
-.structure-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.structure-icon {
-  font-family: var(--font-mono, monospace);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  background: var(--color-paper);
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--color-border);
-}
-
-.structure-text {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  color: var(--color-text-secondary);
+  display: none;
 }
 
 .rhyme-pattern-visual {
@@ -160,75 +123,71 @@
 
 .pattern-label {
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--color-text-muted);
 }
 
 .pattern-display {
   font-family: var(--font-mono, monospace);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--color-text-primary);
-  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.5px;
 }
 
 .explainer-note {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--color-text-muted);
-  margin: 0;
-  padding-top: 12px;
-  border-top: 1px solid var(--color-border);
+  display: none;
 }
 
-.explainer-note em {
-  font-style: italic;
-}
-
-/* Form */
+/* Form - Poetry editor inspired design */
 .sonnet-form {
   background: var(--color-paper);
-  border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: 32px;
+  padding: 0;
   margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
 }
 
 .input-label {
   display: block;
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
-  color: var(--color-text-secondary);
-  margin-bottom: 12px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 24px 0;
 }
 
 .poem-input {
   width: 100%;
-  padding: 16px;
+  min-height: 420px;
+  padding: 16px 24px 24px;
   font-family: var(--font-serif);
-  font-size: 16px;
-  line-height: 1.8;
-  border: 2px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-background);
+  font-size: 18px;
+  line-height: 2;
+  border: none;
+  background: var(--color-paper);
   color: var(--color-text-primary);
-  resize: vertical;
-  transition: all 0.15s ease;
+  resize: none;
+  transition: none;
+}
+
+.poem-input::placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
 }
 
 .poem-input:focus {
   outline: none;
-  border-color: var(--color-text-secondary);
-  background: var(--color-paper);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 .sonnet-actions {
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
+  justify-content: flex-end;
+  padding: 0 24px 16px;
+  background: var(--color-paper);
 }
 
 .clear-button {
@@ -895,61 +854,52 @@
 
   /* Explainer responsive */
   .sonnet-explainer {
-    padding: 20px 16px;
-    margin-bottom: 24px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
   }
 
   .sonnet-explainer h2 {
-    font-size: 16px;
+    font-size: 11px;
+    margin-bottom: 6px;
   }
 
   .sonnet-explainer > p {
-    font-size: 13px;
+    font-size: 12px;
+    margin-bottom: 10px;
   }
 
   .type-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    display: flex;
+    gap: 4px;
   }
 
   .type-button {
     min-width: auto;
-    padding: 10px 12px;
+    padding: 6px 8px;
   }
 
   .type-name {
-    font-size: 13px;
+    font-size: 11px;
+    margin-bottom: 0;
   }
 
   .type-scheme {
-    font-size: 10px;
-  }
-
-  .sonnet-structure {
-    padding: 12px;
-  }
-
-  .structure-details {
-    gap: 12px;
-  }
-
-  .structure-icon {
-    font-size: 12px;
-    padding: 3px 6px;
-  }
-
-  .structure-text {
-    font-size: 12px;
+    display: none;
   }
 
   .sonnet-form {
-    padding: 20px 16px;
+    padding: 0;
+  }
+
+  .input-label {
+    padding: 10px 16px 0;
   }
 
   .poem-input {
-    font-size: 15px;
-    padding: 14px;
+    font-size: 16px;
+    line-height: 1.8;
+    min-height: 350px;
+    padding: 12px 16px 16px;
   }
 
   .score-section {
