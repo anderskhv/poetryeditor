@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { editor } from 'monaco-editor';
 import { PoetryEditor } from './components/PoetryEditor';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
@@ -12,6 +13,7 @@ import { loadCMUDictionary } from './utils/cmuDict';
 import { type PassiveVoiceInstance } from './utils/passiveVoiceDetector';
 import { type TenseInstance } from './utils/tenseChecker';
 import { type StressedSyllableInstance } from './utils/scansionAnalyzer';
+import { stripMarkdownFormatting } from './utils/markdownFormatter';
 import './App.css';
 
 // Curated font options for poetry
@@ -77,8 +79,10 @@ function App() {
   const [selectedFont, setSelectedFont] = useState<string>(() => {
     return localStorage.getItem('selectedFont') || 'libre-baskerville';
   });
-  const [showFontMenu, setShowFontMenu] = useState<boolean>(false);
   const [showThemeMenu, setShowThemeMenu] = useState<boolean>(false);
+  const [lineSpacing, setLineSpacing] = useState<'normal' | 'relaxed' | 'spacious'>(() => {
+    return (localStorage.getItem('lineSpacing') as 'normal' | 'relaxed' | 'spacious') || 'normal';
+  });
   const [showParagraphMenu, setShowParagraphMenu] = useState<boolean>(false);
   const [paragraphAlign, setParagraphAlign] = useState<'left' | 'center'>(() => {
     return (localStorage.getItem('paragraphAlign') as 'left' | 'center') || 'left';
@@ -86,6 +90,7 @@ function App() {
   const [firstLineIndent, setFirstLineIndent] = useState<boolean>(() => {
     return localStorage.getItem('firstLineIndent') === 'true';
   });
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [showToolsMenu, setShowToolsMenu] = useState<boolean>(false);
   const [showPoemList, setShowPoemList] = useState<boolean>(false);
   const [savedPoems, setSavedPoems] = useState<SavedPoem[]>(() => {
@@ -161,6 +166,11 @@ function App() {
   useEffect(() => {
     localStorage.setItem('firstLineIndent', String(firstLineIndent));
   }, [firstLineIndent]);
+
+  // Save line spacing settings
+  useEffect(() => {
+    localStorage.setItem('lineSpacing', lineSpacing);
+  }, [lineSpacing]);
 
   // Apply selected font and load from Google Fonts if needed
   useEffect(() => {
@@ -289,6 +299,60 @@ function App() {
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
 
+  // Apply markdown formatting (bold, italic, underline) to selected text
+  const applyFormatting = useCallback((type: 'bold' | 'italic' | 'underline') => {
+    const editorInstance = editorRef.current;
+    if (!editorInstance) return;
+
+    const selection = editorInstance.getSelection();
+    if (!selection) return;
+
+    const model = editorInstance.getModel();
+    if (!model) return;
+
+    const selectedText = model.getValueInRange(selection);
+    if (!selectedText) return;
+
+    // Determine the markers based on type
+    const markers: Record<string, { prefix: string; suffix: string }> = {
+      bold: { prefix: '**', suffix: '**' },
+      italic: { prefix: '*', suffix: '*' },
+      underline: { prefix: '__', suffix: '__' },
+    };
+
+    const { prefix, suffix } = markers[type];
+
+    // Check if already wrapped, then unwrap
+    const beforeStart = Math.max(1, selection.startColumn - prefix.length);
+    const afterEnd = selection.endColumn + suffix.length;
+
+    const extendedRange = {
+      startLineNumber: selection.startLineNumber,
+      startColumn: beforeStart,
+      endLineNumber: selection.endLineNumber,
+      endColumn: Math.min(model.getLineMaxColumn(selection.endLineNumber), afterEnd),
+    };
+
+    const surroundingText = model.getValueInRange(extendedRange);
+
+    if (surroundingText.startsWith(prefix) && surroundingText.endsWith(suffix)) {
+      // Unwrap - remove the markers
+      editorInstance.executeEdits('formatting', [{
+        range: extendedRange,
+        text: selectedText,
+      }]);
+    } else {
+      // Wrap with markers
+      editorInstance.executeEdits('formatting', [{
+        range: selection,
+        text: `${prefix}${selectedText}${suffix}`,
+      }]);
+    }
+
+    // Keep focus on editor
+    editorInstance.focus();
+  }, []);
+
   const handleExportPoem = (format: 'txt' | 'md') => {
     setShowExportMenu(false);
     const title = poemTitle.trim() || 'Untitled';
@@ -304,8 +368,9 @@ function App() {
       filename = `${safeTitle}.md`;
       mimeType = 'text/markdown';
     } else {
-      // Plain text with title at top
-      content = `${title}\n${'='.repeat(title.length)}\n\n${text}`;
+      // Plain text with title at top - strip markdown formatting
+      const plainText = stripMarkdownFormatting(text);
+      content = `${title}\n${'='.repeat(title.length)}\n\n${plainText}`;
       filename = `${safeTitle}.txt`;
       mimeType = 'text/plain';
     }
@@ -419,7 +484,6 @@ function App() {
       const target = e.target as HTMLElement;
       if (!target.closest('.poems-dropdown')) setShowPoemList(false);
       if (!target.closest('.export-dropdown')) setShowExportMenu(false);
-      if (!target.closest('.font-dropdown')) setShowFontMenu(false);
       if (!target.closest('.theme-dropdown')) setShowThemeMenu(false);
       if (!target.closest('.paragraph-dropdown')) setShowParagraphMenu(false);
       if (!target.closest('.tools-dropdown')) setShowToolsMenu(false);
@@ -548,33 +612,6 @@ function App() {
                 </div>
               )}
             </div>
-            <div className="font-dropdown">
-              <button
-                onClick={() => setShowFontMenu(!showFontMenu)}
-                className="btn btn-menu"
-                aria-label="Select font"
-                aria-expanded={showFontMenu}
-              >
-                Font
-              </button>
-              {showFontMenu && (
-                <div className="font-menu">
-                  {FONT_OPTIONS.map(font => (
-                    <button
-                      key={font.id}
-                      className={`font-item ${selectedFont === font.id ? 'active' : ''}`}
-                      onClick={() => {
-                        setSelectedFont(font.id);
-                        setShowFontMenu(false);
-                      }}
-                      style={{ fontFamily: font.family }}
-                    >
-                      {font.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
             <div className="paragraph-dropdown">
               <button
                 onClick={() => setShowParagraphMenu(!showParagraphMenu)}
@@ -586,36 +623,99 @@ function App() {
               </button>
               {showParagraphMenu && (
                 <div className="paragraph-menu">
+                  {/* Font Section */}
+                  <div className="paragraph-menu-section font-section">
+                    <div className="paragraph-menu-label">Font</div>
+                    {FONT_OPTIONS.map(font => (
+                      <button
+                        key={font.id}
+                        className={`paragraph-item ${selectedFont === font.id ? 'active' : ''}`}
+                        onClick={() => setSelectedFont(font.id)}
+                        style={{ fontFamily: font.family }}
+                      >
+                        {selectedFont === font.id && <span className="checkmark">✓</span>}
+                        {font.name}
+                      </button>
+                    ))}
+                  </div>
+                  {/* Text Style Section */}
+                  <div className="paragraph-menu-section">
+                    <div className="paragraph-menu-label">Text Style</div>
+                    <div className="text-style-buttons">
+                      <button
+                        className="text-style-btn"
+                        onClick={() => applyFormatting('bold')}
+                        title="Bold (⌘B)"
+                      >
+                        <strong>B</strong>
+                      </button>
+                      <button
+                        className="text-style-btn"
+                        onClick={() => applyFormatting('italic')}
+                        title="Italic (⌘I)"
+                      >
+                        <em>I</em>
+                      </button>
+                      <button
+                        className="text-style-btn"
+                        onClick={() => applyFormatting('underline')}
+                        title="Underline (⌘U)"
+                      >
+                        <span style={{ textDecoration: 'underline' }}>U</span>
+                      </button>
+                    </div>
+                  </div>
+                  {/* Line Spacing Section */}
+                  <div className="paragraph-menu-section">
+                    <div className="paragraph-menu-label">Line Spacing</div>
+                    <button
+                      className={`paragraph-item ${lineSpacing === 'normal' ? 'active' : ''}`}
+                      onClick={() => setLineSpacing('normal')}
+                    >
+                      {lineSpacing === 'normal' && <span className="checkmark">✓</span>}
+                      Normal
+                    </button>
+                    <button
+                      className={`paragraph-item ${lineSpacing === 'relaxed' ? 'active' : ''}`}
+                      onClick={() => setLineSpacing('relaxed')}
+                    >
+                      {lineSpacing === 'relaxed' && <span className="checkmark">✓</span>}
+                      Relaxed
+                    </button>
+                    <button
+                      className={`paragraph-item ${lineSpacing === 'spacious' ? 'active' : ''}`}
+                      onClick={() => setLineSpacing('spacious')}
+                    >
+                      {lineSpacing === 'spacious' && <span className="checkmark">✓</span>}
+                      Spacious
+                    </button>
+                  </div>
+                  {/* Title Alignment Section */}
                   <div className="paragraph-menu-section">
                     <div className="paragraph-menu-label">Title Alignment</div>
                     <button
                       className={`paragraph-item ${paragraphAlign === 'left' ? 'active' : ''}`}
-                      onClick={() => {
-                        setParagraphAlign('left');
-                        setShowParagraphMenu(false);
-                      }}
+                      onClick={() => setParagraphAlign('left')}
                     >
+                      {paragraphAlign === 'left' && <span className="checkmark">✓</span>}
                       Left
                     </button>
                     <button
                       className={`paragraph-item ${paragraphAlign === 'center' ? 'active' : ''}`}
-                      onClick={() => {
-                        setParagraphAlign('center');
-                        setShowParagraphMenu(false);
-                      }}
+                      onClick={() => setParagraphAlign('center')}
                     >
+                      {paragraphAlign === 'center' && <span className="checkmark">✓</span>}
                       Center
                     </button>
                   </div>
+                  {/* Text Options Section */}
                   <div className="paragraph-menu-section">
                     <div className="paragraph-menu-label">Text Options</div>
                     <button
                       className={`paragraph-item ${firstLineIndent ? 'active' : ''}`}
-                      onClick={() => {
-                        setFirstLineIndent(!firstLineIndent);
-                        setShowParagraphMenu(false);
-                      }}
+                      onClick={() => setFirstLineIndent(!firstLineIndent)}
                     >
+                      {firstLineIndent && <span className="checkmark">✓</span>}
                       First Line Indent
                     </button>
                   </div>
@@ -807,6 +907,8 @@ function App() {
             editorFont={FONT_OPTIONS.find(f => f.id === selectedFont)?.family}
             paragraphAlign={paragraphAlign}
             firstLineIndent={firstLineIndent}
+            lineSpacing={lineSpacing}
+            onEditorMount={(editor) => { editorRef.current = editor; }}
           />
 
           <button

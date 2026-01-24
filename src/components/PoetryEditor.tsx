@@ -7,6 +7,7 @@ import { isDictionaryLoaded } from '../utils/cmuDict';
 import { type PassiveVoiceInstance } from '../utils/passiveVoiceDetector';
 import { type TenseInstance } from '../utils/tenseChecker';
 import { type StressedSyllableInstance } from '../utils/scansionAnalyzer';
+import { parseMarkdownFormatting } from '../utils/markdownFormatter';
 import { WordPopup } from './WordPopup';
 
 interface PoetryEditorProps {
@@ -53,7 +54,16 @@ interface PoetryEditorProps {
   paragraphAlign?: 'left' | 'center';
   editorTheme?: 'light' | 'dark' | 'yellow';
   firstLineIndent?: boolean;
+  lineSpacing?: 'normal' | 'relaxed' | 'spacious';
+  onEditorMount?: (editor: editor.IStandaloneCodeEditor) => void;
 }
+
+// Line spacing values in pixels (at 17px font size)
+const LINE_SPACING_VALUES = {
+  normal: 32,    // ~1.8x
+  relaxed: 36,   // ~2.0x
+  spacious: 40,  // ~2.2x
+};
 
 // Color scheme for POS highlighting - sharper, more vibrant colors
 const POS_COLORS = {
@@ -68,7 +78,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -79,9 +89,14 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     position: { top: number; left: number };
   } | null>(null);
 
-  const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
-    editorRef.current = editor;
+  const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+    editorRef.current = editorInstance;
     monacoRef.current = monaco;
+
+    // Expose editor to parent component
+    if (onEditorMount) {
+      onEditorMount(editorInstance);
+    }
 
     // Register custom language for poetry
     monaco.languages.register({ id: 'poetry' });
@@ -157,12 +172,12 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     monaco.editor.setTheme(themeName);
 
     // Handle click events to show word popup
-    editor.onMouseDown((e) => {
+    editorInstance.onMouseDown((e) => {
       if (e.target.type === monaco.editor.MouseTargetType.CONTENT_TEXT) {
         const position = e.target.position;
         if (position) {
           // Get the full line text
-          const model = editor.getModel();
+          const model = editorInstance.getModel();
           if (!model) return;
 
           const offset = model.getOffsetAt(position);
@@ -174,11 +189,11 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
           const clickedWord = words.find(w => offset >= w.startOffset && offset < w.endOffset);
 
           if (clickedWord && containerRef.current) {
-            const domNode = editor.getDomNode();
+            const domNode = editorInstance.getDomNode();
             if (domNode) {
               const editorRect = domNode.getBoundingClientRect();
-              const lineTop = editor.getTopForLineNumber(position.lineNumber);
-              const scrollTop = editor.getScrollTop();
+              const lineTop = editorInstance.getTopForLineNumber(position.lineNumber);
+              const scrollTop = editorInstance.getScrollTop();
 
               // Calculate word position in viewport
               const wordTop = editorRect.top + lineTop - scrollTop;
@@ -226,7 +241,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     });
 
     // Handle mouse move to track hovered line for rhyme highlighting
-    editor.onMouseMove((e) => {
+    editorInstance.onMouseMove((e) => {
       if (e.target.type === monaco.editor.MouseTargetType.CONTENT_TEXT ||
           e.target.type === monaco.editor.MouseTargetType.CONTENT_EMPTY) {
         const position = e.target.position;
@@ -239,8 +254,69 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     });
 
     // Handle mouse leave to clear hovered line
-    editor.onMouseLeave(() => {
+    editorInstance.onMouseLeave(() => {
       onLineHover?.(null);
+    });
+
+    // Add keyboard shortcuts for formatting
+    const wrapSelection = (prefix: string, suffix: string) => {
+      const selection = editorInstance.getSelection();
+      if (!selection) return;
+
+      const model = editorInstance.getModel();
+      if (!model) return;
+
+      const selectedText = model.getValueInRange(selection);
+      if (!selectedText) return;
+
+      // Check if already wrapped
+      const beforeStart = Math.max(1, selection.startColumn - prefix.length);
+      const afterEnd = selection.endColumn + suffix.length;
+      const extendedRange = {
+        startLineNumber: selection.startLineNumber,
+        startColumn: beforeStart,
+        endLineNumber: selection.endLineNumber,
+        endColumn: Math.min(model.getLineMaxColumn(selection.endLineNumber), afterEnd),
+      };
+      const surroundingText = model.getValueInRange(extendedRange);
+
+      if (surroundingText.startsWith(prefix) && surroundingText.endsWith(suffix)) {
+        // Unwrap
+        editorInstance.executeEdits('formatting', [{
+          range: extendedRange,
+          text: selectedText,
+        }]);
+      } else {
+        // Wrap
+        editorInstance.executeEdits('formatting', [{
+          range: selection,
+          text: `${prefix}${selectedText}${suffix}`,
+        }]);
+      }
+    };
+
+    // Bold: Cmd/Ctrl + B
+    editorInstance.addAction({
+      id: 'bold-text',
+      label: 'Bold',
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyB],
+      run: () => wrapSelection('**', '**'),
+    });
+
+    // Italic: Cmd/Ctrl + I
+    editorInstance.addAction({
+      id: 'italic-text',
+      label: 'Italic',
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyI],
+      run: () => wrapSelection('*', '*'),
+    });
+
+    // Underline: Cmd/Ctrl + U
+    editorInstance.addAction({
+      id: 'underline-text',
+      label: 'Underline',
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyU],
+      run: () => wrapSelection('__', '__'),
     });
 
     // Apply initial decorations
@@ -612,6 +688,58 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       });
     }
 
+    // Always apply markdown formatting decorations (independent of analysis modes)
+    const markdownRanges = parseMarkdownFormatting(value);
+    const model = editorRef.current.getModel();
+
+    if (model && markdownRanges.length > 0) {
+      markdownRanges.forEach(range => {
+        // Get positions for markers and content
+        const startMarkerStart = model.getPositionAt(range.startOffset);
+        const startMarkerEnd = model.getPositionAt(range.contentStartOffset);
+        const contentStart = model.getPositionAt(range.contentStartOffset);
+        const contentEnd = model.getPositionAt(range.contentEndOffset);
+        const endMarkerStart = model.getPositionAt(range.contentEndOffset);
+        const endMarkerEnd = model.getPositionAt(range.endOffset);
+
+        // Dim the opening marker characters (**, *, __)
+        newDecorations.push({
+          range: new monacoRef.current!.Range(
+            startMarkerStart.lineNumber, startMarkerStart.column,
+            startMarkerEnd.lineNumber, startMarkerEnd.column
+          ),
+          options: {
+            inlineClassName: `md-${range.type}-marker`,
+            inlineClassNameAffectsLetterSpacing: true,
+          },
+        });
+
+        // Style the content
+        newDecorations.push({
+          range: new monacoRef.current!.Range(
+            contentStart.lineNumber, contentStart.column,
+            contentEnd.lineNumber, contentEnd.column
+          ),
+          options: {
+            inlineClassName: `md-${range.type}-content`,
+            inlineClassNameAffectsLetterSpacing: true,
+          },
+        });
+
+        // Dim the closing marker characters
+        newDecorations.push({
+          range: new monacoRef.current!.Range(
+            endMarkerStart.lineNumber, endMarkerStart.column,
+            endMarkerEnd.lineNumber, endMarkerEnd.column
+          ),
+          options: {
+            inlineClassName: `md-${range.type}-marker`,
+            inlineClassNameAffectsLetterSpacing: true,
+          },
+        });
+      });
+    }
+
     // Apply decorations
     decorationsRef.current = editorRef.current.deltaDecorations(
       decorationsRef.current,
@@ -758,6 +886,43 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
         :root.dark-mode .meter-violation {
           color: #a09080 !important;
+        }
+
+        /* Markdown formatting styles */
+        .md-bold-marker {
+          color: var(--color-text-muted, #999) !important;
+          font-size: 0.85em !important;
+          opacity: 0.6;
+        }
+
+        .md-bold-content {
+          font-weight: 700 !important;
+        }
+
+        .md-italic-marker {
+          color: var(--color-text-muted, #999) !important;
+          font-size: 0.85em !important;
+          opacity: 0.6;
+        }
+
+        .md-italic-content {
+          font-style: italic !important;
+        }
+
+        .md-underline-marker {
+          color: var(--color-text-muted, #999) !important;
+          font-size: 0.85em !important;
+          opacity: 0.6;
+        }
+
+        .md-underline-content {
+          text-decoration: underline !important;
+        }
+
+        :root.dark-mode .md-bold-marker,
+        :root.dark-mode .md-italic-marker,
+        :root.dark-mode .md-underline-marker {
+          color: #666 !important;
         }
 
         /* Remove all boxes, borders, and decorations from Monaco editor */
@@ -908,7 +1073,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         onMount={handleEditorDidMount}
         options={{
           fontSize: 17,
-          lineHeight: 32,
+          lineHeight: LINE_SPACING_VALUES[lineSpacing],
           fontFamily: editorFont || "'Libre Baskerville', Georgia, 'Times New Roman', serif",
           minimap: { enabled: false },
           lineNumbers: 'on',
