@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
@@ -76,23 +76,22 @@ export function Thesaurus() {
     navigate(`/synonyms/${encodeURIComponent(word)}`);
   };
 
-  const handleQuickSearch = (word: string) => {
+  const handleQuickSearch = useCallback((word: string) => {
     navigate(`/synonyms/${encodeURIComponent(word)}`);
-  };
+  }, [navigate]);
 
-  // Group words by syllable count
-  const groupBySyllables = (words: SynonymWord[]) => {
-    return words.reduce((acc, word) => {
+  const currentWords = results ? (activeTab === 'synonyms' ? results.synonyms : results.antonyms) : [];
+  const displayWord = urlWord || searchWord;
+
+  // Memoize grouped words to avoid expensive syllable calculations on every render
+  const groupedWords = useMemo(() => {
+    return currentWords.reduce((acc, word) => {
       const sylCount = getSyllables(word.word).length || 1;
       if (!acc[sylCount]) acc[sylCount] = [];
       acc[sylCount].push(word);
       return acc;
     }, {} as Record<number, SynonymWord[]>);
-  };
-
-  const currentWords = results ? (activeTab === 'synonyms' ? results.synonyms : results.antonyms) : [];
-  const groupedWords = groupBySyllables(currentWords);
-  const displayWord = urlWord || searchWord;
+  }, [currentWords]);
 
   return (
     <Layout>

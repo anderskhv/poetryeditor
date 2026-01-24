@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo, useTransition } from 'react';
 import './ShareModal.css';
 
 interface ShareModalProps {
@@ -61,14 +61,23 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [pages, setPages] = useState<PageContent[]>([]);
+  const [isPending, startTransition] = useTransition();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const previewRef = useRef<HTMLCanvasElement>(null);
 
   const selectedBg = BACKGROUND_COLORS[selectedBgIndex];
   const format = FORMATS[selectedFormat];
 
-  // Calculate how content splits across pages
-  const calculatePages = useCallback((scale: number = 1): PageContent[] => {
+  // Handle format change with transition to avoid blocking UI
+  const handleFormatChange = useCallback((formatKey: ShareFormat) => {
+    startTransition(() => {
+      setSelectedFormat(formatKey);
+    });
+  }, []);
+
+  // Calculate how content splits across pages - memoized to avoid recalculation
+  const calculatedPages = useMemo((): PageContent[] => {
+    const scale = 1;
     const padding = 80 * scale;
     const titleFontSize = 32 * scale;
     const poemFontSize = 24 * scale;
@@ -203,13 +212,12 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
     ctx.globalAlpha = 1;
   }, [format, selectedBg, poemTitle, pages]);
 
-  // Recalculate pages when format or content changes
+  // Update pages when calculation changes
   useEffect(() => {
     if (!isOpen) return;
-    const newPages = calculatePages(1);
-    setPages(newPages);
+    setPages(calculatedPages);
     setCurrentPage(0);
-  }, [isOpen, calculatePages]);
+  }, [isOpen, calculatedPages]);
 
   // Update preview whenever settings change
   useEffect(() => {
@@ -307,7 +315,7 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
                   <button
                     key={formatKey}
                     className={`share-format-btn ${selectedFormat === formatKey ? 'active' : ''}`}
-                    onClick={() => setSelectedFormat(formatKey)}
+                    onClick={() => handleFormatChange(formatKey)}
                   >
                     <span className="format-name">{FORMATS[formatKey].name}</span>
                     <span className="format-desc">{FORMATS[formatKey].description}</span>
