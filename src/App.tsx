@@ -83,6 +83,9 @@ function App() {
   const [paragraphAlign, setParagraphAlign] = useState<'left' | 'center'>(() => {
     return (localStorage.getItem('paragraphAlign') as 'left' | 'center') || 'left';
   });
+  const [firstLineIndent, setFirstLineIndent] = useState<boolean>(() => {
+    return localStorage.getItem('firstLineIndent') === 'true';
+  });
   const [showToolsMenu, setShowToolsMenu] = useState<boolean>(false);
   const [showPoemList, setShowPoemList] = useState<boolean>(false);
   const [savedPoems, setSavedPoems] = useState<SavedPoem[]>(() => {
@@ -153,6 +156,11 @@ function App() {
   useEffect(() => {
     localStorage.setItem('paragraphAlign', paragraphAlign);
   }, [paragraphAlign]);
+
+  // Save indent settings
+  useEffect(() => {
+    localStorage.setItem('firstLineIndent', String(firstLineIndent));
+  }, [firstLineIndent]);
 
   // Apply selected font and load from Google Fonts if needed
   useEffect(() => {
@@ -571,10 +579,10 @@ function App() {
               <button
                 onClick={() => setShowParagraphMenu(!showParagraphMenu)}
                 className="btn btn-menu"
-                aria-label="Title alignment"
+                aria-label="Formatting options"
                 aria-expanded={showParagraphMenu}
               >
-                Paragraph
+                Formatting
               </button>
               {showParagraphMenu && (
                 <div className="paragraph-menu">
@@ -597,6 +605,18 @@ function App() {
                       }}
                     >
                       Center
+                    </button>
+                  </div>
+                  <div className="paragraph-menu-section">
+                    <div className="paragraph-menu-label">Text Options</div>
+                    <button
+                      className={`paragraph-item ${firstLineIndent ? 'active' : ''}`}
+                      onClick={() => {
+                        setFirstLineIndent(!firstLineIndent);
+                        setShowParagraphMenu(false);
+                      }}
+                    >
+                      First Line Indent
                     </button>
                   </div>
                 </div>
@@ -786,6 +806,7 @@ function App() {
             onLineHover={setEditorHoveredLine}
             editorFont={FONT_OPTIONS.find(f => f.id === selectedFont)?.family}
             paragraphAlign={paragraphAlign}
+            firstLineIndent={firstLineIndent}
           />
 
           <button

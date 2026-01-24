@@ -52,6 +52,7 @@ interface PoetryEditorProps {
   editorFont?: string;
   paragraphAlign?: 'left' | 'center';
   editorTheme?: 'light' | 'dark' | 'yellow';
+  firstLineIndent?: boolean;
 }
 
 // Color scheme for POS highlighting - sharper, more vibrant colors
@@ -67,7 +68,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light' }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -877,6 +878,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
   const containerClasses = [
     'poetry-editor-container',
     paragraphAlign === 'center' ? 'align-center' : '',
+    firstLineIndent ? 'first-line-indent' : '',
   ].filter(Boolean).join(' ');
 
   return (

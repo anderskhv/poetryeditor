@@ -574,6 +574,11 @@
   text-align: center;
 }
 
+/* First line indent - adds indent to each line in the editor */
+.poetry-editor-container.first-line-indent .view-line {
+  text-indent: 2em;
+}
+
 /* ============================================
    POEM TITLE
    ============================================ */
@@ -993,7 +998,7 @@
 }
 
 :root.dark-mode .app-title {
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
 }
 
 :root.dark-mode .btn,

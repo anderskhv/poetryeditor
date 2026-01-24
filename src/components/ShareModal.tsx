@@ -8,7 +8,7 @@ interface ShareModalProps {
   poemText: string;
 }
 
-type ShareFormat = 'instagram-square' | 'instagram-story' | 'tiktok-x';
+type ShareFormat = 'square' | 'vertical';
 
 interface FormatConfig {
   name: string;
@@ -18,23 +18,17 @@ interface FormatConfig {
 }
 
 const FORMATS: Record<ShareFormat, FormatConfig> = {
-  'instagram-square': {
-    name: 'Instagram Feed',
+  'square': {
+    name: '1:1',
     width: 1080,
     height: 1080,
-    description: 'Square (1:1)',
+    description: 'Instagram Feed',
   },
-  'instagram-story': {
-    name: 'Story/Reel',
+  'vertical': {
+    name: '9:16',
     width: 1080,
     height: 1920,
-    description: 'Vertical (9:16)',
-  },
-  'tiktok-x': {
-    name: 'TikTok / X',
-    width: 1080,
-    height: 1920,
-    description: 'Vertical (9:16)',
+    description: 'Stories, Reels, TikTok, X',
   },
 };
 
@@ -56,7 +50,7 @@ interface PageContent {
 }
 
 export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalProps) {
-  const [selectedFormat, setSelectedFormat] = useState<ShareFormat>('instagram-square');
+  const [selectedFormat, setSelectedFormat] = useState<ShareFormat>('square');
   const [selectedBgIndex, setSelectedBgIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -265,7 +259,7 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
     <div className="share-modal-overlay" onClick={onClose}>
       <div className="share-modal" onClick={e => e.stopPropagation()}>
         <div className="share-modal-header">
-          <h2>Share Your Poem</h2>
+          <h2>Share</h2>
           <button className="share-modal-close" onClick={onClose}>×</button>
         </div>
 
@@ -275,7 +269,7 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
               className="share-preview-container"
               style={{
                 aspectRatio: `${format.width} / ${format.height}`,
-                maxHeight: selectedFormat === 'instagram-square' ? '300px' : '400px'
+                maxHeight: selectedFormat === 'square' ? '300px' : '400px'
               }}
             >
               <canvas
