@@ -6,7 +6,7 @@ import { loadCMUDictionary, isDictionaryLoaded } from '../utils/cmuDict';
 import { detectRhymeScheme } from '../utils/rhymeScheme';
 import { getSyllableCounts } from '../utils/syllableCounter';
 import { detectMeter } from '../utils/meterDetector';
-import { analyzeTextStress, detectMeterFromStress, LineStressAnalysis } from '../utils/stressAnalyzer';
+import { analyzeTextStress, detectMeterFromStress, LineStressAnalysis, createStressVisualization, StressVisualization } from '../utils/stressAnalyzer';
 import { useDebounce } from '../hooks/useDebounce';
 import './SonnetChecker.css';
 
@@ -31,6 +31,9 @@ const SONNET_TYPES = {
 
 type SonnetType = keyof typeof SONNET_TYPES;
 
+// Scansion score types
+type ScansionScore = 'perfect' | 'good' | 'poor';
+
 // Line compliance interface
 interface LineCompliance {
   lineNumber: number;
@@ -42,6 +45,9 @@ interface LineCompliance {
   stressString: string;
   stressCompliant: boolean;
   stressMessage: string;
+  scansionScore: ScansionScore;
+  stressVisualization: StressVisualization[];
+  problemIndices: number[]; // Indices of syllables that break iambic pattern
   rhymeLabel: string;
   expectedRhyme: string;
   rhymeCompliant: boolean;
@@ -123,6 +129,7 @@ export function SonnetChecker() {
   const [dictionaryLoaded, setDictionaryLoaded] = useState(isDictionaryLoaded());
   const [selectedSonnetType, setSelectedSonnetType] = useState<SonnetType>('shakespearean');
   const [hoveredLine, setHoveredLine] = useState<number | null>(null);
+  const [hoveredWarning, setHoveredWarning] = useState<number | null>(null);
 
   useEffect(() => {
     async function loadDict() {
@@ -223,6 +230,40 @@ export function SonnetChecker() {
         stressMessage = `Detected ${lineMeter}. Sonnets traditionally use iambic meter (unstressed-stressed pairs: da-DUM da-DUM...).`;
       }
 
+      // Calculate problem indices - where the stress breaks iambic pattern
+      // Iambic pattern: even indices (0, 2, 4...) should be unstressed (0), odd indices (1, 3, 5...) should be stressed (1 or 2)
+      const problemIndices: number[] = [];
+      let iambicErrors = 0;
+      for (let i = 0; i < stresses.length; i++) {
+        const expectedStress = i % 2 === 0 ? 0 : 1; // Even = unstressed, odd = stressed
+        const actualStress = stresses[i];
+        if (i % 2 === 0 && actualStress >= 1) {
+          // Expected unstressed but got stressed
+          problemIndices.push(i);
+          iambicErrors++;
+        } else if (i % 2 === 1 && actualStress === 0) {
+          // Expected stressed but got unstressed
+          problemIndices.push(i);
+          iambicErrors++;
+        }
+      }
+
+      // Calculate scansion score based on how many errors
+      let scansionScore: ScansionScore = 'perfect';
+      if (stresses.length > 0) {
+        const errorRate = iambicErrors / stresses.length;
+        if (errorRate === 0) {
+          scansionScore = 'perfect';
+        } else if (errorRate <= 0.2) {
+          scansionScore = 'good'; // Up to 20% errors = almost good
+        } else {
+          scansionScore = 'poor';
+        }
+      }
+
+      // Get stress visualization for inline display
+      const stressVisualization = line.trim() ? createStressVisualization(line) : [];
+
       // Rhyme compliance
       const actualRhyme = rhymeResult.schemePattern[idx] || 'X';
       const expectedRhyme = expectedScheme[idx] || 'X';
@@ -279,6 +320,9 @@ export function SonnetChecker() {
         stressString,
         stressCompliant,
         stressMessage,
+        scansionScore,
+        stressVisualization,
+        problemIndices,
         rhymeLabel: actualRhyme,
         expectedRhyme,
         rhymeCompliant,
@@ -504,6 +548,7 @@ export function SonnetChecker() {
               const syllables = compliance?.syllableCount ?? 0;
               const hasText = line.trim().length > 0;
               const isHovered = hoveredLine === idx;
+              const isWarningHovered = hoveredWarning === idx;
 
               // Determine status
               let status = 'empty';
@@ -513,6 +558,62 @@ export function SonnetChecker() {
 
               // Stanza breaks for visual grouping
               const isStanzaBreak = [4, 8, 12].includes(idx);
+
+              // Render line with stressed syllables bolded
+              const renderStressedLine = () => {
+                if (!compliance?.stressVisualization || compliance.stressVisualization.length === 0) {
+                  return line;
+                }
+
+                // Build syllable index mapping for problem highlighting
+                let syllableIndex = 0;
+
+                return compliance.stressVisualization.map((segment, segIdx) => {
+                  const isStressed = segment.stress >= 1;
+                  const currentSyllableIndex = syllableIndex;
+
+                  // Count syllables in this segment (rough estimate: each segment = 1 syllable contribution)
+                  if (segment.text.trim()) {
+                    syllableIndex++;
+                  }
+
+                  // Check if this syllable is a problem area (only show when warning is hovered)
+                  const isProblem = isWarningHovered && compliance.problemIndices.includes(currentSyllableIndex);
+
+                  return (
+                    <span
+                      key={segIdx}
+                      className={`stress-segment ${isStressed ? 'stressed' : ''} ${isProblem ? 'problem' : ''}`}
+                    >
+                      {segment.text}
+                    </span>
+                  );
+                });
+              };
+
+              // Get scansion icon based on score
+              const getScansionIcon = () => {
+                if (!compliance?.scansionScore || !hasText) return null;
+                switch (compliance.scansionScore) {
+                  case 'perfect':
+                    return <span className="scansion-icon perfect" title="Perfect iambic meter">✓</span>;
+                  case 'good':
+                    return <span className="scansion-icon good" title="Almost perfect meter">✓</span>;
+                  case 'poor':
+                    return (
+                      <span
+                        className="scansion-icon poor"
+                        title="Meter needs attention"
+                        onMouseEnter={() => setHoveredWarning(idx)}
+                        onMouseLeave={() => setHoveredWarning(null)}
+                      >
+                        !
+                      </span>
+                    );
+                  default:
+                    return null;
+                }
+              };
 
               return (
                 <div key={idx}>
@@ -536,16 +637,11 @@ export function SonnetChecker() {
                         value={line}
                         onChange={(e) => handleLineChange(idx, e.target.value)}
                         placeholder={`Line ${idx + 1}: rhymes with ${expectedLabel}...`}
-                        className={`line-input ${status}`}
+                        className={`line-input ${status} ${hasText && compliance?.stressVisualization ? 'has-display' : ''}`}
                       />
-                      {/* Show stress pattern on hover */}
-                      {isHovered && hasText && compliance?.stressString && (
-                        <div className="line-stress-tooltip">
-                          <span className="stress-label">Stress:</span>
-                          <span className="stress-display">{compliance.stressString}</span>
-                          {!compliance.stressCompliant && (
-                            <span className="stress-hint">Expected iambic: u / u / u / u / u /</span>
-                          )}
+                      {hasText && compliance?.stressVisualization && (
+                        <div className={`line-display ${status}`}>
+                          {renderStressedLine()}
                         </div>
                       )}
                     </div>
@@ -553,11 +649,7 @@ export function SonnetChecker() {
                       <span className={`syllable-count ${hasText && compliance ? (compliance.syllableCompliant ? 'correct' : 'incorrect') : 'empty'}`}>
                         {hasText ? syllables : '—'}/10
                       </span>
-                      {hasText && compliance && (
-                        <span className={`status-icon ${compliance.isFullyCompliant ? 'correct' : 'incorrect'}`}>
-                          {compliance.isFullyCompliant ? '✓' : '×'}
-                        </span>
-                      )}
+                      {getScansionIcon()}
                     </div>
                   </div>
                 </div>
