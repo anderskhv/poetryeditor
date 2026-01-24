@@ -116,7 +116,8 @@ const RHYME_COLORS: Record<string, string> = {
 };
 
 export function SonnetChecker() {
-  const [poem, setPoem] = useState('');
+  const [lines, setLines] = useState<string[]>(Array(14).fill(''));
+  const poem = lines.join('\n');
   const debouncedPoem = useDebounce(poem, 300);
   const [analysis, setAnalysis] = useState<SonnetAnalysis | null>(null);
   const [dictionaryLoaded, setDictionaryLoaded] = useState(isDictionaryLoaded());
@@ -341,19 +342,25 @@ export function SonnetChecker() {
     });
   };
 
+  const handleLineChange = (index: number, value: string) => {
+    const newLines = [...lines];
+    newLines[index] = value;
+    setLines(newLines);
+  };
+
   const loadExample = (example: typeof EXAMPLE_SONNETS[0]) => {
-    if (poem.trim() && !window.confirm('This will replace your current text. Continue?')) {
+    if (lines.some(l => l.trim()) && !window.confirm('This will replace your current text. Continue?')) {
       return;
     }
-    setPoem(example.poem);
+    const exampleLines = example.poem.split('\n');
+    const newLines = Array(14).fill('').map((_, i) => exampleLines[i] || '');
+    setLines(newLines);
   };
 
   const clearAll = () => {
-    setPoem('');
+    setLines(Array(14).fill(''));
     setAnalysis(null);
   };
-
-  const lines = poem.split('\n');
 
   const getScoreClass = (score: number) => {
     if (score >= 90) return 'excellent';
@@ -482,21 +489,65 @@ export function SonnetChecker() {
         </div>
 
         <div className="sonnet-form">
-          <label className="input-label">
-            Enter your sonnet (14 lines)
-          </label>
-          <textarea
-            value={poem}
-            onChange={(e) => setPoem(e.target.value)}
-            placeholder="Paste or type your 14-line sonnet here..."
-            className="poem-input"
-            rows={16}
-          />
-
-          <div className="sonnet-actions">
+          <div className="form-header">
+            <label className="input-label">
+              Enter your sonnet (14 lines)
+            </label>
             <button onClick={clearAll} className="clear-button">
               Clear
             </button>
+          </div>
+          <div className="sonnet-lines-editor">
+            {lines.map((line, idx) => {
+              const compliance = analysis?.lineCompliances[idx];
+              const expectedLabel = SONNET_TYPES[selectedSonnetType].scheme[idx];
+              const syllables = compliance?.syllableCount ?? 0;
+              const hasText = line.trim().length > 0;
+
+              // Determine status
+              let status = 'empty';
+              if (hasText && compliance) {
+                status = compliance.isFullyCompliant ? 'correct' : 'incorrect';
+              }
+
+              // Stanza breaks for visual grouping
+              const isStanzaBreak = [4, 8, 12].includes(idx);
+
+              return (
+                <div key={idx}>
+                  {isStanzaBreak && idx > 0 && <div className="stanza-separator" />}
+                  <div className={`sonnet-line-row ${status}`}>
+                    <div className="line-guidance">
+                      <span
+                        className={`expected-scheme-label rhyme-${status}`}
+                        style={{ backgroundColor: hasText ? (RHYME_COLORS[expectedLabel] || 'var(--color-text-muted)') : undefined }}
+                      >
+                        {expectedLabel}
+                      </span>
+                    </div>
+                    <div className="line-input-wrapper">
+                      <input
+                        type="text"
+                        value={line}
+                        onChange={(e) => handleLineChange(idx, e.target.value)}
+                        placeholder={`Line ${idx + 1}: rhymes with ${expectedLabel}...`}
+                        className={`line-input ${status}`}
+                      />
+                    </div>
+                    <div className="line-metrics">
+                      <span className={`syllable-count ${hasText && compliance ? (compliance.syllableCompliant ? 'correct' : 'incorrect') : 'empty'}`}>
+                        {hasText ? syllables : '—'}/10
+                      </span>
+                      {hasText && compliance && (
+                        <span className={`status-icon ${compliance.isFullyCompliant ? 'correct' : 'incorrect'}`}>
+                          {compliance.isFullyCompliant ? '✓' : '×'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 

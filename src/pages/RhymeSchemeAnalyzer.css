@@ -149,8 +149,6 @@
 .rhyme-editor-container {
   flex: 1;
   min-height: 300px;
-  max-height: 500px;
-  overflow-y: auto;
   border: 2px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-background);
@@ -815,7 +813,6 @@
 
   .rhyme-editor-container {
     min-height: 250px;
-    max-height: 400px;
   }
 
   .rhyme-editor-lines {

@@ -143,57 +143,31 @@
 .sonnet-form {
   background: var(--color-paper);
   border-radius: 12px;
-  padding: 0;
+  padding: 20px 24px;
   margin-bottom: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
-  overflow: hidden;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .input-label {
-  display: block;
   font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 500;
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 12px 24px 0;
-}
-
-.poem-input {
-  width: 100%;
-  min-height: 420px;
-  padding: 16px 24px 24px;
-  font-family: var(--font-serif);
-  font-size: 18px;
-  line-height: 2;
-  border: none;
-  background: var(--color-paper);
-  color: var(--color-text-primary);
-  resize: none;
-  transition: none;
-}
-
-.poem-input::placeholder {
-  color: var(--color-text-muted);
-  font-style: italic;
-}
-
-.poem-input:focus {
-  outline: none;
-}
-
-.sonnet-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0 24px 16px;
-  background: var(--color-paper);
 }
 
 .clear-button {
-  padding: 10px 24px;
+  padding: 8px 16px;
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text-secondary);
   background: none;
   border: 1px solid var(--color-border);
@@ -205,6 +179,129 @@
 .clear-button:hover {
   border-color: var(--color-text-secondary);
   color: var(--color-text-primary);
+}
+
+/* Line-by-line editor */
+.sonnet-lines-editor {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background);
+  padding: 12px 16px;
+}
+
+.sonnet-line-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.stanza-separator {
+  height: 16px;
+  margin: 4px 0;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.line-guidance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.expected-scheme-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: var(--color-text-muted);
+}
+
+.expected-scheme-label.rhyme-correct {
+  opacity: 1;
+}
+
+.expected-scheme-label.rhyme-incorrect {
+  opacity: 0.7;
+}
+
+.expected-scheme-label.rhyme-empty {
+  background: var(--color-text-muted);
+  opacity: 0.4;
+}
+
+.line-input-wrapper {
+  flex: 1;
+}
+
+.sonnet-line-row .line-input {
+  width: 100%;
+  padding: 8px 10px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.5;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-primary);
+  transition: all 0.15s ease;
+}
+
+.sonnet-line-row .line-input:focus {
+  outline: none;
+  background: var(--color-paper);
+  border-color: var(--color-border);
+}
+
+.sonnet-line-row .line-input::placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+  font-size: 13px;
+}
+
+.line-metrics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 60px;
+  flex-shrink: 0;
+}
+
+.syllable-count {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  min-width: 36px;
+  text-align: right;
+}
+
+.syllable-count.correct {
+  color: hsl(145, 45%, 45%);
+}
+
+.syllable-count.incorrect {
+  color: hsl(25, 60%, 55%);
+}
+
+.sonnet-line-row .status-icon {
+  font-size: 14px;
+  font-weight: 600;
+  width: 16px;
+}
+
+.sonnet-line-row .status-icon.correct {
+  color: hsl(145, 45%, 45%);
+}
+
+.sonnet-line-row .status-icon.incorrect {
+  color: hsl(25, 60%, 55%);
 }
 
 /* Analysis Results */
@@ -888,18 +985,58 @@
   }
 
   .sonnet-form {
-    padding: 0;
+    padding: 12px 12px;
   }
 
-  .input-label {
-    padding: 10px 16px 0;
+  .form-header {
+    margin-bottom: 12px;
   }
 
-  .poem-input {
-    font-size: 16px;
-    line-height: 1.8;
-    min-height: 350px;
-    padding: 12px 16px 16px;
+  .sonnet-lines-editor {
+    padding: 8px 10px;
+  }
+
+  .sonnet-line-row {
+    gap: 8px;
+    padding: 4px 0;
+  }
+
+  .line-guidance {
+    width: 24px;
+  }
+
+  .expected-scheme-label {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .sonnet-line-row .line-input {
+    font-size: 14px;
+    padding: 6px 8px;
+  }
+
+  .sonnet-line-row .line-input::placeholder {
+    font-size: 11px;
+  }
+
+  .line-metrics {
+    min-width: 50px;
+    gap: 4px;
+  }
+
+  .syllable-count {
+    font-size: 11px;
+    min-width: 30px;
+  }
+
+  .sonnet-line-row .status-icon {
+    font-size: 12px;
+  }
+
+  .stanza-separator {
+    height: 12px;
+    margin: 2px 0;
   }
 
   .score-section {

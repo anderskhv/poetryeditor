@@ -6,7 +6,6 @@ import { Thesaurus, ThesaurusWord } from './pages/Thesaurus';
 import { SyllableCounter } from './pages/SyllableCounter';
 import { SyllableWord } from './pages/SyllableWord';
 import { HaikuChecker } from './pages/HaikuChecker';
-import { MeterAnalyzer } from './pages/MeterAnalyzer';
 import { RhymeSchemeAnalyzer } from './pages/RhymeSchemeAnalyzer';
 import { SonnetChecker } from './pages/SonnetChecker';
 import { LearnHaiku } from './pages/learn/LearnHaiku';
@@ -54,10 +53,6 @@ export const router = createBrowserRouter([
   {
     path: '/haiku-checker',
     element: <HaikuChecker />,
-  },
-  {
-    path: '/meter-analyzer',
-    element: <MeterAnalyzer />,
   },
   {
     path: '/rhyme-scheme-analyzer',

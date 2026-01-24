@@ -10,8 +10,7 @@ const TOOLS = [
   { path: '/rhymes', label: 'Rhyme Dictionary' },
   { path: '/synonyms', label: 'Synonyms' },
   { path: '/syllables', label: 'Syllable Counter' },
-  { path: '/meter-analyzer', label: 'Meter Analyzer' },
-  { path: '/rhyme-scheme-analyzer', label: 'Rhyme Scheme Analyzer' },
+  { path: '/rhyme-scheme-analyzer', label: 'Rhyme Scheme Maker' },
   { path: '/haiku-checker', label: 'Haiku Checker', isFormTool: true },
   { path: '/sonnet-checker', label: 'Sonnet Checker', isFormTool: true },
 ];
@@ -89,8 +88,8 @@ export function Layout({ children }: LayoutProps) {
             <Link to="/rhymes">Rhyme Dictionary</Link>
             <Link to="/synonyms">Synonyms</Link>
             <Link to="/syllables">Syllable Counter</Link>
+            <Link to="/rhyme-scheme-analyzer">Rhyme Scheme Maker</Link>
             <Link to="/haiku-checker">Haiku Checker</Link>
-            <Link to="/meter-analyzer">Meter Analyzer</Link>
             <Link to="/sonnet-checker">Sonnet Checker</Link>
           </div>
           <p className="layout-footer-copy">Free poetry analysis tools for poets and students</p>

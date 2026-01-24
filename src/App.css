@@ -338,8 +338,94 @@
 }
 
 .paragraph-menu-section.font-section {
-  max-height: 200px;
+  max-height: none;
+  overflow-y: visible;
+}
+
+/* Font search input */
+.font-search-container {
+  padding: 4px 12px 8px;
+}
+
+.font-search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 13px;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.font-search-input:focus {
+  border-color: var(--color-text-muted);
+}
+
+.font-search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Recent fonts section label */
+.font-section-label {
+  padding: 4px 16px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Divider between recent and all fonts */
+.font-section-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 4px 12px 8px;
+}
+
+/* Scrollable font list */
+.font-list-scrollable {
+  max-height: 180px;
   overflow-y: auto;
+}
+
+/* No results message */
+.font-no-results {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* Dark mode styles for font search */
+:root.dark-mode .font-search-input {
+  background: var(--color-background);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+:root.dark-mode .font-search-input:focus {
+  border-color: var(--color-text-muted);
+}
+
+:root.dark-mode .font-search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Yellow mode styles for font search */
+:root.yellow-mode .font-search-input {
+  background: #e5d6a0;
+  border-color: rgba(60, 50, 30, 0.15);
+  color: #3a3020;
+}
+
+:root.yellow-mode .font-search-input:focus {
+  border-color: rgba(60, 50, 30, 0.3);
+}
+
+:root.yellow-mode .font-search-input::placeholder {
+  color: #7a6a50;
 }
 
 .paragraph-menu-section:not(:last-child) {

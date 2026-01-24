@@ -16,8 +16,9 @@ import { type StressedSyllableInstance } from './utils/scansionAnalyzer';
 import { stripMarkdownFormatting } from './utils/markdownFormatter';
 import './App.css';
 
-// Curated font options for poetry
+// Expanded font options for poetry
 const FONT_OPTIONS = [
+  // Serif - Classic
   { id: 'libre-baskerville', name: 'Libre Baskerville', family: "'Libre Baskerville', serif", googleFont: 'Libre+Baskerville:ital,wght@0,400;0,700;1,400' },
   { id: 'eb-garamond', name: 'EB Garamond', family: "'EB Garamond', serif", googleFont: 'EB+Garamond:ital,wght@0,400;0,700;1,400' },
   { id: 'crimson-pro', name: 'Crimson Pro', family: "'Crimson Pro', serif", googleFont: 'Crimson+Pro:ital,wght@0,400;0,700;1,400' },
@@ -28,6 +29,23 @@ const FONT_OPTIONS = [
   { id: 'cormorant-garamond', name: 'Cormorant Garamond', family: "'Cormorant Garamond', serif", googleFont: 'Cormorant+Garamond:ital,wght@0,400;0,700;1,400' },
   { id: 'spectral', name: 'Spectral', family: "'Spectral', serif", googleFont: 'Spectral:ital,wght@0,400;0,700;1,400' },
   { id: 'georgia', name: 'Georgia', family: "Georgia, serif", googleFont: null },
+  // Serif - Elegant
+  { id: 'cormorant', name: 'Cormorant', family: "'Cormorant', serif", googleFont: 'Cormorant:ital,wght@0,400;0,700;1,400' },
+  { id: 'cardo', name: 'Cardo', family: "'Cardo', serif", googleFont: 'Cardo:ital,wght@0,400;0,700;1,400' },
+  { id: 'gentium-plus', name: 'Gentium Plus', family: "'Gentium Plus', serif", googleFont: 'Gentium+Plus:ital,wght@0,400;0,700;1,400' },
+  { id: 'alegreya', name: 'Alegreya', family: "'Alegreya', serif", googleFont: 'Alegreya:ital,wght@0,400;0,700;1,400' },
+  { id: 'noto-serif', name: 'Noto Serif', family: "'Noto Serif', serif", googleFont: 'Noto+Serif:ital,wght@0,400;0,700;1,400' },
+  // Sans Serif - Modern
+  { id: 'inter', name: 'Inter', family: "'Inter', sans-serif", googleFont: 'Inter:wght@400;500;700' },
+  { id: 'source-sans-pro', name: 'Source Sans Pro', family: "'Source Sans 3', sans-serif", googleFont: 'Source+Sans+3:ital,wght@0,400;0,700;1,400' },
+  { id: 'open-sans', name: 'Open Sans', family: "'Open Sans', sans-serif", googleFont: 'Open+Sans:ital,wght@0,400;0,700;1,400' },
+  { id: 'lato', name: 'Lato', family: "'Lato', sans-serif", googleFont: 'Lato:ital,wght@0,400;0,700;1,400' },
+  // Typewriter / Monospace
+  { id: 'courier-prime', name: 'Courier Prime', family: "'Courier Prime', monospace", googleFont: 'Courier+Prime:ital,wght@0,400;0,700;1,400' },
+  { id: 'ibm-plex-mono', name: 'IBM Plex Mono', family: "'IBM Plex Mono', monospace", googleFont: 'IBM+Plex+Mono:ital,wght@0,400;0,700;1,400' },
+  // System fonts
+  { id: 'times', name: 'Times New Roman', family: "'Times New Roman', serif", googleFont: null },
+  { id: 'palatino', name: 'Palatino', family: "Palatino, 'Palatino Linotype', serif", googleFont: null },
 ];
 
 const SAMPLE_POEM = `Shall I compare thee to a summer's day?
@@ -79,6 +97,11 @@ function App() {
   const [selectedFont, setSelectedFont] = useState<string>(() => {
     return localStorage.getItem('selectedFont') || 'libre-baskerville';
   });
+  const [recentFonts, setRecentFonts] = useState<string[]>(() => {
+    const saved = localStorage.getItem('recentFonts');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [fontSearch, setFontSearch] = useState<string>('');
   const [showThemeMenu, setShowThemeMenu] = useState<boolean>(false);
   const [lineSpacing, setLineSpacing] = useState<'normal' | 'relaxed' | 'spacious'>(() => {
     return (localStorage.getItem('lineSpacing') as 'normal' | 'relaxed' | 'spacious') || 'normal';
@@ -485,7 +508,10 @@ function App() {
       if (!target.closest('.poems-dropdown')) setShowPoemList(false);
       if (!target.closest('.export-dropdown')) setShowExportMenu(false);
       if (!target.closest('.theme-dropdown')) setShowThemeMenu(false);
-      if (!target.closest('.paragraph-dropdown')) setShowParagraphMenu(false);
+      if (!target.closest('.paragraph-dropdown')) {
+        setShowParagraphMenu(false);
+        setFontSearch(''); // Clear font search when menu closes
+      }
       if (!target.closest('.tools-dropdown')) setShowToolsMenu(false);
       if (!target.closest('.mobile-overflow-dropdown')) setShowMobileMenu(false);
     };
@@ -626,17 +652,68 @@ function App() {
                   {/* Font Section */}
                   <div className="paragraph-menu-section font-section">
                     <div className="paragraph-menu-label">Font</div>
-                    {FONT_OPTIONS.map(font => (
-                      <button
-                        key={font.id}
-                        className={`paragraph-item ${selectedFont === font.id ? 'active' : ''}`}
-                        onClick={() => setSelectedFont(font.id)}
-                        style={{ fontFamily: font.family }}
-                      >
-                        {selectedFont === font.id && <span className="checkmark">✓</span>}
-                        {font.name}
-                      </button>
-                    ))}
+                    <div className="font-search-container">
+                      <input
+                        type="text"
+                        className="font-search-input"
+                        placeholder="Search fonts..."
+                        value={fontSearch}
+                        onChange={(e) => setFontSearch(e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                    {/* Recent fonts section */}
+                    {recentFonts.length > 0 && !fontSearch && (
+                      <>
+                        <div className="font-section-label">Recent</div>
+                        {recentFonts.slice(0, 3).map(fontId => {
+                          const font = FONT_OPTIONS.find(f => f.id === fontId);
+                          if (!font) return null;
+                          return (
+                            <button
+                              key={`recent-${font.id}`}
+                              className={`paragraph-item ${selectedFont === font.id ? 'active' : ''}`}
+                              onClick={() => {
+                                setSelectedFont(font.id);
+                              }}
+                              style={{ fontFamily: font.family }}
+                            >
+                              {selectedFont === font.id && <span className="checkmark">✓</span>}
+                              {font.name}
+                            </button>
+                          );
+                        })}
+                        <div className="font-section-divider" />
+                      </>
+                    )}
+                    {/* All fonts (filtered) */}
+                    <div className="font-list-scrollable">
+                      {FONT_OPTIONS
+                        .filter(font => font.name.toLowerCase().includes(fontSearch.toLowerCase()))
+                        .map(font => (
+                          <button
+                            key={font.id}
+                            className={`paragraph-item ${selectedFont === font.id ? 'active' : ''}`}
+                            onClick={() => {
+                              setSelectedFont(font.id);
+                              // Add to recent fonts (at the beginning, remove duplicates)
+                              setRecentFonts(prev => {
+                                const filtered = prev.filter(id => id !== font.id);
+                                const updated = [font.id, ...filtered].slice(0, 5);
+                                localStorage.setItem('recentFonts', JSON.stringify(updated));
+                                return updated;
+                              });
+                            }}
+                            style={{ fontFamily: font.family }}
+                          >
+                            {selectedFont === font.id && <span className="checkmark">✓</span>}
+                            {font.name}
+                          </button>
+                        ))}
+                      {FONT_OPTIONS.filter(font => font.name.toLowerCase().includes(fontSearch.toLowerCase())).length === 0 && (
+                        <div className="font-no-results">No fonts found</div>
+                      )}
+                    </div>
                   </div>
                   {/* Text Style Section */}
                   <div className="paragraph-menu-section">
@@ -778,16 +855,13 @@ function App() {
                     Rhyme Dictionary
                   </Link>
                   <Link to="/synonyms" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Thesaurus
+                    Synonyms
                   </Link>
                   <Link to="/syllables" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Syllable Counter
                   </Link>
-                  <Link to="/meter-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Meter Analyzer
-                  </Link>
                   <Link to="/rhyme-scheme-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
-                    Rhyme Scheme Analyzer
+                    Rhyme Scheme Maker
                   </Link>
                   <Link to="/haiku-checker" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
                     Haiku Checker

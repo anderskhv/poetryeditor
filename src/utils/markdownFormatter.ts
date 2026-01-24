@@ -22,10 +22,13 @@ export interface MarkdownRange {
 export function parseMarkdownFormatting(text: string): MarkdownRange[] {
   const ranges: MarkdownRange[] = [];
 
-  // Bold: **text**
-  const boldRegex = /\*\*([^*]+)\*\*/g;
+  // Bold: **text** - requires at least one character between markers, non-greedy
+  // Content must not start or end with whitespace for proper formatting
+  const boldRegex = /\*\*(\S(?:[^*]*\S)?)\*\*/g;
   let match;
   while ((match = boldRegex.exec(text)) !== null) {
+    // Skip if content contains newlines (multi-line not supported)
+    if (match[1].includes('\n')) continue;
     ranges.push({
       type: 'bold',
       startOffset: match.index,
@@ -36,8 +39,8 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
   }
 
   // Italic: *text* (but not **)
-  // Use negative lookbehind/lookahead to avoid matching ** as italic
-  const italicRegex = /(?<!\*)\*([^*]+)\*(?!\*)/g;
+  // Requires: not preceded by *, not followed by *, content has at least one non-space char
+  const italicRegex = /(?<!\*)\*(\S(?:[^*\n]*\S)?)\*(?!\*)/g;
   while ((match = italicRegex.exec(text)) !== null) {
     // Make sure this isn't inside a bold section
     const isInsideBold = ranges.some(
@@ -54,8 +57,8 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
     }
   }
 
-  // Underline: __text__
-  const underlineRegex = /__([^_]+)__/g;
+  // Underline: __text__ - requires at least one non-space character
+  const underlineRegex = /__(\S(?:[^_\n]*\S)?)__/g;
   while ((match = underlineRegex.exec(text)) !== null) {
     ranges.push({
       type: 'underline',
@@ -78,7 +81,7 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
  */
 export function stripMarkdownFormatting(text: string): string {
   return text
-    .replace(/\*\*([^*]+)\*\*/g, '$1')  // Bold
-    .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '$1')  // Italic
-    .replace(/__([^_]+)__/g, '$1');  // Underline
+    .replace(/\*\*(\S(?:[^*]*\S)?)\*\*/g, '$1')  // Bold
+    .replace(/(?<!\*)\*(\S(?:[^*\n]*\S)?)\*(?!\*)/g, '$1')  // Italic
+    .replace(/__(\S(?:[^_\n]*\S)?)__/g, '$1');  // Underline
 }
