@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
+import { AutocompleteInput } from '../components/AutocompleteInput';
 import { fetchRhymes, RhymeWord } from '../utils/rhymeApi';
 import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables } from '../utils/cmuDict';
 import { getRhymeOriginalityScore } from '../utils/rhymeCliches';
@@ -211,10 +212,18 @@ export function RhymeDictionary() {
 
         <form onSubmit={handleSearch} className="rhyme-search-form">
           <div className="search-row">
-            <input
-              type="text"
+            <AutocompleteInput
               value={searchWord}
-              onChange={(e) => setSearchWord(e.target.value)}
+              onChange={setSearchWord}
+              onSubmit={(word) => {
+                const trimmed = word.trim().toLowerCase();
+                if (!trimmed) return;
+                if (!topicWord.trim() && syllableFilter === 'all' && clicheFilter === 'all' && wordTypeFilter === 'all') {
+                  navigate(`/rhymes/${encodeURIComponent(trimmed)}`);
+                } else {
+                  performSearch();
+                }
+              }}
               placeholder="Enter a word to find rhymes..."
               className="rhyme-search-input"
               autoFocus

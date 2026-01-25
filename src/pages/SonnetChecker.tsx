@@ -334,13 +334,11 @@ export function SonnetChecker() {
 
     // Check for iambic pentameter using actual stress patterns
     let iambicPentameterCount = 0;
-    const lineMeters: string[] = [];
 
-    nonEmptyStressAnalyses.forEach((analysis, idx) => {
+    nonEmptyStressAnalyses.forEach((analysis) => {
       if (analysis.stresses.length === 0) return;
 
       const lineMeter = detectMeterFromStress(analysis.stresses);
-      lineMeters.push(lineMeter);
 
       // Check if it's iambic pentameter
       if (lineMeter === 'Iambic Pentameter') {

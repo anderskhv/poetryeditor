@@ -9,7 +9,6 @@ import { useDebouncedLocalStorage } from './hooks/useLocalStorage';
 import { useCollection } from './hooks/useCollection';
 import { WordInfo } from './types';
 import { CollectionPoem } from './types/collection';
-import { loadCMUDictionary } from './utils/cmuDict';
 import { type PassiveVoiceInstance } from './utils/passiveVoiceDetector';
 import { type TenseInstance } from './utils/tenseChecker';
 import { type StressedSyllableInstance } from './utils/scansionAnalyzer';
@@ -64,7 +63,6 @@ interface SavedPoem {
 function App() {
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
-  const [, setIsDictionaryLoading] = useState<boolean>(true);
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
   const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
 
@@ -156,18 +154,6 @@ function App() {
   const [highlightedLines, setHighlightedLines] = useState<number[] | null>(null);
   const [highlightedWords, setHighlightedWords] = useState<{ word: string; lineNumber: number }[] | null>(null);
   const [editorHoveredLine, setEditorHoveredLine] = useState<number | null>(null);
-
-  // Load CMU dictionary on mount
-  useEffect(() => {
-    loadCMUDictionary()
-      .then(() => {
-        setIsDictionaryLoading(false);
-      })
-      .catch((error) => {
-        console.error('Failed to load CMU dictionary:', error);
-        setIsDictionaryLoading(false);
-      });
-  }, []);
 
   // Apply theme class to document
   useEffect(() => {
@@ -1056,11 +1042,13 @@ function App() {
       </div>
 
       <footer className="app-footer">
-        <div className="footer-content">
-          <span>Free online poetry analyzer: syllable counter, rhyme scheme detector, scansion tool, meter analysis, and more.</span>
-        </div>
-        <div className="footer-copyright">
-          <span>© {new Date().getFullYear()} poetryeditor.com</span>
+        <div className="feedback-box">
+          <p className="feedback-text">
+            Do you have ideas, feedback, or have you found a bug? Let us know and we'll get back to you within 48 hours.
+          </p>
+          <a href="mailto:contact@poetryeditor.com" className="feedback-email">
+            contact@poetryeditor.com
+          </a>
         </div>
       </footer>
 

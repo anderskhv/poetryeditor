@@ -375,47 +375,6 @@
   background-color: rgba(255, 255, 255, 0.18);
 }
 
-/* Stress pattern tooltip on hover */
-.line-stress-tooltip {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  background: var(--color-paper);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 8px 12px;
-  margin-top: 4px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.line-stress-tooltip .stress-label {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-}
-
-.line-stress-tooltip .stress-display {
-  font-family: var(--font-mono, monospace);
-  font-size: 14px;
-  color: var(--color-text-primary);
-  letter-spacing: 2px;
-}
-
-.line-stress-tooltip .stress-hint {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  color: var(--color-warning, hsl(40, 60%, 45%));
-  margin-left: auto;
-}
-
 .sonnet-line-row.hovered {
   background: var(--color-background);
   border-radius: 4px;
@@ -696,43 +655,6 @@
   font-size: 15px;
   color: var(--color-text-primary);
   line-height: 1.5;
-}
-
-.rhyme-badge {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 600;
-  color: white;
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  flex-shrink: 0;
-}
-
-.syllable-badge {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 500;
-  width: 24px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  flex-shrink: 0;
-}
-
-.syllable-badge.good {
-  background: var(--color-syllable-good-bg, hsl(145, 40%, 90%));
-  color: var(--color-syllable-good-text, hsl(145, 50%, 35%));
-}
-
-.syllable-badge.off {
-  background: var(--color-syllable-off-bg, hsl(40, 50%, 90%));
-  color: var(--color-syllable-off-text, hsl(40, 60%, 35%));
 }
 
 /* Compliance Legend */
@@ -1205,22 +1127,6 @@
     max-height: 400px;
   }
 
-  .line-stress-tooltip {
-    padding: 6px 10px;
-    gap: 6px;
-  }
-
-  .line-stress-tooltip .stress-display {
-    font-size: 12px;
-    letter-spacing: 1px;
-  }
-
-  .line-stress-tooltip .stress-hint {
-    width: 100%;
-    margin-left: 0;
-    font-size: 10px;
-  }
-
   .sonnet-line-row {
     gap: 8px;
     padding: 4px 0;
@@ -1376,13 +1282,6 @@
   }
 
   .stress-pattern {
-    font-size: 10px;
-  }
-
-  .rhyme-badge,
-  .syllable-badge {
-    width: 20px;
-    height: 20px;
     font-size: 10px;
   }
 

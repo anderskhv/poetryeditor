@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
+import { AutocompleteInput } from '../components/AutocompleteInput';
 import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables } from '../utils/cmuDict';
 import './SyllableCounter.css';
 
@@ -164,10 +165,15 @@ export function SyllableCounter() {
           {/* Search Input */}
           <form onSubmit={handleSubmit} className="syllable-search-form">
             {mode === 'word' ? (
-              <input
-                type="text"
+              <AutocompleteInput
                 value={input}
-                onChange={(e) => handleInputChange(e.target.value)}
+                onChange={handleInputChange}
+                onSubmit={(word) => {
+                  const trimmed = word.trim().toLowerCase();
+                  if (trimmed && !trimmed.includes(' ')) {
+                    navigate(`/syllables/${encodeURIComponent(trimmed)}`);
+                  }
+                }}
                 placeholder="Enter a word..."
                 className="syllable-search-input"
                 autoFocus

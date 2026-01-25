@@ -222,6 +222,14 @@ export function isDictionaryLoaded(): boolean {
 }
 
 /**
+ * Get all words from the dictionary (for autocomplete)
+ */
+export function getDictionaryWords(): string[] {
+  if (!dictionaryCache) return [];
+  return Array.from(dictionaryCache.keys());
+}
+
+/**
  * Get syllable count from stress pattern
  */
 export function getSyllableCountFromStress(stresses: number[]): number {

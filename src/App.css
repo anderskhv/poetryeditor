@@ -843,16 +843,42 @@
 }
 
 /* ============================================
-   FOOTER - Hidden
+   FOOTER
    ============================================ */
 
 .app-footer {
-  display: none;
+  padding: 24px 32px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-background);
 }
 
-.footer-content,
-.footer-copyright {
-  display: none;
+.feedback-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.feedback-text {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.feedback-email {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.feedback-email:hover {
+  color: var(--color-accent, hsl(220, 70%, 50%));
+  text-decoration: underline;
 }
 
 /* ============================================
