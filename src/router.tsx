@@ -12,6 +12,7 @@ import { LearnHaiku } from './pages/learn/LearnHaiku';
 import { LearnSonnet } from './pages/learn/LearnSonnet';
 import { LearnFreeVerse } from './pages/learn/LearnFreeVerse';
 import { LearnScansion } from './pages/learn/LearnScansion';
+import { PoemPage } from './pages/poems/PoemPage';
 
 export const router = createBrowserRouter([
   {
@@ -78,5 +79,10 @@ export const router = createBrowserRouter([
   {
     path: '/learn/scansion',
     element: <LearnScansion />,
+  },
+  // Poem analysis pages
+  {
+    path: '/poems/:slug',
+    element: <PoemPage />,
   },
 ]);
