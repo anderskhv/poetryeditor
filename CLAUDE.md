@@ -25,6 +25,20 @@ npm run preview  # Preview production build
 npm run lint     # ESLint check
 ```
 
+## Deployment
+
+- **Host**: Cloudflare Pages
+- **Project**: `poetry-editor`
+- **Live URL**: https://poetryeditor.com
+- **Deploy method**: Auto-deploy on push to `main`
+- **Build output**: `dist/` (Vite default)
+
+**To deploy**: Just push to main. Cloudflare handles the rest.
+
+```bash
+git push origin main
+```
+
 ## Folder Structure
 
 ```
