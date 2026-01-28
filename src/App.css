@@ -1609,6 +1609,23 @@
   background: #6a5a40;
 }
 
+:root.yellow-mode .app-footer {
+  background-color: #e8d9a8;
+  border-top: 1px solid rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .footer-line {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .footer-line a {
+  color: #5a4a30;
+}
+
+:root.yellow-mode .footer-line a:hover {
+  color: #3a3020;
+}
+
 :root.yellow-mode .mobile-overflow-menu {
   background: #efe0b0;
   border-color: rgba(60, 50, 30, 0.15);
