@@ -13,6 +13,7 @@ import { LearnSonnet } from './pages/learn/LearnSonnet';
 import { LearnFreeVerse } from './pages/learn/LearnFreeVerse';
 import { LearnScansion } from './pages/learn/LearnScansion';
 import { PoemPage } from './pages/poems/PoemPage';
+import { PoemsListPage } from './pages/poems/PoemsListPage';
 
 export const router = createBrowserRouter([
   {
@@ -81,6 +82,10 @@ export const router = createBrowserRouter([
     element: <LearnScansion />,
   },
   // Poem analysis pages
+  {
+    path: '/poems',
+    element: <PoemsListPage />,
+  },
   {
     path: '/poems/:slug',
     element: <PoemPage />,

@@ -541,17 +541,9 @@
   margin-top: 0;
 }
 
-/* Tools menu divider */
-.tools-divider {
-  height: 1px;
-  background: var(--color-border);
-  margin: 8px 0;
-}
-
-/* Classic Poems link in tools menu */
-.tools-item.classic-poems {
-  font-weight: 500;
-  color: var(--color-text-primary);
+/* Inspiration button - link styled as menu button */
+.btn-inspiration {
+  text-decoration: none;
 }
 
 /* Inline poems submenu within File menu */

@@ -13,6 +13,7 @@ const TOOLS = [
   { path: '/rhyme-scheme-analyzer', label: 'Rhyme Scheme Maker' },
   { path: '/haiku-checker', label: 'Haiku Checker', isFormTool: true },
   { path: '/sonnet-checker', label: 'Sonnet Checker', isFormTool: true },
+  { path: '/poems', label: 'Poem Analyses' },
 ];
 
 export function Layout({ children }: LayoutProps) {
@@ -30,7 +31,7 @@ export function Layout({ children }: LayoutProps) {
         <div className="layout-header-content">
           <Link to="/" className="layout-logo-group">
             <span className="layout-logo">Poetry Editor</span>
-            <span className="layout-subtitle">Toolbox for Poets</span>
+            <span className="layout-subtitle">a toolbox for poets</span>
           </Link>
           <button
             className="mobile-menu-toggle"
@@ -51,7 +52,7 @@ export function Layout({ children }: LayoutProps) {
               </button>
               {showOtherTools && (
                 <div className="other-tools-menu">
-                  {otherTools.map(tool => (
+                  {otherTools.filter(t => t.path !== '/poems').map(tool => (
                     <Link
                       key={tool.path}
                       to={tool.path}
@@ -68,6 +69,13 @@ export function Layout({ children }: LayoutProps) {
               )}
             </div>
             <Link
+              to="/poems"
+              className="layout-nav-link"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Other Poems
+            </Link>
+            <Link
               to="/"
               className="layout-nav-cta"
               onClick={() => setMobileMenuOpen(false)}
@@ -82,18 +90,7 @@ export function Layout({ children }: LayoutProps) {
         {children}
       </main>
       <footer className="layout-footer">
-        <div className="layout-footer-content">
-          <div className="layout-footer-links">
-            <Link to="/">Poetry Editor</Link>
-            <Link to="/rhymes">Rhyme Dictionary</Link>
-            <Link to="/synonyms">Synonyms</Link>
-            <Link to="/syllables">Syllable Counter</Link>
-            <Link to="/rhyme-scheme-analyzer">Rhyme Scheme Maker</Link>
-            <Link to="/haiku-checker">Haiku Checker</Link>
-            <Link to="/sonnet-checker">Sonnet Checker</Link>
-          </div>
-          <p className="layout-footer-copy">Free poetry analysis tools for poets and students</p>
-        </div>
+        <p className="footer-line">Ideas, feedback, or bugs? Write <a href="mailto:contact@poetryeditor.com">contact@poetryeditor.com</a>, we will get back in &lt;48 hours.</p>
       </footer>
     </div>
   );

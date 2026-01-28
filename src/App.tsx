@@ -815,6 +815,9 @@ function App() {
                 </div>
               )}
             </div>
+            <Link to="/poems" className="btn btn-menu btn-inspiration">
+              Inspiration
+            </Link>
             <div className="theme-dropdown">
               <button
                 onClick={() => setShowThemeMenu(!showThemeMenu)}
@@ -884,10 +887,6 @@ function App() {
                   </Link>
                   <Link to="/sonnet-checker" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
                     Sonnet Checker
-                  </Link>
-                  <div className="tools-divider"></div>
-                  <Link to="/poems" className="tools-item classic-poems" onClick={() => setShowToolsMenu(false)}>
-                    Classic Poems
                   </Link>
                 </div>
               )}

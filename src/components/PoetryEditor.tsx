@@ -56,6 +56,15 @@ interface PoetryEditorProps {
   firstLineIndent?: boolean;
   lineSpacing?: 'normal' | 'relaxed' | 'spacious';
   onEditorMount?: (editor: editor.IStandaloneCodeEditor) => void;
+  readOnly?: boolean;
+  hideTitle?: boolean;
+  poemMetadata?: {
+    poet: string;
+    poetUrl: string;
+    collection?: string;
+    collectionUrl?: string;
+    year: number;
+  };
 }
 
 // Line spacing values in pixels (at 17px font size)
@@ -78,7 +87,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, readOnly = false, hideTitle = false, poemMetadata }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -1048,25 +1057,62 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
   return (
     <div className={containerClasses} ref={containerRef}>
-      <div className="poem-title-container">
-        <input
-          type="text"
-          className={`poem-title-editor-input ${isDarkMode ? 'dark' : ''}`}
-          value={poemTitle}
-          onChange={(e) => onTitleChange(e.target.value)}
-          placeholder="Untitled"
-          aria-label="Poem title"
-          autoComplete="off"
-          autoCorrect="off"
-          autoCapitalize="off"
-          spellCheck="false"
-          data-1p-ignore
-          data-lpignore="true"
-          data-form-type="other"
-        />
-      </div>
+      {!hideTitle && (
+        <div className="poem-title-container">
+          {poemMetadata ? (
+            <>
+              <h1 className={`poem-title-display ${isDarkMode ? 'dark' : ''}`}>{poemTitle}</h1>
+              <div className="poem-metadata">
+                <a
+                  href={poemMetadata.poetUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="poem-metadata-link"
+                >
+                  {poemMetadata.poet}
+                </a>
+                {poemMetadata.collection && (
+                  <>
+                    <span className="poem-metadata-separator">&bull;</span>
+                    <a
+                      href={poemMetadata.collectionUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="poem-metadata-link"
+                    >
+                      {poemMetadata.collection}
+                    </a>
+                  </>
+                )}
+                {poemMetadata.year && (
+                  <>
+                    <span className="poem-metadata-separator">&bull;</span>
+                    <span className="poem-metadata-year">{poemMetadata.year}</span>
+                  </>
+                )}
+              </div>
+            </>
+          ) : (
+            <input
+              type="text"
+              className={`poem-title-editor-input ${isDarkMode ? 'dark' : ''}`}
+              value={poemTitle}
+              onChange={(e) => onTitleChange(e.target.value)}
+              placeholder="Untitled"
+              aria-label="Poem title"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck="false"
+              data-1p-ignore
+              data-lpignore="true"
+              data-form-type="other"
+            />
+          )}
+        </div>
+      )}
       <Editor
-        height="calc(100% - 80px)"
+        height={hideTitle ? "100%" : "calc(100% - 80px)"}
         defaultLanguage="poetry"
         value={value}
         onChange={(newValue) => onChange(newValue || '')}
@@ -1077,6 +1123,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
           fontFamily: editorFont || "'Libre Baskerville', Georgia, 'Times New Roman', serif",
           minimap: { enabled: false },
           lineNumbers: 'on',
+          readOnly: readOnly,
           wordWrap: 'on',
           wrappingIndent: 'same',
           scrollBeyondLastLine: false,
