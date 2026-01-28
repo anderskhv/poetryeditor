@@ -1078,7 +1078,7 @@ function App() {
       </div>
 
       <footer className="app-footer">
-        <p className="footer-line">Ideas, feedback, or bugs? Write <a href="mailto:contact@poetryeditor.com">contact@poetryeditor.com</a>, we will get back in &lt;48 hours.</p>
+        <p className="footer-line">Ideas, feedback, or bugs? Write <a href="mailto:contact@poetryeditor.com">contact@poetryeditor.com</a>. We will get back in &lt;48 hours.</p>
       </footer>
 
       <ShareModal
