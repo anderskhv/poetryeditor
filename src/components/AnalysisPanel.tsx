@@ -21,6 +21,7 @@ import { analyzeAbstractConcrete } from '../utils/abstractConcreteAnalyzer';
 import { detectFirstDraftPhrases } from '../utils/firstDraftPhrases';
 import { detectDeadMetaphors, getCategoryDisplayName } from '../utils/deadMetaphors';
 import { HelpTooltip, HELP_CONTENT } from './HelpTooltip';
+import { SynonymMiniPopup } from './SynonymMiniPopup';
 import './AnalysisPanel.css';
 
 interface AnalysisPanelProps {
@@ -75,6 +76,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
   const [showAllSoundPatterns, setShowAllSoundPatterns] = useState<{alliteration: boolean, assonance: boolean, consonance: boolean}>({
     alliteration: false, assonance: false, consonance: false
   });
+  const [synonymPopup, setSynonymPopup] = useState<{ word: string; position: { top: number; left: number } } | null>(null);
 
   // Preload adverb suggestions whenever words change
   useEffect(() => {
@@ -1244,25 +1246,31 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
               <div className="ac-word-header">Abstract words found:</div>
               <div className="ac-words">
                 {analysis.abstractConcreteAnalysis.abstractWords.slice(0, 10).map((item, idx) => (
-                  <Link
+                  <span
                     key={idx}
-                    to={`/synonyms/${encodeURIComponent(item.word)}`}
                     className="ac-word abstract"
-                    title={`${item.category} — click to find concrete alternatives (hyponyms)`}
+                    title={`${item.category} — click to find concrete alternatives`}
+                    onClick={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      setSynonymPopup({
+                        word: item.word,
+                        position: { top: rect.bottom + 8, left: rect.left }
+                      });
+                    }}
                     onMouseEnter={() => onHighlightWords?.([{ word: item.word, lineNumber: item.lineNumber }])}
                     onMouseLeave={() => onHighlightWords?.(null)}
                   >
                     {item.word}
-                  </Link>
+                  </span>
                 ))}
                 {analysis.abstractConcreteAnalysis.abstractWords.length > 10 && (
                   <span className="ac-more">+{analysis.abstractConcreteAnalysis.abstractWords.length - 10} more</span>
                 )}
               </div>
               <div className="ac-tool-link">
-                <Link to="/synonyms" className="tool-link">
+                <a href="/synonyms" target="_blank" rel="noopener noreferrer" className="tool-link">
                   Thesaurus — find concrete alternatives
-                </Link>
+                </a>
               </div>
             </div>
           )}
@@ -2121,6 +2129,15 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
           </>
         )}
       </div>
+
+      {/* Synonym Mini Popup for abstract words */}
+      {synonymPopup && (
+        <SynonymMiniPopup
+          word={synonymPopup.word}
+          position={synonymPopup.position}
+          onClose={() => setSynonymPopup(null)}
+        />
+      )}
     </div>
   );
 }
