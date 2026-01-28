@@ -22,7 +22,19 @@ You may give them your love but not your thoughts,
 For they have their own thoughts.
 You may house their bodies but not their souls,
 For their souls dwell in the house of tomorrow,
-which you cannot visit, not even in your dreams.`,
+which you cannot visit, not even in your dreams.
+You may strive to be like them,
+but seek not to make them like you.
+For life goes not backward nor tarries with yesterday.
+
+You are the bows from which your children
+as living arrows are sent forth.
+The archer sees the mark upon the path of the infinite,
+and He bends you with His might
+that His arrows may go swift and far.
+Let your bending in the archer's hand be for gladness;
+For even as He loves the arrow that flies,
+so He loves also the bow that is stable.`,
   analysis: {
     overview: `"On Children" is perhaps the most frequently quoted passage from "The Prophet," often read at christenings, graduations, and parenting workshops. Gibran presents a radical view of parenthood: children are not possessions but autonomous souls passing through their parents' lives. The poem challenges conventional notions of parental ownership and control.`,
     lineByLine: [
@@ -45,6 +57,14 @@ which you cannot visit, not even in your dreams.`,
       {
         lines: '9-11',
         commentary: `"House their bodies but not their souls" — The physical is all parents can truly provide. The soul belongs to "the house of tomorrow," a future the parent cannot access or control.`
+      },
+      {
+        lines: '12-14',
+        commentary: `"Strive to be like them" reverses expectation—children are the model, not parents. "Life goes not backward" reinforces that children represent the forward movement of existence.`
+      },
+      {
+        lines: '15-22',
+        commentary: `The bow and arrow metaphor: parents are bows, children are arrows, God is the archer. The bow's purpose is to bend and release—not to hold. "Let your bending be for gladness" transforms the pain of letting go into purpose.`
       }
     ],
     themes: [
@@ -74,6 +94,11 @@ which you cannot visit, not even in your dreams.`,
         device: 'Metaphor',
         example: '"the house of tomorrow"',
         explanation: 'The future is made concrete as a dwelling place only children can inhabit.'
+      },
+      {
+        device: 'Extended Metaphor',
+        example: '"You are the bows from which your children as living arrows are sent forth"',
+        explanation: 'The poem\'s culminating image: God as archer, parents as bows, children as arrows. The bow must bend and release—its purpose is not to hold but to propel.'
       }
     ],
     historicalContext: `This poem resonated powerfully with the 1960s-70s movements toward child-centered parenting and continues to influence modern parenting philosophy. Gibran drew on his experience as a child sent away from Lebanon and his observations of immigrant families navigating cultural change.`

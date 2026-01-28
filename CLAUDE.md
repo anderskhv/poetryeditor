@@ -85,6 +85,32 @@ src/
 
 If a specific task fails repeatedly (3+ attempts), note it briefly and move on to the next task. Return to failed tasks later if time permits.
 
+## External API Restrictions
+
+**DO NOT call external APIs** unless explicitly requested. This project has experienced blocking issues from repeated API calls that cause loops where Claude gets stuck retrying the same failed request.
+
+**Specifically avoid:**
+- WebFetch to external poetry databases or text sources
+- Any API that requires authentication or has rate limits
+- Repeated calls to the same endpoint when it fails
+
+**When you need poem text:**
+- Use local files in `src/data/poems/`
+- Ask the user to provide the text
+- Reference Project Gutenberg URLs for the user to fetch manually
+
+**If you hit a blocking error:**
+1. STOP immediately - do not retry
+2. Report the error to the user
+3. Ask for alternative instructions
+4. Do NOT loop on the same request
+
+**Content Filter Errors (400 "Output blocked by content filtering policy"):**
+This happens when adding poem texts with dark themes (death, despair, violence). Classic poems like Poe, war poetry, etc. can trigger this even though they're legitimate literature.
+- Do NOT retry - it will keep failing
+- Ask the user to add the poem text manually
+- Or adjust the analysis to match existing truncated text instead of expanding it
+
 ## Working Style
 
 - **Be autonomous**: Don't ask for permission on routine decisions
@@ -98,6 +124,14 @@ If a specific task fails repeatedly (3+ attempts), note it briefly and move on t
 Location: `src/data/poems/`
 Format: See existing files like `shakespeare-sonnet-18.ts` for structure
 Export: All poems must be added to `src/data/poems/index.ts`
+
+**Consistency Check (REQUIRED):** After adding or editing any poem, verify:
+1. The `text` field contains the COMPLETE poem (count lines)
+2. The `lineByLine` commentary references only lines that exist in the text
+3. Literary device examples quote text that actually appears in the poem
+4. The `overview` doesn't reference content missing from the text
+
+Run this check manually by comparing line counts and searching for quoted phrases.
 
 ### Key Components
 - `PoetryEditor`: Main editor component with Monaco
@@ -119,4 +153,33 @@ Export: All poems must be added to `src/data/poems/index.ts`
 <!-- Append new decisions here as they're made during conversations -->
 <!-- Format: **[Category]**: Description of the decision and rationale -->
 
-*No decisions logged yet.*
+**[Content Audit 2026-01-28]**: Cleaned up poem database to ensure all poems are complete.
+
+**Policy decision**: Only include poems with full text. Excerpts removed because:
+- Analysis can't properly cover partial poems
+- Content filters block adding full text for some poems (dark themes trigger filters)
+- Better to have fewer complete poems than many incomplete ones
+
+**Poems expanded to full text (kept)**:
+- `arnold-dover-beach.ts` - 37 lines
+- `frost-nothing-gold.ts` - 8 lines
+- `frost-stopping-by-woods.ts` - 16 lines
+- `henley-invictus.ts` - 16 lines
+- `shelley-mutability.ts` - Fixed duplication bug
+
+**Excerpt poems DELETED (15 total)**:
+- `keats-ode-nightingale.ts`, `keats-ode-grecian-urn.ts`, `keats-autumn.ts`
+- `wordsworth-tintern-abbey.ts`
+- `shelley-ode-west-wind.ts`, `shelley-skylark.ts`, `shelley-mont-blanc.ts`
+- `poe-raven.ts`
+- `eliot-prufrock.ts`
+- `thayer-casey-at-the-bat.ts`
+- `coleridge-kubla-khan.ts`
+- `donne-no-man-is-an-island.ts`
+- `kipling-if.ts`
+- `tennyson-charge-light-brigade.ts`
+- `lazarus-new-colossus.ts`
+
+**Final count**: 55 complete poems remain.
+
+**[Process]**: Added mandatory consistency check for poem files and external API restrictions to prevent blocking loops.
