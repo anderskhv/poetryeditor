@@ -541,9 +541,110 @@
   margin-top: 0;
 }
 
-/* Inspiration button - link styled as menu button */
-.btn-inspiration {
+/* Inspiration dropdown */
+.inspiration-dropdown {
+  position: relative;
+}
+
+.inspiration-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: var(--color-paper);
+  border-radius: 4px;
+  box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
+  min-width: 240px;
+  z-index: var(--z-index-dropdown);
+  overflow: hidden;
+}
+
+.inspiration-section {
+  padding: 8px 0;
+}
+
+.inspiration-section:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.inspiration-section-label {
+  padding: 4px 16px 8px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.inspiration-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--color-text-primary);
   text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.inspiration-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.inspiration-poem-title {
+  font-style: italic;
+}
+
+.inspiration-poet,
+.inspiration-count {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.inspiration-poet-name {
+  flex: 1;
+}
+
+.inspiration-browse-all {
+  padding: 4px 0;
+}
+
+.browse-all-link {
+  font-weight: 500;
+}
+
+.browse-arrow {
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+/* Dark mode */
+:root.dark-mode .inspiration-menu {
+  background: var(--color-paper);
+  box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
+}
+
+:root.dark-mode .inspiration-item {
+  color: var(--color-text-primary);
+}
+
+:root.dark-mode .inspiration-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Yellow mode */
+:root.yellow-mode .inspiration-menu {
+  background: #efe0b0;
+  border-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .inspiration-item {
+  color: #5a4a30;
+}
+
+:root.yellow-mode .inspiration-item:hover {
+  background: #e5d6a0;
 }
 
 /* Inline poems submenu within File menu */

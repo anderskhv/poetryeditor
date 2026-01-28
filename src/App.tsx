@@ -113,6 +113,7 @@ function App() {
   });
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [showToolsMenu, setShowToolsMenu] = useState<boolean>(false);
+  const [showInspirationMenu, setShowInspirationMenu] = useState<boolean>(false);
   const [showPoemList, setShowPoemList] = useState<boolean>(false);
   const [savedPoems, setSavedPoems] = useState<SavedPoem[]>(() => {
     const saved = localStorage.getItem('savedPoems');
@@ -527,6 +528,7 @@ function App() {
         setFontSearch(''); // Clear font search when menu closes
       }
       if (!target.closest('.tools-dropdown')) setShowToolsMenu(false);
+      if (!target.closest('.inspiration-dropdown')) setShowInspirationMenu(false);
       if (!target.closest('.mobile-overflow-dropdown')) setShowMobileMenu(false);
     };
     document.addEventListener('click', handleClickOutside);
@@ -815,9 +817,6 @@ function App() {
                 </div>
               )}
             </div>
-            <Link to="/poems" className="btn btn-menu btn-inspiration">
-              Inspiration
-            </Link>
             <div className="theme-dropdown">
               <button
                 onClick={() => setShowThemeMenu(!showThemeMenu)}
@@ -856,6 +855,64 @@ function App() {
                   >
                     Dark
                   </button>
+                </div>
+              )}
+            </div>
+            <div className="inspiration-dropdown">
+              <button
+                onClick={() => setShowInspirationMenu(!showInspirationMenu)}
+                className="btn btn-menu"
+                aria-label="Inspiration"
+                aria-expanded={showInspirationMenu}
+              >
+                Inspiration
+              </button>
+              {showInspirationMenu && (
+                <div className="inspiration-menu">
+                  <div className="inspiration-section">
+                    <div className="inspiration-section-label">Featured</div>
+                    <Link to="/poems/first-fig" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                      <span className="inspiration-poem-title">"First Fig"</span>
+                      <span className="inspiration-poet">Millay</span>
+                    </Link>
+                    <Link to="/poems/sonnet-18" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                      <span className="inspiration-poem-title">"Sonnet 18"</span>
+                      <span className="inspiration-poet">Shakespeare</span>
+                    </Link>
+                    <Link to="/poems/november-night" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                      <span className="inspiration-poem-title">"November Night"</span>
+                      <span className="inspiration-poet">Crapsey</span>
+                    </Link>
+                    <Link to="/poems/stopping-by-woods" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                      <span className="inspiration-poem-title">"Stopping by Woods"</span>
+                      <span className="inspiration-poet">Frost</span>
+                    </Link>
+                  </div>
+                  <div className="inspiration-section">
+                    <div className="inspiration-section-label">Browse by Poet</div>
+                    <Link to="/poems?poet=shakespeare" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                      <span className="inspiration-poet-name">Shakespeare</span>
+                      <span className="inspiration-count">21</span>
+                    </Link>
+                    <Link to="/poems?poet=dickinson" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                      <span className="inspiration-poet-name">Dickinson</span>
+                      <span className="inspiration-count">10</span>
+                    </Link>
+                    <Link to="/poems?poet=wordsworth" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                      <span className="inspiration-poet-name">Wordsworth</span>
+                      <span className="inspiration-count">4</span>
+                    </Link>
+                    <Link to="/poems?poet=frost" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                      <span className="inspiration-poet-name">Frost</span>
+                      <span className="inspiration-count">3</span>
+                    </Link>
+                  </div>
+                  <div className="inspiration-section inspiration-browse-all">
+                    <Link to="/poems" className="inspiration-item browse-all-link" onClick={() => setShowInspirationMenu(false)}>
+                      Browse All 63 Poems
+                      <span className="browse-arrow">→</span>
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
