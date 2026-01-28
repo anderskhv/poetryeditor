@@ -19,7 +19,7 @@
 ## Commands
 
 ```bash
-npm run dev      # Start dev server
+npm run dev      # Start dev server (localhost:3000)
 npm run build    # TypeScript check + production build
 npm run preview  # Preview production build
 npm run lint     # ESLint check
