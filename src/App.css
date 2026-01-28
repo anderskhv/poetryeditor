@@ -885,12 +885,17 @@
   background-color: var(--color-paper);
 }
 
-/* Paragraph alignment - center (title only, Monaco doesn't support text-align) */
+/* Paragraph alignment - center */
 .poetry-editor-container.align-center .poem-title-container {
   text-align: center;
 }
 
 .poetry-editor-container.align-center .poem-title-editor-input {
+  text-align: center;
+}
+
+/* Center align Monaco editor text */
+.poetry-editor-container.align-center .view-line {
   text-align: center;
 }
 
