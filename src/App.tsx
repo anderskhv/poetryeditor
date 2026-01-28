@@ -559,40 +559,6 @@ function App() {
               Collection
             </button>
             */}
-            <div className="poems-dropdown">
-              <button
-                onClick={() => setShowPoemList(!showPoemList)}
-                className="btn btn-menu"
-                aria-label="View saved poems"
-                aria-expanded={showPoemList}
-              >
-                My Poems
-              </button>
-              {showPoemList && (
-                <div className="poems-menu">
-                  {savedPoems.length === 0 ? (
-                    <div className="poems-empty">No saved poems yet</div>
-                  ) : (
-                    savedPoems.map(poem => (
-                      <div
-                        key={poem.id}
-                        className={`poem-item ${currentPoemId === poem.id ? 'active' : ''}`}
-                        onClick={() => handleLoadPoem(poem)}
-                      >
-                        <span className="poem-title">{poem.title}</span>
-                        <button
-                          className="poem-delete"
-                          onClick={(e) => handleDeletePoem(poem.id, e)}
-                          aria-label={`Delete ${poem.title}`}
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
             <div className="export-dropdown">
               <button
                 onClick={() => setShowExportMenu(!showExportMenu)}
@@ -613,6 +579,42 @@ function App() {
                   >
                     New
                   </button>
+                  <div className="poems-dropdown-inline">
+                    <button
+                      className="export-item has-submenu"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowPoemList(!showPoemList);
+                      }}
+                    >
+                      Open Poem
+                      <span className="submenu-arrow">›</span>
+                    </button>
+                    {showPoemList && (
+                      <div className="poems-submenu">
+                        {savedPoems.length === 0 ? (
+                          <div className="poems-empty">No saved poems yet</div>
+                        ) : (
+                          savedPoems.map(poem => (
+                            <div
+                              key={poem.id}
+                              className={`poem-item ${currentPoemId === poem.id ? 'active' : ''}`}
+                              onClick={() => handleLoadPoem(poem)}
+                            >
+                              <span className="poem-title">{poem.title}</span>
+                              <button
+                                className="poem-delete"
+                                onClick={(e) => handleDeletePoem(poem.id, e)}
+                                aria-label={`Delete ${poem.title}`}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
                   <button
                     className="export-item"
                     onClick={() => {
@@ -883,6 +885,10 @@ function App() {
                   <Link to="/sonnet-checker" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
                     Sonnet Checker
                   </Link>
+                  <div className="tools-divider"></div>
+                  <Link to="/poems" className="tools-item classic-poems" onClick={() => setShowToolsMenu(false)}>
+                    Classic Poems
+                  </Link>
                 </div>
               )}
             </div>
@@ -1042,14 +1048,7 @@ function App() {
       </div>
 
       <footer className="app-footer">
-        <div className="feedback-box">
-          <p className="feedback-text">
-            Do you have ideas, feedback, or have you found a bug? Let us know and we'll get back to you within 48 hours.
-          </p>
-          <a href="mailto:contact@poetryeditor.com" className="feedback-email">
-            contact@poetryeditor.com
-          </a>
-        </div>
+        <p className="footer-line">Ideas, feedback, or bugs? Write <a href="mailto:contact@poetryeditor.com">contact@poetryeditor.com</a>, we will get back in &lt;48 hours.</p>
       </footer>
 
       <ShareModal
