@@ -105,10 +105,7 @@ function App() {
     return (localStorage.getItem('lineSpacing') as 'normal' | 'relaxed' | 'spacious') || 'normal';
   });
   const [showParagraphMenu, setShowParagraphMenu] = useState<boolean>(false);
-  const [paragraphAlign, setParagraphAlign] = useState<'left' | 'center'>(() => {
-    return (localStorage.getItem('paragraphAlign') as 'left' | 'center') || 'left';
-  });
-  const [firstLineIndent, setFirstLineIndent] = useState<boolean>(() => {
+    const [firstLineIndent, setFirstLineIndent] = useState<boolean>(() => {
     return localStorage.getItem('firstLineIndent') === 'true';
   });
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -166,11 +163,6 @@ function App() {
     }
     localStorage.setItem('theme', theme);
   }, [theme]);
-
-  // Save paragraph settings
-  useEffect(() => {
-    localStorage.setItem('paragraphAlign', paragraphAlign);
-  }, [paragraphAlign]);
 
   // Save indent settings
   useEffect(() => {
@@ -785,25 +777,7 @@ function App() {
                       Spacious
                     </button>
                   </div>
-                  {/* Title Alignment Section */}
-                  <div className="paragraph-menu-section">
-                    <div className="paragraph-menu-label">Title Alignment</div>
-                    <button
-                      className={`paragraph-item ${paragraphAlign === 'left' ? 'active' : ''}`}
-                      onClick={() => setParagraphAlign('left')}
-                    >
-                      {paragraphAlign === 'left' && <span className="checkmark">✓</span>}
-                      Left
-                    </button>
-                    <button
-                      className={`paragraph-item ${paragraphAlign === 'center' ? 'active' : ''}`}
-                      onClick={() => setParagraphAlign('center')}
-                    >
-                      {paragraphAlign === 'center' && <span className="checkmark">✓</span>}
-                      Center
-                    </button>
-                  </div>
-                  {/* Text Options Section */}
+                                    {/* Text Options Section */}
                   <div className="paragraph-menu-section">
                     <div className="paragraph-menu-label">Text Options</div>
                     <button
@@ -1055,7 +1029,7 @@ function App() {
             highlightedWords={highlightedWords}
             onLineHover={setEditorHoveredLine}
             editorFont={FONT_OPTIONS.find(f => f.id === selectedFont)?.family}
-            paragraphAlign={paragraphAlign}
+            paragraphAlign="left"
             firstLineIndent={firstLineIndent}
             lineSpacing={lineSpacing}
             onEditorMount={(editor) => { editorRef.current = editor; }}

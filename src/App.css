@@ -885,19 +885,6 @@
   background-color: var(--color-paper);
 }
 
-/* Paragraph alignment - center */
-.poetry-editor-container.align-center .poem-title-container {
-  text-align: center;
-}
-
-.poetry-editor-container.align-center .poem-title-editor-input {
-  text-align: center;
-}
-
-/* Center align Monaco editor text */
-.poetry-editor-container.align-center .view-line {
-  text-align: center;
-}
 
 /* First line indent - adds indent to each line in the editor */
 .poetry-editor-container.first-line-indent .view-line {
