@@ -3965,6 +3965,543 @@
   color: #718096;
 }
 
+/* ============================================
+   YELLOW MODE SUPPORT
+   ============================================ */
+
+:root.yellow-mode .analysis-panel {
+  background-color: #efe0b0;
+  border-left-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .analysis-header {
+  border-bottom-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .analysis-header h2 {
+  color: #5a4a30;
+}
+
+:root.yellow-mode .save-indicator {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .overview-metrics {
+  border-bottom-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .stat-item {
+  background: #f5e6b8;
+  border-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .stat-label {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .stat-value {
+  color: #3a3020;
+}
+
+:root.yellow-mode .form-selector {
+  border-top-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .form-selector-label {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .form-selector-dropdown {
+  background: #f5e6b8;
+  border-color: rgba(60, 50, 30, 0.15);
+  color: #3a3020;
+}
+
+:root.yellow-mode .form-selector-dropdown:hover,
+:root.yellow-mode .form-selector-dropdown:focus {
+  border-color: #7a6a50;
+}
+
+:root.yellow-mode .wikipedia-link {
+  border-color: rgba(60, 50, 30, 0.15);
+  color: #7a6a50;
+}
+
+:root.yellow-mode .wikipedia-link:hover {
+  background: #e5d6a0;
+  border-color: #7a6a50;
+  color: #5a4a30;
+}
+
+:root.yellow-mode .category-tabs {
+  background: transparent;
+  border-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .category-tab {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .category-tab:hover {
+  color: #5a4a30;
+}
+
+:root.yellow-mode .category-tab.active {
+  color: #3a3020;
+  border-bottom-color: #5a4a30;
+}
+
+:root.yellow-mode .panel-close-btn {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .panel-close-btn:hover {
+  background-color: rgba(60, 50, 30, 0.1);
+  color: #3a3020;
+}
+
+:root.yellow-mode .section-header {
+  color: #3a3020;
+}
+
+:root.yellow-mode .section-header:hover {
+  background: rgba(60, 50, 30, 0.05);
+}
+
+:root.yellow-mode .section-content {
+  color: #5a4a30;
+}
+
+/* Yellow mode - White panels become parchment */
+:root.yellow-mode .syllable-list,
+:root.yellow-mode .meter-info,
+:root.yellow-mode .pos-distribution,
+:root.yellow-mode .legend,
+:root.yellow-mode .rhythm-variation-info,
+:root.yellow-mode .line-length-info,
+:root.yellow-mode .punctuation-info,
+:root.yellow-mode .poetic-form-info,
+:root.yellow-mode .rhyme-scheme-info,
+:root.yellow-mode .repetition-info,
+:root.yellow-mode .stanza-structure-info,
+:root.yellow-mode .empty-category {
+  background: #f5e6b8;
+  border-color: rgba(60, 50, 30, 0.12);
+  box-shadow: none;
+}
+
+:root.yellow-mode .empty-category p {
+  color: #7a6a50;
+}
+
+/* Yellow mode - List items */
+:root.yellow-mode .syllable-item {
+  border-bottom-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .syllable-item:hover {
+  background-color: rgba(60, 50, 30, 0.05);
+}
+
+:root.yellow-mode .meter-name {
+  color: #3a3020;
+}
+
+:root.yellow-mode .meter-details {
+  border-top-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .meter-label {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .meter-value {
+  color: #3a3020;
+}
+
+/* Yellow mode - Collapsible headers */
+:root.yellow-mode .collapsible-header {
+  background: #f5e6b8;
+  border-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .collapsible-header:hover {
+  border-color: #7a6a50;
+}
+
+:root.yellow-mode .analysis-section h3 {
+  color: #5a4a30;
+}
+
+/* Yellow mode - Rhyme scheme */
+:root.yellow-mode .fit-to-scheme {
+  background: #e5d6a0;
+  border-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .fit-label {
+  color: #5a4a30;
+}
+
+:root.yellow-mode .fit-stat-label {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .fit-stat-value {
+  color: #3a3020;
+}
+
+:root.yellow-mode .rhyme-lines-list {
+  border-top-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .rhyme-line-item {
+  border-bottom-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .rhyme-line-item:hover {
+  background-color: rgba(60, 50, 30, 0.05);
+}
+
+:root.yellow-mode .rhyme-end-word {
+  color: #3a3020;
+}
+
+:root.yellow-mode .rhyme-label {
+  color: #5a4a30;
+}
+
+/* Yellow mode - Punctuation */
+:root.yellow-mode .punctuation-pattern {
+  border-bottom-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .pattern-name {
+  color: #5a4a30;
+}
+
+:root.yellow-mode .pattern-effect {
+  color: #6a5a40;
+}
+
+:root.yellow-mode .punctuation-stats {
+  border-bottom-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .punctuation-label {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .punctuation-count {
+  color: #3a3020;
+}
+
+:root.yellow-mode .punctuation-item {
+  background: #e5d6a0;
+  border-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .punct-symbol {
+  color: #5a4a30;
+}
+
+:root.yellow-mode .punct-count {
+  color: #6a5a40;
+}
+
+/* Yellow mode - Various sections */
+:root.yellow-mode .variation-category {
+  border-bottom-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .category-name {
+  color: #5a4a30;
+}
+
+:root.yellow-mode .category-description {
+  color: #6a5a40;
+}
+
+:root.yellow-mode .detail-label {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .detail-value {
+  color: #5a4a30;
+}
+
+/* Yellow mode - Line items */
+:root.yellow-mode .line-length-list {
+  border-top-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .line-length-item {
+  border-bottom-color: rgba(60, 50, 30, 0.12);
+}
+
+:root.yellow-mode .line-length-item:hover {
+  background-color: rgba(60, 50, 30, 0.05);
+}
+
+:root.yellow-mode .line-length-count {
+  color: #3a3020;
+}
+
+/* Yellow mode - Repetition */
+:root.yellow-mode .repetition-item {
+  background: #e5d6a0;
+  border-left-color: #7a6a50;
+}
+
+:root.yellow-mode .repetition-item:hover {
+  background: #dcc890;
+  border-left-color: #5a4a30;
+}
+
+:root.yellow-mode .repetition-word {
+  color: #3a3020;
+}
+
+:root.yellow-mode .repetition-lines {
+  color: #6a5a40;
+}
+
+/* Yellow mode - Tense */
+:root.yellow-mode .tense-summary {
+  background: #e5d6a0;
+}
+
+:root.yellow-mode .tense-dominant {
+  color: #3a3020;
+}
+
+:root.yellow-mode .tense-count {
+  background: #dcc890;
+  color: #5a4a30;
+}
+
+/* Yellow mode - Scansion */
+:root.yellow-mode .scansion-summary {
+  background: #e5d6a0;
+  color: #3a3020;
+}
+
+:root.yellow-mode .scansion-line-item {
+  background: #e5d6a0;
+  border-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .scansion-line-item:hover {
+  background: #dcc890;
+  border-color: #7a6a50;
+}
+
+:root.yellow-mode .scansion-line-label {
+  color: #6a5a40;
+}
+
+:root.yellow-mode .scansion-pattern-inline {
+  color: #3a3020;
+}
+
+:root.yellow-mode .scansion-meter-tag {
+  background: rgba(60, 50, 30, 0.1);
+  color: #5a4a30;
+}
+
+/* Yellow mode - Figurative language */
+:root.yellow-mode .figurative-count {
+  background: #e5d6a0;
+  color: #5a4a30;
+}
+
+:root.yellow-mode .figurative-item {
+  background: #e5d6a0;
+  border-left-color: #7a6a50;
+}
+
+:root.yellow-mode .figurative-item:hover {
+  background: #dcc890;
+}
+
+:root.yellow-mode .figurative-text {
+  color: #3a3020;
+}
+
+:root.yellow-mode .figurative-explanation {
+  color: #6a5a40;
+}
+
+:root.yellow-mode .figurative-line {
+  color: #7a6a50;
+}
+
+/* Yellow mode - Cliche detection */
+:root.yellow-mode .cliche-count-badge {
+  background: #dcc890;
+  color: #5a4a30;
+}
+
+:root.yellow-mode .cliche-clear {
+  background: #e5d6a0;
+  color: #5a4a30;
+}
+
+:root.yellow-mode .cliche-item {
+  background: #e5d6a0;
+  border-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .cliche-item:hover {
+  background: #dcc890;
+  border-color: #7a6a50;
+}
+
+:root.yellow-mode .cliche-phrase {
+  color: #3a3020;
+}
+
+:root.yellow-mode .cliche-category {
+  background: #dcc890;
+  color: #5a4a30;
+}
+
+:root.yellow-mode .cliche-line {
+  color: #7a6a50;
+}
+
+/* Yellow mode - Passive voice */
+:root.yellow-mode .passive-voice-summary {
+  background: #e5d6a0;
+  border-left-color: #7a6a50;
+  color: #5a4a30;
+}
+
+:root.yellow-mode .passive-voice-item {
+  background: #e5d6a0;
+}
+
+:root.yellow-mode .passive-voice-item:hover {
+  background: #dcc890;
+}
+
+:root.yellow-mode .passive-text {
+  background: #dcc890;
+  border-color: #7a6a50;
+  color: #5a4a30;
+}
+
+/* Yellow mode - Adverb suggestions */
+:root.yellow-mode .adverb-suggestions-intro {
+  background: #e5d6a0;
+  border-left-color: #7a6a50;
+  color: #5a4a30;
+}
+
+:root.yellow-mode .adverb-subsection-title {
+  color: #5a4a30;
+  border-bottom-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .adverb-suggestion-item {
+  background: #e5d6a0;
+  border-left-color: #7a6a50;
+}
+
+:root.yellow-mode .adverb-suggestion-item:hover {
+  background: #dcc890;
+}
+
+:root.yellow-mode .adverb-suggestion-original {
+  color: #3a3020;
+}
+
+:root.yellow-mode .adverb-suggestion-line {
+  background: #dcc890;
+  color: #5a4a30;
+}
+
+:root.yellow-mode .alternatives-label {
+  color: #6a5a40;
+}
+
+:root.yellow-mode .alternative-word {
+  background: #7a6a50;
+  color: #f5e6b8;
+}
+
+:root.yellow-mode .alternative-word:hover {
+  background: #5a4a30;
+}
+
+/* Yellow mode - Sound patterns */
+:root.yellow-mode .sound-pattern-type {
+  color: #5a4a30;
+  border-bottom-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .sound-pattern-item {
+  background: #e5d6a0;
+}
+
+:root.yellow-mode .sound-pattern-item:hover {
+  background: #dcc890;
+  border-left-color: #7a6a50;
+}
+
+:root.yellow-mode .pattern-description {
+  color: #3a3020;
+}
+
+:root.yellow-mode .pattern-line {
+  color: #7a6a50;
+}
+
+/* Yellow mode - Internal rhymes */
+:root.yellow-mode .internal-rhymes-intro {
+  background: #e5d6a0;
+  color: #5a4a30;
+}
+
+:root.yellow-mode .internal-rhyme-item {
+  background: #f5e6b8;
+  border-color: rgba(60, 50, 30, 0.15);
+}
+
+:root.yellow-mode .internal-rhyme-item:hover {
+  background: #e5d6a0;
+  border-color: #7a6a50;
+}
+
+:root.yellow-mode .internal-rhyme-word {
+  background: #dcc890;
+  color: #3a3020;
+}
+
+:root.yellow-mode .internal-rhyme-connector {
+  color: #7a6a50;
+}
+
+:root.yellow-mode .internal-rhyme-lines {
+  color: #7a6a50;
+}
+
+/* Yellow mode - Scrollbars */
+:root.yellow-mode .analysis-panel::-webkit-scrollbar-track,
+:root.yellow-mode .syllable-list::-webkit-scrollbar-track {
+  background: #e5d6a0;
+}
+
+:root.yellow-mode .analysis-panel::-webkit-scrollbar-thumb,
+:root.yellow-mode .syllable-list::-webkit-scrollbar-thumb {
+  background: #c4b080;
+}
+
+:root.yellow-mode .analysis-panel::-webkit-scrollbar-thumb:hover,
+:root.yellow-mode .syllable-list::-webkit-scrollbar-thumb:hover {
+  background: #a49060;
+}
+
 /* ========================================
    Responsive Breakpoints
    ======================================== */
