@@ -46,5 +46,12 @@ And that has made all the difference.`,
     ],
     historicalContext: 'Written for Frost\'s friend Edward Thomas, gently mocking his indecisiveness on their walks.'
   },
-  seoDescription: 'Analysis of The Road Not Taken by Robert Frost - exploring the irony behind this famous 1916 poem about choices.'
+  seoDescription: 'Analysis of The Road Not Taken by Robert Frost - exploring the irony behind this famous 1916 poem about choices.',
+  abstractWords: ['choice', 'regret', 'difference', 'fair'],
+  rhymingPairs: [
+    { word1: 'wood', word2: 'stood' },
+    { word1: 'fair', word2: 'wear' },
+    { word1: 'lay', word2: 'day' },
+    { word1: 'sigh', word2: 'by' }
+  ]
 };

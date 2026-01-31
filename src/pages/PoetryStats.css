@@ -1,0 +1,861 @@
+/* Poetry Statistics Page Styles */
+
+.poetry-stats {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 60px;
+}
+
+.poetry-stats h1 {
+  font-family: var(--font-serif);
+  font-size: 40px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+  text-align: center;
+}
+
+.stats-subtitle {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.stats-meta {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin: 0 0 48px;
+}
+
+/* Table of Contents */
+.stats-toc {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 48px;
+}
+
+.stats-toc h2 {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 12px;
+}
+
+.stats-toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.stats-toc a {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-link);
+  text-decoration: none;
+  display: block;
+  padding: 4px 0;
+}
+
+.stats-toc a:hover {
+  text-decoration: underline;
+}
+
+/* Stats Sections */
+.stats-section {
+  margin-bottom: 64px;
+  scroll-margin-top: 20px;
+}
+
+.stats-section h2 {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section-description {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+/* Shareable Stat Cards */
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  transition: box-shadow 0.15s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card-label {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 8px;
+}
+
+.stat-card-value {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.stat-card-detail {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.stat-card-source {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+.share-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.share-btn:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+}
+
+.share-btn.twitter:hover {
+  border-color: #1da1f2;
+  color: #1da1f2;
+}
+
+.share-btn.linkedin:hover {
+  border-color: #0077b5;
+  color: #0077b5;
+}
+
+/* Rhyme Pairs Table */
+.rhyme-table-container {
+  overflow-x: auto;
+  margin-bottom: 24px;
+}
+
+.rhyme-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+
+.rhyme-table th {
+  text-align: left;
+  padding: 12px 16px;
+  background: var(--color-background);
+  border-bottom: 2px solid var(--color-border);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.rhyme-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.rhyme-table tr:hover td {
+  background: var(--color-paper);
+}
+
+.rhyme-pair-cell {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-style: italic;
+}
+
+.frequency-bar-cell {
+  width: 200px;
+}
+
+.frequency-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.frequency-bar {
+  height: 8px;
+  background: var(--color-border);
+  border-radius: 4px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.frequency-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.frequency-bar-fill.common {
+  background: hsl(210, 50%, 50%);
+}
+
+.frequency-bar-fill.cliche {
+  background: hsl(0, 50%, 55%);
+}
+
+.frequency-bar-fill.fresh {
+  background: hsl(145, 50%, 45%);
+}
+
+.frequency-value {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  min-width: 36px;
+  text-align: right;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.category-badge.common {
+  background: hsl(210, 40%, 92%);
+  color: hsl(210, 50%, 40%);
+}
+
+.category-badge.cliche {
+  background: hsl(0, 40%, 92%);
+  color: hsl(0, 50%, 40%);
+}
+
+.category-badge.fresh {
+  background: hsl(145, 40%, 90%);
+  color: hsl(145, 50%, 35%);
+}
+
+/* Cliche Rhymes Section */
+.cliche-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.cliche-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.cliche-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.cliche-pair {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-style: italic;
+  color: var(--color-text-primary);
+}
+
+.originality-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-ring {
+  width: 48px;
+  height: 48px;
+  position: relative;
+}
+
+.score-ring svg {
+  transform: rotate(-90deg);
+}
+
+.score-ring-bg {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 4;
+}
+
+.score-ring-fill {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.score-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.score-label {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+.cliche-note {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.cliche-alternatives {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.cliche-alternatives strong {
+  color: var(--color-text-secondary);
+}
+
+/* Word Frequency Comparison Chart */
+.word-frequency-chart {
+  margin-bottom: 32px;
+}
+
+.frequency-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.frequency-column {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.frequency-column h3 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px;
+  text-align: center;
+}
+
+.frequency-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.frequency-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.frequency-item:last-child {
+  border-bottom: none;
+}
+
+.frequency-rank {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  width: 20px;
+  text-align: center;
+}
+
+.frequency-word {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.frequency-count {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.frequency-mini-bar {
+  width: 60px;
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.frequency-mini-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.frequency-mini-fill.shakespeare {
+  background: hsl(40, 60%, 50%);
+}
+
+.frequency-mini-fill.modern {
+  background: hsl(200, 60%, 50%);
+}
+
+/* Era Patterns Section */
+.era-patterns {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.era-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.era-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+}
+
+.era-name {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.era-years {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.era-description {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0 0 20px;
+  font-style: italic;
+}
+
+.era-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.era-pattern-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.era-pattern-label {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  width: 180px;
+  flex-shrink: 0;
+}
+
+.era-pattern-bar {
+  flex: 1;
+  height: 24px;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.era-pattern-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, hsl(210, 50%, 55%), hsl(210, 50%, 65%));
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.era-pattern-fill::after {
+  content: attr(data-percent);
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+}
+
+.era-pattern-fill.low::after {
+  right: -32px;
+  color: var(--color-text-muted);
+}
+
+/* Syllable Distribution */
+.syllable-chart {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.syllable-form-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.syllable-form-name {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+}
+
+.syllable-avg {
+  font-family: var(--font-sans);
+  font-size: 36px;
+  font-weight: 300;
+  color: var(--color-text-primary);
+  margin: 0 0 4px;
+  line-height: 1;
+}
+
+.syllable-unit {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0 0 12px;
+}
+
+.syllable-range {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.syllable-range-bar {
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 3px;
+  width: 80px;
+  position: relative;
+}
+
+.syllable-range-fill {
+  position: absolute;
+  height: 100%;
+  background: hsl(145, 45%, 50%);
+  border-radius: 3px;
+}
+
+.syllable-range-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.syllable-description {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Methodology Section */
+.methodology-section {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 32px;
+}
+
+.methodology-section h2 {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 24px;
+}
+
+.methodology-content {
+  display: grid;
+  gap: 24px;
+}
+
+.methodology-item h3 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+}
+
+.methodology-item p {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.methodology-updated {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 24px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Citation Box */
+.citation-box {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 48px;
+}
+
+.citation-box h3 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin: 0 0 12px;
+}
+
+.citation-text {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  padding: 12px;
+  border-radius: 4px;
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.citation-copy-btn {
+  padding: 8px 16px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  background: var(--color-text-primary);
+  color: var(--color-paper);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.citation-copy-btn:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .poetry-stats h1 {
+    font-size: 28px;
+  }
+
+  .stats-subtitle {
+    font-size: 15px;
+  }
+
+  .stats-section h2 {
+    font-size: 22px;
+  }
+
+  .stat-card-value {
+    font-size: 26px;
+  }
+
+  .frequency-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .era-pattern-label {
+    width: 140px;
+    font-size: 11px;
+  }
+
+  .cliche-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rhyme-table {
+    font-size: 13px;
+  }
+
+  .rhyme-table th,
+  .rhyme-table td {
+    padding: 10px 12px;
+  }
+
+  .frequency-bar-cell {
+    width: 120px;
+  }
+
+  .syllable-chart {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .methodology-section {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-toc ul {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .share-buttons {
+    flex-wrap: wrap;
+  }
+
+  .syllable-chart {
+    grid-template-columns: 1fr;
+  }
+
+  .era-pattern-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .era-pattern-label {
+    width: 100%;
+  }
+
+  .era-pattern-bar {
+    width: 100%;
+  }
+}
+
+/* Dark mode adjustments */
+.dark-mode .frequency-bar-fill.common {
+  background: hsl(210, 60%, 60%);
+}
+
+.dark-mode .frequency-bar-fill.cliche {
+  background: hsl(0, 60%, 60%);
+}
+
+.dark-mode .frequency-bar-fill.fresh {
+  background: hsl(145, 60%, 50%);
+}
+
+.dark-mode .category-badge.common {
+  background: hsl(210, 40%, 25%);
+  color: hsl(210, 60%, 70%);
+}
+
+.dark-mode .category-badge.cliche {
+  background: hsl(0, 40%, 25%);
+  color: hsl(0, 60%, 70%);
+}
+
+.dark-mode .category-badge.fresh {
+  background: hsl(145, 40%, 22%);
+  color: hsl(145, 60%, 65%);
+}

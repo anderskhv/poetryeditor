@@ -7,6 +7,7 @@ import { PoetryEditor } from '../../components/PoetryEditor';
 import { AnalysisPanel } from '../../components/AnalysisPanel';
 import { SEOHead } from '../../components/SEOHead';
 import { ShareModal } from '../../components/ShareModal';
+import { RelatedTools } from '../../components/RelatedTools';
 import { WordInfo } from '../../types';
 import { type PassiveVoiceInstance } from '../../utils/passiveVoiceDetector';
 import { type TenseInstance } from '../../utils/tenseChecker';
@@ -192,6 +193,39 @@ export function PoemPage() {
       <SEOHead
         title={`${poem.title} by ${poem.poet} - Analysis & Commentary`}
         description={poem.seoDescription}
+        canonicalPath={`/poems/${poem.slug}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": `${poem.title} by ${poem.poet} - Analysis & Commentary`,
+          "description": poem.seoDescription,
+          "author": {
+            "@type": "Organization",
+            "name": "Poetry Editor"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Poetry Editor",
+            "url": "https://poetryeditor.com"
+          },
+          "mainEntity": {
+            "@type": "CreativeWork",
+            "name": poem.title,
+            "author": {
+              "@type": "Person",
+              "name": poem.poet,
+              "birthDate": poem.poetBirth.toString(),
+              "deathDate": poem.poetDeath.toString()
+            },
+            "datePublished": poem.year.toString(),
+            "genre": poem.form,
+            "inLanguage": "en",
+            "about": poem.analysis.themes.map(theme => ({
+              "@type": "Thing",
+              "name": theme
+            }))
+          }
+        }}
       />
 
       <div className="poem-page-content">
@@ -343,6 +377,11 @@ export function PoemPage() {
                 </div>
               )}
             </div>
+
+            <RelatedTools
+              abstractWords={poem.abstractWords}
+              rhymingPairs={poem.rhymingPairs}
+            />
           </div>
         </div>
       </div>

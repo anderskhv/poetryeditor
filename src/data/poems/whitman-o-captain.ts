@@ -101,5 +101,12 @@ Fallen cold and dead.`,
     ],
     historicalContext: `Lincoln was assassinated on April 14, 1865, just five days after Lee's surrender at Appomattox. Whitman, who had spent the war years nursing wounded soldiers in Washington, was devastated. This poem appeared in his 1865 sequel to Leaves of Grass. Unlike Whitman's usual free verse, it uses traditional meter and rhyme—perhaps because conventional grief demanded conventional form. The poem became so popular that Whitman was asked to recite it constantly, which annoyed him. He felt it misrepresented his work, calling it his "poetry of the surface."`
   },
-  seoDescription: 'Analysis of Walt Whitman\'s "O Captain! My Captain!" A line-by-line examination of this elegy for Abraham Lincoln, exploring how the poem captures the collision of national victory and personal grief.'
+  seoDescription: 'Analysis of Walt Whitman\'s "O Captain! My Captain!" A line-by-line examination of this elegy for Abraham Lincoln, exploring how the poem captures the collision of national victory and personal grief.',
+  abstractWords: ['victory', 'grief', 'heart', 'fearful', 'mournful'],
+  rhymingPairs: [
+    { word1: 'done', word2: 'won' },
+    { word1: 'bells', word2: 'trills' },
+    { word1: 'head', word2: 'dead' },
+    { word1: 'still', word2: 'will' }
+  ]
 };

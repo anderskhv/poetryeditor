@@ -46,5 +46,12 @@ I am the captain of my soul.`,
     ],
     historicalContext: `Written in 1875 while Henley was hospitalized for tuberculosis of the bone. His left leg was amputated below the knee; he saved the right by insisting on experimental treatment under Joseph Lister. Nelson Mandela reportedly recited this poem to fellow prisoners on Robben Island. Timothy McVeigh quoted it before his execution. The poem has become a touchstone for anyone facing extreme adversity.`
   },
-  seoDescription: 'Analysis of Invictus by William Ernest Henley - the powerful 1875 poem of resilience and unconquerable spirit.'
+  seoDescription: 'Analysis of Invictus by William Ernest Henley - the powerful 1875 poem of resilience and unconquerable spirit.',
+  abstractWords: ['soul', 'fate', 'courage', 'horror', 'unconquerable'],
+  rhymingPairs: [
+    { word1: 'me', word2: 'be' },
+    { word1: 'aloud', word2: 'unbowed' },
+    { word1: 'shade', word2: 'unafraid' },
+    { word1: 'gate', word2: 'fate' }
+  ]
 };

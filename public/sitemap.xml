@@ -50,6 +50,71 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- New Programmatic Pages -->
+  <url>
+    <loc>https://poetryeditor.com/poetry-statistics</loc>
+    <lastmod>2026-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://poetryeditor.com/embed</loc>
+    <lastmod>2026-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Rhyme Scheme Pages -->
+  <url><loc>https://poetryeditor.com/rhyme-scheme/aabb</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhyme-scheme/abab</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhyme-scheme/abba</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhyme-scheme/abcabc</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhyme-scheme/shakespearean</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhyme-scheme/petrarchan</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhyme-scheme/terza-rima</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhyme-scheme/free-verse</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+
+  <!-- Syllable List Pages -->
+  <url><loc>https://poetryeditor.com/syllables/1-syllable-words</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/syllables/2-syllable-words</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/syllables/3-syllable-words</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/syllables/4-syllable-words</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/syllables/5-syllable-words</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
+
+  <!-- Word Comparison Pages -->
+  <url><loc>https://poetryeditor.com/compare/happy-vs-joyful</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/compare/sad-vs-melancholy</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/compare/big-vs-large</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/compare/fast-vs-quick</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/compare/beautiful-vs-gorgeous</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/compare/smart-vs-intelligent</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/compare/old-vs-ancient</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/compare/love-vs-adore</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/compare/angry-vs-furious</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/compare/small-vs-tiny</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+
+  <!-- Rhyme Pair Pages -->
+  <url><loc>https://poetryeditor.com/rhymes/love-and-above</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/heart-and-part</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/night-and-light</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/day-and-way</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/time-and-rhyme</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/soul-and-whole</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/dream-and-stream</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/fire-and-desire</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/moon-and-soon</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/star-and-far</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/rain-and-pain</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/sky-and-fly</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/sea-and-free</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/life-and-strife</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/death-and-breath</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/tears-and-fears</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/eyes-and-skies</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/sleep-and-deep</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/gold-and-old</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/mind-and-find</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+
   <!-- Learn Pages (Educational Guides) -->
   <url>
     <loc>https://poetryeditor.com/learn/haiku</loc>
@@ -165,6 +230,88 @@
   <!-- Millay -->
   <url><loc>https://poetryeditor.com/poems/first-fig</loc><lastmod>2026-01-28</lastmod><priority>0.8</priority></url>
   <url><loc>https://poetryeditor.com/poems/what-lips-my-lips-have-kissed</loc><lastmod>2026-01-28</lastmod><priority>0.7</priority></url>
+
+  <!-- Filtered Rhyme Pages (by syllable count) -->
+  <!-- Love -->
+  <url><loc>https://poetryeditor.com/rhymes/love/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/love/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/love/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Heart -->
+  <url><loc>https://poetryeditor.com/rhymes/heart/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/heart/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/heart/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Time -->
+  <url><loc>https://poetryeditor.com/rhymes/time/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/time/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/time/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Day -->
+  <url><loc>https://poetryeditor.com/rhymes/day/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/day/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/day/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Night -->
+  <url><loc>https://poetryeditor.com/rhymes/night/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/night/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/night/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Life -->
+  <url><loc>https://poetryeditor.com/rhymes/life/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/life/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/life/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Way -->
+  <url><loc>https://poetryeditor.com/rhymes/way/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/way/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/way/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- World -->
+  <url><loc>https://poetryeditor.com/rhymes/world/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/world/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/world/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Light -->
+  <url><loc>https://poetryeditor.com/rhymes/light/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/light/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/light/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Dream -->
+  <url><loc>https://poetryeditor.com/rhymes/dream/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/dream/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/dream/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Eyes -->
+  <url><loc>https://poetryeditor.com/rhymes/eyes/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/eyes/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/eyes/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Soul -->
+  <url><loc>https://poetryeditor.com/rhymes/soul/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/soul/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/soul/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Mind -->
+  <url><loc>https://poetryeditor.com/rhymes/mind/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/mind/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/mind/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Rain -->
+  <url><loc>https://poetryeditor.com/rhymes/rain/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/rain/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/rain/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Sun -->
+  <url><loc>https://poetryeditor.com/rhymes/sun/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/sun/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/sun/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Moon -->
+  <url><loc>https://poetryeditor.com/rhymes/moon/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/moon/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/moon/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Star -->
+  <url><loc>https://poetryeditor.com/rhymes/star/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/star/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/star/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Sky -->
+  <url><loc>https://poetryeditor.com/rhymes/sky/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/sky/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/sky/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Sea -->
+  <url><loc>https://poetryeditor.com/rhymes/sea/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/sea/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/sea/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <!-- Fire -->
+  <url><loc>https://poetryeditor.com/rhymes/fire/1-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/fire/2-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/fire/3-syllables</loc><lastmod>2026-01-30</lastmod><priority>0.6</priority></url>
 
   <!-- Top 100 Rhyme Word Pages -->
   <url><loc>https://poetryeditor.com/rhymes/love</loc><lastmod>2026-01-23</lastmod><priority>0.7</priority></url>

@@ -38,5 +38,12 @@ The lone and level sands stretch far away."`,
     ],
     historicalContext: `Written in competition with Horace Smith, who wrote his own "Ozymandias" sonnet. Shelley's won. "Ozymandias" is Greek for Ramesses II. The British Museum had just acquired a massive Ramesses statue fragment—Shelley never saw it but imagined the rest.`
   },
-  seoDescription: 'Analysis of Shelley\'s "Ozymandias" - the famous sonnet on the impermanence of power and the irony of tyrants\' monuments.'
+  seoDescription: 'Analysis of Shelley\'s "Ozymandias" - the famous sonnet on the impermanence of power and the irony of tyrants\' monuments.',
+  abstractWords: ['power', 'pride', 'decay', 'despair', 'mighty'],
+  rhymingPairs: [
+    { word1: 'land', word2: 'sand' },
+    { word1: 'read', word2: 'fed' },
+    { word1: 'appear', word2: 'despair' },
+    { word1: 'bare', word2: 'away' }
+  ]
 };

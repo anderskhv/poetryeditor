@@ -47,5 +47,12 @@ And miles to go before I sleep.`,
     ],
     historicalContext: `Written in 1922, published in "New Hampshire" (1923). Frost claimed he wrote it in a single sitting after an all-night writing session, almost as a gift. He called it "my best bid for remembrance." The poem has been read at countless funerals, though Frost resisted confirming the death interpretation.`
   },
-  seoDescription: 'Analysis of Stopping by Woods on a Snowy Evening by Robert Frost - the beloved 1923 poem about duty and beauty.'
+  seoDescription: 'Analysis of Stopping by Woods on a Snowy Evening by Robert Frost - the beloved 1923 poem about duty and beauty.',
+  abstractWords: ['lovely', 'deep', 'dark', 'promises', 'sleep'],
+  rhymingPairs: [
+    { word1: 'know', word2: 'snow' },
+    { word1: 'queer', word2: 'near' },
+    { word1: 'shake', word2: 'flake' },
+    { word1: 'deep', word2: 'sleep' }
+  ]
 };

@@ -536,6 +536,189 @@
   color: var(--color-text-primary);
 }
 
+/* Word Enhancements - Poetry Quotes and Examples */
+.word-enhancements {
+  margin: 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.enhancement-section {
+  padding: 24px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.enhancement-section h3 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+}
+
+/* Poetry Quotes */
+.quotes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.poetry-quote {
+  margin: 0;
+  padding: 16px 20px;
+  background: var(--color-background);
+  border-left: 3px solid var(--color-text-muted);
+  border-radius: 0 4px 4px 0;
+}
+
+.poetry-quote p {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+  line-height: 1.6;
+}
+
+.poetry-quote cite {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-style: normal;
+  color: var(--color-text-secondary);
+}
+
+.poetry-quote cite a {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+.poetry-quote cite a:hover {
+  color: var(--color-text-secondary);
+}
+
+/* Example Sentences */
+.sentences-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sentences-list li {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+  line-height: 1.5;
+}
+
+.sentences-list li:last-child {
+  border-bottom: none;
+}
+
+/* Rhyme Pairs */
+.pairs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.rhyme-pair-link {
+  padding: 8px 16px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.rhyme-pair-link:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+  background: var(--color-paper);
+}
+
+/* Syllable Header Link */
+.syllable-header-link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.syllable-header-link:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+/* Syllable Tabs for Filtered Pages */
+.syllable-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.syllable-tabs-label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-right: 4px;
+}
+
+.syllable-tab {
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.syllable-tab:hover {
+  border-color: var(--color-text-muted);
+  color: var(--color-text-primary);
+}
+
+.syllable-tab.active {
+  background: var(--color-text-primary);
+  color: var(--color-paper);
+  border-color: var(--color-text-primary);
+}
+
+.syllable-tab.all-tab {
+  margin-left: 8px;
+  background: transparent;
+}
+
+/* Results Count */
+.results-count {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+}
+
+.results-count strong {
+  color: var(--color-text-primary);
+}
+
+/* Filtered List (single group layout) */
+.rhyme-word-list.filtered-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .rhyme-breadcrumb {

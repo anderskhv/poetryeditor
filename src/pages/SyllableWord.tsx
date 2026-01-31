@@ -39,10 +39,32 @@ export function SyllableWord() {
   return (
     <Layout>
       <SEOHead
-        title={`How Many Syllables in ${displayWord}? - ${syllableCount} Syllable${syllableCount !== 1 ? 's' : ''}`}
-        description={`${displayWord} has ${syllableCount} syllable${syllableCount !== 1 ? 's' : ''}. ${syllables.length > 0 ? `Broken down as: ${syllables.join('-')}.` : ''} Learn the syllable count and stress pattern for "${decodedWord}".`}
+        title={`${displayWord}: ${syllableCount} Syllable${syllableCount !== 1 ? 's' : ''} [${syllables.length > 0 ? syllables.join('-') : decodedWord}]`}
+        description={`${displayWord} has ${syllableCount} syllable${syllableCount !== 1 ? 's' : ''}, broken down as ${syllables.length > 0 ? syllables.join('-') : decodedWord}. See stress pattern, pronunciation, and find rhymes for "${decodedWord}".`}
         canonicalPath={`/syllables/${encodeURIComponent(decodedWord)}`}
         keywords={`how many syllables in ${decodedWord}, ${decodedWord} syllables, ${decodedWord} syllable count`}
+        jsonLd={syllableCount > 0 ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": `How many syllables in ${decodedWord}?`,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": `${displayWord} has ${syllableCount} syllable${syllableCount !== 1 ? 's' : ''}${syllables.length > 0 ? `, broken down as: ${syllables.join('-')}` : ''}.`
+              }
+            },
+            {
+              "@type": "Question",
+              "name": `How do you pronounce ${decodedWord}?`,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": `${displayWord} is pronounced with ${syllableCount} syllable${syllableCount !== 1 ? 's' : ''}${syllables.length > 0 ? `: ${syllables.join('-')}` : ''}. ${stresses.length > 0 ? `The stress falls on the ${stresses.findIndex(s => s === 1) + 1}${['st', 'nd', 'rd'][stresses.findIndex(s => s === 1)] || 'th'} syllable.` : ''}`
+              }
+            }
+          ]
+        } : undefined}
       />
 
       <div className="syllable-word-page">

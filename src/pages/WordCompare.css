@@ -1,0 +1,559 @@
+/* Word Compare Page Styles */
+
+.word-compare-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Breadcrumb */
+.compare-breadcrumb {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+.compare-breadcrumb a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.compare-breadcrumb a:hover {
+  color: var(--color-text-primary);
+}
+
+.breadcrumb-separator {
+  margin: 0 8px;
+  color: var(--color-text-muted);
+}
+
+/* Title */
+.word-compare-page h1 {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.compare-subtitle {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0 0 40px;
+}
+
+.compare-intro {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0 0 40px;
+}
+
+/* Loading */
+.compare-loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-family: var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+/* Sections */
+.compare-section {
+  margin-bottom: 48px;
+}
+
+.compare-section h2 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section-hint {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: -12px 0 20px;
+}
+
+/* Comparison Grid */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.synonyms-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.compare-vs {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: var(--color-text-muted);
+  padding-top: 40px;
+}
+
+.compare-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+}
+
+.compare-card h3 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+}
+
+/* Syllable Display */
+.syllable-count {
+  font-family: var(--font-serif);
+  font-size: 56px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.syllable-label {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+.syllable-breakdown {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: var(--color-text-secondary);
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Stress Pattern */
+.stress-visual {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.stress-mark {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-background);
+}
+
+.stress-mark.primary {
+  font-weight: 600;
+  background: var(--color-text-primary);
+  color: var(--color-paper);
+}
+
+.stress-mark.secondary {
+  font-weight: 500;
+  background: var(--color-text-secondary);
+  color: var(--color-paper);
+}
+
+.stress-description {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.stress-unknown {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.stress-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 20px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* Synonym & Rhyme Lists */
+.synonym-list,
+.rhyme-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.synonym-chip,
+.rhyme-chip {
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.synonym-chip:hover,
+.rhyme-chip:hover {
+  background: var(--color-paper);
+  border-color: var(--color-text-muted);
+}
+
+.synonym-chip.shared {
+  border-style: dashed;
+  color: var(--color-text-secondary);
+}
+
+.no-synonyms,
+.no-rhymes {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.see-all-link {
+  display: block;
+  margin-top: 16px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.see-all-link:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+/* Shared Synonyms */
+.shared-synonyms {
+  margin-top: 24px;
+  padding: 20px;
+  background: var(--color-background);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.shared-synonyms h4 {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0 0 12px;
+}
+
+.synonym-list.shared {
+  justify-content: center;
+}
+
+/* Usage Section */
+.usage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.usage-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.usage-card h3 {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+}
+
+.usage-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.usage-card li {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.usage-card li:last-child {
+  margin-bottom: 0;
+}
+
+.usage-card li strong {
+  color: var(--color-text-primary);
+}
+
+/* Tips Section */
+.tips-content {
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.tips-content p {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px;
+}
+
+.tips-content p:last-child {
+  margin-bottom: 0;
+}
+
+.tips-content strong {
+  color: var(--color-text-primary);
+}
+
+/* Similar Comparisons */
+.popular-comparisons,
+.similar-section {
+  margin-top: 48px;
+}
+
+.popular-comparisons h2 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 20px;
+}
+
+.comparison-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.comparison-link {
+  padding: 10px 20px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.comparison-link:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
+  background: var(--color-background);
+}
+
+/* Actions */
+.compare-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--color-border);
+}
+
+.action-link {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.action-link:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+.action-button {
+  display: inline-block;
+  padding: 14px 32px;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.action-button.primary {
+  background: var(--color-text-primary);
+  color: var(--color-paper);
+}
+
+.action-button.primary:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Back Link */
+.back-to-thesaurus {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.back-to-thesaurus a {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.back-to-thesaurus a:hover {
+  color: var(--color-text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .word-compare-page h1 {
+    font-size: 28px;
+  }
+
+  .compare-subtitle {
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  .compare-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .synonyms-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-vs {
+    padding: 0;
+    text-align: center;
+  }
+
+  .compare-card {
+    padding: 20px;
+  }
+
+  .syllable-count {
+    font-size: 44px;
+  }
+
+  .stress-visual {
+    gap: 8px;
+  }
+
+  .stress-mark {
+    font-size: 22px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .stress-legend {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .usage-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .comparison-links {
+    gap: 8px;
+  }
+
+  .comparison-link {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .compare-actions {
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 24px;
+  }
+
+  .action-button {
+    padding: 12px 24px;
+    font-size: 15px;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .compare-breadcrumb {
+    font-size: 12px;
+  }
+
+  .word-compare-page h1 {
+    font-size: 24px;
+  }
+
+  .compare-section {
+    margin-bottom: 36px;
+  }
+
+  .compare-card h3 {
+    font-size: 16px;
+  }
+
+  .syllable-count {
+    font-size: 36px;
+  }
+
+  .syllable-breakdown {
+    font-size: 16px;
+  }
+
+  .synonym-chip,
+  .rhyme-chip {
+    padding: 5px 12px;
+    font-size: 13px;
+  }
+
+  .tips-content p {
+    font-size: 14px;
+  }
+}

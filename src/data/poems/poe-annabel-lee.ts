@@ -121,5 +121,12 @@ In her tomb by the sounding sea.`,
     ],
     historicalContext: `Poe wrote this in 1849, the year he died under mysterious circumstances in Baltimore. His wife Virginia had died of tuberculosis in 1847, and many readers see her in Annabel Lee. Virginia was Poe's first cousin; they married when she was 13 and he was 27. Her long illness and death devastated him. The poem was published two days after Poe's death in the New York Tribune. The "kingdom by the sea" may echo the coastal areas where Poe lived, but it functions mainly as an unreal, mythic space where his grief drama unfolds.`
   },
-  seoDescription: 'Analysis of Edgar Allan Poe\'s "Annabel Lee." Line-by-line examination of Poe\'s final poem exploring obsessive love, grief as madness, and devotion that crosses into disturbing territory.'
+  seoDescription: 'Analysis of Edgar Allan Poe\'s "Annabel Lee." Line-by-line examination of Poe\'s final poem exploring obsessive love, grief as madness, and devotion that crosses into disturbing territory.',
+  abstractWords: ['love', 'soul', 'heaven', 'maiden', 'beautiful'],
+  rhymingPairs: [
+    { word1: 'sea', word2: 'Lee' },
+    { word1: 'love', word2: 'above' },
+    { word1: 'night', word2: 'bright' },
+    { word1: 'dream', word2: 'beam' }
+  ]
 };

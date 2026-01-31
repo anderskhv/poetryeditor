@@ -96,5 +96,12 @@ So long lives this, and this gives life to thee.`,
     ],
     historicalContext: `The sonnets were published in 1609 but likely written in the 1590s. The "thee" in sonnets 1-126 is a young man (often called the "Fair Youth"), not a woman. Early sonnets urge him to marry and have children to preserve his beauty. Sonnet 18 marks a shift: Shakespeare realizes poetry works better than procreation for immortality. Some scholars see rivalry here—the poet claiming his verse outperforms biological reproduction.`
   },
-  seoDescription: 'Analysis of Shakespeare\'s Sonnet 18 "Shall I compare thee to a summer\'s day?" Line-by-line commentary on this immortal meditation on beauty, time, and poetry\'s power to defeat death.'
+  seoDescription: 'Analysis of Shakespeare\'s Sonnet 18 "Shall I compare thee to a summer\'s day?" Line-by-line commentary on this immortal meditation on beauty, time, and poetry\'s power to defeat death.',
+  abstractWords: ['beauty', 'eternal', 'fair', 'temperate', 'lovely'],
+  rhymingPairs: [
+    { word1: 'day', word2: 'May' },
+    { word1: 'shines', word2: 'declines' },
+    { word1: 'fade', word2: 'shade' },
+    { word1: 'see', word2: 'thee' }
+  ]
 };

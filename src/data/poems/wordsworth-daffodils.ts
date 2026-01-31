@@ -51,5 +51,12 @@ And dances with the daffodils.`,
     ],
     historicalContext: `Based on a walk Wordsworth took with his sister Dorothy in 1802. Her journal entry describes the scene; his poem appeared five years later. Dorothy's prose is arguably more vivid—Wordsworth's contribution is the fourth stanza's meditation on memory.`
   },
-  seoDescription: 'Analysis of Wordsworth\'s "I Wandered Lonely as a Cloud" (Daffodils) - exploring how memory transforms experience into lasting joy.'
+  seoDescription: 'Analysis of Wordsworth\'s "I Wandered Lonely as a Cloud" (Daffodils) - exploring how memory transforms experience into lasting joy.',
+  abstractWords: ['lonely', 'bliss', 'solitude', 'wealth', 'pleasure'],
+  rhymingPairs: [
+    { word1: 'cloud', word2: 'crowd' },
+    { word1: 'hills', word2: 'daffodils' },
+    { word1: 'shine', word2: 'line' },
+    { word1: 'fills', word2: 'daffodils' }
+  ]
 };

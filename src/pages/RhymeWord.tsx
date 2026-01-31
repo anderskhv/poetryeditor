@@ -6,6 +6,7 @@ import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonyms, fetchAntonyms, Rhy
 import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables } from '../utils/cmuDict';
 import { getRhymeOriginalityScore } from '../utils/rhymeCliches';
 import { DefinitionTooltip } from '../components/DefinitionTooltip';
+import { getWordEnhancement } from '../data/wordEnhancements';
 import './RhymeWord.css';
 
 type MeterFilter = 'all' | 'iambic' | 'trochaic';
@@ -200,10 +201,26 @@ export function RhymeWord() {
   return (
     <Layout>
       <SEOHead
-        title={`Words That Rhyme with ${displayWord}`}
-        description={`Find ${perfectRhymes.length}+ words that rhyme with "${decodedWord}". Perfect rhymes and near rhymes organized by syllable count for poets and songwriters.`}
+        title={`Rhymes with ${displayWord} (${perfectRhymes.length + nearRhymes.length}+) - Perfect & Near Rhymes`}
+        description={`Find ${perfectRhymes.length}+ perfect rhymes and ${nearRhymes.length}+ near rhymes for "${decodedWord}". Organized by syllable count with meter filters for poets and songwriters.`}
         canonicalPath={`/rhymes/${encodeURIComponent(decodedWord)}`}
         keywords={`rhymes with ${decodedWord}, ${decodedWord} rhymes, words that rhyme with ${decodedWord}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": `Words That Rhyme with ${displayWord}`,
+          "description": `Perfect and near rhymes for "${decodedWord}" organized by syllable count`,
+          "numberOfItems": perfectRhymes.length + nearRhymes.length,
+          "itemListElement": perfectRhymes
+            .filter(r => !r.word.includes(' ') && r.score > 1000)
+            .slice(0, 10)
+            .map((rhyme, idx) => ({
+              "@type": "ListItem",
+              "position": idx + 1,
+              "name": rhyme.word,
+              "url": `https://poetryeditor.com/rhymes/${encodeURIComponent(rhyme.word)}`
+            }))
+        }}
       />
 
       <div className="rhyme-word-page">
@@ -329,7 +346,12 @@ export function RhymeWord() {
                   .map((sylCount) => (
                     <div key={sylCount} className="rhyme-syllable-group">
                       <h2>
-                        {sylCount} {Number(sylCount) === 1 ? 'syllable' : 'syllables'}
+                        <Link
+                          to={`/rhymes/${encodeURIComponent(decodedWord)}/${sylCount}-syllables`}
+                          className="syllable-header-link"
+                        >
+                          {sylCount} {Number(sylCount) === 1 ? 'syllable' : 'syllables'}
+                        </Link>
                       </h2>
                       <div className="rhyme-word-list">
                         {activeResults[Number(sylCount)]
@@ -367,6 +389,61 @@ export function RhymeWord() {
                 View syllable breakdown
               </Link>
             </div>
+
+            {/* Enhanced content: Example sentences and poetry quotes */}
+            {(() => {
+              const enhancement = getWordEnhancement(decodedWord);
+              if (!enhancement) return null;
+              return (
+                <div className="word-enhancements">
+                  {enhancement.poetryQuotes.length > 0 && (
+                    <div className="enhancement-section poetry-quotes">
+                      <h3>"{displayWord}" in Famous Poetry</h3>
+                      <div className="quotes-list">
+                        {enhancement.poetryQuotes.map((quote, idx) => (
+                          <blockquote key={idx} className="poetry-quote">
+                            <p>"{quote.quote}"</p>
+                            <cite>
+                              — {quote.poet}, {quote.poemSlug ? (
+                                <Link to={`/poems/${quote.poemSlug}`}>{quote.poem}</Link>
+                              ) : (
+                                <em>{quote.poem}</em>
+                              )}
+                            </cite>
+                          </blockquote>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {enhancement.exampleSentences.length > 0 && (
+                    <div className="enhancement-section example-sentences">
+                      <h3>Example Sentences</h3>
+                      <ul className="sentences-list">
+                        {enhancement.exampleSentences.map((sentence, idx) => (
+                          <li key={idx}>{sentence}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {enhancement.relatedPairs.length > 0 && (
+                    <div className="enhancement-section rhyme-pairs">
+                      <h3>Common Rhyme Pairs</h3>
+                      <div className="pairs-list">
+                        {enhancement.relatedPairs.map((pair, idx) => (
+                          <Link
+                            key={idx}
+                            to={`/rhymes/${pair.word1}-and-${pair.word2}`}
+                            className="rhyme-pair-link"
+                          >
+                            {pair.word1} / {pair.word2}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {(synonyms.length > 0 || antonyms.length > 0) && (
               <div className="word-relations">

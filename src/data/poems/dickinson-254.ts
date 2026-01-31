@@ -38,5 +38,11 @@ It asked a crumb – of me.`,
     ],
     historicalContext: `One of Dickinson's most accessible poems, often taught in schools. Its relative simplicity is unusual for her—some critics find it too easy. But placed among her darker poems, it reads as hard-won affirmation rather than naivety.`
   },
-  seoDescription: 'Analysis of Dickinson\'s "Hope is the thing with feathers" - the famous poem comparing hope to a resilient bird in the soul.'
+  seoDescription: 'Analysis of Dickinson\'s "Hope is the thing with feathers" - the famous poem comparing hope to a resilient bird in the soul.',
+  abstractWords: ['hope', 'soul', 'warm', 'sweet'],
+  rhymingPairs: [
+    { word1: 'soul', word2: 'all' },
+    { word1: 'heard', word2: 'bird' },
+    { word1: 'sea', word2: 'me' }
+  ]
 };

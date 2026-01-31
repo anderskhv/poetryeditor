@@ -24,6 +24,9 @@ export interface PoemAnalysis {
     historicalContext?: string;
   };
   seoDescription: string;
+  // Optional fields for internal linking (SEO)
+  abstractWords?: string[]; // Abstract words that can link to /synonyms/:word
+  rhymingPairs?: Array<{ word1: string; word2: string }>; // Rhyming pairs that can link to /rhymes/:word
 }
 
 // Gibran

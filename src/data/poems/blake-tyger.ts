@@ -53,5 +53,12 @@ Dare frame thy fearful symmetry?`,
     ],
     historicalContext: `Paired with "The Lamb" from Songs of Innocence. Together they pose Blake's central question: how can one God create both innocence and experience, gentleness and violence?`
   },
-  seoDescription: 'Analysis of Blake\'s "The Tyger" - the famous poem questioning whether the same God made lamb and tiger.'
+  seoDescription: 'Analysis of Blake\'s "The Tyger" - the famous poem questioning whether the same God made lamb and tiger.',
+  abstractWords: ['immortal', 'dread', 'symmetry', 'fearful'],
+  rhymingPairs: [
+    { word1: 'bright', word2: 'night' },
+    { word1: 'eye', word2: 'symmetry' },
+    { word1: 'art', word2: 'heart' },
+    { word1: 'see', word2: 'thee' }
+  ]
 };

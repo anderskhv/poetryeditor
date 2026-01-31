@@ -113,9 +113,11 @@ export function Thesaurus() {
   return (
     <Layout>
       <SEOHead
-        title={urlWord ? `${urlWord} - Synonyms, Hyponyms & Antonyms for Poetry` : 'Word Alternatives - Synonyms, Hyponyms & Antonyms for Poetry'}
-        description={urlWord
-          ? `Find synonyms, specific examples (hyponyms), and antonyms for "${urlWord}". Discover alternative words organized by syllable count, perfect for poets and songwriters.`
+        title={urlWord && results
+          ? `${urlWord.charAt(0).toUpperCase() + urlWord.slice(1)} Synonyms (${results.synonyms.length}+) - Find Similar Words`
+          : 'Word Alternatives - Synonyms, Hyponyms & Antonyms for Poetry'}
+        description={urlWord && results
+          ? `Find ${results.synonyms.length}+ synonyms, ${results.hyponyms.length}+ hyponyms, and ${results.antonyms.length}+ antonyms for "${urlWord}". Words organized by syllable count for poets and songwriters.`
           : 'Free thesaurus for poets. Find synonyms, specific examples (hyponyms), and antonyms organized by syllable count. Discover the perfect word for your poem or song.'
         }
         canonicalPath={urlWord ? `/synonyms/${urlWord}` : '/synonyms'}
