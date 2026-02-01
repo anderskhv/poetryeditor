@@ -382,6 +382,20 @@ export function RhymeDictionary() {
           </div>
         )}
 
+        <div className="browse-by-category">
+          <h2>Browse by Category</h2>
+          <p className="category-description">Find rhyming words organized by topic</p>
+          <div className="category-links">
+            <Link to="/rhymes/category/colors" className="category-link">Colors</Link>
+            <Link to="/rhymes/category/emotions" className="category-link">Emotions</Link>
+            <Link to="/rhymes/category/nature" className="category-link">Nature</Link>
+            <Link to="/rhymes/category/time" className="category-link">Time</Link>
+            <Link to="/rhymes/category/body" className="category-link">Body</Link>
+            <Link to="/rhymes/category/actions" className="category-link">Actions</Link>
+          </div>
+          <Link to="/rhymes/category" className="view-all-categories">View all categories</Link>
+        </div>
+
         <div className="rhyme-info">
           <h2>About Rhyming</h2>
           <div className="rhyme-info-grid">

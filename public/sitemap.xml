@@ -74,6 +74,23 @@
   <url><loc>https://poetryeditor.com/rhyme-scheme/terza-rima</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://poetryeditor.com/rhyme-scheme/free-verse</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
 
+  <!-- Rhyme Category Pages -->
+  <url><loc>https://poetryeditor.com/rhymes/category</loc><lastmod>2026-02-01</lastmod><priority>0.8</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/category/colors</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/category/emotions</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/category/nature</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/category/time</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/category/body</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/category/actions</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+
+  <!-- Individual Word Pages for Impression Keywords -->
+  <url><loc>https://poetryeditor.com/rhymes/white</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/voice</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/rhymes/dead</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/syllables/white</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/synonyms/cold</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://poetryeditor.com/synonyms/hate</loc><lastmod>2026-02-01</lastmod><priority>0.7</priority></url>
+
   <!-- Syllable List Pages -->
   <url><loc>https://poetryeditor.com/syllables/1-syllable-words</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://poetryeditor.com/syllables/2-syllable-words</loc><lastmod>2026-01-30</lastmod><priority>0.7</priority></url>

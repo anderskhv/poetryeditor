@@ -643,6 +643,174 @@ export const wordEnhancements: Record<string, WordEnhancement> = {
       { word1: "world", word2: "curled" },
     ],
   },
+  // Words getting search impressions - prioritized for SEO
+  white: {
+    exampleSentences: [
+      "The white snow blanketed the silent hills.",
+      "Her white dress gleamed in the moonlight.",
+      "He saw the world in black and white.",
+      "The white pages lay empty, waiting for words.",
+    ],
+    poetryQuotes: [
+      {
+        quote: "Much madness is divinest sense to a discerning eye; much sense the starkest madness",
+        poem: "Much Madness is Divinest Sense",
+        poet: "Emily Dickinson",
+      },
+      {
+        quote: "The fog comes on little cat feet",
+        poem: "Fog",
+        poet: "Carl Sandburg",
+        poemSlug: "fog",
+      },
+      {
+        quote: "Whose woods these are I think I know. His house is in the village though",
+        poem: "Stopping by Woods on a Snowy Evening",
+        poet: "Robert Frost",
+        poemSlug: "stopping-by-woods",
+      },
+    ],
+    relatedPairs: [
+      { word1: "white", word2: "night" },
+      { word1: "white", word2: "light" },
+      { word1: "white", word2: "bright" },
+      { word1: "white", word2: "sight" },
+      { word1: "white", word2: "right" },
+    ],
+  },
+  cold: {
+    exampleSentences: [
+      "The cold wind cut through her thin coat.",
+      "His words left her cold and distant.",
+      "A cold fear crept into her heart.",
+      "The coffee had gone cold hours ago.",
+    ],
+    poetryQuotes: [
+      {
+        quote: "Some say the world will end in fire, some say in ice",
+        poem: "Fire and Ice",
+        poet: "Robert Frost",
+      },
+      {
+        quote: "A wind blew out of a cloud, chilling my beautiful Annabel Lee",
+        poem: "Annabel Lee",
+        poet: "Edgar Allan Poe",
+        poemSlug: "annabel-lee",
+      },
+      {
+        quote: "The woods are lovely, dark and deep",
+        poem: "Stopping by Woods on a Snowy Evening",
+        poet: "Robert Frost",
+        poemSlug: "stopping-by-woods",
+      },
+    ],
+    relatedPairs: [
+      { word1: "cold", word2: "old" },
+      { word1: "cold", word2: "bold" },
+      { word1: "cold", word2: "gold" },
+      { word1: "cold", word2: "told" },
+      { word1: "cold", word2: "hold" },
+    ],
+  },
+  hate: {
+    exampleSentences: [
+      "Love and hate are two sides of the same coin.",
+      "She could not hate him, try as she might.",
+      "Hate corrodes the vessel that contains it.",
+      "His eyes burned with an ancient hate.",
+    ],
+    poetryQuotes: [
+      {
+        quote: "From what I've tasted of desire I hold with those who favor fire",
+        poem: "Fire and Ice",
+        poet: "Robert Frost",
+      },
+      {
+        quote: "I know enough of hate to say that for destruction ice is also great",
+        poem: "Fire and Ice",
+        poet: "Robert Frost",
+      },
+      {
+        quote: "And yet, by heaven, I think my love as rare",
+        poem: "Sonnet 130",
+        poet: "William Shakespeare",
+        poemSlug: "sonnet-130",
+      },
+    ],
+    relatedPairs: [
+      { word1: "hate", word2: "fate" },
+      { word1: "hate", word2: "late" },
+      { word1: "hate", word2: "wait" },
+      { word1: "hate", word2: "great" },
+      { word1: "hate", word2: "state" },
+    ],
+  },
+  voice: {
+    exampleSentences: [
+      "Her voice echoed through the empty hall.",
+      "He found his voice after years of silence.",
+      "The voice of reason was drowned out.",
+      "A small voice inside urged her onward.",
+    ],
+    poetryQuotes: [
+      {
+        quote: "I celebrate myself, and sing myself",
+        poem: "Song of Myself",
+        poet: "Walt Whitman",
+        poemSlug: "song-of-myself",
+      },
+      {
+        quote: "I hear America singing, the varied carols I hear",
+        poem: "I Hear America Singing",
+        poet: "Walt Whitman",
+        poemSlug: "i-hear-america-singing",
+      },
+      {
+        quote: "Hope is the thing with feathers that perches in the soul, and sings the tune without the words",
+        poem: "Hope is the thing with feathers",
+        poet: "Emily Dickinson",
+        poemSlug: "hope-is-the-thing-with-feathers",
+      },
+    ],
+    relatedPairs: [
+      { word1: "voice", word2: "choice" },
+      { word1: "voice", word2: "rejoice" },
+      { word1: "voice", word2: "noise" },
+    ],
+  },
+  dead: {
+    exampleSentences: [
+      "The dead leaves crunched underfoot.",
+      "In the dead of night, she awoke.",
+      "The poet spoke for the dead.",
+      "Hope was not yet dead in his heart.",
+    ],
+    poetryQuotes: [
+      {
+        quote: "Because I could not stop for Death, He kindly stopped for me",
+        poem: "Because I could not stop for Death",
+        poet: "Emily Dickinson",
+        poemSlug: "because-i-could-not-stop-for-death",
+      },
+      {
+        quote: "Death, be not proud, though some have called thee mighty and dreadful",
+        poem: "Death, be not proud",
+        poet: "John Donne",
+      },
+      {
+        quote: "And Death shall be no more; Death, thou shalt die",
+        poem: "Death, be not proud",
+        poet: "John Donne",
+      },
+    ],
+    relatedPairs: [
+      { word1: "dead", word2: "head" },
+      { word1: "dead", word2: "said" },
+      { word1: "dead", word2: "bed" },
+      { word1: "dead", word2: "red" },
+      { word1: "dead", word2: "led" },
+    ],
+  },
 };
 
 // Helper to get enhancement for a word (case-insensitive)

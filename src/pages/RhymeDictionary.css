@@ -315,6 +315,69 @@
   background: var(--color-text-secondary);
 }
 
+/* Browse by Category */
+.browse-by-category {
+  margin-top: 48px;
+  padding: 32px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.browse-by-category h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+}
+
+.browse-by-category .category-description {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin: 0 0 20px;
+}
+
+.category-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.category-link {
+  padding: 10px 20px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.category-link:hover {
+  border-color: var(--color-text-secondary);
+  background: var(--color-paper);
+}
+
+.view-all-categories {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.view-all-categories:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
 /* Info Section */
 .rhyme-info {
   margin-top: 60px;

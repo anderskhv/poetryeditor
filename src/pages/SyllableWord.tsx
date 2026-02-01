@@ -62,6 +62,22 @@ export function SyllableWord() {
                 "@type": "Answer",
                 "text": `${displayWord} is pronounced with ${syllableCount} syllable${syllableCount !== 1 ? 's' : ''}${syllables.length > 0 ? `: ${syllables.join('-')}` : ''}. ${stresses.length > 0 ? `The stress falls on the ${stresses.findIndex(s => s === 1) + 1}${['st', 'nd', 'rd'][stresses.findIndex(s => s === 1)] || 'th'} syllable.` : ''}`
               }
+            },
+            {
+              "@type": "Question",
+              "name": `How do you divide ${decodedWord} into syllables?`,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": `${displayWord} is divided into syllables as: ${syllables.join('-')}. ${syllableCount === 1 ? 'This is a monosyllabic word.' : syllableCount === 2 ? 'This is a disyllabic (two-syllable) word.' : syllableCount === 3 ? 'This is a trisyllabic (three-syllable) word.' : `This is a polysyllabic word with ${syllableCount} syllables.`}`
+              }
+            },
+            {
+              "@type": "Question",
+              "name": `Can ${decodedWord} be used in a haiku?`,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": `Yes, ${decodedWord} has ${syllableCount} syllable${syllableCount !== 1 ? 's' : ''}, so it ${syllableCount <= 5 ? `can fit in a haiku line. The first and last lines of a haiku have 5 syllables, and the middle line has 7.` : syllableCount <= 7 ? `can fit in the middle line of a haiku (7 syllables) but would be too long for the first or last line (5 syllables).` : `would take up most or all of a haiku line on its own.`}`
+              }
             }
           ]
         } : undefined}
@@ -142,9 +158,32 @@ export function SyllableWord() {
               </div>
             </div>
 
+            <div className="syllable-usage-section">
+              <h2>Using "{displayWord}" in Poetry</h2>
+              <div className="usage-tips">
+                <div className="usage-tip">
+                  <strong>Haiku:</strong> {syllableCount <= 5
+                    ? `${displayWord} (${syllableCount}) can fit in any haiku line (5-7-5 pattern).`
+                    : syllableCount <= 7
+                    ? `${displayWord} (${syllableCount}) fits best in the middle line of a haiku.`
+                    : `${displayWord} (${syllableCount}) would dominate a haiku line.`}
+                </div>
+                <div className="usage-tip">
+                  <strong>Meter:</strong> {stresses.length > 0 && stresses[0] === 1
+                    ? `Starts with a stressed syllable - works well in trochaic meter.`
+                    : stresses.length > 0 && stresses[0] === 0
+                    ? `Starts with an unstressed syllable - works well in iambic meter.`
+                    : `Check the stress pattern above for meter placement.`}
+                </div>
+              </div>
+            </div>
+
             <div className="word-actions">
               <Link to={`/rhymes/${encodeURIComponent(decodedWord)}`} className="action-button primary">
                 Find Rhymes for "{displayWord}"
+              </Link>
+              <Link to={`/synonyms/${encodeURIComponent(decodedWord)}`} className="action-button secondary">
+                Find Synonyms
               </Link>
               <Link to="/" className="action-button secondary">
                 Use in Poetry Editor

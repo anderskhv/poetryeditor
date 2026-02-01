@@ -19,6 +19,7 @@ import { LearnScansion } from './pages/learn/LearnScansion';
 import { PoemPage } from './pages/poems/PoemPage';
 import { PoemsListPage } from './pages/poems/PoemsListPage';
 import { RhymeSchemePage } from './pages/RhymeSchemePage';
+import { RhymeCategoryPage } from './pages/RhymeCategoryPage';
 import { Widget } from './pages/Widget';
 import { EmbedPage } from './pages/EmbedPage';
 
@@ -30,6 +31,14 @@ export const router = createBrowserRouter([
   {
     path: '/rhymes',
     element: <RhymeDictionary />,
+  },
+  {
+    path: '/rhymes/category',
+    element: <RhymeCategoryPage />,
+  },
+  {
+    path: '/rhymes/category/:category',
+    element: <RhymeCategoryPage />,
   },
   {
     path: '/rhymes/:word',
