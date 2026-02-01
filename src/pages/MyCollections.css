@@ -1,0 +1,317 @@
+.my-collections-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.collections-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.collections-header h1 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 2rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+.upload-button {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+  background: var(--color-text-primary, #1a1a1a);
+  color: var(--color-paper, #fff);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.upload-button:hover {
+  background: var(--color-text-secondary, #333);
+}
+
+.upload-button.large {
+  padding: 14px 28px;
+  font-size: 16px;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-text-muted, #666);
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+
+.not-authenticated,
+.no-collections {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--color-paper, #fff);
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 12px;
+}
+
+.not-authenticated h1,
+.no-collections h2 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-weight: 400;
+  margin: 0 0 1rem;
+}
+
+.not-authenticated p,
+.no-collections p {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  color: var(--color-text-muted, #666);
+  margin: 0 0 1.5rem;
+}
+
+.sign-in-cta {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 16px;
+  font-weight: 500;
+  padding: 14px 28px;
+  background: var(--color-text-primary, #1a1a1a);
+  color: var(--color-paper, #fff);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.sign-in-cta:hover {
+  background: var(--color-text-secondary, #333);
+}
+
+/* Collections Grid */
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.collection-card {
+  position: relative;
+  background: var(--color-paper, #fff);
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.collection-card:hover {
+  border-color: var(--color-text-muted, #666);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.collection-link {
+  display: block;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.collection-card h2 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin: 0 0 0.5rem;
+  color: var(--color-text-primary, #000);
+}
+
+.collection-date {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-muted, #666);
+  margin: 0;
+}
+
+.delete-collection-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--color-text-muted, #666);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  border-radius: 4px;
+}
+
+.collection-card:hover .delete-collection-btn {
+  opacity: 1;
+}
+
+.delete-collection-btn:hover {
+  color: #d32f2f;
+  background: rgba(211, 47, 47, 0.1);
+}
+
+/* Upload Modal */
+.upload-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.upload-modal {
+  background: var(--color-paper, #fff);
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.upload-modal h2 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 0 1.5rem;
+}
+
+.upload-form label {
+  display: block;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #333);
+  margin-bottom: 1.5rem;
+}
+
+.upload-form input {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 10px 12px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 15px;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.upload-form input:focus {
+  outline: none;
+  border-color: var(--color-text-muted, #666);
+}
+
+.upload-preview {
+  background: var(--color-background, #f5f5f5);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.upload-preview h3 {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.upload-preview p {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-muted, #666);
+  margin: 0 0 1rem;
+}
+
+.upload-preview h4 {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #333);
+  margin: 0 0 0.5rem;
+}
+
+.upload-preview ul {
+  margin: 0 0 1rem;
+  padding: 0 0 0 1.25rem;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+}
+
+.upload-preview li {
+  margin: 0.25rem 0;
+}
+
+.poem-section {
+  color: var(--color-text-muted, #666);
+}
+
+.more-poems {
+  color: var(--color-text-muted, #666);
+  font-style: italic;
+}
+
+.upload-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.cancel-button {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  padding: 10px 20px;
+  background: none;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cancel-button:hover {
+  border-color: var(--color-text-muted, #666);
+}
+
+.confirm-upload-button {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+  background: var(--color-text-primary, #1a1a1a);
+  color: var(--color-paper, #fff);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.confirm-upload-button:hover:not(:disabled) {
+  background: var(--color-text-secondary, #333);
+}
+
+.confirm-upload-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .collections-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .collections-header h1 {
+    text-align: center;
+  }
+}

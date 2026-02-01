@@ -20,6 +20,8 @@ import { PoemPage } from './pages/poems/PoemPage';
 import { PoemsListPage } from './pages/poems/PoemsListPage';
 import { RhymeSchemePage } from './pages/RhymeSchemePage';
 import { RhymeCategoryPage } from './pages/RhymeCategoryPage';
+import { MyCollections } from './pages/MyCollections';
+import { CollectionView } from './pages/CollectionView';
 import { Widget } from './pages/Widget';
 import { EmbedPage } from './pages/EmbedPage';
 
@@ -126,6 +128,15 @@ export const router = createBrowserRouter([
   {
     path: '/rhyme-scheme/:scheme',
     element: <RhymeSchemePage />,
+  },
+  // User collections
+  {
+    path: '/my-collections',
+    element: <MyCollections />,
+  },
+  {
+    path: '/my-collections/:id',
+    element: <CollectionView />,
   },
   // Widget pages
   {

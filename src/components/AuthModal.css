@@ -1,0 +1,61 @@
+.auth-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.auth-modal {
+  background: var(--color-paper, #fff);
+  border-radius: 12px;
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.auth-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--color-text-muted, #666);
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+.auth-modal-close:hover {
+  color: var(--color-text-primary, #000);
+}
+
+.auth-modal h2 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0 0 8px;
+  color: var(--color-text-primary, #000);
+}
+
+.auth-modal-subtitle {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-muted, #666);
+  margin: 0 0 24px;
+}
+
+/* Override Supabase Auth UI styles */
+.auth-modal [data-supabase-auth-ui] {
+  --colors-brand: #1a1a1a;
+  --colors-brandAccent: #333;
+}

@@ -8,6 +8,7 @@ import './WordCompare.css';
 
 // Connotation data for common words
 const CONNOTATIONS: Record<string, { tone: string; usage: string; formality: string }> = {
+  // Happiness words
   happy: { tone: 'casual, everyday', usage: 'general situations, casual speech', formality: 'neutral' },
   joyful: { tone: 'elevated, poetic', usage: 'celebrations, formal writing', formality: 'formal' },
   glad: { tone: 'mild, polite', usage: 'polite acknowledgment, older usage', formality: 'neutral' },
@@ -15,44 +16,134 @@ const CONNOTATIONS: Record<string, { tone: string; usage: string; formality: str
   elated: { tone: 'intense, dramatic', usage: 'extreme happiness, achievements', formality: 'formal' },
   content: { tone: 'calm, peaceful', usage: 'satisfied state, not excited', formality: 'neutral' },
   delighted: { tone: 'polite, enthusiastic', usage: 'formal pleasure, surprises', formality: 'formal' },
+  blissful: { tone: 'transcendent, serene', usage: 'perfect happiness, spiritual joy', formality: 'formal' },
+  merry: { tone: 'festive, lively', usage: 'celebrations, holiday contexts', formality: 'neutral' },
+  jovial: { tone: 'hearty, social', usage: 'warm friendliness, gatherings', formality: 'neutral' },
+  // Sadness words
   sad: { tone: 'simple, direct', usage: 'general unhappiness', formality: 'neutral' },
   sorrowful: { tone: 'deep, literary', usage: 'profound grief, poetry', formality: 'formal' },
   melancholy: { tone: 'reflective, bittersweet', usage: 'thoughtful sadness, literary', formality: 'formal' },
   gloomy: { tone: 'dark, atmospheric', usage: 'mood, weather, outlook', formality: 'neutral' },
+  mournful: { tone: 'grieving, solemn', usage: 'loss, funeral contexts', formality: 'formal' },
+  wistful: { tone: 'nostalgic, gentle', usage: 'longing for the past', formality: 'neutral' },
+  forlorn: { tone: 'abandoned, desolate', usage: 'lonely despair, poetic', formality: 'formal' },
+  dejected: { tone: 'defeated, low', usage: 'loss of hope or spirit', formality: 'neutral' },
+  // Love words
   love: { tone: 'universal, powerful', usage: 'deep affection, romance', formality: 'neutral' },
   adore: { tone: 'intense, devotional', usage: 'worship-like love, strong preference', formality: 'neutral' },
   cherish: { tone: 'tender, protective', usage: 'treasuring something precious', formality: 'neutral' },
+  affection: { tone: 'warm, gentle', usage: 'fond feeling, family contexts', formality: 'neutral' },
+  devotion: { tone: 'committed, loyal', usage: 'deep dedication, religious contexts', formality: 'formal' },
+  passion: { tone: 'intense, fiery', usage: 'romantic or creative intensity', formality: 'neutral' },
+  // Size words
   big: { tone: 'casual, basic', usage: 'everyday size description', formality: 'informal' },
   large: { tone: 'neutral, precise', usage: 'formal size description', formality: 'neutral' },
   enormous: { tone: 'emphatic, dramatic', usage: 'impressive size', formality: 'neutral' },
   vast: { tone: 'expansive, poetic', usage: 'immense spaces, abstract scale', formality: 'formal' },
+  immense: { tone: 'overwhelming, grand', usage: 'scale beyond measure', formality: 'formal' },
+  massive: { tone: 'heavy, solid', usage: 'weight and bulk emphasis', formality: 'neutral' },
+  colossal: { tone: 'epic, mythic', usage: 'legendary scale, dramatic effect', formality: 'formal' },
   small: { tone: 'neutral, basic', usage: 'everyday size description', formality: 'neutral' },
   tiny: { tone: 'diminutive, cute', usage: 'very small, often affectionate', formality: 'informal' },
   minute: { tone: 'precise, technical', usage: 'extremely small, scientific', formality: 'formal' },
+  petite: { tone: 'delicate, elegant', usage: 'small in an attractive way', formality: 'neutral' },
+  minuscule: { tone: 'technical, emphatic', usage: 'barely visible, insignificant', formality: 'formal' },
+  // Beauty words
   beautiful: { tone: 'appreciative, common', usage: 'general aesthetic praise', formality: 'neutral' },
   gorgeous: { tone: 'enthusiastic, modern', usage: 'strong visual appeal', formality: 'informal' },
   stunning: { tone: 'impactful, dramatic', usage: 'striking beauty', formality: 'neutral' },
   lovely: { tone: 'warm, pleasant', usage: 'gentle appreciation', formality: 'neutral' },
+  exquisite: { tone: 'refined, precious', usage: 'delicate beauty, craftsmanship', formality: 'formal' },
+  radiant: { tone: 'glowing, luminous', usage: 'inner beauty, happiness', formality: 'formal' },
+  // Speed words
   fast: { tone: 'direct, energetic', usage: 'speed in general', formality: 'neutral' },
   quick: { tone: 'brief, efficient', usage: 'short duration', formality: 'neutral' },
   rapid: { tone: 'technical, clinical', usage: 'measured speed, formal', formality: 'formal' },
   swift: { tone: 'elegant, literary', usage: 'graceful speed, poetry', formality: 'formal' },
+  fleet: { tone: 'poetic, nimble', usage: 'light, agile movement', formality: 'formal' },
+  hasty: { tone: 'rushed, careless', usage: 'speed with negative connotation', formality: 'neutral' },
+  // Age words
   old: { tone: 'neutral, basic', usage: 'age description', formality: 'neutral' },
   ancient: { tone: 'historical, grand', usage: 'very old, historical', formality: 'formal' },
   elderly: { tone: 'respectful, polite', usage: 'older people', formality: 'formal' },
   aged: { tone: 'literary, dignified', usage: 'time-worn, mature', formality: 'formal' },
+  antique: { tone: 'valuable, collectible', usage: 'old objects with value', formality: 'neutral' },
+  // Intelligence words
   smart: { tone: 'casual, modern', usage: 'intelligence, cleverness', formality: 'informal' },
   intelligent: { tone: 'precise, respectful', usage: 'measured cognitive ability', formality: 'formal' },
   clever: { tone: 'quick-witted', usage: 'ingenuity, wit', formality: 'neutral' },
   brilliant: { tone: 'exceptional, bright', usage: 'outstanding intelligence', formality: 'neutral' },
+  wise: { tone: 'experienced, deep', usage: 'wisdom from experience', formality: 'neutral' },
+  cunning: { tone: 'shrewd, calculating', usage: 'clever with negative edge', formality: 'neutral' },
+  // Anger words
   angry: { tone: 'direct, common', usage: 'general anger', formality: 'neutral' },
   furious: { tone: 'intense, explosive', usage: 'extreme anger', formality: 'neutral' },
   irate: { tone: 'formal, contained', usage: 'formal anger, complaints', formality: 'formal' },
   enraged: { tone: 'dramatic, violent', usage: 'loss of control', formality: 'formal' },
+  livid: { tone: 'intense, seething', usage: 'barely contained fury', formality: 'neutral' },
+  wrathful: { tone: 'biblical, epic', usage: 'divine or righteous anger', formality: 'formal' },
+  // Fear words
+  fear: { tone: 'basic, primal', usage: 'general fear response', formality: 'neutral' },
+  dread: { tone: 'deep, anticipatory', usage: 'fear of what is coming', formality: 'neutral' },
+  terror: { tone: 'extreme, overwhelming', usage: 'intense paralyzing fear', formality: 'neutral' },
+  anxiety: { tone: 'modern, clinical', usage: 'worry and unease', formality: 'neutral' },
+  fright: { tone: 'sudden, startling', usage: 'immediate shock', formality: 'neutral' },
+  trepidation: { tone: 'formal, cautious', usage: 'nervous apprehension', formality: 'formal' },
+  // Hope words
+  hope: { tone: 'universal, essential', usage: 'general optimism', formality: 'neutral' },
+  faith: { tone: 'spiritual, deep', usage: 'trust, religious contexts', formality: 'neutral' },
+  optimism: { tone: 'modern, positive', usage: 'rational hopefulness', formality: 'neutral' },
+  aspiration: { tone: 'ambitious, elevated', usage: 'goals and dreams', formality: 'formal' },
+  // Nature words
+  sea: { tone: 'poetic, timeless', usage: 'ocean, vast waters', formality: 'neutral' },
+  ocean: { tone: 'grand, scientific', usage: 'specific body of water', formality: 'neutral' },
+  forest: { tone: 'deep, mysterious', usage: 'large wooded area', formality: 'neutral' },
+  woods: { tone: 'intimate, folksy', usage: 'smaller wooded area', formality: 'informal' },
+  rain: { tone: 'natural, cleansing', usage: 'precipitation, renewal', formality: 'neutral' },
+  storm: { tone: 'dramatic, powerful', usage: 'violent weather, conflict', formality: 'neutral' },
+  wind: { tone: 'free, changeable', usage: 'air movement, change', formality: 'neutral' },
+  breeze: { tone: 'gentle, pleasant', usage: 'light wind, comfort', formality: 'neutral' },
+  gale: { tone: 'fierce, nautical', usage: 'strong wind, adventure', formality: 'neutral' },
+  // Action words - movement
+  run: { tone: 'basic, urgent', usage: 'fast movement', formality: 'neutral' },
+  sprint: { tone: 'athletic, intense', usage: 'maximum speed running', formality: 'neutral' },
+  dash: { tone: 'quick, brief', usage: 'short burst of speed', formality: 'neutral' },
+  race: { tone: 'competitive, urgent', usage: 'speed with purpose', formality: 'neutral' },
+  walk: { tone: 'calm, deliberate', usage: 'normal movement', formality: 'neutral' },
+  stroll: { tone: 'leisurely, pleasant', usage: 'relaxed walking', formality: 'neutral' },
+  wander: { tone: 'aimless, dreamy', usage: 'walking without direction', formality: 'neutral' },
+  roam: { tone: 'free, adventurous', usage: 'wandering over distance', formality: 'neutral' },
+  // Action words - speech
+  speak: { tone: 'neutral, direct', usage: 'general communication', formality: 'neutral' },
+  whisper: { tone: 'secretive, intimate', usage: 'quiet, private speech', formality: 'neutral' },
+  shout: { tone: 'loud, urgent', usage: 'raised voice', formality: 'informal' },
+  murmur: { tone: 'soft, indistinct', usage: 'low continuous sound', formality: 'neutral' },
+  declare: { tone: 'formal, emphatic', usage: 'official statements', formality: 'formal' },
+  proclaim: { tone: 'grand, public', usage: 'announcements, ceremonies', formality: 'formal' },
+  // Light and dark
+  bright: { tone: 'cheerful, vivid', usage: 'strong light, intelligence', formality: 'neutral' },
+  luminous: { tone: 'glowing, ethereal', usage: 'soft radiance, beauty', formality: 'formal' },
+  dark: { tone: 'mysterious, serious', usage: 'absence of light, mood', formality: 'neutral' },
+  dim: { tone: 'faint, uncertain', usage: 'low light, vague', formality: 'neutral' },
+  shadowy: { tone: 'mysterious, threatening', usage: 'partial darkness, secrets', formality: 'neutral' },
+  // Strength words
+  strong: { tone: 'powerful, capable', usage: 'physical or mental strength', formality: 'neutral' },
+  mighty: { tone: 'epic, heroic', usage: 'great power, legends', formality: 'formal' },
+  powerful: { tone: 'influential, forceful', usage: 'strength with impact', formality: 'neutral' },
+  robust: { tone: 'healthy, sturdy', usage: 'vigorous strength', formality: 'neutral' },
+  weak: { tone: 'lacking, vulnerable', usage: 'absence of strength', formality: 'neutral' },
+  feeble: { tone: 'very weak, pitiful', usage: 'extreme weakness', formality: 'neutral' },
+  frail: { tone: 'delicate, breakable', usage: 'physical fragility', formality: 'neutral' },
+  // Quiet words
+  quiet: { tone: 'peaceful, restrained', usage: 'low noise, calm', formality: 'neutral' },
+  silent: { tone: 'complete, absolute', usage: 'no sound at all', formality: 'neutral' },
+  still: { tone: 'motionless, peaceful', usage: 'absence of movement and sound', formality: 'neutral' },
+  hushed: { tone: 'reverent, expectant', usage: 'quiet with anticipation', formality: 'neutral' },
 };
 
 // Popular word comparisons for suggestions
 const POPULAR_COMPARISONS: [string, string][] = [
+  // Original comparisons
   ['happy', 'joyful'],
   ['sad', 'melancholy'],
   ['big', 'large'],
@@ -63,6 +154,73 @@ const POPULAR_COMPARISONS: [string, string][] = [
   ['love', 'adore'],
   ['angry', 'furious'],
   ['small', 'tiny'],
+  // Synonyms with different syllable counts
+  ['big', 'enormous'],
+  ['small', 'minuscule'],
+  ['happy', 'blissful'],
+  ['sad', 'sorrowful'],
+  ['fast', 'rapid'],
+  // Emotion words
+  ['happy', 'elated'],
+  ['sad', 'mournful'],
+  ['angry', 'enraged'],
+  ['fear', 'terror'],
+  ['fear', 'dread'],
+  ['love', 'affection'],
+  ['love', 'devotion'],
+  ['hope', 'faith'],
+  ['sad', 'wistful'],
+  ['happy', 'merry'],
+  // Nature words
+  ['sea', 'ocean'],
+  ['forest', 'woods'],
+  ['rain', 'storm'],
+  ['wind', 'breeze'],
+  ['wind', 'gale'],
+  // Abstract concepts
+  ['love', 'passion'],
+  ['hope', 'optimism'],
+  ['fear', 'anxiety'],
+  ['smart', 'wise'],
+  ['clever', 'cunning'],
+  // Action words - movement
+  ['run', 'sprint'],
+  ['walk', 'stroll'],
+  ['walk', 'wander'],
+  ['run', 'dash'],
+  ['walk', 'roam'],
+  // Action words - speech
+  ['speak', 'whisper'],
+  ['shout', 'murmur'],
+  ['speak', 'declare'],
+  ['speak', 'proclaim'],
+  // Light and dark
+  ['bright', 'luminous'],
+  ['dark', 'shadowy'],
+  ['bright', 'radiant'],
+  ['dark', 'dim'],
+  // Strength words
+  ['strong', 'mighty'],
+  ['strong', 'powerful'],
+  ['weak', 'feeble'],
+  ['weak', 'frail'],
+  // Size elaborations
+  ['big', 'massive'],
+  ['big', 'colossal'],
+  ['small', 'petite'],
+  ['large', 'immense'],
+  // Beauty words
+  ['beautiful', 'exquisite'],
+  ['beautiful', 'radiant'],
+  ['lovely', 'stunning'],
+  // Speed words
+  ['fast', 'swift'],
+  ['fast', 'fleet'],
+  ['quick', 'hasty'],
+  // Quiet words
+  ['quiet', 'silent'],
+  ['quiet', 'still'],
+  ['quiet', 'hushed'],
 ];
 
 function getConnotation(word: string): { tone: string; usage: string; formality: string } | null {

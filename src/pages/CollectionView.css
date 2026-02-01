@@ -1,0 +1,215 @@
+.collection-view-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.collection-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+}
+
+.collection-breadcrumb a {
+  color: var(--color-text-secondary, #333);
+  text-decoration: none;
+}
+
+.collection-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-separator {
+  color: var(--color-text-muted, #666);
+}
+
+.collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.collection-header h1 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 2rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+.collection-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.export-button {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.export-button:hover:not(:disabled) {
+  border-color: var(--color-text-muted, #666);
+}
+
+.export-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loading,
+.processing-upload {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted, #666);
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+
+.not-authenticated,
+.not-found,
+.no-poems {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--color-paper, #fff);
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 12px;
+}
+
+.not-authenticated p,
+.not-found p,
+.no-poems p {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  color: var(--color-text-muted, #666);
+  margin: 0 0 1rem;
+}
+
+.not-authenticated a,
+.not-found a {
+  color: var(--color-text-primary, #000);
+}
+
+/* Poems Container */
+.poems-container {
+  margin-bottom: 2rem;
+}
+
+.poems-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary, #333);
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
+}
+
+.poems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.poem-card {
+  position: relative;
+  background: var(--color-paper, #fff);
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.poem-card:hover {
+  border-color: var(--color-text-muted, #666);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.poem-link {
+  display: block;
+  padding: 1.25rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.poem-card h3 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0 0 0.5rem;
+  color: var(--color-text-primary, #000);
+}
+
+.poem-preview {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-muted, #666);
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.delete-poem-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--color-text-muted, #666);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.poem-card:hover .delete-poem-btn {
+  opacity: 1;
+}
+
+.delete-poem-btn:hover {
+  color: #d32f2f;
+  background: rgba(211, 47, 47, 0.1);
+}
+
+/* Stats */
+.collection-stats {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-muted, #666);
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border, #e0e0e0);
+}
+
+@media (max-width: 600px) {
+  .collection-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .collection-header h1 {
+    text-align: center;
+  }
+
+  .collection-actions {
+    justify-content: center;
+  }
+}

@@ -1,6 +1,10 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { editor } from 'monaco-editor';
+import { supabase } from './lib/supabase';
+import { useAuth } from './hooks/useAuth';
+import { AuthButton } from './components/AuthButton';
+import type { Poem } from './types/database';
 import { PoetryEditor } from './components/PoetryEditor';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
@@ -61,10 +65,21 @@ interface SavedPoem {
 }
 
 function App() {
+  const [searchParams] = useSearchParams();
+  const cloudPoemId = searchParams.get('poem');
+  const { user } = useAuth();
+
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
   const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
+
+  // Cloud poem state
+  const [cloudPoemTitle, setCloudPoemTitle] = useState<string | null>(null);
+  const [cloudPoemCollectionId, setCloudPoemCollectionId] = useState<string | null>(null);
+  const [isLoadingCloudPoem, setIsLoadingCloudPoem] = useState<boolean>(false);
+  const [cloudPoemError, setCloudPoemError] = useState<string | null>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Collection management
   const {
@@ -163,6 +178,75 @@ function App() {
     }
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  // Load cloud poem if ?poem= is in URL
+  useEffect(() => {
+    if (!cloudPoemId || !user) {
+      setCloudPoemTitle(null);
+      setCloudPoemCollectionId(null);
+      return;
+    }
+
+    async function loadCloudPoem() {
+      setIsLoadingCloudPoem(true);
+      setCloudPoemError(null);
+
+      try {
+        const { data, error } = await supabase
+          .from('poems')
+          .select('*')
+          .eq('id', cloudPoemId)
+          .single();
+
+        if (error) throw error;
+
+        const poemData = data as Poem;
+        setText(poemData.content);
+        setCloudPoemTitle(poemData.title);
+        setCloudPoemCollectionId(poemData.collection_id);
+        setPoemTitle(poemData.title);
+      } catch (err) {
+        console.error('Failed to load cloud poem:', err);
+        setCloudPoemError('Failed to load poem');
+      } finally {
+        setIsLoadingCloudPoem(false);
+      }
+    }
+
+    loadCloudPoem();
+  }, [cloudPoemId, user, setText]);
+
+  // Auto-save cloud poem changes (debounced)
+  useEffect(() => {
+    if (!cloudPoemId || !user || isLoadingCloudPoem) return;
+
+    // Clear existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Set new timeout to save after 1 second of inactivity
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        await supabase
+          .from('poems')
+          .update({
+            content: text,
+            title: poemTitle,
+            updated_at: new Date().toISOString(),
+          } as any)
+          .eq('id', cloudPoemId);
+      } catch (err) {
+        console.error('Failed to auto-save cloud poem:', err);
+      }
+    }, 1000);
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [text, poemTitle, cloudPoemId, user, isLoadingCloudPoem]);
 
   // Save indent settings
   useEffect(() => {
@@ -983,6 +1067,17 @@ function App() {
                 </div>
               )}
             </div>
+            {/* Auth Button */}
+            <AuthButton />
+            {/* Back to collection link when editing cloud poem */}
+            {cloudPoemCollectionId && (
+              <Link
+                to={`/my-collections/${cloudPoemCollectionId}`}
+                className="btn btn-menu back-to-collection"
+              >
+                Back to Collection
+              </Link>
+            )}
           </div>
         </div>
       </header>

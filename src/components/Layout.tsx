@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { AuthButton } from './AuthButton';
 import './Layout.css';
 
 interface LayoutProps {
@@ -82,6 +83,7 @@ export function Layout({ children }: LayoutProps) {
             >
               Open Full Editor
             </Link>
+            <AuthButton />
           </nav>
         </div>
       </header>
