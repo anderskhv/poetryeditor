@@ -1,16 +1,16 @@
 .auth-button-loading {
   font-family: var(--font-sans, system-ui, sans-serif);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text-muted, #666);
-  padding: 8px 16px;
+  padding: 6px 12px;
 }
 
 .auth-button {
-  font-family: var(--font-sans, system-ui, sans-serif);
-  font-size: 14px;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 6px;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 13px;
+  font-weight: 400;
+  padding: 6px 12px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -32,20 +32,17 @@
 .auth-user-button {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
   background: none;
-  border: 1px solid var(--color-border, #e0e0e0);
-  border-radius: 6px;
-  padding: 6px 12px;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
   cursor: pointer;
-  font-family: var(--font-sans, system-ui, sans-serif);
-  font-size: 14px;
-  color: var(--color-text-primary, #000);
   transition: all 0.15s ease;
 }
 
 .auth-user-button:hover {
-  border-color: var(--color-text-muted, #666);
+  opacity: 0.8;
 }
 
 .auth-user-avatar {

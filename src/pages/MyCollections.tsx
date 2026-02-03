@@ -18,6 +18,28 @@ interface ParsedFolder {
   }>;
 }
 
+// Natural sort comparator for strings like "1. Poem", "2. Poem", "10. Poem"
+function naturalCompare(a: string, b: string): number {
+  const aParts = a.split(/(\d+)/);
+  const bParts = b.split(/(\d+)/);
+
+  for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
+    const aPart = aParts[i] || '';
+    const bPart = bParts[i] || '';
+
+    const aNum = parseInt(aPart, 10);
+    const bNum = parseInt(bPart, 10);
+
+    if (!isNaN(aNum) && !isNaN(bNum)) {
+      if (aNum !== bNum) return aNum - bNum;
+    } else {
+      const cmp = aPart.localeCompare(bPart);
+      if (cmp !== 0) return cmp;
+    }
+  }
+  return 0;
+}
+
 export function MyCollections() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const { collections, loading, createCollection, deleteCollection } = useCollections();
@@ -37,7 +59,12 @@ export function MyCollections() {
     const sections = new Map<string, string[]>();
     let folderName = '';
 
-    for (const file of Array.from(files)) {
+    // Sort files by path using natural sort (so "1. Poem" < "2. Poem" < "10. Poem")
+    const sortedFiles = Array.from(files).sort((a, b) =>
+      naturalCompare(a.webkitRelativePath, b.webkitRelativePath)
+    );
+
+    for (const file of sortedFiles) {
       // Only process .md files
       if (!file.name.endsWith('.md')) continue;
 
@@ -92,10 +119,13 @@ export function MyCollections() {
       if (!collection) throw new Error('Failed to create collection');
 
       // Navigate to the new collection
+      // Sort sections by natural order for proper display
+      const sortedSections = Array.from(parsedFolder.sections.keys()).sort(naturalCompare);
+
       navigate(`/my-collections/${collection.id}`, {
         state: {
           pendingUpload: {
-            sections: Array.from(parsedFolder.sections.keys()),
+            sections: sortedSections,
             poems: parsedFolder.poems,
           }
         }
@@ -235,7 +265,7 @@ export function MyCollections() {
                   <div className="sections-preview">
                     <h4>Sections:</h4>
                     <ul>
-                      {Array.from(parsedFolder.sections.keys()).map(section => (
+                      {Array.from(parsedFolder.sections.keys()).sort(naturalCompare).map(section => (
                         <li key={section}>{section}</li>
                       ))}
                     </ul>

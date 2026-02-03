@@ -269,39 +269,101 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
     // Add keyboard shortcuts for formatting
     const wrapSelection = (prefix: string, suffix: string) => {
-      const selection = editorInstance.getSelection();
-      if (!selection) return;
-
       const model = editorInstance.getModel();
       if (!model) return;
 
-      const selectedText = model.getValueInRange(selection);
-      if (!selectedText) return;
+      const sel = editorInstance.getSelection();
+      if (!sel) return;
 
-      // Check if already wrapped
-      const beforeStart = Math.max(1, selection.startColumn - prefix.length);
-      const afterEnd = selection.endColumn + suffix.length;
-      const extendedRange = {
-        startLineNumber: selection.startLineNumber,
-        startColumn: beforeStart,
-        endLineNumber: selection.endLineNumber,
-        endColumn: Math.min(model.getLineMaxColumn(selection.endLineNumber), afterEnd),
-      };
-      const surroundingText = model.getValueInRange(extendedRange);
+      // Use parseMarkdownFormatting as the authoritative source of truth
+      // for detecting existing formatted regions - no manual char scanning
+      const formatType: 'bold' | 'italic' | 'underline' =
+        prefix === '**' ? 'bold' : prefix === '*' ? 'italic' : 'underline';
+      const fullText = model.getValue();
+      const formattedRanges = parseMarkdownFormatting(fullText);
 
-      if (surroundingText.startsWith(prefix) && surroundingText.endsWith(suffix)) {
-        // Unwrap
+      const selStartOffset = model.getOffsetAt({
+        lineNumber: sel.startLineNumber,
+        column: sel.startColumn,
+      });
+      const selEndOffset = model.getOffsetAt({
+        lineNumber: sel.endLineNumber,
+        column: sel.endColumn,
+      });
+
+      // Check if cursor/selection overlaps a formatted region of the matching type.
+      // This prevents re-wrapping when the selection includes markers and ensures
+      // toggling removes formatting as expected.
+      const region = formattedRanges.find(r =>
+        r.type === formatType &&
+        selEndOffset > r.startOffset &&
+        selStartOffset < r.endOffset
+      );
+
+      if (region) {
+        // UNWRAP: remove the formatting markers from this region
+        const content = fullText.substring(
+          region.contentStartOffset,
+          region.contentEndOffset
+        );
+        const startPos = model.getPositionAt(region.startOffset);
+        const endPos = model.getPositionAt(region.endOffset);
+
         editorInstance.executeEdits('formatting', [{
-          range: extendedRange,
-          text: selectedText,
-        }]);
-      } else {
-        // Wrap
-        editorInstance.executeEdits('formatting', [{
-          range: selection,
-          text: `${prefix}${selectedText}${suffix}`,
-        }]);
+          range: {
+            startLineNumber: startPos.lineNumber,
+            startColumn: startPos.column,
+            endLineNumber: endPos.lineNumber,
+            endColumn: endPos.column,
+          },
+          text: content,
+        }], [new monaco.Selection(
+          startPos.lineNumber, startPos.column,
+          startPos.lineNumber, startPos.column + content.length
+        )]);
+        updateDecorations();
+        return;
       }
+
+      // WRAP: no existing formatting of this type found at cursor/selection
+      let selectedText = model.getValueInRange(sel);
+
+      // If no selection, expand to word at cursor
+      if (!selectedText) {
+        const word = model.getWordAtPosition(sel.getPosition());
+        if (!word) return;
+
+        const wordRange = {
+          startLineNumber: sel.startLineNumber,
+          startColumn: word.startColumn,
+          endLineNumber: sel.startLineNumber,
+          endColumn: word.endColumn,
+        };
+        const wordText = model.getValueInRange(wordRange);
+        if (!wordText) return;
+
+        editorInstance.executeEdits('formatting', [{
+          range: wordRange,
+          text: `${prefix}${wordText}${suffix}`,
+        }], [new monaco.Selection(
+          sel.startLineNumber, word.startColumn + prefix.length,
+          sel.startLineNumber, word.startColumn + prefix.length + wordText.length
+        )]);
+        updateDecorations();
+        return;
+      }
+
+      // Only handle single-line selections for wrapping
+      if (sel.startLineNumber !== sel.endLineNumber) return;
+
+      editorInstance.executeEdits('formatting', [{
+        range: sel,
+        text: `${prefix}${selectedText}${suffix}`,
+      }], [new monaco.Selection(
+        sel.startLineNumber, sel.startColumn + prefix.length,
+        sel.startLineNumber, sel.startColumn + prefix.length + selectedText.length
+      )]);
+      updateDecorations();
     };
 
     // Bold: Cmd/Ctrl + B
@@ -335,7 +397,11 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
   const updateDecorations = () => {
     if (!editorRef.current || !monacoRef.current) return;
 
-    const words = analyzeText(value);
+    const model = editorRef.current.getModel();
+    if (!model) return;
+    const currentText = model.getValue();
+
+    const words = analyzeText(currentText);
 
     // Notify parent of analyzed words
     if (onWordsAnalyzed) {
@@ -347,9 +413,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     // Check which coloring mode is active (priority order matters)
     if (meterColoringData && !meterColoringData.isFreeOrMixed) {
       // Meter coloring mode
-      const lines = value.split('\n');
-      const model = editorRef.current.getModel();
-      if (!model) return;
+      const lines = currentText.split('\n');
 
       lines.forEach((line, index) => {
         const lineNumber = index + 1;
@@ -383,9 +447,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       });
     } else if (syllableColoringData) {
       // Syllable count by line coloring mode
-      const lines = value.split('\n');
-      const model = editorRef.current.getModel();
-      if (!model) return;
+      const lines = currentText.split('\n');
 
       lines.forEach((line, index) => {
         const lineNumber = index + 1;
@@ -419,9 +481,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       });
     } else if (rhythmVariationColoringData) {
       // Rhythm variation coloring mode
-      const lines = value.split('\n');
-      const model = editorRef.current.getModel();
-      if (!model) return;
+      const lines = currentText.split('\n');
 
       const syllableCounts = rhythmVariationColoringData.syllableCounts;
       const nonEmptyLines = syllableCounts.filter(c => c > 0);
@@ -464,9 +524,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       }
     } else if (lineLengthColoringData) {
       // Line length (words) coloring mode
-      const lines = lineLengthColoringData.text.split('\n');
-      const model = editorRef.current.getModel();
-      if (!model) return;
+      const lines = currentText.split('\n');
 
       const median = lineLengthColoringData.medianWords;
 
@@ -504,9 +562,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       });
     } else if (punctuationColoringData) {
       // Punctuation/enjambment coloring mode
-      const lines = value.split('\n');
-      const model = editorRef.current.getModel();
-      if (!model) return;
+      const lines = currentText.split('\n');
 
       const enjambedLineSet = new Set(punctuationColoringData.enjambedLines);
 
@@ -537,9 +593,6 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       });
     } else if (passiveVoiceColoringData) {
       // Passive voice coloring mode
-      const model = editorRef.current.getModel();
-      if (!model) return;
-
       passiveVoiceColoringData.passiveInstances.forEach(instance => {
         const startPosition = model.getPositionAt(instance.startOffset);
         const endPosition = model.getPositionAt(instance.endOffset);
@@ -559,9 +612,6 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       });
     } else if (tenseColoringData) {
       // Tense verb coloring mode
-      const model = editorRef.current.getModel();
-      if (!model) return;
-
       tenseColoringData.tenseInstances.forEach(instance => {
         const startPosition = model.getPositionAt(instance.startOffset);
         const endPosition = model.getPositionAt(instance.endOffset);
@@ -581,9 +631,6 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       });
     } else if (scansionColoringData) {
       // Scansion coloring mode - bold stressed syllables
-      const model = editorRef.current.getModel();
-      if (!model) return;
-
       scansionColoringData.syllableInstances.forEach(instance => {
         const startPosition = model.getPositionAt(instance.startOffset);
         const endPosition = model.getPositionAt(instance.endOffset);
@@ -604,7 +651,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
       // Add line highlight if lines are being hovered in the analysis panel
       if (highlightedLines && highlightedLines.length > 0) {
-        const lines = value.split('\n');
+        const lines = currentText.split('\n');
         highlightedLines.forEach(highlightedLine => {
           if (highlightedLine <= lines.length) {
             const line = lines[highlightedLine - 1];
@@ -649,7 +696,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       // Default: no coloring, just show plain black text
       // But still support line highlighting for hover
       if (highlightedLines && highlightedLines.length > 0) {
-        const lines = value.split('\n');
+        const lines = currentText.split('\n');
         highlightedLines.forEach(highlightedLine => {
           if (highlightedLine <= lines.length) {
             const line = lines[highlightedLine - 1];
@@ -667,7 +714,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
     // Word-level highlighting for rhymes and sound patterns - ALWAYS applies on top of other decorations
     if (highlightedWords && highlightedWords.length > 0) {
-      const lines = value.split('\n');
+      const lines = currentText.split('\n');
 
       highlightedWords.forEach(({ word, lineNumber }) => {
         if (lineNumber >= 1 && lineNumber <= lines.length) {
@@ -698,10 +745,9 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     }
 
     // Always apply markdown formatting decorations (independent of analysis modes)
-    const markdownRanges = parseMarkdownFormatting(value);
-    const model = editorRef.current.getModel();
+    const markdownRanges = parseMarkdownFormatting(currentText);
 
-    if (model && markdownRanges.length > 0) {
+    if (markdownRanges.length > 0) {
       markdownRanges.forEach(range => {
         // Get positions for markers and content
         const startMarkerStart = model.getPositionAt(range.startOffset);
@@ -899,9 +945,12 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
         /* Markdown formatting styles */
         .md-bold-marker {
-          color: var(--color-text-muted, #999) !important;
-          font-size: 0.85em !important;
-          opacity: 0.6;
+          color: transparent !important;
+          font-size: 0 !important;
+          opacity: 0 !important;
+          letter-spacing: -0.5ch !important;
+          padding: 0 !important;
+          margin: 0 !important;
         }
 
         .md-bold-content {
@@ -909,9 +958,12 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         }
 
         .md-italic-marker {
-          color: var(--color-text-muted, #999) !important;
-          font-size: 0.85em !important;
-          opacity: 0.6;
+          color: transparent !important;
+          font-size: 0 !important;
+          opacity: 0 !important;
+          letter-spacing: -0.5ch !important;
+          padding: 0 !important;
+          margin: 0 !important;
         }
 
         .md-italic-content {
@@ -919,9 +971,12 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         }
 
         .md-underline-marker {
-          color: var(--color-text-muted, #999) !important;
-          font-size: 0.85em !important;
-          opacity: 0.6;
+          color: transparent !important;
+          font-size: 0 !important;
+          opacity: 0 !important;
+          letter-spacing: -0.5ch !important;
+          padding: 0 !important;
+          margin: 0 !important;
         }
 
         .md-underline-content {
@@ -931,7 +986,8 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         :root.dark-mode .md-bold-marker,
         :root.dark-mode .md-italic-marker,
         :root.dark-mode .md-underline-marker {
-          color: #666 !important;
+          color: transparent !important;
+          opacity: 0 !important;
         }
 
         /* Remove all boxes, borders, and decorations from Monaco editor */

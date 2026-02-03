@@ -392,85 +392,22 @@ function App() {
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
 
-  // Apply markdown formatting (bold, italic, underline) to selected text
+  // Apply markdown formatting by triggering the Monaco editor actions
+  // (the actual logic lives in wrapSelection inside PoetryEditor)
   const applyFormatting = useCallback((type: 'bold' | 'italic' | 'underline') => {
     const editorInstance = editorRef.current;
     if (!editorInstance) return;
 
-    const selection = editorInstance.getSelection();
-    if (!selection) return;
-
-    const model = editorInstance.getModel();
-    if (!model) return;
-
-    const selectedText = model.getValueInRange(selection);
-    if (!selectedText) return;
-
-    // Determine the markers based on type
-    const markers: Record<string, { prefix: string; suffix: string }> = {
-      bold: { prefix: '**', suffix: '**' },
-      italic: { prefix: '*', suffix: '*' },
-      underline: { prefix: '__', suffix: '__' },
+    const actionIds: Record<string, string> = {
+      bold: 'bold-text',
+      italic: 'italic-text',
+      underline: 'underline-text',
     };
 
-    const { prefix, suffix } = markers[type];
-
-    // Check if the selected text itself is already wrapped with markers
-    // This handles the case where user selects "**text**" and clicks bold again
-    if (selectedText.startsWith(prefix) && selectedText.endsWith(suffix) && selectedText.length > prefix.length + suffix.length) {
-      // The selection includes the markers - strip them
-      const unwrappedText = selectedText.slice(prefix.length, -suffix.length);
-      editorInstance.executeEdits('formatting', [{
-        range: selection,
-        text: unwrappedText,
-      }]);
-      editorInstance.focus();
-      return;
+    const action = editorInstance.getAction(actionIds[type]);
+    if (action) {
+      action.run();
     }
-
-    // Check if already wrapped by looking at surrounding characters
-    const lineContent = model.getLineContent(selection.startLineNumber);
-    const beforeStart = selection.startColumn - 1 - prefix.length;
-    const afterEnd = selection.endColumn - 1;
-
-    // For italic (*), we need to make sure we're not matching bold (**)
-    // Check characters before the selection
-    const charsBeforeSelection = beforeStart >= 0 ? lineContent.slice(beforeStart, selection.startColumn - 1) : '';
-    const charsAfterSelection = lineContent.slice(afterEnd, afterEnd + suffix.length);
-
-    // For italic, verify it's not actually bold markers
-    let isWrapped = charsBeforeSelection === prefix && charsAfterSelection === suffix;
-
-    if (type === 'italic' && isWrapped) {
-      // Make sure it's not bold (**) by checking for additional *
-      const extraCharBefore = beforeStart > 0 ? lineContent[beforeStart - 1] : '';
-      const extraCharAfter = afterEnd + suffix.length < lineContent.length ? lineContent[afterEnd + suffix.length] : '';
-      if (extraCharBefore === '*' || extraCharAfter === '*') {
-        isWrapped = false; // This is actually bold, not italic
-      }
-    }
-
-    if (isWrapped) {
-      // Unwrap - remove the markers
-      const extendedRange = {
-        startLineNumber: selection.startLineNumber,
-        startColumn: selection.startColumn - prefix.length,
-        endLineNumber: selection.endLineNumber,
-        endColumn: selection.endColumn + suffix.length,
-      };
-      editorInstance.executeEdits('formatting', [{
-        range: extendedRange,
-        text: selectedText,
-      }]);
-    } else {
-      // Wrap with markers
-      editorInstance.executeEdits('formatting', [{
-        range: selection,
-        text: `${prefix}${selectedText}${suffix}`,
-      }]);
-    }
-
-    // Keep focus on editor
     editorInstance.focus();
   }, []);
 

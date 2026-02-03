@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Quill/feather pen - classic poetry symbol -->
-  <path d="M26 2C20 6 16 12 14 18C12 14 8 10 4 8C6 12 8 16 8 20C8 24 6 28 4 30C8 28 14 26 18 22C22 18 26 12 28 6C28 4 27 3 26 2Z" fill="#2a2a2a"/>
-  <!-- Pen tip -->
-  <path d="M14 18L8 20L4 30L14 18Z" fill="#4a4a4a"/>
-  <!-- Ink drop -->
-  <circle cx="6" cy="28" r="2" fill="#2a2a2a"/>
-</svg>

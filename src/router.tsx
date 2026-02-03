@@ -24,6 +24,7 @@ import { MyCollections } from './pages/MyCollections';
 import { CollectionView } from './pages/CollectionView';
 import { Widget } from './pages/Widget';
 import { EmbedPage } from './pages/EmbedPage';
+import { ResetPassword } from './pages/ResetPassword';
 
 export const router = createBrowserRouter([
   {
@@ -146,5 +147,10 @@ export const router = createBrowserRouter([
   {
     path: '/embed',
     element: <EmbedPage />,
+  },
+  // Password reset
+  {
+    path: '/reset-password',
+    element: <ResetPassword />,
   },
 ]);
