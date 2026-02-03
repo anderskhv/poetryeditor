@@ -16,8 +16,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
-  height: 28px;
+  line-height: 1.2;
+  height: auto;
+  vertical-align: middle;
 }
 
 .auth-button.sign-in {
