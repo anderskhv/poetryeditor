@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { AuthModal } from './AuthModal';
 import './AuthButton.css';
@@ -8,6 +9,8 @@ export function AuthButton() {
   const { user, loading, signOut, isAuthenticated } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+
+  if (!supabase) return null;
 
   if (loading) {
     return <div className="auth-button-loading">...</div>;
@@ -35,9 +38,9 @@ export function AuthButton() {
       <button
         className="auth-user-button"
         onClick={() => setShowDropdown(!showDropdown)}
+        title={email}
       >
         <span className="auth-user-avatar">{initial}</span>
-        <span className="auth-user-email">{email}</span>
       </button>
 
       {showDropdown && (

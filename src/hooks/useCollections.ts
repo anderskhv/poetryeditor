@@ -10,7 +10,7 @@ export function useCollections() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchCollections = useCallback(async () => {
-    if (!user) {
+    if (!user || !supabase) {
       setCollections([]);
       setLoading(false);
       return;
@@ -37,7 +37,7 @@ export function useCollections() {
   }, [fetchCollections]);
 
   const createCollection = async (name: string): Promise<Collection | null> => {
-    if (!user) return null;
+    if (!user || !supabase) return null;
 
     try {
       const insert: CollectionInsert = {
@@ -62,6 +62,7 @@ export function useCollections() {
   };
 
   const updateCollection = async (id: string, name: string): Promise<boolean> => {
+    if (!supabase) return false;
     try {
       const { error } = await supabase
         .from('collections')
@@ -80,6 +81,7 @@ export function useCollections() {
   };
 
   const deleteCollection = async (id: string): Promise<boolean> => {
+    if (!supabase) return false;
     try {
       const { error } = await supabase
         .from('collections')
@@ -112,7 +114,7 @@ export function useSections(collectionId: string | undefined) {
   const [error, setError] = useState<string | null>(null);
 
   const fetchSections = useCallback(async () => {
-    if (!collectionId) {
+    if (!collectionId || !supabase) {
       setSections([]);
       setLoading(false);
       return;
@@ -140,7 +142,7 @@ export function useSections(collectionId: string | undefined) {
   }, [fetchSections]);
 
   const createSection = async (name: string, parentId: string | null = null): Promise<Section | null> => {
-    if (!collectionId) return null;
+    if (!collectionId || !supabase) return null;
 
     try {
       const insert: SectionInsert = {
@@ -167,7 +169,7 @@ export function useSections(collectionId: string | undefined) {
   };
 
   const createManySections = async (sectionData: Array<{ name: string; parentId: string | null }>): Promise<Section[]> => {
-    if (!collectionId) return [];
+    if (!collectionId || !supabase) return [];
 
     try {
       const inserts: SectionInsert[] = sectionData.map((s, idx) => ({

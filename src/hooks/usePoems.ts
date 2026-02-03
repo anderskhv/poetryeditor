@@ -8,7 +8,7 @@ export function usePoems(collectionId: string | undefined) {
   const [error, setError] = useState<string | null>(null);
 
   const fetchPoems = useCallback(async () => {
-    if (!collectionId) {
+    if (!collectionId || !supabase) {
       setPoems([]);
       setLoading(false);
       return;
@@ -41,7 +41,7 @@ export function usePoems(collectionId: string | undefined) {
     sectionId: string | null = null,
     filename: string | null = null
   ): Promise<Poem | null> => {
-    if (!collectionId) return null;
+    if (!collectionId || !supabase) return null;
 
     try {
       const insert: PoemInsert = {
@@ -77,7 +77,7 @@ export function usePoems(collectionId: string | undefined) {
       filename: string | null;
     }>
   ): Promise<Poem[]> => {
-    if (!collectionId) return [];
+    if (!collectionId || !supabase) return [];
 
     try {
       const inserts: PoemInsert[] = poemData.map((p, idx) => ({
@@ -105,6 +105,7 @@ export function usePoems(collectionId: string | undefined) {
   };
 
   const updatePoem = async (id: string, updates: { title?: string; content?: string }): Promise<boolean> => {
+    if (!supabase) return false;
     try {
       const { error } = await supabase
         .from('poems')
@@ -123,6 +124,7 @@ export function usePoems(collectionId: string | undefined) {
   };
 
   const deletePoem = async (id: string): Promise<boolean> => {
+    if (!supabase) return false;
     try {
       const { error } = await supabase
         .from('poems')
@@ -139,6 +141,7 @@ export function usePoems(collectionId: string | undefined) {
   };
 
   const deleteManyPoems = async (ids: string[]): Promise<boolean> => {
+    if (!supabase) return false;
     try {
       const { error } = await supabase
         .from('poems')
@@ -173,7 +176,7 @@ export function usePoem(poemId: string | undefined) {
   const [error, setError] = useState<string | null>(null);
 
   const fetchPoem = useCallback(async () => {
-    if (!poemId) {
+    if (!poemId || !supabase) {
       setPoem(null);
       setLoading(false);
       return;
@@ -201,7 +204,7 @@ export function usePoem(poemId: string | undefined) {
   }, [fetchPoem]);
 
   const updatePoem = async (updates: { title?: string; content?: string }): Promise<boolean> => {
-    if (!poemId) return false;
+    if (!poemId || !supabase) return false;
 
     try {
       const { data, error } = await supabase

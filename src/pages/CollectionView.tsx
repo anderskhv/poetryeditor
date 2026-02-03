@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
@@ -30,11 +30,12 @@ export function CollectionView() {
   const { sections, createManySections } = useSections(id);
   const { poems, createManyPoems, deletePoem, loading: loadingPoems } = usePoems(id);
   const [processingUpload, setProcessingUpload] = useState(false);
+  const processingRef = useRef(false); // Sync flag to prevent duplicate uploads
 
   // Fetch collection details
   useEffect(() => {
     async function fetchCollection() {
-      if (!id) return;
+      if (!id || !supabase) return;
 
       try {
         const { data, error } = await supabase
@@ -58,11 +59,18 @@ export function CollectionView() {
   // Handle pending upload from navigation state
   useEffect(() => {
     const state = location.state as { pendingUpload?: PendingUpload } | null;
-    if (!state?.pendingUpload || processingUpload || !id) return;
+    if (!state?.pendingUpload || !id) return;
+
+    // Use ref to prevent duplicate uploads (state updates are async, refs are sync)
+    if (processingRef.current) return;
+    processingRef.current = true;
 
     async function processUpload() {
       const pendingUpload = (location.state as { pendingUpload: PendingUpload }).pendingUpload;
       setProcessingUpload(true);
+
+      // Clear navigation state immediately to prevent re-runs
+      navigate(location.pathname, { replace: true, state: {} });
 
       try {
         // Create sections first
@@ -91,18 +99,16 @@ export function CollectionView() {
         }));
 
         await createManyPoems(poemsToCreate);
-
-        // Clear navigation state
-        navigate(location.pathname, { replace: true, state: {} });
       } catch (err) {
         console.error('Failed to process upload:', err);
       } finally {
         setProcessingUpload(false);
+        processingRef.current = false;
       }
     }
 
     processUpload();
-  }, [location.state, id, processingUpload, createManySections, createManyPoems, navigate, location.pathname]);
+  }, [location.state, id, createManySections, createManyPoems, navigate, location.pathname]);
 
   const handleExport = async () => {
     if (!collection || poems.length === 0) return;

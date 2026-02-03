@@ -1,9 +1,10 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { editor } from 'monaco-editor';
 import { supabase } from './lib/supabase';
 import { useAuth } from './hooks/useAuth';
 import { AuthButton } from './components/AuthButton';
+import { PoemNavSidebar } from './components/PoemNavSidebar';
 import type { Poem } from './types/database';
 import { PoetryEditor } from './components/PoetryEditor';
 import { AnalysisPanel } from './components/AnalysisPanel';
@@ -66,6 +67,7 @@ interface SavedPoem {
 
 function App() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const cloudPoemId = searchParams.get('poem');
   const { user } = useAuth();
 
@@ -80,6 +82,9 @@ function App() {
   const [isLoadingCloudPoem, setIsLoadingCloudPoem] = useState<boolean>(false);
   const [cloudPoemError, setCloudPoemError] = useState<string | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Nav sidebar state - only visible when editing cloud poems
+  const [navSidebarOpen, setNavSidebarOpen] = useState<boolean>(true);
 
   // Collection management
   const {
@@ -181,13 +186,14 @@ function App() {
 
   // Load cloud poem if ?poem= is in URL
   useEffect(() => {
-    if (!cloudPoemId || !user) {
+    if (!cloudPoemId || !user || !supabase) {
       setCloudPoemTitle(null);
       setCloudPoemCollectionId(null);
       return;
     }
 
     async function loadCloudPoem() {
+      if (!supabase) return;
       setIsLoadingCloudPoem(true);
       setCloudPoemError(null);
 
@@ -218,7 +224,7 @@ function App() {
 
   // Auto-save cloud poem changes (debounced)
   useEffect(() => {
-    if (!cloudPoemId || !user || isLoadingCloudPoem) return;
+    if (!cloudPoemId || !user || isLoadingCloudPoem || !supabase) return;
 
     // Clear existing timeout
     if (saveTimeoutRef.current) {
@@ -227,6 +233,7 @@ function App() {
 
     // Set new timeout to save after 1 second of inactivity
     saveTimeoutRef.current = setTimeout(async () => {
+      if (!supabase) return;
       try {
         await supabase
           .from('poems')
@@ -591,6 +598,11 @@ function App() {
   const handleRenameSection = useCallback((id: string, name: string) => {
     updateSection(id, { name });
   }, [updateSection]);
+
+  // Handle poem selection from nav sidebar
+  const handleNavPoemSelect = useCallback((poemId: string) => {
+    navigate(`/?poem=${poemId}`);
+  }, [navigate]);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -1069,15 +1081,6 @@ function App() {
             </div>
             {/* Auth Button */}
             <AuthButton />
-            {/* Back to collection link when editing cloud poem */}
-            {cloudPoemCollectionId && (
-              <Link
-                to={`/my-collections/${cloudPoemCollectionId}`}
-                className="btn btn-menu back-to-collection"
-              >
-                Back to Collection
-              </Link>
-            )}
           </div>
         </div>
       </header>
@@ -1102,6 +1105,18 @@ function App() {
           isDarkMode={theme === 'dark'}
         />
         */}
+
+        {/* Poem navigation sidebar - visible when editing cloud poems */}
+        {cloudPoemId && cloudPoemCollectionId && (
+          <PoemNavSidebar
+            collectionId={cloudPoemCollectionId}
+            currentPoemId={cloudPoemId}
+            onPoemSelect={handleNavPoemSelect}
+            isOpen={navSidebarOpen}
+            onToggle={() => setNavSidebarOpen(!navSidebarOpen)}
+          />
+        )}
+
         <div className="editor-pane">
           <PoetryEditor
             value={text}
