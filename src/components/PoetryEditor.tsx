@@ -234,8 +234,9 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
       const wordTop = editorRect.top + startPos.top;
       const wordLeft = editorRect.left + startPos.left;
-      const wordRight = editorRect.left + endPos.left;
-      const wordBottom = wordTop + startPos.height;
+      const wordRight = editorRect.left + Math.max(endPos.left, startPos.left + 8);
+      const lineTop = wordTop;
+      const lineBottom = wordTop + startPos.height;
 
       // Popup dimensions (approximate)
       const popupHeight = 500; // Max height including content
@@ -244,54 +245,50 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       const viewportWidth = window.innerWidth;
       const offset = 120; // ~3cm visual offset
       const verticalOffset = 40;
-
-      const wordRect = {
-        left: wordLeft,
-        right: Math.max(wordRight, wordLeft + 1),
-        top: wordTop,
-        bottom: wordBottom,
-      };
+      const lineGap = 16;
 
       const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-      const doesOverlap = (left: number, top: number) => {
-        const right = left + popupWidth;
-        const bottom = top + popupHeight;
-        return !(
-          right < wordRect.left ||
-          left > wordRect.right ||
-          bottom < wordRect.top ||
-          top > wordRect.bottom
-        );
-      };
 
-      // Candidate placements: right, left, below, above
-      const candidates = [
-        { left: wordRect.right + offset, top: wordRect.top - verticalOffset },
-        { left: wordRect.left - popupWidth - offset, top: wordRect.top - verticalOffset },
-        { left: wordRect.left, top: wordRect.bottom + verticalOffset },
-        { left: wordRect.left, top: wordRect.top - popupHeight - verticalOffset },
-      ].map(candidate => ({
-        left: clamp(candidate.left, 20, viewportWidth - popupWidth - 20),
-        top: clamp(candidate.top, 20, viewportHeight - popupHeight - 20),
-      }));
+      const placements = [
+        {
+          left: wordRight + offset,
+          top: lineBottom + lineGap + verticalOffset,
+          requires: (top: number) => top + popupHeight <= viewportHeight - 20,
+        },
+        {
+          left: wordLeft - popupWidth - offset,
+          top: lineBottom + lineGap + verticalOffset,
+          requires: (top: number) => top + popupHeight <= viewportHeight - 20,
+        },
+        {
+          left: wordRight + offset,
+          top: lineTop - popupHeight - lineGap - verticalOffset,
+          requires: (top: number) => top >= 20,
+        },
+        {
+          left: wordLeft - popupWidth - offset,
+          top: lineTop - popupHeight - lineGap - verticalOffset,
+          requires: (top: number) => top >= 20,
+        },
+      ];
 
-      let left = candidates[0].left;
-      let top = candidates[0].top;
-      const placement = candidates.find(candidate => !doesOverlap(candidate.left, candidate.top));
-      if (placement) {
-        left = placement.left;
-        top = placement.top;
+      let left = wordRight + offset;
+      let top = lineBottom + lineGap + verticalOffset;
+
+      const candidate = placements.find((placement) => {
+        const candidateLeft = clamp(placement.left, 20, viewportWidth - popupWidth - 20);
+        const candidateTop = placement.top;
+        return placement.requires(candidateTop);
+      });
+
+      if (candidate) {
+        left = clamp(candidate.left, 20, viewportWidth - popupWidth - 20);
+        top = candidate.top;
       } else {
-        // Force popup away from word if all candidates overlap
-        const preferRight = wordRect.right + popupWidth + offset <= viewportWidth - 20;
-        left = preferRight
-          ? clamp(wordRect.right + offset, 20, viewportWidth - popupWidth - 20)
-          : clamp(wordRect.left - popupWidth - offset, 20, viewportWidth - popupWidth - 20);
-
-        const preferBelow = wordRect.bottom + popupHeight + verticalOffset <= viewportHeight - 20;
-        top = preferBelow
-          ? clamp(wordRect.bottom + verticalOffset, 20, viewportHeight - popupHeight - 20)
-          : clamp(wordRect.top - popupHeight - verticalOffset, 20, viewportHeight - popupHeight - 20);
+        // If no placement fits in viewport, prefer below-right even if partially offscreen,
+        // but still keep it away from the line containing the clicked word.
+        left = clamp(wordRight + offset, 20, viewportWidth - popupWidth - 20);
+        top = lineBottom + lineGap + verticalOffset;
       }
 
       setPopupState({
