@@ -10,6 +10,7 @@ import { PoetryEditor } from './components/PoetryEditor';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
 import { ShareModal } from './components/ShareModal';
+import { SEOHead } from './components/SEOHead';
 import { useDebouncedLocalStorage } from './hooks/useLocalStorage';
 import { useCollection } from './hooks/useCollection';
 import { WordInfo } from './types';
@@ -562,12 +563,27 @@ function App() {
 
   return (
     <div className="app">
+      <SEOHead
+        title="Poetry Editor - Write, Rhyme, and Count Syllables"
+        description="Write and analyze poems with a full-featured poetry editor, rhyme finder, synonym tools, and syllable counter. Built for poets, songwriters, and teachers."
+        canonicalPath="/"
+        keywords="poetry editor, rhyme finder, synonym finder, syllable counter, poetry tools, write poetry"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Poetry Editor",
+          "url": "https://poetryeditor.com",
+          "applicationCategory": "WritingApplication",
+          "operatingSystem": "Web",
+          "description": "Write and analyze poems with rhyme, synonym, and syllable tools."
+        }}
+      />
       <header className="app-header">
         <div className="header-content">
           <div className="header-left">
             <div className="app-title-group">
               <h1 className="app-title">Poetry Editor</h1>
-              <span className="app-subtitle">a toolbox for poets</span>
+              <span className="app-subtitle">editor + rhyme, synonym &amp; syllable tools</span>
             </div>
             {isAnalyzing && (
               <span className="analyzing-indicator" title="Analyzing poem...">

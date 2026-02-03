@@ -78,8 +78,13 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setError(null);
 
     if (!supabase) return;
+    const publicSiteUrl = import.meta.env.VITE_PUBLIC_SITE_URL;
+    const redirectBase = publicSiteUrl && publicSiteUrl.trim().length > 0
+      ? publicSiteUrl
+      : window.location.origin;
+    const redirectTo = new URL('/reset-password', redirectBase).toString();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo,
     });
 
     setLoading(false);

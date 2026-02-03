@@ -22,6 +22,7 @@ import { detectFirstDraftPhrases } from '../utils/firstDraftPhrases';
 import { detectDeadMetaphors, getCategoryDisplayName } from '../utils/deadMetaphors';
 import { HelpTooltip, HELP_CONTENT } from './HelpTooltip';
 import { SynonymMiniPopup } from './SynonymMiniPopup';
+import { WordToolsPanel } from './WordToolsPanel';
 import './AnalysisPanel.css';
 
 interface AnalysisPanelProps {
@@ -1938,6 +1939,8 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
           </button>
         )}
       </div>
+
+      <WordToolsPanel />
 
       {/* Top-level metrics */}
       <div className="analysis-section overview-metrics">

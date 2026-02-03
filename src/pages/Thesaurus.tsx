@@ -14,7 +14,7 @@ const POPULAR_WORDS = [
 ];
 
 // Page title for display
-const PAGE_TITLE = 'Word Alternatives';
+const PAGE_TITLE = 'Synonym Finder';
 
 type TabType = 'synonyms' | 'hyponyms' | 'antonyms';
 
@@ -115,10 +115,10 @@ export function Thesaurus() {
       <SEOHead
         title={urlWord && results
           ? `${urlWord.charAt(0).toUpperCase() + urlWord.slice(1)} Synonyms (${results.synonyms.length}+) - Find Similar Words`
-          : 'Word Alternatives - Synonyms, Hyponyms & Antonyms for Poetry'}
+          : 'Synonym Finder - Word Alternatives for Poetry'}
         description={urlWord && results
           ? `Find ${results.synonyms.length}+ synonyms, ${results.hyponyms.length}+ hyponyms, and ${results.antonyms.length}+ antonyms for "${urlWord}". Words organized by syllable count for poets and songwriters.`
-          : 'Free thesaurus for poets. Find synonyms, specific examples (hyponyms), and antonyms organized by syllable count. Discover the perfect word for your poem or song.'
+          : 'Free synonym finder for poets. Find synonyms, specific examples (hyponyms), and antonyms organized by syllable count. Discover the perfect word for your poem or song.'
         }
         canonicalPath={urlWord ? `/synonyms/${urlWord}` : '/synonyms'}
         keywords="synonyms, hyponyms, antonyms, poetry words, word alternatives, similar words, specific words, opposite words, thesaurus for poets, concrete imagery"

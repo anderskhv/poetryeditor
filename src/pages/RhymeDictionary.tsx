@@ -168,8 +168,8 @@ export function RhymeDictionary() {
   return (
     <Layout>
       <SEOHead
-        title="Rhyme Dictionary - Find Words That Rhyme"
-        description="Free online rhyming dictionary. Find perfect rhymes, near rhymes, and slant rhymes for any word. Filter by syllables, topic, and originality. Organized by syllable count for poets and songwriters."
+        title="Rhyme Finder & Dictionary - Find Words That Rhyme"
+        description="Free rhyme finder and rhyming dictionary. Find perfect rhymes, near rhymes, and slant rhymes for any word. Filter by syllables, topic, and originality."
         canonicalPath="/rhymes"
         keywords="rhyming dictionary, words that rhyme, rhyme finder, poetry rhymes, slant rhymes, near rhymes, rhyme with meaning"
         jsonLd={{
@@ -205,7 +205,7 @@ export function RhymeDictionary() {
       />
 
       <div className="rhyme-dictionary">
-        <h1>Rhyme Dictionary</h1>
+        <h1>Rhyme Finder</h1>
         <p className="rhyme-dictionary-subtitle">
           Find perfect rhymes for any word, with optional filters for topic and originality
         </p>

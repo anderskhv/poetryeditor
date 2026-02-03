@@ -8,6 +8,7 @@ import { Thesaurus, ThesaurusWord } from './pages/Thesaurus';
 import { WordCompare } from './pages/WordCompare';
 import { SyllableCounter } from './pages/SyllableCounter';
 import { SyllableList } from './pages/SyllableList';
+import { SyllableWord } from './pages/SyllableWord';
 import { HaikuChecker } from './pages/HaikuChecker';
 import { RhymeSchemeAnalyzer } from './pages/RhymeSchemeAnalyzer';
 import { SonnetChecker } from './pages/SonnetChecker';
@@ -36,6 +37,14 @@ export const router = createBrowserRouter([
     element: <RhymeDictionary />,
   },
   {
+    path: '/rhyme-finder',
+    element: <RhymeDictionary />,
+  },
+  {
+    path: '/rhyming-dictionary',
+    element: <RhymeDictionary />,
+  },
+  {
     path: '/rhymes/category',
     element: <RhymeCategoryPage />,
   },
@@ -45,6 +54,14 @@ export const router = createBrowserRouter([
   },
   {
     path: '/rhymes/:word',
+    element: <RhymeWord />,
+  },
+  {
+    path: '/words-that-rhyme-with/:word',
+    element: <RhymeWord />,
+  },
+  {
+    path: '/rhymes-with/:word',
     element: <RhymeWord />,
   },
   {
@@ -60,7 +77,23 @@ export const router = createBrowserRouter([
     element: <Thesaurus />,
   },
   {
+    path: '/synonym-finder',
+    element: <Thesaurus />,
+  },
+  {
+    path: '/thesaurus',
+    element: <Thesaurus />,
+  },
+  {
     path: '/synonyms/:word',
+    element: <ThesaurusWord />,
+  },
+  {
+    path: '/synonyms-of/:word',
+    element: <ThesaurusWord />,
+  },
+  {
+    path: '/synonyms-for/:word',
     element: <ThesaurusWord />,
   },
   {
@@ -80,8 +113,16 @@ export const router = createBrowserRouter([
     element: <SyllableCounter />,
   },
   {
+    path: '/syllable-counter',
+    element: <SyllableCounter />,
+  },
+  {
     path: '/syllables/:slug',
     element: <SyllableList />,
+  },
+  {
+    path: '/how-many-syllables-in/:word',
+    element: <SyllableWord />,
   },
   {
     path: '/haiku-checker',

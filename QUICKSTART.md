@@ -14,6 +14,16 @@ This installs all required packages including React, TypeScript, Monaco Editor, 
 
 **Time**: ~2-3 minutes
 
+### Step 1.5: Configure Environment
+
+Create a `.env` file (or update it) with your Supabase and public site URL settings:
+
+```bash
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_PUBLIC_SITE_URL=https://poetryeditor.com
+```
+
 ### Step 2: Start Development Server
 
 ```bash
