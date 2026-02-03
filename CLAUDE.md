@@ -258,3 +258,7 @@ Run this check manually by comparing line counts and searching for quoted phrase
 - Uses `supabase.auth.updateUser({ password })` to set new password
 - Shows informational message if accessed without token
 - Redirects to home after successful reset
+# Collaboration Preferences
+
+- Default to pushing changes to Git unless I explicitly say otherwise.
+- Do thorough planning and testing of changes (UX/UI and backend) before pushing.
