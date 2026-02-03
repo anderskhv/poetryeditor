@@ -749,6 +749,11 @@
   transition: background-color 0.2s ease;
   background: var(--color-btn-tools-bg, #666666);
   color: var(--color-btn-tools-text, #ffffff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  height: 28px;
 }
 
 .btn-tools:hover {
