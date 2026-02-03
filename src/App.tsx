@@ -256,6 +256,23 @@ function App() {
     };
   }, [text, poemTitle, cloudPoemId, user, isLoadingCloudPoem]);
 
+  // Keep local saved poem title in sync with editor title
+  useEffect(() => {
+    if (cloudPoemId) return;
+    if (!currentPoemId) return;
+    const existing = savedPoems.find(poem => poem.id === currentPoemId);
+    if (!existing) return;
+    if (existing.title === poemTitle) return;
+
+    const updatedPoems = savedPoems.map(poem =>
+      poem.id === currentPoemId
+        ? { ...poem, title: poemTitle, updatedAt: new Date().toISOString() }
+        : poem
+    );
+    setSavedPoems(updatedPoems);
+    localStorage.setItem('savedPoems', JSON.stringify(updatedPoems));
+  }, [poemTitle, currentPoemId, savedPoems, cloudPoemId]);
+
   // Save indent settings
   useEffect(() => {
     localStorage.setItem('firstLineIndent', String(firstLineIndent));
