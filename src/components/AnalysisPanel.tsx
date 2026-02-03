@@ -22,6 +22,7 @@ import { detectFirstDraftPhrases } from '../utils/firstDraftPhrases';
 import { detectDeadMetaphors, getCategoryDisplayName } from '../utils/deadMetaphors';
 import { HelpTooltip, HELP_CONTENT } from './HelpTooltip';
 import { SynonymMiniPopup } from './SynonymMiniPopup';
+import { WordPopup } from './WordPopup';
 import './AnalysisPanel.css';
 
 interface AnalysisPanelProps {
@@ -63,12 +64,15 @@ interface AnalysisPanelProps {
     syllableInstances: StressedSyllableInstance[];
   } | null) => void;
   editorHoveredLine?: number | null;
+  wordPopup?: { word: string };
+  onWordPopupClose?: () => void;
+  onInsertSynonym?: (synonym: string) => void;
 }
 
 type CategoryTab = 'rhythm' | 'rhymes' | 'style' | 'originality';
 type ExpandedSection = 'syllables' | 'repetition' | 'pos' | 'adverbs' | 'passiveVoice' | 'rhythmVariation' | 'stanzaStructure' | 'lineLength' | 'punctuation' | 'rhymeScheme' | 'rhymeAnalysis' | 'poeticForm' | 'soundPatterns' | 'tenseConsistency' | 'scansion' | 'figurativeLanguage' | 'cliches' | 'abstractConcrete' | 'firstDraftPhrases' | null;
 
-export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS, onSyllableExpand, onRhythmVariationExpand, onLineLengthExpand, onPunctuationExpand, onSectionCollapse, onHighlightLines, onHighlightWords, onPassiveVoiceExpand, onTenseExpand, onScansionExpand, editorHoveredLine }: AnalysisPanelProps) {
+export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS, onSyllableExpand, onRhythmVariationExpand, onLineLengthExpand, onPunctuationExpand, onSectionCollapse, onHighlightLines, onHighlightWords, onPassiveVoiceExpand, onTenseExpand, onScansionExpand, editorHoveredLine, wordPopup, onWordPopupClose, onInsertSynonym }: AnalysisPanelProps) {
   const [activeCategory, setActiveCategory] = useState<CategoryTab>('rhythm');
   const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
   const [selectedForm, setSelectedForm] = useState<string | null>(null); // User-selected form (null = Auto-detect)
@@ -1938,6 +1942,17 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
           </button>
         )}
       </div>
+
+      {wordPopup && (
+        <div className="word-popup-dock">
+          <WordPopup
+            word={wordPopup.word}
+            variant="dock"
+            onClose={() => onWordPopupClose?.()}
+            onInsertSynonym={onInsertSynonym}
+          />
+        </div>
+      )}
 
       {/* Top-level metrics */}
       <div className="analysis-section overview-metrics">

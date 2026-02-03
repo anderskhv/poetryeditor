@@ -173,6 +173,7 @@ function App() {
   const [highlightedLines, setHighlightedLines] = useState<number[] | null>(null);
   const [highlightedWords, setHighlightedWords] = useState<{ word: string; lineNumber: number }[] | null>(null);
   const [editorHoveredLine, setEditorHoveredLine] = useState<number | null>(null);
+  const [wordPopup, setWordPopup] = useState<{ word: string; range: editor.IRange } | null>(null);
 
   // Apply theme class to document
   useEffect(() => {
@@ -320,6 +321,15 @@ function App() {
   const handleWordsAnalyzed = useCallback((words: WordInfo[]) => {
     setAnalyzedWords(words);
   }, []);
+
+  const handleInsertSynonym = useCallback((synonym: string) => {
+    if (!wordPopup || !editorRef.current) return;
+    editorRef.current.executeEdits('synonym', [{
+      range: wordPopup.range,
+      text: synonym,
+    }]);
+    setWordPopup(null);
+  }, [wordPopup]);
 
   const handleMeterExpand = useCallback((data: {
     syllableCounts: number[];
@@ -1113,6 +1123,16 @@ function App() {
             firstLineIndent={firstLineIndent}
             lineSpacing={lineSpacing}
             onEditorMount={(editor) => { editorRef.current = editor; }}
+            onWordPopupRequest={(payload) => {
+              setWordPopup(payload);
+              if (!isPanelOpen) {
+                setIsPanelOpen(true);
+                if (!hasEverOpenedPanel) {
+                  setHasEverOpenedPanel(true);
+                  localStorage.setItem('hasOpenedAnalysisPanel', 'true');
+                }
+              }
+            }}
           />
 
           <button
@@ -1152,6 +1172,9 @@ function App() {
               onHighlightLines={setHighlightedLines}
               onHighlightWords={setHighlightedWords}
               editorHoveredLine={editorHoveredLine}
+              wordPopup={wordPopup ? { word: wordPopup.word } : undefined}
+              onWordPopupClose={() => setWordPopup(null)}
+              onInsertSynonym={handleInsertSynonym}
             />
           </div>
         )}

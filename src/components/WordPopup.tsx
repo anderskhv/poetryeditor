@@ -6,9 +6,10 @@ import './WordPopup.css';
 
 interface WordPopupProps {
   word: string;
-  position: { top: number; left: number };
+  position?: { top: number; left: number };
   onClose: () => void;
   onInsertSynonym?: (synonym: string) => void;
+  variant?: 'floating' | 'dock';
 }
 
 type Tab = 'rhymes' | 'nearrhymes' | 'synonyms' | 'syllables' | 'origin';
@@ -17,7 +18,7 @@ interface GroupedWords<T> {
   [syllables: number]: T[];
 }
 
-export function WordPopup({ word, position, onClose }: WordPopupProps) {
+export function WordPopup({ word, position, onClose, onInsertSynonym, variant = 'floating' }: WordPopupProps) {
   const [activeTab, setActiveTab] = useState<Tab>('syllables');
   const [rhymes, setRhymes] = useState<RhymeWord[]>([]);
   const [nearRhymes, setNearRhymes] = useState<RhymeWord[]>([]);
@@ -113,13 +114,14 @@ export function WordPopup({ word, position, onClose }: WordPopupProps) {
 
   return (
     <>
-      <div className="word-popup-overlay" onClick={onClose} />
+      {variant === 'floating' && <div className="word-popup-overlay" onClick={onClose} />}
       <div
-        className="word-popup"
-        style={{
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-        }}
+        className={`word-popup ${variant === 'dock' ? 'dock' : ''}`}
+        style={
+          variant === 'floating' && position
+            ? { top: `${position.top}px`, left: `${position.left}px` }
+            : undefined
+        }
       >
         <div className="word-popup-header">
           <div className="word-popup-title">

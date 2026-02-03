@@ -8,7 +8,6 @@ import { type PassiveVoiceInstance } from '../utils/passiveVoiceDetector';
 import { type TenseInstance } from '../utils/tenseChecker';
 import { type StressedSyllableInstance } from '../utils/scansionAnalyzer';
 import { parseMarkdownFormatting } from '../utils/markdownFormatter';
-import { WordPopup } from './WordPopup';
 
 interface PoetryEditorProps {
   value: string;
@@ -56,6 +55,7 @@ interface PoetryEditorProps {
   firstLineIndent?: boolean;
   lineSpacing?: 'normal' | 'relaxed' | 'spacious';
   onEditorMount?: (editor: editor.IStandaloneCodeEditor) => void;
+  onWordPopupRequest?: (payload: { word: string; range: editor.IRange }) => void;
   readOnly?: boolean;
   hideTitle?: boolean;
   poemMetadata?: {
@@ -87,17 +87,11 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, readOnly = false, hideTitle = false, poemMetadata }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, onWordPopupRequest, readOnly = false, hideTitle = false, poemMetadata }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const [popupState, setPopupState] = useState<{
-    word: string;
-    position: { top: number; left: number };
-    range: editor.IRange;
-  } | null>(null);
 
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editorRef.current = editorInstance;
@@ -217,86 +211,8 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
       if (!clickedWordText || !clickedRange || !containerRef.current) return;
 
-      const domNode = editorInstance.getDomNode();
-      if (!domNode) return;
-
-      const editorRect = domNode.getBoundingClientRect();
-      const startPos = editorInstance.getScrolledVisiblePosition({
-        lineNumber: clickedRange.startLineNumber,
-        column: clickedRange.startColumn,
-      });
-      const endPos = editorInstance.getScrolledVisiblePosition({
-        lineNumber: clickedRange.endLineNumber,
-        column: clickedRange.endColumn,
-      });
-
-      if (!startPos || !endPos) return;
-
-      const wordTop = editorRect.top + startPos.top;
-      const wordLeft = editorRect.left + startPos.left;
-      const wordRight = editorRect.left + Math.max(endPos.left, startPos.left + 8);
-      const lineTop = wordTop;
-      const lineBottom = wordTop + startPos.height;
-
-      // Popup dimensions (approximate)
-      const popupHeight = 500; // Max height including content
-      const popupWidth = 400;
-      const viewportHeight = window.innerHeight;
-      const viewportWidth = window.innerWidth;
-      const offset = 120; // ~3cm visual offset
-      const verticalOffset = 40;
-      const lineGap = 16;
-
-      const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-
-      const placements = [
-        {
-          left: wordRight + offset,
-          top: lineBottom + lineGap + verticalOffset,
-          requires: (top: number) => top + popupHeight <= viewportHeight - 20,
-        },
-        {
-          left: wordLeft - popupWidth - offset,
-          top: lineBottom + lineGap + verticalOffset,
-          requires: (top: number) => top + popupHeight <= viewportHeight - 20,
-        },
-        {
-          left: wordRight + offset,
-          top: lineTop - popupHeight - lineGap - verticalOffset,
-          requires: (top: number) => top >= 20,
-        },
-        {
-          left: wordLeft - popupWidth - offset,
-          top: lineTop - popupHeight - lineGap - verticalOffset,
-          requires: (top: number) => top >= 20,
-        },
-      ];
-
-      let left = wordRight + offset;
-      let top = lineBottom + lineGap + verticalOffset;
-
-      const candidate = placements.find((placement) => {
-        const candidateLeft = clamp(placement.left, 20, viewportWidth - popupWidth - 20);
-        const candidateTop = placement.top;
-        return placement.requires(candidateTop);
-      });
-
-      if (candidate) {
-        left = clamp(candidate.left, 20, viewportWidth - popupWidth - 20);
-        top = candidate.top;
-      } else {
-        // If no placement fits in viewport, prefer below-right even if partially offscreen,
-        // but still keep it away from the line containing the clicked word.
-        left = clamp(wordRight + offset, 20, viewportWidth - popupWidth - 20);
-        top = lineBottom + lineGap + verticalOffset;
-      }
-
-      setPopupState({
+      onWordPopupRequest?.({
         word: clickedWordText,
-        position: {
-          top,
-          left,
-        },
         range: clickedRange,
       });
     });
@@ -1267,28 +1183,6 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         }}
       />
 
-      {popupState && (
-        <WordPopup
-          word={popupState.word}
-          position={popupState.position}
-          onClose={() => setPopupState(null)}
-          onInsertSynonym={(synonym) => {
-            if (!editorRef.current || !monacoRef.current) return;
-            const editorInstance = editorRef.current;
-            const monacoInstance = monacoRef.current;
-            editorInstance.executeEdits('synonym', [{
-              range: popupState.range,
-              text: synonym,
-            }], [new monacoInstance.Selection(
-              popupState.range.startLineNumber,
-              popupState.range.startColumn,
-              popupState.range.startLineNumber,
-              popupState.range.startColumn + synonym.length
-            )]);
-            setPopupState(null);
-          }}
-        />
-      )}
 
       {popupState && isDictionaryLoaded() && (
         <WordPopup
