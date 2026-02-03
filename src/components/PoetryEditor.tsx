@@ -221,12 +221,21 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       if (!domNode) return;
 
       const editorRect = domNode.getBoundingClientRect();
-      const lineTop = editorInstance.getTopForLineNumber(position.lineNumber);
-      const scrollTop = editorInstance.getScrollTop();
+      const startPos = editorInstance.getScrolledVisiblePosition({
+        lineNumber: clickedRange.startLineNumber,
+        column: clickedRange.startColumn,
+      });
+      const endPos = editorInstance.getScrolledVisiblePosition({
+        lineNumber: clickedRange.endLineNumber,
+        column: clickedRange.endColumn,
+      });
 
-      // Calculate word position in viewport
-      const wordTop = editorRect.top + lineTop - scrollTop;
-      const wordLeft = editorRect.left + position.column * 8;
+      if (!startPos || !endPos) return;
+
+      const wordTop = editorRect.top + startPos.top;
+      const wordLeft = editorRect.left + startPos.left;
+      const wordRight = editorRect.left + endPos.left;
+      const wordBottom = wordTop + startPos.height;
 
       // Popup dimensions (approximate)
       const popupHeight = 500; // Max height including content
@@ -236,28 +245,54 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       const offset = 120; // ~3cm visual offset
       const verticalOffset = 40;
 
-      // Default: position below the word with offset
-      let top = wordTop + verticalOffset;
+      const wordRect = {
+        left: wordLeft,
+        right: Math.max(wordRight, wordLeft + 1),
+        top: wordTop,
+        bottom: wordBottom,
+      };
 
-      // Check if popup would go below viewport
-      if (top + popupHeight > viewportHeight - 20) {
-        // Position above the word instead
-        top = wordTop - popupHeight - verticalOffset;
+      const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+      const doesOverlap = (left: number, top: number) => {
+        const right = left + popupWidth;
+        const bottom = top + popupHeight;
+        return !(
+          right < wordRect.left ||
+          left > wordRect.right ||
+          bottom < wordRect.top ||
+          top > wordRect.bottom
+        );
+      };
 
-        // If still doesn't fit, clamp to viewport with margin
-        if (top < 20) {
-          top = 20;
-        }
+      // Candidate placements: right, left, below, above
+      const candidates = [
+        { left: wordRect.right + offset, top: wordRect.top - verticalOffset },
+        { left: wordRect.left - popupWidth - offset, top: wordRect.top - verticalOffset },
+        { left: wordRect.left, top: wordRect.bottom + verticalOffset },
+        { left: wordRect.left, top: wordRect.top - popupHeight - verticalOffset },
+      ].map(candidate => ({
+        left: clamp(candidate.left, 20, viewportWidth - popupWidth - 20),
+        top: clamp(candidate.top, 20, viewportHeight - popupHeight - 20),
+      }));
+
+      let left = candidates[0].left;
+      let top = candidates[0].top;
+      const placement = candidates.find(candidate => !doesOverlap(candidate.left, candidate.top));
+      if (placement) {
+        left = placement.left;
+        top = placement.top;
+      } else {
+        // Force popup away from word if all candidates overlap
+        const preferRight = wordRect.right + popupWidth + offset <= viewportWidth - 20;
+        left = preferRight
+          ? clamp(wordRect.right + offset, 20, viewportWidth - popupWidth - 20)
+          : clamp(wordRect.left - popupWidth - offset, 20, viewportWidth - popupWidth - 20);
+
+        const preferBelow = wordRect.bottom + popupHeight + verticalOffset <= viewportHeight - 20;
+        top = preferBelow
+          ? clamp(wordRect.bottom + verticalOffset, 20, viewportHeight - popupHeight - 20)
+          : clamp(wordRect.top - popupHeight - verticalOffset, 20, viewportHeight - popupHeight - 20);
       }
-
-      // Prefer right side offset; fall back to left
-      let left = wordLeft + offset;
-      if (left + popupWidth > viewportWidth - 20) {
-        left = wordLeft - popupWidth - offset;
-      }
-      // Ensure popup stays within horizontal bounds
-      if (left + popupWidth > viewportWidth - 20) left = viewportWidth - popupWidth - 20;
-      if (left < 20) left = 20;
 
       setPopupState({
         word: clickedWordText,
