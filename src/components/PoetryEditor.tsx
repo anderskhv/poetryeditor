@@ -96,6 +96,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
   const [popupState, setPopupState] = useState<{
     word: string;
     position: { top: number; left: number };
+    range: editor.IRange;
   } | null>(null);
 
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
@@ -197,17 +198,24 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       // Only trigger when the click is on an actual word character
       const wordRegex = /[a-zA-Z]+(?:[''\u2019][a-zA-Z]+|[-\u2013\u2014][a-zA-Z]+)?/g;
       let clickedWordText: string | null = null;
+      let clickedRange: editor.IRange | null = null;
 
       for (const match of lineContent.matchAll(wordRegex)) {
         const start = match.index ?? 0;
         const end = start + match[0].length;
         if (columnIndex >= start && columnIndex < end) {
           clickedWordText = match[0];
+          clickedRange = {
+            startLineNumber: position.lineNumber,
+            startColumn: start + 1,
+            endLineNumber: position.lineNumber,
+            endColumn: end + 1,
+          };
           break;
         }
       }
 
-      if (!clickedWordText || !containerRef.current) return;
+      if (!clickedWordText || !clickedRange || !containerRef.current) return;
 
       const domNode = editorInstance.getDomNode();
       if (!domNode) return;
@@ -218,21 +226,23 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
       // Calculate word position in viewport
       const wordTop = editorRect.top + lineTop - scrollTop;
-      let left = editorRect.left + position.column * 8;
+      const wordLeft = editorRect.left + position.column * 8;
 
       // Popup dimensions (approximate)
       const popupHeight = 500; // Max height including content
       const popupWidth = 400;
       const viewportHeight = window.innerHeight;
       const viewportWidth = window.innerWidth;
+      const offset = 120; // ~3cm visual offset
+      const verticalOffset = 40;
 
-      // Default: position below the word
-      let top = wordTop + 30;
+      // Default: position below the word with offset
+      let top = wordTop + verticalOffset;
 
       // Check if popup would go below viewport
       if (top + popupHeight > viewportHeight - 20) {
         // Position above the word instead
-        top = wordTop - 30;
+        top = wordTop - popupHeight - verticalOffset;
 
         // If still doesn't fit, clamp to viewport with margin
         if (top < 20) {
@@ -240,13 +250,14 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         }
       }
 
-      // Ensure popup stays within horizontal bounds
+      // Prefer right side offset; fall back to left
+      let left = wordLeft + offset;
       if (left + popupWidth > viewportWidth - 20) {
-        left = viewportWidth - popupWidth - 20;
+        left = wordLeft - popupWidth - offset;
       }
-      if (left < 20) {
-        left = 20;
-      }
+      // Ensure popup stays within horizontal bounds
+      if (left + popupWidth > viewportWidth - 20) left = viewportWidth - popupWidth - 20;
+      if (left < 20) left = 20;
 
       setPopupState({
         word: clickedWordText,
@@ -254,6 +265,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
           top,
           left,
         },
+        range: clickedRange,
       });
     });
 
@@ -1222,6 +1234,29 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
           renderWhitespace: 'none',
         }}
       />
+
+      {popupState && (
+        <WordPopup
+          word={popupState.word}
+          position={popupState.position}
+          onClose={() => setPopupState(null)}
+          onInsertSynonym={(synonym) => {
+            if (!editorRef.current || !monacoRef.current) return;
+            const editorInstance = editorRef.current;
+            const monacoInstance = monacoRef.current;
+            editorInstance.executeEdits('synonym', [{
+              range: popupState.range,
+              text: synonym,
+            }], [new monacoInstance.Selection(
+              popupState.range.startLineNumber,
+              popupState.range.startColumn,
+              popupState.range.startLineNumber,
+              popupState.range.startColumn + synonym.length
+            )]);
+            setPopupState(null);
+          }}
+        />
+      )}
 
       {popupState && isDictionaryLoaded() && (
         <WordPopup

@@ -8,6 +8,7 @@ interface WordPopupProps {
   word: string;
   position: { top: number; left: number };
   onClose: () => void;
+  onInsertSynonym?: (synonym: string) => void;
 }
 
 type Tab = 'rhymes' | 'nearrhymes' | 'synonyms' | 'syllables' | 'origin';
@@ -264,10 +265,21 @@ export function WordPopup({ word, position, onClose }: WordPopupProps) {
                     .filter(synonym => !synonym.word.includes(' '))
                     .sort((a, b) => b.score - a.score)
                     .map((synonym, idx) => (
-                      <div key={idx} className="word-item">
+                      <button
+                        key={idx}
+                        type="button"
+                        className="word-item word-item-button"
+                        onClick={() => {
+                          if (!onInsertSynonym) return;
+                          const shouldInsert = window.confirm(`Insert "${synonym.word}"?`);
+                          if (shouldInsert) {
+                            onInsertSynonym(synonym.word);
+                          }
+                        }}
+                      >
                         <span className="word-text">{synonym.word}</span>
                         <span className="word-meta">#{idx + 1}</span>
-                      </div>
+                      </button>
                     ))}
                 </div>
               ) : (
