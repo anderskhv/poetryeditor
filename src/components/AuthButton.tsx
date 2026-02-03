@@ -20,7 +20,7 @@ export function AuthButton() {
     return (
       <>
         <button
-          className="btn btn-tools auth-button sign-in"
+          className="header-pill auth-header-button"
           onClick={() => setShowModal(true)}
         >
           Sign In

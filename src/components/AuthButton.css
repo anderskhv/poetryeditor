@@ -20,13 +20,13 @@
   height: 28px;
 }
 
-.auth-button.sign-in {
+.auth-header-button {
   background: var(--color-text-primary, #1a1a1a);
   color: var(--color-paper, #fff);
   border: none;
 }
 
-.auth-button.sign-in:hover {
+.auth-header-button:hover {
   background: var(--color-text-secondary, #333);
 }
 

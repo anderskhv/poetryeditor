@@ -926,7 +926,7 @@ function App() {
             <div className="tools-dropdown">
               <button
                 onClick={() => setShowToolsMenu(!showToolsMenu)}
-                className="btn btn-tools"
+                className="header-pill btn-tools"
                 aria-label="Tools"
                 aria-expanded={showToolsMenu}
               >
