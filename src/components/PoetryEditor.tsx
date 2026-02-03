@@ -182,71 +182,79 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
     // Handle click events to show word popup
     editorInstance.onMouseDown((e) => {
-      if (e.target.type === monaco.editor.MouseTargetType.CONTENT_TEXT) {
-        const position = e.target.position;
-        if (position) {
-          // Get the full line text
-          const model = editorInstance.getModel();
-          if (!model) return;
+      if (e.target.type !== monaco.editor.MouseTargetType.CONTENT_TEXT) return;
 
-          const offset = model.getOffsetAt(position);
+      const position = e.target.position;
+      if (!position) return;
 
-          // Find word at cursor using our custom regex that handles apostrophes
-          // Use model.getValue() to ensure we analyze the actual text in the editor
-          const currentText = model.getValue();
-          const words = analyzeText(currentText);
-          const clickedWord = words.find(w => offset >= w.startOffset && offset < w.endOffset);
+      const model = editorInstance.getModel();
+      if (!model) return;
 
-          if (clickedWord && containerRef.current) {
-            const domNode = editorInstance.getDomNode();
-            if (domNode) {
-              const editorRect = domNode.getBoundingClientRect();
-              const lineTop = editorInstance.getTopForLineNumber(position.lineNumber);
-              const scrollTop = editorInstance.getScrollTop();
+      const lineContent = model.getLineContent(position.lineNumber);
+      const columnIndex = position.column - 1;
+      if (columnIndex < 0 || columnIndex >= lineContent.length) return;
 
-              // Calculate word position in viewport
-              const wordTop = editorRect.top + lineTop - scrollTop;
-              let left = editorRect.left + position.column * 8;
+      // Only trigger when the click is on an actual word character
+      const wordRegex = /[a-zA-Z]+(?:[''\u2019][a-zA-Z]+|[-\u2013\u2014][a-zA-Z]+)?/g;
+      let clickedWordText: string | null = null;
 
-              // Popup dimensions (approximate)
-              const popupHeight = 500; // Max height including content
-              const popupWidth = 400;
-              const viewportHeight = window.innerHeight;
-              const viewportWidth = window.innerWidth;
-
-              // Default: position below the word
-              let top = wordTop + 30;
-
-              // Check if popup would go below viewport
-              if (top + popupHeight > viewportHeight - 20) {
-                // Position above the word instead
-                top = wordTop - 30;
-
-                // If still doesn't fit, clamp to viewport with margin
-                if (top < 20) {
-                  top = 20;
-                }
-              }
-
-              // Ensure popup stays within horizontal bounds
-              if (left + popupWidth > viewportWidth - 20) {
-                left = viewportWidth - popupWidth - 20;
-              }
-              if (left < 20) {
-                left = 20;
-              }
-
-              setPopupState({
-                word: clickedWord.word,
-                position: {
-                  top,
-                  left,
-                },
-              });
-            }
-          }
+      for (const match of lineContent.matchAll(wordRegex)) {
+        const start = match.index ?? 0;
+        const end = start + match[0].length;
+        if (columnIndex >= start && columnIndex < end) {
+          clickedWordText = match[0];
+          break;
         }
       }
+
+      if (!clickedWordText || !containerRef.current) return;
+
+      const domNode = editorInstance.getDomNode();
+      if (!domNode) return;
+
+      const editorRect = domNode.getBoundingClientRect();
+      const lineTop = editorInstance.getTopForLineNumber(position.lineNumber);
+      const scrollTop = editorInstance.getScrollTop();
+
+      // Calculate word position in viewport
+      const wordTop = editorRect.top + lineTop - scrollTop;
+      let left = editorRect.left + position.column * 8;
+
+      // Popup dimensions (approximate)
+      const popupHeight = 500; // Max height including content
+      const popupWidth = 400;
+      const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
+
+      // Default: position below the word
+      let top = wordTop + 30;
+
+      // Check if popup would go below viewport
+      if (top + popupHeight > viewportHeight - 20) {
+        // Position above the word instead
+        top = wordTop - 30;
+
+        // If still doesn't fit, clamp to viewport with margin
+        if (top < 20) {
+          top = 20;
+        }
+      }
+
+      // Ensure popup stays within horizontal bounds
+      if (left + popupWidth > viewportWidth - 20) {
+        left = viewportWidth - popupWidth - 20;
+      }
+      if (left < 20) {
+        left = 20;
+      }
+
+      setPopupState({
+        word: clickedWordText,
+        position: {
+          top,
+          left,
+        },
+      });
     });
 
     // Handle mouse move to track hovered line for rhyme highlighting
