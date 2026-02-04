@@ -244,6 +244,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       const popupWidth = 420;
       const popupHeight = 520;
       const gap = 24;
+      const margin = 12;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 
@@ -266,12 +267,20 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         );
       };
 
-      const candidates = [
-        { left: wordRect.right + gap, top: wordRect.top - 12 },
-        { left: wordRect.left - popupWidth - gap, top: wordRect.top - 12 },
-        { left: wordRect.left, top: wordRect.top - popupHeight - gap },
-        { left: wordRect.left, top: wordRect.bottom + gap },
-      ];
+      const preferBelow = wordRect.right + popupWidth + gap > viewportWidth - margin;
+      const candidates = preferBelow
+        ? [
+            { left: wordRect.left, top: wordRect.bottom + gap },
+            { left: wordRect.left, top: wordRect.top - popupHeight - gap },
+            { left: wordRect.left - popupWidth - gap, top: wordRect.bottom + gap },
+            { left: wordRect.right + gap, top: wordRect.bottom + gap },
+          ]
+        : [
+            { left: wordRect.right + gap, top: wordRect.top - 12 },
+            { left: wordRect.left - popupWidth - gap, top: wordRect.top - 12 },
+            { left: wordRect.left, top: wordRect.top - popupHeight - gap },
+            { left: wordRect.left, top: wordRect.bottom + gap },
+          ];
 
       let chosen = candidates.find(c => !overlapsWord(c.left, c.top));
       if (!chosen) {
@@ -286,8 +295,8 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         }
       }
 
-      let left = clamp(chosen.left, 8, viewportWidth - popupWidth - 8);
-      let top = clamp(chosen.top, 8, viewportHeight - popupHeight - 8);
+      let left = clamp(chosen.left, margin, viewportWidth - popupWidth - margin);
+      let top = clamp(chosen.top, margin, viewportHeight - popupHeight - margin);
       if (overlapsWord(left, top)) {
         left = chosen.left;
         top = chosen.top;

@@ -914,7 +914,7 @@
 .poem-title-inline {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .poem-title-editor-input {
@@ -935,10 +935,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: 7px;
   background: transparent;
   color: var(--color-text-muted);
   cursor: pointer;
@@ -949,6 +949,10 @@
   color: var(--color-text-primary);
   border-color: var(--color-text-muted);
   background: var(--color-highlight-subtle);
+}
+
+.poem-copy-button svg {
+  display: block;
 }
 
 .poem-title-editor-input:hover,
