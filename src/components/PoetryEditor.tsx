@@ -3,11 +3,17 @@ import Editor, { Monaco } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { analyzeText } from '../utils/nlpProcessor';
 import { WordInfo } from '../types';
-import { isDictionaryLoaded } from '../utils/cmuDict';
 import { type PassiveVoiceInstance } from '../utils/passiveVoiceDetector';
 import { type TenseInstance } from '../utils/tenseChecker';
 import { type StressedSyllableInstance } from '../utils/scansionAnalyzer';
 import { parseMarkdownFormatting } from '../utils/markdownFormatter';
+
+export type WordRange = {
+  startLineNumber: number;
+  startColumn: number;
+  endLineNumber: number;
+  endColumn: number;
+};
 
 interface PoetryEditorProps {
   value: string;
@@ -55,7 +61,7 @@ interface PoetryEditorProps {
   firstLineIndent?: boolean;
   lineSpacing?: 'normal' | 'relaxed' | 'spacious';
   onEditorMount?: (editor: editor.IStandaloneCodeEditor) => void;
-  onWordPopupRequest?: (payload: { word: string; range: editor.IRange }) => void;
+  onWordPopupRequest?: (payload: { word: string; range: WordRange }) => void;
   readOnly?: boolean;
   hideTitle?: boolean;
   poemMetadata?: {
@@ -192,7 +198,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       // Only trigger when the click is on an actual word character
       const wordRegex = /[a-zA-Z]+(?:[''\u2019][a-zA-Z]+|[-\u2013\u2014][a-zA-Z]+)?/g;
       let clickedWordText: string | null = null;
-      let clickedRange: editor.IRange | null = null;
+      let clickedRange: WordRange | null = null;
 
       for (const match of lineContent.matchAll(wordRegex)) {
         const start = match.index ?? 0;
@@ -1184,13 +1190,6 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       />
 
 
-      {popupState && isDictionaryLoaded() && (
-        <WordPopup
-          word={popupState.word}
-          position={popupState.position}
-          onClose={() => setPopupState(null)}
-        />
-      )}
     </div>
   );
 }

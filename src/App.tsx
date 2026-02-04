@@ -6,7 +6,7 @@ import { useAuth } from './hooks/useAuth';
 import { AuthButton } from './components/AuthButton';
 import { PoemNavSidebar } from './components/PoemNavSidebar';
 import type { Poem } from './types/database';
-import { PoetryEditor } from './components/PoetryEditor';
+import { PoetryEditor, type WordRange } from './components/PoetryEditor';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
 import { ShareModal } from './components/ShareModal';
@@ -173,7 +173,7 @@ function App() {
   const [highlightedLines, setHighlightedLines] = useState<number[] | null>(null);
   const [highlightedWords, setHighlightedWords] = useState<{ word: string; lineNumber: number }[] | null>(null);
   const [editorHoveredLine, setEditorHoveredLine] = useState<number | null>(null);
-  const [wordPopup, setWordPopup] = useState<{ word: string; range: editor.IRange } | null>(null);
+  const [wordPopup, setWordPopup] = useState<{ word: string; range: WordRange } | null>(null);
 
   // Apply theme class to document
   useEffect(() => {
