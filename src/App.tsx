@@ -643,7 +643,7 @@ function App() {
           <div className="header-left">
             <div className="app-title-group">
               <h1 className="app-title">Poetry Editor</h1>
-              <span className="app-subtitle">editor + rhyme, synonym &amp; syllable tools</span>
+              <span className="app-subtitle">a toolbox for poets</span>
             </div>
             {isAnalyzing && (
               <span className="analyzing-indicator" title="Analyzing poem...">
