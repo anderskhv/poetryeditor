@@ -7,6 +7,7 @@ import { AuthButton } from './components/AuthButton';
 import { PoemNavSidebar } from './components/PoemNavSidebar';
 import type { Poem } from './types/database';
 import { PoetryEditor } from './components/PoetryEditor';
+import { addPoemVersion } from './utils/poemVersions';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
 import { ShareModal } from './components/ShareModal';
@@ -244,6 +245,7 @@ function App() {
             updated_at: new Date().toISOString(),
           } as any)
           .eq('id', cloudPoemId);
+        addPoemVersion(cloudPoemId, poemTitle, text);
       } catch (err) {
         console.error('Failed to auto-save cloud poem:', err);
       }
@@ -482,6 +484,7 @@ function App() {
     setPoemTitle(title); // Ensure title state is synced
     setLastSavedContent(text); // Track the saved content
     localStorage.setItem('savedPoems', JSON.stringify(updatedPoems));
+    addPoemVersion(newPoem.id, title, text);
   };
 
   const handleLoadPoem = (poem: SavedPoem) => {

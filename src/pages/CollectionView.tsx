@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useSections } from '../hooks/useCollections';
 import { usePoems } from '../hooks/usePoems';
 import { supabase } from '../lib/supabase';
+import { getPoemVersions, addPoemVersion, type PoemVersion } from '../utils/poemVersions';
 import type { Collection, Section } from '../types/database';
 import JSZip from 'jszip';
 import './CollectionView.css';
@@ -28,9 +29,11 @@ export function CollectionView() {
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loadingCollection, setLoadingCollection] = useState(true);
   const { sections, createManySections } = useSections(id);
-  const { poems, createManyPoems, deletePoem, loading: loadingPoems } = usePoems(id);
+  const { poems, createManyPoems, updatePoem, deletePoem, loading: loadingPoems } = usePoems(id);
   const [processingUpload, setProcessingUpload] = useState(false);
   const processingRef = useRef(false); // Sync flag to prevent duplicate uploads
+  const [expandedVersions, setExpandedVersions] = useState<Set<string>>(new Set());
+  const [versionsByPoem, setVersionsByPoem] = useState<Record<string, PoemVersion[]>>({});
 
   // Fetch collection details
   useEffect(() => {
@@ -110,6 +113,15 @@ export function CollectionView() {
     processUpload();
   }, [location.state, id, createManySections, createManyPoems, navigate, location.pathname]);
 
+  useEffect(() => {
+    if (poems.length === 0) return;
+    const next: Record<string, PoemVersion[]> = {};
+    poems.forEach(poem => {
+      next[poem.id] = getPoemVersions(poem.id);
+    });
+    setVersionsByPoem(next);
+  }, [poems]);
+
   const handleExport = async () => {
     if (!collection || poems.length === 0) return;
 
@@ -158,6 +170,33 @@ export function CollectionView() {
   const handleDeletePoem = async (poemId: string, title: string) => {
     if (window.confirm(`Delete "${title}"? This cannot be undone.`)) {
       await deletePoem(poemId);
+    }
+  };
+
+  const toggleVersions = (poemId: string) => {
+    setExpandedVersions(prev => {
+      const next = new Set(prev);
+      if (next.has(poemId)) {
+        next.delete(poemId);
+      } else {
+        next.add(poemId);
+      }
+      return next;
+    });
+  };
+
+  const handleRestoreVersion = async (poem: { id: string; title: string; content: string }, version: PoemVersion) => {
+    if (!window.confirm(`Restore version from ${new Date(version.createdAt).toLocaleString()}?`)) return;
+
+    // Preserve current version before restoring
+    addPoemVersion(poem.id, poem.title, poem.content);
+    const ok = await updatePoem(poem.id, { title: version.title, content: version.content });
+    if (ok) {
+      addPoemVersion(poem.id, version.title, version.content);
+      setVersionsByPoem(prev => ({
+        ...prev,
+        [poem.id]: getPoemVersions(poem.id),
+      }));
     }
   };
 
@@ -268,13 +307,49 @@ export function CollectionView() {
                           {poem.content.length > 100 ? '...' : ''}
                         </p>
                       </Link>
-                      <button
-                        className="delete-poem-btn"
-                        onClick={() => handleDeletePoem(poem.id, poem.title)}
-                        title="Delete poem"
-                      >
-                        &times;
-                      </button>
+                      <div className="poem-card-actions">
+                        <button
+                          className="versions-btn"
+                          onClick={() => toggleVersions(poem.id)}
+                        >
+                          Versions ({versionsByPoem[poem.id]?.length || 0})
+                        </button>
+                        <button
+                          className="delete-poem-btn"
+                          onClick={() => handleDeletePoem(poem.id, poem.title)}
+                          title="Delete poem"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                      {expandedVersions.has(poem.id) && (
+                        <div className="poem-versions">
+                          {(versionsByPoem[poem.id] || []).length === 0 ? (
+                            <div className="poem-version-empty">No saved versions yet.</div>
+                          ) : (
+                            (versionsByPoem[poem.id] || []).map(version => (
+                              <div key={version.id} className="poem-version-item">
+                                <div className="poem-version-meta">
+                                  <span className="poem-version-date">
+                                    {new Date(version.createdAt).toLocaleString()}
+                                  </span>
+                                  <span className="poem-version-title">{version.title}</span>
+                                </div>
+                                <p className="poem-version-preview">
+                                  {version.content.substring(0, 120)}
+                                  {version.content.length > 120 ? '...' : ''}
+                                </p>
+                                <button
+                                  className="poem-version-restore"
+                                  onClick={() => handleRestoreVersion(poem, version)}
+                                >
+                                  Restore
+                                </button>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -300,13 +375,49 @@ export function CollectionView() {
                             {poem.content.length > 100 ? '...' : ''}
                           </p>
                         </Link>
-                        <button
-                          className="delete-poem-btn"
-                          onClick={() => handleDeletePoem(poem.id, poem.title)}
-                          title="Delete poem"
-                        >
-                          &times;
-                        </button>
+                        <div className="poem-card-actions">
+                          <button
+                            className="versions-btn"
+                            onClick={() => toggleVersions(poem.id)}
+                          >
+                            Versions ({versionsByPoem[poem.id]?.length || 0})
+                          </button>
+                          <button
+                            className="delete-poem-btn"
+                            onClick={() => handleDeletePoem(poem.id, poem.title)}
+                            title="Delete poem"
+                          >
+                            &times;
+                          </button>
+                        </div>
+                        {expandedVersions.has(poem.id) && (
+                          <div className="poem-versions">
+                            {(versionsByPoem[poem.id] || []).length === 0 ? (
+                              <div className="poem-version-empty">No saved versions yet.</div>
+                            ) : (
+                              (versionsByPoem[poem.id] || []).map(version => (
+                                <div key={version.id} className="poem-version-item">
+                                  <div className="poem-version-meta">
+                                    <span className="poem-version-date">
+                                      {new Date(version.createdAt).toLocaleString()}
+                                    </span>
+                                    <span className="poem-version-title">{version.title}</span>
+                                  </div>
+                                  <p className="poem-version-preview">
+                                    {version.content.substring(0, 120)}
+                                    {version.content.length > 120 ? '...' : ''}
+                                  </p>
+                                  <button
+                                    className="poem-version-restore"
+                                    onClick={() => handleRestoreVersion(poem, version)}
+                                  >
+                                    Restore
+                                  </button>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

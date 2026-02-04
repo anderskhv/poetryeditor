@@ -129,6 +129,8 @@
   border: 1px solid var(--color-border, #e0e0e0);
   border-radius: 8px;
   transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .poem-card:hover {
@@ -141,6 +143,30 @@
   padding: 1.25rem;
   text-decoration: none;
   color: inherit;
+}
+
+.poem-card-actions {
+  margin: 0 1.25rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.versions-btn {
+  border: 1px solid var(--color-border, #e0e0e0);
+  background: transparent;
+  color: var(--color-text-muted, #666);
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.versions-btn:hover {
+  color: var(--color-text-primary, #000);
+  border-color: var(--color-text-muted, #666);
+  background: var(--color-highlight-subtle);
 }
 
 .poem-card h3 {
@@ -178,6 +204,67 @@
   transition: opacity 0.15s ease;
   border-radius: 4px;
   line-height: 1;
+}
+
+.poem-versions {
+  margin: 0 1.25rem 1.25rem;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border, #e0e0e0);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.poem-version-item {
+  background: var(--color-background);
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.poem-version-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.poem-version-date {
+  font-size: 11px;
+  color: var(--color-text-muted, #666);
+}
+
+.poem-version-title {
+  font-size: 13px;
+  color: var(--color-text-primary, #000);
+  font-weight: 500;
+}
+
+.poem-version-preview {
+  font-size: 12px;
+  color: var(--color-text-muted, #666);
+  margin: 0 0 8px;
+}
+
+.poem-version-restore {
+  border: 1px solid var(--color-border, #e0e0e0);
+  background: transparent;
+  color: var(--color-text-muted, #666);
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.poem-version-restore:hover {
+  color: var(--color-text-primary, #000);
+  border-color: var(--color-text-muted, #666);
+  background: var(--color-highlight-subtle);
+}
+
+.poem-version-empty {
+  font-size: 12px;
+  color: var(--color-text-muted, #666);
 }
 
 .poem-card:hover .delete-poem-btn {
