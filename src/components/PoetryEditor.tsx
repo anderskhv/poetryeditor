@@ -1258,7 +1258,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
                   }
                   copyToastTimerRef.current = window.setTimeout(() => {
                     setShowCopyToast(false);
-                  }, 1500);
+                  }, 600);
                 }}
               >
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">

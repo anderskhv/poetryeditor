@@ -914,7 +914,7 @@
 .poem-title-inline {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
 }
 
 .poem-copy-toast {
@@ -941,14 +941,19 @@
   transition: none;
 }
 
+.poem-title-inline .poem-title-editor-input {
+  width: auto;
+  min-width: 280px;
+}
+
 .poem-copy-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   border: 1px solid var(--color-border);
-  border-radius: 7px;
+  border-radius: 6px;
   background: transparent;
   color: var(--color-text-muted);
   cursor: pointer;
