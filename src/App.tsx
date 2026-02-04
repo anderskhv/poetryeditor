@@ -7,7 +7,7 @@ import { AuthButton } from './components/AuthButton';
 import { PoemNavSidebar } from './components/PoemNavSidebar';
 import type { Poem } from './types/database';
 import { PoetryEditor } from './components/PoetryEditor';
-import { addPoemVersion, getPoemVersions } from './utils/poemVersions';
+import { addPoemVersion, ensureInitialPoemVersion, migrateLocalPoemVersions } from './utils/poemVersions';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
 import { ShareModal } from './components/ShareModal';
@@ -87,6 +87,8 @@ function App() {
   const activePoemIdRef = useRef<string | null>(null);
   const activePoemTitleRef = useRef<string>('');
   const activePoemContentRef = useRef<string>('');
+  const ensuredPoemIdsRef = useRef<Set<string>>(new Set());
+  const migratedPoemIdsRef = useRef<Set<string>>(new Set());
 
   // Nav sidebar state - only visible when editing cloud poems
   const [navSidebarOpen, setNavSidebarOpen] = useState<boolean>(true);
@@ -269,23 +271,30 @@ function App() {
 
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
-    if (!activeId) return;
-    const existing = getPoemVersions(activeId);
-    if (existing.length === 0) {
-      addPoemVersion(activeId, poemTitle, text);
-    }
-  }, [cloudPoemId, currentPoemId, poemTitle, text]);
+    if (!activeId || !user) return;
+    if (migratedPoemIdsRef.current.has(activeId)) return;
+    migratedPoemIdsRef.current.add(activeId);
+    migrateLocalPoemVersions(activeId, user.id);
+  }, [cloudPoemId, currentPoemId, user]);
 
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
-    if (!activeId) return;
+    if (!activeId || !user) return;
+    if (ensuredPoemIdsRef.current.has(activeId)) return;
+    ensuredPoemIdsRef.current.add(activeId);
+    ensureInitialPoemVersion(activeId, poemTitle, text, user.id);
+  }, [cloudPoemId, currentPoemId, poemTitle, text, user]);
+
+  useEffect(() => {
+    const activeId = cloudPoemId || currentPoemId;
+    if (!activeId || !user) return;
     const interval = window.setInterval(() => {
       const id = activePoemIdRef.current;
       if (!id) return;
-      addPoemVersion(id, activePoemTitleRef.current, activePoemContentRef.current);
+      addPoemVersion(id, activePoemTitleRef.current, activePoemContentRef.current, user.id);
     }, 5 * 60 * 1000);
     return () => window.clearInterval(interval);
-  }, [cloudPoemId, currentPoemId]);
+  }, [cloudPoemId, currentPoemId, user]);
 
   // Keep local saved poem title in sync with editor title
   useEffect(() => {
@@ -513,7 +522,9 @@ function App() {
     setPoemTitle(title); // Ensure title state is synced
     setLastSavedContent(text); // Track the saved content
     localStorage.setItem('savedPoems', JSON.stringify(updatedPoems));
-    addPoemVersion(newPoem.id, title, text);
+    if (user) {
+      addPoemVersion(newPoem.id, title, text, user.id);
+    }
   };
 
   const handleLoadPoem = (poem: SavedPoem) => {

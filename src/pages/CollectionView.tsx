@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useSections } from '../hooks/useCollections';
 import { usePoems } from '../hooks/usePoems';
 import { supabase } from '../lib/supabase';
-import { getPoemVersions, addPoemVersion, type PoemVersion } from '../utils/poemVersions';
+import { fetchPoemVersionsForPoems, fetchPoemVersions, addPoemVersion, ensureInitialPoemVersion, migrateLocalPoemVersions, type PoemVersion } from '../utils/poemVersions';
 import type { Collection, Section } from '../types/database';
 import JSZip from 'jszip';
 import './CollectionView.css';
@@ -25,7 +25,7 @@ export function CollectionView() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading, user } = useAuth();
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loadingCollection, setLoadingCollection] = useState(true);
   const { sections, createManySections } = useSections(id);
@@ -114,18 +114,30 @@ export function CollectionView() {
   }, [location.state, id, createManySections, createManyPoems, navigate, location.pathname]);
 
   useEffect(() => {
-    if (poems.length === 0) return;
-    const next: Record<string, PoemVersion[]> = {};
-    poems.forEach(poem => {
-      let versions = getPoemVersions(poem.id);
-      if (versions.length === 0) {
-        addPoemVersion(poem.id, poem.title, poem.content);
-        versions = getPoemVersions(poem.id);
+    if (poems.length === 0 || !user) return;
+    let isActive = true;
+    const poemIds = poems.map(poem => poem.id);
+
+    const loadVersions = async () => {
+      await Promise.all(poems.map(poem => migrateLocalPoemVersions(poem.id, user.id)));
+      let grouped = await fetchPoemVersionsForPoems(poemIds, user.id);
+
+      const missing = poems.filter(poem => !grouped[poem.id] || grouped[poem.id].length === 0);
+      if (missing.length > 0) {
+        await Promise.all(missing.map(poem => ensureInitialPoemVersion(poem.id, poem.title, poem.content, user.id)));
+        grouped = await fetchPoemVersionsForPoems(poemIds, user.id);
       }
-      next[poem.id] = versions;
-    });
-    setVersionsByPoem(next);
-  }, [poems]);
+
+      if (isActive) {
+        setVersionsByPoem(grouped);
+      }
+    };
+
+    loadVersions();
+    return () => {
+      isActive = false;
+    };
+  }, [poems, user]);
 
   const handleExport = async () => {
     if (!collection || poems.length === 0) return;
@@ -191,16 +203,18 @@ export function CollectionView() {
   };
 
   const handleRestoreVersion = async (poem: { id: string; title: string; content: string }, version: PoemVersion) => {
-    if (!window.confirm(`Restore version from ${new Date(version.createdAt).toLocaleString()}?`)) return;
+    if (!user) return;
+    if (!window.confirm(`Restore version from ${new Date(version.created_at).toLocaleString()}?`)) return;
 
     // Preserve current version before restoring
-    addPoemVersion(poem.id, poem.title, poem.content);
+    await addPoemVersion(poem.id, poem.title, poem.content, user.id);
     const ok = await updatePoem(poem.id, { title: version.title, content: version.content });
     if (ok) {
-      addPoemVersion(poem.id, version.title, version.content);
+      await addPoemVersion(poem.id, version.title, version.content, user.id);
+      const refreshed = await fetchPoemVersions(poem.id, user.id);
       setVersionsByPoem(prev => ({
         ...prev,
-        [poem.id]: getPoemVersions(poem.id),
+        [poem.id]: refreshed,
       }));
     }
   };
@@ -336,7 +350,7 @@ export function CollectionView() {
                               <div key={version.id} className="poem-version-item">
                                 <div className="poem-version-meta">
                                   <span className="poem-version-date">
-                                    {new Date(version.createdAt).toLocaleString()}
+                                    {new Date(version.created_at).toLocaleString()}
                                   </span>
                                   <span className="poem-version-title">{version.title}</span>
                                 </div>
@@ -404,7 +418,7 @@ export function CollectionView() {
                                 <div key={version.id} className="poem-version-item">
                                   <div className="poem-version-meta">
                                     <span className="poem-version-date">
-                                      {new Date(version.createdAt).toLocaleString()}
+                                      {new Date(version.created_at).toLocaleString()}
                                     </span>
                                     <span className="poem-version-title">{version.title}</span>
                                   </div>
