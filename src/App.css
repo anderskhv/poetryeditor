@@ -917,6 +917,16 @@
   gap: 12px;
 }
 
+.poem-copy-toast {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-paper);
+  letter-spacing: 0.02em;
+}
+
 .poem-title-editor-input {
   width: 100%;
   max-width: 100%;

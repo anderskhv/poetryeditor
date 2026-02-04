@@ -103,6 +103,8 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     position: { top: number; left: number };
     range: WordRange;
   } | null>(null);
+  const [showCopyToast, setShowCopyToast] = useState(false);
+  const copyToastTimerRef = useRef<number | null>(null);
 
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editorRef.current = editorInstance;
@@ -1164,6 +1166,14 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
     }
   }, [editorTheme]);
 
+  useEffect(() => {
+    return () => {
+      if (copyToastTimerRef.current) {
+        window.clearTimeout(copyToastTimerRef.current);
+      }
+    };
+  }, []);
+
   // Build container class based on paragraph settings (only title centering works with Monaco)
   const containerClasses = [
     'poetry-editor-container',
@@ -1242,6 +1252,13 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
                     document.execCommand('copy');
                     document.body.removeChild(textarea);
                   }
+                  setShowCopyToast(true);
+                  if (copyToastTimerRef.current) {
+                    window.clearTimeout(copyToastTimerRef.current);
+                  }
+                  copyToastTimerRef.current = window.setTimeout(() => {
+                    setShowCopyToast(false);
+                  }, 1500);
                 }}
               >
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
@@ -1249,6 +1266,9 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
                   <rect x="5" y="4" width="10" height="12" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
                 </svg>
               </button>
+              {showCopyToast && (
+                <span className="poem-copy-toast">Copied</span>
+              )}
             </div>
           )}
         </div>
