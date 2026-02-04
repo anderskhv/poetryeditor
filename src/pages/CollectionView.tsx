@@ -117,7 +117,12 @@ export function CollectionView() {
     if (poems.length === 0) return;
     const next: Record<string, PoemVersion[]> = {};
     poems.forEach(poem => {
-      next[poem.id] = getPoemVersions(poem.id);
+      let versions = getPoemVersions(poem.id);
+      if (versions.length === 0) {
+        addPoemVersion(poem.id, poem.title, poem.content);
+        versions = getPoemVersions(poem.id);
+      }
+      next[poem.id] = versions;
     });
     setVersionsByPoem(next);
   }, [poems]);

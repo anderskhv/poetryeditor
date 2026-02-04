@@ -7,7 +7,7 @@ import { AuthButton } from './components/AuthButton';
 import { PoemNavSidebar } from './components/PoemNavSidebar';
 import type { Poem } from './types/database';
 import { PoetryEditor } from './components/PoetryEditor';
-import { addPoemVersion } from './utils/poemVersions';
+import { addPoemVersion, getPoemVersions } from './utils/poemVersions';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
 import { ShareModal } from './components/ShareModal';
@@ -84,6 +84,9 @@ function App() {
   const [isLoadingCloudPoem, setIsLoadingCloudPoem] = useState<boolean>(false);
   const [cloudPoemError, setCloudPoemError] = useState<string | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const activePoemIdRef = useRef<string | null>(null);
+  const activePoemTitleRef = useRef<string>('');
+  const activePoemContentRef = useRef<string>('');
 
   // Nav sidebar state - only visible when editing cloud poems
   const [navSidebarOpen, setNavSidebarOpen] = useState<boolean>(true);
@@ -245,7 +248,6 @@ function App() {
             updated_at: new Date().toISOString(),
           } as any)
           .eq('id', cloudPoemId);
-        addPoemVersion(cloudPoemId, poemTitle, text);
       } catch (err) {
         console.error('Failed to auto-save cloud poem:', err);
       }
@@ -257,6 +259,33 @@ function App() {
       }
     };
   }, [text, poemTitle, cloudPoemId, user, isLoadingCloudPoem]);
+
+  useEffect(() => {
+    const activeId = cloudPoemId || currentPoemId;
+    activePoemIdRef.current = activeId;
+    activePoemTitleRef.current = poemTitle;
+    activePoemContentRef.current = text;
+  }, [cloudPoemId, currentPoemId, poemTitle, text]);
+
+  useEffect(() => {
+    const activeId = cloudPoemId || currentPoemId;
+    if (!activeId) return;
+    const existing = getPoemVersions(activeId);
+    if (existing.length === 0) {
+      addPoemVersion(activeId, poemTitle, text);
+    }
+  }, [cloudPoemId, currentPoemId, poemTitle, text]);
+
+  useEffect(() => {
+    const activeId = cloudPoemId || currentPoemId;
+    if (!activeId) return;
+    const interval = window.setInterval(() => {
+      const id = activePoemIdRef.current;
+      if (!id) return;
+      addPoemVersion(id, activePoemTitleRef.current, activePoemContentRef.current);
+    }, 5 * 60 * 1000);
+    return () => window.clearInterval(interval);
+  }, [cloudPoemId, currentPoemId]);
 
   // Keep local saved poem title in sync with editor title
   useEffect(() => {
