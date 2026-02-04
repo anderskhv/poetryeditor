@@ -24,18 +24,6 @@
   overflow: hidden;
 }
 
-.word-popup.dock {
-  position: relative;
-  min-width: 0;
-  max-width: 100%;
-  max-height: none;
-  box-shadow: none;
-}
-
-.word-popup.dock .word-popup-content {
-  max-height: 280px;
-  overflow-y: auto;
-}
 
 .word-popup-header {
   display: flex;

@@ -911,6 +911,12 @@
   border-bottom: none;
 }
 
+.poem-title-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .poem-title-editor-input {
   width: 100%;
   max-width: 100%;
@@ -923,6 +929,26 @@
   font-family: var(--font-editor);
   padding: 0;
   transition: none;
+}
+
+.poem-copy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.poem-copy-button:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+  background: var(--color-highlight-subtle);
 }
 
 .poem-title-editor-input:hover,

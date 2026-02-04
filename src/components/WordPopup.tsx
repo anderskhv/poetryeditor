@@ -8,8 +8,7 @@ interface WordPopupProps {
   word: string;
   position?: { top: number; left: number };
   onClose: () => void;
-  onInsertSynonym?: (synonym: string) => void;
-  variant?: 'floating' | 'dock';
+  onInsertWord?: (word: string) => void;
 }
 
 type Tab = 'rhymes' | 'nearrhymes' | 'synonyms' | 'syllables' | 'origin';
@@ -18,7 +17,7 @@ interface GroupedWords<T> {
   [syllables: number]: T[];
 }
 
-export function WordPopup({ word, position, onClose, onInsertSynonym, variant = 'floating' }: WordPopupProps) {
+export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupProps) {
   const [activeTab, setActiveTab] = useState<Tab>('syllables');
   const [rhymes, setRhymes] = useState<RhymeWord[]>([]);
   const [nearRhymes, setNearRhymes] = useState<RhymeWord[]>([]);
@@ -114,14 +113,10 @@ export function WordPopup({ word, position, onClose, onInsertSynonym, variant = 
 
   return (
     <>
-      {variant === 'floating' && <div className="word-popup-overlay" onClick={onClose} />}
+      <div className="word-popup-overlay" onClick={onClose} />
       <div
-        className={`word-popup ${variant === 'dock' ? 'dock' : ''}`}
-        style={
-          variant === 'floating' && position
-            ? { top: `${position.top}px`, left: `${position.left}px` }
-            : undefined
-        }
+        className="word-popup"
+        style={position ? { top: `${position.top}px`, left: `${position.left}px` } : undefined}
       >
         <div className="word-popup-header">
           <div className="word-popup-title">
@@ -204,10 +199,16 @@ export function WordPopup({ word, position, onClose, onInsertSynonym, variant = 
                                 return b.score - a.score;
                               })
                               .map((rhyme, idx) => (
-                                <div key={idx} className="word-item">
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  className="word-item word-item-button"
+                                  onClick={() => onInsertWord?.(rhyme.word)}
+                                  title="Insert and copy"
+                                >
                                   <span className="word-text">{rhyme.word}</span>
                                   <span className="word-meta">#{idx + 1}</span>
-                                </div>
+                                </button>
                               ))}
                           </div>
                         </div>
@@ -241,10 +242,16 @@ export function WordPopup({ word, position, onClose, onInsertSynonym, variant = 
                             {filteredRhymes
                               .sort((a, b) => b.score - a.score)
                               .map((rhyme, idx) => (
-                                <div key={idx} className="word-item">
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  className="word-item word-item-button"
+                                  onClick={() => onInsertWord?.(rhyme.word)}
+                                  title="Insert and copy"
+                                >
                                   <span className="word-text">{rhyme.word}</span>
                                   <span className="word-meta">#{idx + 1}</span>
-                                </div>
+                                </button>
                               ))}
                           </div>
                         </div>
@@ -271,13 +278,8 @@ export function WordPopup({ word, position, onClose, onInsertSynonym, variant = 
                         key={idx}
                         type="button"
                         className="word-item word-item-button"
-                        onClick={() => {
-                          if (!onInsertSynonym) return;
-                          const shouldInsert = window.confirm(`Insert "${synonym.word}"?`);
-                          if (shouldInsert) {
-                            onInsertSynonym(synonym.word);
-                          }
-                        }}
+                        onClick={() => onInsertWord?.(synonym.word)}
+                        title="Insert and copy"
                       >
                         <span className="word-text">{synonym.word}</span>
                         <span className="word-meta">#{idx + 1}</span>

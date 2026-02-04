@@ -7,6 +7,7 @@ import { type PassiveVoiceInstance } from '../utils/passiveVoiceDetector';
 import { type TenseInstance } from '../utils/tenseChecker';
 import { type StressedSyllableInstance } from '../utils/scansionAnalyzer';
 import { parseMarkdownFormatting } from '../utils/markdownFormatter';
+import { WordPopup } from './WordPopup';
 
 export type WordRange = {
   startLineNumber: number;
@@ -61,7 +62,6 @@ interface PoetryEditorProps {
   firstLineIndent?: boolean;
   lineSpacing?: 'normal' | 'relaxed' | 'spacious';
   onEditorMount?: (editor: editor.IStandaloneCodeEditor) => void;
-  onWordPopupRequest?: (payload: { word: string; range: WordRange }) => void;
   readOnly?: boolean;
   hideTitle?: boolean;
   poemMetadata?: {
@@ -93,11 +93,16 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, onWordPopupRequest, readOnly = false, hideTitle = false, poemMetadata }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, readOnly = false, hideTitle = false, poemMetadata }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [popupState, setPopupState] = useState<{
+    word: string;
+    position: { top: number; left: number };
+    range: WordRange;
+  } | null>(null);
 
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editorRef.current = editorInstance;
@@ -217,8 +222,80 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
 
       if (!clickedWordText || !clickedRange || !containerRef.current) return;
 
-      onWordPopupRequest?.({
+      const domNode = editorInstance.getDomNode();
+      if (!domNode) return;
+
+      const editorRect = domNode.getBoundingClientRect();
+      const startPos = editorInstance.getScrolledVisiblePosition({
+        lineNumber: clickedRange.startLineNumber,
+        column: clickedRange.startColumn,
+      });
+      const endPos = editorInstance.getScrolledVisiblePosition({
+        lineNumber: clickedRange.endLineNumber,
+        column: clickedRange.endColumn,
+      });
+      if (!startPos || !endPos) return;
+
+      const wordTop = editorRect.top + startPos.top;
+      const wordLeft = editorRect.left + startPos.left;
+      const wordRight = editorRect.left + Math.max(endPos.left, startPos.left + 8);
+      const wordBottom = wordTop + startPos.height;
+
+      const popupWidth = 420;
+      const popupHeight = 520;
+      const gap = 24;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      const wordRect = {
+        left: wordLeft,
+        right: wordRight,
+        top: wordTop,
+        bottom: wordBottom,
+      };
+
+      const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+      const overlapsWord = (left: number, top: number) => {
+        const right = left + popupWidth;
+        const bottom = top + popupHeight;
+        return !(
+          right < wordRect.left ||
+          left > wordRect.right ||
+          bottom < wordRect.top ||
+          top > wordRect.bottom
+        );
+      };
+
+      const candidates = [
+        { left: wordRect.right + gap, top: wordRect.top - 12 },
+        { left: wordRect.left - popupWidth - gap, top: wordRect.top - 12 },
+        { left: wordRect.left, top: wordRect.top - popupHeight - gap },
+        { left: wordRect.left, top: wordRect.bottom + gap },
+      ];
+
+      let chosen = candidates.find(c => !overlapsWord(c.left, c.top));
+      if (!chosen) {
+        const pushRight = wordRect.right + gap + popupWidth <= viewportWidth;
+        const pushLeft = wordRect.left - gap - popupWidth >= 0;
+        if (pushRight) {
+          chosen = { left: wordRect.right + gap, top: wordRect.bottom + gap };
+        } else if (pushLeft) {
+          chosen = { left: wordRect.left - popupWidth - gap, top: wordRect.bottom + gap };
+        } else {
+          chosen = { left: wordRect.left, top: wordRect.bottom + gap };
+        }
+      }
+
+      let left = clamp(chosen.left, 8, viewportWidth - popupWidth - 8);
+      let top = clamp(chosen.top, 8, viewportHeight - popupHeight - 8);
+      if (overlapsWord(left, top)) {
+        left = chosen.left;
+        top = chosen.top;
+      }
+
+      setPopupState({
         word: clickedWordText,
+        position: { top, left },
         range: clickedRange,
       });
     });
@@ -1123,21 +1200,47 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
               </div>
             </>
           ) : (
-            <input
-              type="text"
-              className={`poem-title-editor-input ${isDarkMode ? 'dark' : ''}`}
-              value={poemTitle}
-              onChange={(e) => onTitleChange(e.target.value)}
-              placeholder="Untitled"
-              aria-label="Poem title"
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck="false"
-              data-1p-ignore
-              data-lpignore="true"
-              data-form-type="other"
-            />
+            <div className="poem-title-inline">
+              <input
+                type="text"
+                className={`poem-title-editor-input ${isDarkMode ? 'dark' : ''}`}
+                value={poemTitle}
+                onChange={(e) => onTitleChange(e.target.value)}
+                placeholder="Untitled"
+                aria-label="Poem title"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck="false"
+                data-1p-ignore
+                data-lpignore="true"
+                data-form-type="other"
+              />
+              <button
+                type="button"
+                className="poem-copy-button"
+                title="Copy poem"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(value);
+                  } catch {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = value;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                  }
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                  <rect x="8" y="8" width="10" height="12" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  <rect x="5" y="4" width="10" height="12" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
+                </svg>
+              </button>
+            </div>
           )}
         </div>
       )}
@@ -1189,6 +1292,26 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
         }}
       />
 
+      {popupState && (
+        <WordPopup
+          word={popupState.word}
+          position={popupState.position}
+          onClose={() => setPopupState(null)}
+          onInsertWord={async (word) => {
+            if (!editorRef.current) return;
+            editorRef.current.executeEdits('word-popup', [{
+              range: popupState.range,
+              text: word,
+            }]);
+            try {
+              await navigator.clipboard.writeText(word);
+            } catch {
+              // Ignore clipboard failures
+            }
+            setPopupState(null);
+          }}
+        />
+      )}
 
     </div>
   );
