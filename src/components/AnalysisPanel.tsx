@@ -1749,9 +1749,12 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
     return !(word1IsEndLine && word2IsEndLine);
   });
 
+  const endRhymeGroups = Array.from(analysis.rhymeScheme.rhymeGroups.entries())
+    .filter(([, lineNumbers]) => lineNumbers.length >= 2);
+  const hasEndRhymes = endRhymeGroups.length > 0;
+
   // Count total rhymes for the badge
-  const endRhymeCount = Array.from(analysis.rhymeScheme.rhymeGroups.entries())
-    .filter(([, lineNumbers]) => lineNumbers.length >= 2).length;
+  const endRhymeCount = endRhymeGroups.length;
   const totalRhymeCount = endRhymeCount + filteredInternalRhymes.length;
 
   const rhymeAnalysisSection = (
@@ -1769,13 +1772,11 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
       {expandedSection === 'rhymeAnalysis' && (
         <div className="rhyme-analysis-content">
           {/* End Rhymes Section */}
-          {analysis.rhymeScheme.rhymeGroups.size > 0 && (
+          {hasEndRhymes && (
             <>
               <div className="rhyme-subsection-header">End Rhymes</div>
               <div className="rhyme-groups-list">
-                {Array.from(analysis.rhymeScheme.rhymeGroups.entries()).map(([label, lineNumbers]) => {
-                  if (lineNumbers.length < 2) return null; // Skip single-line groups
-
+                {endRhymeGroups.map(([label, lineNumbers]) => {
                   // Get the words in this rhyme group, paired with their line numbers
                   const wordLinePairs = lineNumbers
                     .map(lineNum => {
@@ -1870,6 +1871,10 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                 })}
               </div>
             </>
+          )}
+
+          {!hasEndRhymes && filteredInternalRhymes.length === 0 && (
+            <div className="empty-state">No rhymes detected</div>
           )}
 
           {/* Internal Rhymes Section */}
