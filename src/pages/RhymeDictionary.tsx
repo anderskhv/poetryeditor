@@ -228,6 +228,13 @@ export function RhymeDictionary() {
               className="rhyme-search-input"
               autoFocus
             />
+            <input
+              type="text"
+              value={topicWord}
+              onChange={(e) => setTopicWord(e.target.value)}
+              placeholder="Topic (optional)"
+              className="rhyme-topic-input"
+            />
             <button type="submit" className="rhyme-search-button">
               Find Rhymes
             </button>
@@ -274,17 +281,6 @@ export function RhymeDictionary() {
                 <option value="adjective">Adjective</option>
                 <option value="adverb">Adverb</option>
               </select>
-            </div>
-
-            <div className="filter-item filter-item-topic">
-              <label className="filter-label">Topic</label>
-              <input
-                type="text"
-                value={topicWord}
-                onChange={(e) => setTopicWord(e.target.value)}
-                placeholder="e.g., ocean, love..."
-                className="filter-input"
-              />
             </div>
 
             {hasActiveFilters && (

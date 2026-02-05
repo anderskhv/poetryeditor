@@ -33,6 +33,13 @@
 .search-row {
   display: flex;
   gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-row .autocomplete-wrapper {
+  flex: 1 1 280px;
+  min-width: 240px;
 }
 
 .rhyme-search-input {
@@ -47,6 +54,25 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+.rhyme-topic-input {
+  flex: 0 0 220px;
+  min-width: 180px;
+  padding: 14px 16px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  border-radius: 6px;
+  background: var(--color-paper, #fdfcfa);
+  color: var(--color-text-primary, #2a2a2a);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rhyme-topic-input:focus {
+  outline: none;
+  border-color: var(--color-text-secondary, #6a6a6a);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
 .rhyme-search-input:focus {
   outline: none;
   border-color: var(--color-text-secondary, #6a6a6a);
@@ -54,9 +80,9 @@
 }
 
 .rhyme-search-button {
-  padding: 14px 28px;
+  padding: 12px 20px;
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   background: var(--color-text-primary, #2a2a2a);
   color: var(--color-paper, #fdfcfa);
@@ -91,6 +117,10 @@
 .filter-item-topic {
   flex: 1;
   min-width: 150px;
+}
+
+.filter-bar .filter-item-topic {
+  display: none;
 }
 
 .filter-label {
