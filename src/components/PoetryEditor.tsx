@@ -19,6 +19,7 @@ export type WordRange = {
 interface PoetryEditorProps {
   value: string;
   onChange: (value: string) => void;
+  poemId?: string | null;
   poemTitle: string;
   onTitleChange: (title: string) => void;
   onWordsAnalyzed?: (words: WordInfo[]) => void;
@@ -93,7 +94,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, readOnly = false, hideTitle = false, poemMetadata }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, readOnly = false, hideTitle = false, poemMetadata }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -1276,6 +1277,7 @@ export function PoetryEditor({ value, onChange, poemTitle, onTitleChange, onWord
       <Editor
         height={hideTitle ? "100%" : "calc(100% - 80px)"}
         defaultLanguage="poetry"
+        path={`poem-${poemId || 'local'}`}
         value={value}
         onChange={(newValue) => onChange(newValue || '')}
         onMount={handleEditorDidMount}

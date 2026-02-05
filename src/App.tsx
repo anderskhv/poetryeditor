@@ -272,18 +272,20 @@ function App() {
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
     if (!activeId || !user) return;
+    if (cloudPoemId && isLoadingCloudPoem) return;
     if (migratedPoemIdsRef.current.has(activeId)) return;
     migratedPoemIdsRef.current.add(activeId);
     migrateLocalPoemVersions(activeId, user.id);
-  }, [cloudPoemId, currentPoemId, user]);
+  }, [cloudPoemId, currentPoemId, user, isLoadingCloudPoem]);
 
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
     if (!activeId || !user) return;
+    if (cloudPoemId && isLoadingCloudPoem) return;
     if (ensuredPoemIdsRef.current.has(activeId)) return;
     ensuredPoemIdsRef.current.add(activeId);
     ensureInitialPoemVersion(activeId, poemTitle, text, user.id);
-  }, [cloudPoemId, currentPoemId, poemTitle, text, user]);
+  }, [cloudPoemId, currentPoemId, poemTitle, text, user, isLoadingCloudPoem]);
 
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
@@ -1134,6 +1136,7 @@ function App() {
           <PoetryEditor
             value={text}
             onChange={handleTextChange}
+            poemId={cloudPoemId || currentPoemId || 'local'}
             poemTitle={poemTitle}
             onTitleChange={setPoemTitle}
             onWordsAnalyzed={handleWordsAnalyzed}

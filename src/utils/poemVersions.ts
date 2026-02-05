@@ -44,6 +44,28 @@ const getLocalPoemVersions = (poemId: string): LocalPoemVersion[] => {
   }
 };
 
+const addLocalPoemVersion = (poemId: string, title: string, content: string) => {
+  if (!poemId) return [];
+  const normalizedTitle = title.trim() || 'Untitled';
+  const normalizedContent = content.trimEnd();
+  const hash = hashString(`${normalizedTitle}\n${normalizedContent}`);
+
+  const existing = getLocalPoemVersions(poemId);
+  if (existing[0]?.hash === hash) return existing;
+
+  const next: LocalPoemVersion = {
+    id: `${poemId}-${Date.now()}`,
+    title: normalizedTitle,
+    content: normalizedContent,
+    createdAt: new Date().toISOString(),
+    hash,
+  };
+
+  const merged = [next, ...existing.filter(version => version.hash !== hash)].slice(0, VERSION_LIMIT);
+  localStorage.setItem(storageKey(poemId), JSON.stringify(merged));
+  return merged;
+};
+
 const clearLocalPoemVersions = (poemId: string) => {
   if (!poemId) return;
   localStorage.removeItem(storageKey(poemId));
@@ -61,7 +83,22 @@ export const fetchPoemVersionsForPoems = async (poemIds: string[], userId: strin
 
   if (error) {
     console.error('Failed to fetch poem versions:', error);
-    return {} as Record<string, PoemVersion[]>;
+    const fallback: Record<string, PoemVersion[]> = {};
+    poemIds.forEach(poemId => {
+      const local = getLocalPoemVersions(poemId);
+      if (local.length > 0) {
+        fallback[poemId] = local.map(version => ({
+          id: version.id,
+          poem_id: poemId,
+          user_id: userId,
+          title: version.title,
+          content: version.content,
+          created_at: version.createdAt,
+          hash: version.hash,
+        }));
+      }
+    });
+    return fallback;
   }
 
   const grouped: Record<string, PoemVersion[]> = {};
@@ -88,7 +125,16 @@ export const fetchPoemVersions = async (poemId: string, userId: string) => {
 
   if (error) {
     console.error('Failed to fetch poem versions:', error);
-    return [] as PoemVersion[];
+    const local = getLocalPoemVersions(poemId);
+    return local.map(version => ({
+      id: version.id,
+      poem_id: poemId,
+      user_id: userId,
+      title: version.title,
+      content: version.content,
+      created_at: version.createdAt,
+      hash: version.hash,
+    }));
   }
 
   return data || [];
@@ -106,6 +152,7 @@ export const ensureInitialPoemVersion = async (poemId: string, title: string, co
 
   if (error) {
     console.error('Failed to check poem versions:', error);
+    addLocalPoemVersion(poemId, title, content);
     return;
   }
 
@@ -131,6 +178,7 @@ export const addPoemVersion = async (poemId: string, title: string, content: str
 
   if (latestError) {
     console.error('Failed to check latest poem version:', latestError);
+    addLocalPoemVersion(poemId, title, content);
     return [] as PoemVersion[];
   }
 
@@ -150,6 +198,7 @@ export const addPoemVersion = async (poemId: string, title: string, content: str
 
   if (insertError) {
     console.error('Failed to add poem version:', insertError);
+    addLocalPoemVersion(poemId, title, content);
     return [] as PoemVersion[];
   }
 

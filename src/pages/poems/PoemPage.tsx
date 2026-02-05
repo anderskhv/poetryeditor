@@ -233,6 +233,7 @@ export function PoemPage() {
           <PoetryEditor
             value={text}
             onChange={() => {}}
+            poemId={poem.slug}
             poemTitle={poem.title}
             onTitleChange={() => {}}
             onWordsAnalyzed={handleWordsAnalyzed}
