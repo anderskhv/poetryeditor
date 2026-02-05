@@ -7,6 +7,7 @@ import { detectMeter, isHaiku, analyzeMeterConsistency } from '../utils/meterDet
 import { analyzeRepetition } from '../utils/wordAnalysis';
 import { analyzeRhythmVariation, analyzeLineLengthConsistency, analyzePunctuationPatterns } from '../utils/rhythmAnalysis';
 import { detectRhymeScheme, evaluateRhymeCompliance, assessRhymeQuality, detectInternalRhymes } from '../utils/rhymeScheme';
+import { loadCMUDictionary, isDictionaryLoaded } from '../utils/cmuDict';
 import { detectPoetricForm, evaluateFormFit } from '../utils/formDetector';
 import { isConstrained, getConstraintDescription, evaluateConstraint, getFormConstraints } from '../utils/formConstraints';
 import { getRhymeOriginalityScore, getRhymeOriginalityLabel } from '../utils/rhymeCliches';
@@ -77,6 +78,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
     alliteration: false, assonance: false, consonance: false
   });
   const [synonymPopup, setSynonymPopup] = useState<{ word: string; position: { top: number; left: number } } | null>(null);
+  const [cmuReady, setCmuReady] = useState<boolean>(() => isDictionaryLoaded());
 
   // Preload adverb suggestions whenever words change
   useEffect(() => {
@@ -88,6 +90,13 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
     }
     loadSuggestions();
   }, [words]);
+
+  useEffect(() => {
+    if (cmuReady) return;
+    loadCMUDictionary()
+      .then(() => setCmuReady(true))
+      .catch(() => setCmuReady(false));
+  }, [cmuReady]);
 
   // Clear highlighting and coloring data when section or category changes
   useEffect(() => {
@@ -309,7 +318,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
       firstDraftAnalysis,
       deadMetaphorAnalysis,
     };
-  }, [text, words, selectedForm]);
+  }, [text, words, selectedForm, cmuReady]);
 
   const formatTimeSince = (date: Date) => {
     const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
