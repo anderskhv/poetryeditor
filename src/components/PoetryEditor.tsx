@@ -936,7 +936,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
 
         /* Highlighted line when hovering - very subtle background shade (2-3%) */
         .meter-line-highlighted {
-          background-color: rgba(0, 0, 0, 0.025) !important;
+          background-color: var(--color-highlight-subtle) !important;
         }
 
         /* Passive voice highlighting - subtle underline, not background */
@@ -970,12 +970,12 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
 
         /* Scansion line highlight when hovering - very subtle */
         .scansion-line-highlighted {
-          background-color: rgba(0, 0, 0, 0.025) !important;
+          background-color: var(--color-highlight-subtle) !important;
         }
 
         /* Rhyme word highlight - subtle background tint */
         .rhyme-word-highlighted {
-          background-color: rgba(0, 0, 0, 0.04) !important;
+          background-color: var(--color-highlight-subtle) !important;
           border-radius: 2px;
           padding: 1px 2px;
           box-shadow: none;
@@ -983,17 +983,17 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
 
         /* Dark mode highlight adjustments - very subtle */
         :root.dark-mode .scansion-line-highlighted {
-          background-color: rgba(255, 255, 255, 0.03) !important;
+          background-color: var(--color-highlight-subtle) !important;
         }
 
         :root.dark-mode .rhyme-word-highlighted {
-          background-color: rgba(255, 255, 255, 0.05) !important;
+          background-color: var(--color-highlight-subtle) !important;
           box-shadow: none;
           color: inherit !important;
         }
 
         :root.dark-mode .meter-line-highlighted {
-          background-color: rgba(255, 255, 255, 0.03) !important;
+          background-color: var(--color-highlight-subtle) !important;
         }
 
         :root.dark-mode .pos-highlighted {
