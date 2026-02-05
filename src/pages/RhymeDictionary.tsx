@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { AutocompleteInput } from '../components/AutocompleteInput';
-import { fetchRhymes, RhymeWord } from '../utils/rhymeApi';
+import { fetchRhymes, getWordVariants, RhymeWord } from '../utils/rhymeApi';
 import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables } from '../utils/cmuDict';
 import { getRhymeOriginalityScore } from '../utils/rhymeCliches';
 import { DefinitionTooltip } from '../components/DefinitionTooltip';
@@ -18,6 +18,7 @@ const POPULAR_WORDS = [
 interface EnhancedRhymeWord extends RhymeWord {
   originalityScore?: number;
   isCliche?: boolean;
+  variants?: string[];
 }
 
 type WordTypeFilter = 'all' | 'noun' | 'verb' | 'adjective' | 'adverb';
@@ -77,10 +78,12 @@ export function RhymeDictionary() {
       // Enhance with originality scores
       const enhancedRhymes: EnhancedRhymeWord[] = rhymes.map(rhyme => {
         const originalityScore = getRhymeOriginalityScore(word, rhyme.word);
+        const variants = getWordVariants(rhyme.word, rhyme.partsOfSpeech || []);
         return {
           ...rhyme,
           originalityScore,
           isCliche: originalityScore < 35,
+          variants,
         };
       });
 
@@ -352,18 +355,34 @@ export function RhymeDictionary() {
                         const lastStress = stresses.length > 0 ? stresses[stresses.length - 1] : -1;
                         const meterClass = lastStress >= 1 ? 'iambic-friendly' : lastStress === 0 ? 'trochaic-friendly' : '';
                         const originalityClass = rhyme.isCliche ? 'cliche' : rhyme.originalityScore && rhyme.originalityScore >= 70 ? 'original' : '';
+                        const variants = rhyme.variants || [];
 
                         return (
-                          <DefinitionTooltip key={idx} word={rhyme.word}>
-                            <Link
-                              to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
-                              className={`rhyme-word-item ${meterClass} ${originalityClass}`}
-                              title={`${meterClass === 'iambic-friendly' ? 'Ends on stressed syllable (iambic-friendly)' : meterClass === 'trochaic-friendly' ? 'Ends on unstressed syllable (trochaic-friendly)' : ''}${rhyme.isCliche ? ' • Commonly used rhyme' : ''}`}
-                            >
-                              {rhyme.word}
-                              {rhyme.isCliche && <span className="cliche-indicator" title="Commonly used rhyme">•</span>}
-                            </Link>
-                          </DefinitionTooltip>
+                          <div key={idx} className="rhyme-word-stack">
+                            <DefinitionTooltip word={rhyme.word}>
+                              <Link
+                                to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
+                                className={`rhyme-word-item ${meterClass} ${originalityClass}`}
+                                title={`${meterClass === 'iambic-friendly' ? 'Ends on stressed syllable (iambic-friendly)' : meterClass === 'trochaic-friendly' ? 'Ends on unstressed syllable (trochaic-friendly)' : ''}${rhyme.isCliche ? ' • Commonly used rhyme' : ''}`}
+                              >
+                                {rhyme.word}
+                                {rhyme.isCliche && <span className="cliche-indicator" title="Commonly used rhyme">•</span>}
+                              </Link>
+                            </DefinitionTooltip>
+                            {variants.length > 0 && (
+                              <div className="rhyme-variants">
+                                {variants.slice(0, 4).map(variant => (
+                                  <Link
+                                    key={variant}
+                                    to={`/rhymes/${encodeURIComponent(variant)}`}
+                                    className="rhyme-variant-pill"
+                                  >
+                                    {variant}
+                                  </Link>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         );
                       })}
                   </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
-import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonyms, fetchAntonyms, RhymeWord as RhymeWordType, SynonymWord } from '../utils/rhymeApi';
+import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonyms, fetchAntonyms, getWordVariants, RhymeWord as RhymeWordType, SynonymWord } from '../utils/rhymeApi';
 import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables } from '../utils/cmuDict';
 import { getRhymeOriginalityScore } from '../utils/rhymeCliches';
 import { DefinitionTooltip } from '../components/DefinitionTooltip';
@@ -181,8 +181,14 @@ export function RhymeWord() {
   const filteredPerfect = applyTopicFilter(applyAllFilters(perfectRhymes));
   const filteredNear = applyTopicFilter(applyAllFilters(nearRhymes));
 
-  const groupedPerfect = groupBySyllables(filteredPerfect);
-  const groupedNear = groupBySyllables(filteredNear);
+  const withVariants = (rhymes: RhymeWordType[]) =>
+    rhymes.map(rhyme => ({
+      ...rhyme,
+      variants: getWordVariants(rhyme.word, rhyme.partsOfSpeech || []),
+    }));
+
+  const groupedPerfect = groupBySyllables(withVariants(filteredPerfect));
+  const groupedNear = groupBySyllables(withVariants(filteredNear));
   const activeResults = activeTab === 'perfect' ? groupedPerfect : groupedNear;
 
   // Get related words for internal linking - more varied selection
@@ -387,16 +393,32 @@ export function RhymeWord() {
                             // Determine rarity class based on Datamuse score
                             // Higher score = more common word
                             const rarityClass = rhyme.score > 5000 ? 'common' : rhyme.score > 1000 ? '' : 'rare';
+                            const variants = (rhyme as RhymeWordType & { variants?: string[] }).variants || [];
 
                             return (
-                              <DefinitionTooltip key={idx} word={rhyme.word}>
-                                <Link
-                                  to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
-                                  className={`rhyme-word-item ${rarityClass}`}
-                                >
-                                  {rhyme.word}
-                                </Link>
-                              </DefinitionTooltip>
+                              <div key={idx} className="rhyme-word-stack">
+                                <DefinitionTooltip word={rhyme.word}>
+                                  <Link
+                                    to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
+                                    className={`rhyme-word-item ${rarityClass}`}
+                                  >
+                                    {rhyme.word}
+                                  </Link>
+                                </DefinitionTooltip>
+                                {variants.length > 0 && (
+                                  <div className="rhyme-variants">
+                                    {variants.slice(0, 4).map(variant => (
+                                      <Link
+                                        key={variant}
+                                        to={`/rhymes/${encodeURIComponent(variant)}`}
+                                        className="rhyme-variant-pill"
+                                      >
+                                        {variant}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
                             );
                           })}
                       </div>

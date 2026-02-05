@@ -50,6 +50,39 @@ export interface SynonymWord {
   score: number;
 }
 
+export function getWordVariants(word: string, partsOfSpeech: string[] = []): string[] {
+  const variants = new Set<string>();
+  const lower = word.toLowerCase();
+  const posSet = new Set(partsOfSpeech);
+
+  const addVariant = (value?: string) => {
+    if (!value) return;
+    const trimmed = value.trim().toLowerCase();
+    if (!trimmed || trimmed === lower) return;
+    variants.add(trimmed);
+  };
+
+  if (posSet.has('v') || posSet.size === 0) {
+    const verbDoc = nlp(word).verbs();
+    const conjugations = verbDoc.conjugate();
+    if (conjugations.length > 0) {
+      const forms = conjugations[0] as Record<string, string>;
+      Object.values(forms).forEach(addVariant);
+    } else {
+      addVariant(verbDoc.toPastTense().text());
+      addVariant(verbDoc.toPresentTense().text());
+      addVariant(verbDoc.toGerund().text());
+    }
+  }
+
+  if (posSet.has('n')) {
+    const plural = nlp(word).nouns().toPlural().text();
+    addVariant(plural);
+  }
+
+  return Array.from(variants);
+}
+
 /**
  * Fetch words that rhyme with the given word (perfect rhymes only)
  * Sorts by phonetic rhyme quality, putting true perfect rhymes first
