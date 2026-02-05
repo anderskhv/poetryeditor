@@ -669,6 +669,10 @@
   position: relative;
 }
 
+.export-options-inline {
+  position: relative;
+}
+
 .export-item.has-submenu {
   display: flex;
   justify-content: space-between;
@@ -692,6 +696,34 @@
   max-height: 300px;
   overflow-y: auto;
   z-index: calc(var(--z-index-dropdown) + 1);
+}
+
+.export-submenu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  margin-left: 4px;
+  background: var(--color-paper);
+  border-radius: 4px;
+  box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
+  min-width: 120px;
+  z-index: calc(var(--z-index-dropdown) + 1);
+  padding: 4px 0;
+}
+
+.export-submenu-item {
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.export-submenu-item:hover {
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .poems-submenu .poem-item {

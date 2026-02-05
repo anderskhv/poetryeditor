@@ -338,11 +338,20 @@
 .syllable-breakdown {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 20px;
   background: var(--color-background);
   border-radius: 3px;
   border: 1px solid var(--color-border);
   flex-wrap: wrap;
+  gap: 8px 6px;
+  text-align: center;
+}
+
+.syllable-breakdown > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .syllable-text {
@@ -459,6 +468,30 @@
   border-radius: 3px;
   border-left: 2px solid var(--color-text-muted);
   font-style: italic;
+}
+
+.word-info-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.retry-word-info {
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+  border-radius: 3px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.retry-word-info:hover {
+  background: var(--color-highlight-subtle);
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
 }
 
 /* Pronunciation styles */

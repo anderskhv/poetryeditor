@@ -41,9 +41,13 @@ export interface DictionaryResponse {
  */
 async function fetchFromDictionaryApi(word: string): Promise<DictionaryResponse | null> {
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6000);
     const response = await fetch(
-      `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.toLowerCase())}`
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.toLowerCase())}`,
+      { signal: controller.signal }
     );
+    clearTimeout(timeout);
 
     if (!response.ok) {
       return null;

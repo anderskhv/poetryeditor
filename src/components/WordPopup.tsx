@@ -30,7 +30,11 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
   const [pronunciation, setPronunciation] = useState<Pronunciation | null>(null);
   const [loadingWordInfo, setLoadingWordInfo] = useState(false);
   const [wordInfoLoaded, setWordInfoLoaded] = useState(false);
+  const [wordInfoSlow, setWordInfoSlow] = useState(false);
+  const [wordInfoError, setWordInfoError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const slowTimerRef = useRef<number | null>(null);
+  const wordRef = useRef<string>(word);
 
   const stresses = getStressPattern(word);
   const syllableCount = stresses.length;
@@ -52,7 +56,13 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     return acc;
   }, {} as GroupedWords<RhymeWord>);
 
-  // Synonyms don't need syllable grouping - just sort by score
+  // Group synonyms by syllable count
+  const groupedSynonyms: GroupedWords<SynonymWord> = synonyms.reduce((acc, synonym) => {
+    const sylCount = getStressPattern(synonym.word).length || 0;
+    if (!acc[sylCount]) acc[sylCount] = [];
+    acc[sylCount].push(synonym);
+    return acc;
+  }, {} as GroupedWords<SynonymWord>);
 
   // Fetch rhymes when the rhymes tab is active
   useEffect(() => {
@@ -87,21 +97,50 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     }
   }, [activeTab, word, synonyms.length, loadingSynonyms]);
 
+  const loadWordInfo = () => {
+    setLoadingWordInfo(true);
+    setWordInfoError(null);
+    setWordInfoSlow(false);
+    if (slowTimerRef.current) {
+      window.clearTimeout(slowTimerRef.current);
+    }
+    const requestWord = word;
+    slowTimerRef.current = window.setTimeout(() => {
+      setWordInfoSlow(true);
+    }, 2000);
+
+    fetchWordInfo(word).then((result) => {
+      if (slowTimerRef.current) {
+        window.clearTimeout(slowTimerRef.current);
+        slowTimerRef.current = null;
+      }
+      if (requestWord !== wordRef.current) return;
+      if (result) {
+        setWordOrigin(result.origin);
+        setWordDefinitions(result.definitions);
+        setPronunciation(result.pronunciation);
+      } else {
+        setWordInfoError('Definition service is slow. Try again.');
+      }
+      setWordInfoLoaded(true);
+      setLoadingWordInfo(false);
+    });
+  };
+
   // Fetch word info (origin + pronunciation) when origin tab is active or on mount for audio
   useEffect(() => {
     if ((activeTab === 'origin' || !wordInfoLoaded) && !loadingWordInfo) {
-      setLoadingWordInfo(true);
-      fetchWordInfo(word).then((result) => {
-        if (result) {
-          setWordOrigin(result.origin);
-          setWordDefinitions(result.definitions);
-          setPronunciation(result.pronunciation);
-        }
-        setWordInfoLoaded(true);
-        setLoadingWordInfo(false);
-      });
+      loadWordInfo();
     }
   }, [activeTab, word, wordInfoLoaded, loadingWordInfo]);
+
+  useEffect(() => {
+    return () => {
+      if (slowTimerRef.current) {
+        window.clearTimeout(slowTimerRef.current);
+      }
+    };
+  }, []);
 
   // Handle audio playback
   const playAudio = () => {
@@ -269,22 +308,43 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
               {loadingSynonyms ? (
                 <p className="loading">Loading synonyms...</p>
               ) : synonyms.length > 0 ? (
-                <div className="word-list">
-                  {synonyms
-                    .filter(synonym => !synonym.word.includes(' '))
-                    .sort((a, b) => b.score - a.score)
-                    .map((synonym, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        className="word-item word-item-button"
-                        onClick={() => onInsertWord?.(synonym.word)}
-                        title="Insert and copy"
-                      >
-                        <span className="word-text">{synonym.word}</span>
-                        <span className="word-meta">#{idx + 1}</span>
-                      </button>
-                    ))}
+                <div className="grouped-words">
+                  {Object.keys(groupedSynonyms)
+                    .sort((a, b) => {
+                      const aNum = Number(a) || 0;
+                      const bNum = Number(b) || 0;
+                      if (aNum === 0) return 1;
+                      if (bNum === 0) return -1;
+                      return aNum - bNum;
+                    })
+                    .map((sylCount) => {
+                      const filteredSynonyms = groupedSynonyms[Number(sylCount)].filter(synonym => !synonym.word.includes(' '));
+                      if (filteredSynonyms.length === 0) return null;
+
+                      return (
+                        <div key={sylCount} className="syllable-group">
+                          <h4 className="group-header">
+                            {sylCount} {Number(sylCount) === 1 ? 'syllable' : 'syllables'}
+                          </h4>
+                          <div className="word-list">
+                            {filteredSynonyms
+                              .sort((a, b) => b.score - a.score)
+                              .map((synonym, idx) => (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  className="word-item word-item-button"
+                                  onClick={() => onInsertWord?.(synonym.word)}
+                                  title="Insert and copy"
+                                >
+                                  <span className="word-text">{synonym.word}</span>
+                                  <span className="word-meta">#{idx + 1}</span>
+                                </button>
+                              ))}
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               ) : (
                 <p className="no-data">No synonyms found</p>
@@ -335,7 +395,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
           {activeTab === 'origin' && (
             <div className="word-popup-section">
               {loadingWordInfo ? (
-                <p className="loading">Loading etymology...</p>
+                <p className="loading">{wordInfoSlow ? 'Still loading definitions...' : 'Loading definitions...'}</p>
               ) : wordOrigin || wordDefinitions.length > 0 ? (
                 <div className="word-origin">
                   {wordDefinitions.length > 0 && (
@@ -363,6 +423,20 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
                     </>
                   )}
                 </div>
+              ) : wordInfoError ? (
+                <div className="word-info-error">
+                  <p className="no-data">{wordInfoError}</p>
+                  <button
+                    type="button"
+                    className="retry-word-info"
+                    onClick={() => {
+                      setWordInfoLoaded(false);
+                      loadWordInfo();
+                    }}
+                  >
+                    Try again
+                  </button>
+                </div>
               ) : (
                 <p className="no-data">No information available for this word</p>
               )}
@@ -374,3 +448,19 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     </>
   );
 }
+  useEffect(() => {
+    wordRef.current = word;
+    setRhymes([]);
+    setNearRhymes([]);
+    setSynonyms([]);
+    setLoadingRhymes(false);
+    setLoadingNearRhymes(false);
+    setLoadingSynonyms(false);
+    setWordOrigin(null);
+    setWordDefinitions([]);
+    setPronunciation(null);
+    setLoadingWordInfo(false);
+    setWordInfoLoaded(false);
+    setWordInfoSlow(false);
+    setWordInfoError(null);
+  }, [word]);

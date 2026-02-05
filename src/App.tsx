@@ -138,7 +138,6 @@ function App() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [showToolsMenu, setShowToolsMenu] = useState<boolean>(false);
   const [showInspirationMenu, setShowInspirationMenu] = useState<boolean>(false);
-  const [showPoemList, setShowPoemList] = useState<boolean>(false);
   const [savedPoems, setSavedPoems] = useState<SavedPoem[]>(() => {
     const saved = localStorage.getItem('savedPoems');
     return saved ? JSON.parse(saved) : [];
@@ -449,6 +448,7 @@ function App() {
   };
 
   const [showExportMenu, setShowExportMenu] = useState<boolean>(false);
+  const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
 
@@ -471,10 +471,17 @@ function App() {
     editorInstance.focus();
   }, []);
 
-  const handleExportPoem = (format: 'txt' | 'md') => {
+  const handleExportPoem = (format: 'txt' | 'md' | 'docx') => {
     setShowExportMenu(false);
     const title = poemTitle.trim() || 'Untitled';
     const safeTitle = title.replace(/[^a-zA-Z0-9-_ ]/g, '').replace(/\s+/g, '-');
+    const escapeHtml = (value: string) =>
+      value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 
     let content: string;
     let filename: string;
@@ -485,6 +492,15 @@ function App() {
       content = `# ${title}\n\n${text}`;
       filename = `${safeTitle}.md`;
       mimeType = 'text/markdown';
+    } else if (format === 'docx') {
+      // Simple Word-compatible HTML export
+      const plainText = stripMarkdownFormatting(text)
+        .split('\n')
+        .map(line => escapeHtml(line))
+        .join('<br />');
+      content = `<!DOCTYPE html><html><head><meta charset=\"utf-8\" /></head><body><h1>${escapeHtml(title)}</h1><p>${plainText}</p></body></html>`;
+      filename = `${safeTitle}.doc`;
+      mimeType = 'application/msword';
     } else {
       // Plain text with title at top - strip markdown formatting
       const plainText = stripMarkdownFormatting(text);
@@ -526,34 +542,6 @@ function App() {
     localStorage.setItem('savedPoems', JSON.stringify(updatedPoems));
     if (user) {
       addPoemVersion(newPoem.id, title, text, user.id);
-    }
-  };
-
-  const handleLoadPoem = (poem: SavedPoem) => {
-    if (hasUnsavedChanges && !confirm(`Load "${poem.title}"? You have unsaved changes that will be lost.`)) {
-      return;
-    }
-    setText(poem.content);
-    setCurrentPoemId(poem.id);
-    setPoemTitle(poem.title); // Load the poem's title
-    setLastSavedContent(poem.content); // Track the loaded content as "saved"
-    setShowPoemList(false);
-  };
-
-  const handleDeletePoem = (poemId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    const poem = savedPoems.find(p => p.id === poemId);
-    if (!poem || !confirm(`Delete "${poem.title}"?`)) return;
-
-    const updatedPoems = savedPoems.filter(p => p.id !== poemId);
-    setSavedPoems(updatedPoems);
-    localStorage.setItem('savedPoems', JSON.stringify(updatedPoems));
-    if (currentPoemId === poemId) {
-      setCurrentPoemId(null);
-    }
-    // Close the dropdown after deleting the last poem
-    if (updatedPoems.length === 0) {
-      setShowPoemList(false);
     }
   };
 
@@ -608,8 +596,10 @@ function App() {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (!target.closest('.poems-dropdown')) setShowPoemList(false);
-      if (!target.closest('.export-dropdown')) setShowExportMenu(false);
+      if (!target.closest('.export-dropdown')) {
+        setShowExportMenu(false);
+        setShowExportOptions(false);
+      }
       if (!target.closest('.theme-dropdown')) setShowThemeMenu(false);
       if (!target.closest('.paragraph-dropdown')) {
         setShowParagraphMenu(false);
@@ -666,7 +656,13 @@ function App() {
             */}
             <div className="export-dropdown">
               <button
-                onClick={() => setShowExportMenu(!showExportMenu)}
+                onClick={() => {
+                  const next = !showExportMenu;
+                  setShowExportMenu(next);
+                  if (!next) {
+                    setShowExportOptions(false);
+                  }
+                }}
                 className="btn btn-menu"
                 aria-label="File options"
                 aria-expanded={showExportMenu}
@@ -680,78 +676,73 @@ function App() {
                     onClick={() => {
                       handleNewPoem();
                       setShowExportMenu(false);
+                      setShowExportOptions(false);
                     }}
                   >
                     New
                   </button>
-                  <div className="poems-dropdown-inline">
+                  <button
+                    className="export-item"
+                    onClick={() => {
+                      handleSavePoem();
+                      setShowExportMenu(false);
+                      setShowExportOptions(false);
+                    }}
+                  >
+                    Save
+                  </button>
+                  <div className="export-options-inline">
                     <button
                       className="export-item has-submenu"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setShowPoemList(!showPoemList);
+                        setShowExportOptions(!showExportOptions);
                       }}
                     >
-                      Open Poem
+                      Export
                       <span className="submenu-arrow">›</span>
                     </button>
-                    {showPoemList && (
-                      <div className="poems-submenu">
-                        {savedPoems.length === 0 ? (
-                          <div className="poems-empty">No saved poems yet</div>
-                        ) : (
-                          savedPoems.map(poem => (
-                            <div
-                              key={poem.id}
-                              className={`poem-item ${currentPoemId === poem.id ? 'active' : ''}`}
-                              onClick={() => handleLoadPoem(poem)}
-                            >
-                              <span className="poem-title">{poem.title}</span>
-                              <button
-                                className="poem-delete"
-                                onClick={(e) => handleDeletePoem(poem.id, e)}
-                                aria-label={`Delete ${poem.title}`}
-                              >
-                                ×
-                              </button>
-                            </div>
-                          ))
-                        )}
+                    {showExportOptions && (
+                      <div className="export-submenu">
+                        <button
+                          className="export-submenu-item"
+                          onClick={() => {
+                            handleExportPoem('txt');
+                            setShowExportMenu(false);
+                            setShowExportOptions(false);
+                          }}
+                        >
+                          .txt
+                        </button>
+                        <button
+                          className="export-submenu-item"
+                          onClick={() => {
+                            handleExportPoem('md');
+                            setShowExportMenu(false);
+                            setShowExportOptions(false);
+                          }}
+                        >
+                          .md
+                        </button>
+                        <button
+                          className="export-submenu-item"
+                          onClick={() => {
+                            handleExportPoem('docx');
+                            setShowExportMenu(false);
+                            setShowExportOptions(false);
+                          }}
+                        >
+                          Word (.doc)
+                        </button>
                       </div>
                     )}
                   </div>
                   <button
                     className="export-item"
                     onClick={() => {
-                      handleSavePoem();
-                      setShowExportMenu(false);
-                    }}
-                  >
-                    Save
-                  </button>
-                  <button
-                    className="export-item"
-                    onClick={() => {
-                      handleExportPoem('txt');
-                      setShowExportMenu(false);
-                    }}
-                  >
-                    Export as Text
-                  </button>
-                  <button
-                    className="export-item"
-                    onClick={() => {
-                      handleExportPoem('md');
-                      setShowExportMenu(false);
-                    }}
-                  >
-                    Export as Markdown
-                  </button>
-                  <button
-                    className="export-item"
-                    onClick={() => {
                       setShowShareModal(true);
                       setShowExportMenu(false);
+                      setShowExportOptions(false);
                     }}
                   >
                     Share Image
@@ -956,47 +947,47 @@ function App() {
                 <div className="inspiration-menu">
                   <div className="inspiration-section">
                     <div className="inspiration-section-label">Featured</div>
-                    <Link to="/poems/first-fig" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                    <a href="/poems/first-fig" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
                       <span className="inspiration-poem-title">"First Fig"</span>
                       <span className="inspiration-poet">Millay</span>
-                    </Link>
-                    <Link to="/poems/sonnet-18" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                    </a>
+                    <a href="/poems/sonnet-18" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
                       <span className="inspiration-poem-title">"Sonnet 18"</span>
                       <span className="inspiration-poet">Shakespeare</span>
-                    </Link>
-                    <Link to="/poems/november-night" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                    </a>
+                    <a href="/poems/november-night" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
                       <span className="inspiration-poem-title">"November Night"</span>
                       <span className="inspiration-poet">Crapsey</span>
-                    </Link>
-                    <Link to="/poems/stopping-by-woods" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                    </a>
+                    <a href="/poems/stopping-by-woods" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
                       <span className="inspiration-poem-title">"Stopping by Woods"</span>
                       <span className="inspiration-poet">Frost</span>
-                    </Link>
+                    </a>
                   </div>
                   <div className="inspiration-section">
                     <div className="inspiration-section-label">Browse by Poet</div>
-                    <Link to="/poems?poet=shakespeare" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                    <a href="/poems?poet=shakespeare" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
                       <span className="inspiration-poet-name">Shakespeare</span>
                       <span className="inspiration-count">21</span>
-                    </Link>
-                    <Link to="/poems?poet=dickinson" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                    </a>
+                    <a href="/poems?poet=dickinson" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
                       <span className="inspiration-poet-name">Dickinson</span>
                       <span className="inspiration-count">10</span>
-                    </Link>
-                    <Link to="/poems?poet=wordsworth" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                    </a>
+                    <a href="/poems?poet=wordsworth" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
                       <span className="inspiration-poet-name">Wordsworth</span>
                       <span className="inspiration-count">4</span>
-                    </Link>
-                    <Link to="/poems?poet=frost" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
+                    </a>
+                    <a href="/poems?poet=frost" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
                       <span className="inspiration-poet-name">Frost</span>
                       <span className="inspiration-count">3</span>
-                    </Link>
+                    </a>
                   </div>
                   <div className="inspiration-section inspiration-browse-all">
-                    <Link to="/poems" className="inspiration-item browse-all-link" onClick={() => setShowInspirationMenu(false)}>
+                    <a href="/poems" target="_blank" rel="noopener noreferrer" className="inspiration-item browse-all-link" onClick={() => setShowInspirationMenu(false)}>
                       Browse All 63 Poems
                       <span className="browse-arrow">→</span>
-                    </Link>
+                    </a>
                   </div>
                 </div>
               )}
@@ -1012,24 +1003,24 @@ function App() {
               </button>
               {showToolsMenu && (
                 <div className="tools-menu">
-                  <Link to="/rhymes" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                  <a href="/rhymes" target="_blank" rel="noopener noreferrer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Rhyme Dictionary
-                  </Link>
-                  <Link to="/synonyms" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                  </a>
+                  <a href="/synonyms" target="_blank" rel="noopener noreferrer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Synonyms
-                  </Link>
-                  <Link to="/syllables" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                  </a>
+                  <a href="/syllables" target="_blank" rel="noopener noreferrer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Syllable Counter
-                  </Link>
-                  <Link to="/rhyme-scheme-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                  </a>
+                  <a href="/rhyme-scheme-analyzer" target="_blank" rel="noopener noreferrer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Rhyme Scheme Maker
-                  </Link>
-                  <Link to="/haiku-checker" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
+                  </a>
+                  <a href="/haiku-checker" target="_blank" rel="noopener noreferrer" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
                     Haiku Checker
-                  </Link>
-                  <Link to="/sonnet-checker" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
+                  </a>
+                  <a href="/sonnet-checker" target="_blank" rel="noopener noreferrer" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
                     Sonnet Checker
-                  </Link>
+                  </a>
                 </div>
               )}
             </div>
@@ -1062,6 +1053,15 @@ function App() {
                     }}
                   >
                     Export as Markdown
+                  </button>
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      handleExportPoem('docx');
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    Export as Word
                   </button>
                   <div className="mobile-overflow-item submenu-label">Theme</div>
                   <button
