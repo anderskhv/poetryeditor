@@ -814,6 +814,7 @@ export interface InternalRhyme {
 }
 
 export function detectInternalRhymes(text: string): InternalRhyme[] {
+  const maxLineDistance = 4;
   const lines = text.split('\n');
   const internalRhymes: InternalRhyme[] = [];
 
@@ -844,6 +845,7 @@ export function detectInternalRhymes(text: string): InternalRhyme[] {
     for (let j = i + 1; j < internalWords.length; j++) {
       // Skip if same word
       if (internalWords[i].word === internalWords[j].word) continue;
+      if (Math.abs(internalWords[i].lineNumber - internalWords[j].lineNumber) > maxLineDistance) continue;
 
       const quality = assessRhymeQuality(internalWords[i].word, internalWords[j].word);
       // Only include perfect rhymes for internal-to-internal comparisons
@@ -865,6 +867,7 @@ export function detectInternalRhymes(text: string): InternalRhyme[] {
       // Skip if same line or same word
       if (internal.lineNumber === end.lineNumber) continue;
       if (internal.word === end.word) continue;
+      if (Math.abs(internal.lineNumber - end.lineNumber) > maxLineDistance) continue;
 
       const quality = assessRhymeQuality(internal.word, end.word);
       // Only include perfect rhymes for internal-to-end comparisons
