@@ -106,6 +106,8 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   } | null>(null);
   const [showCopyToast, setShowCopyToast] = useState(false);
   const copyToastTimerRef = useRef<number | null>(null);
+  const lastSelectionRef = useRef<editor.ISelection | null>(null);
+  const restoreSelectionRef = useRef(false);
 
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editorRef.current = editorInstance;
@@ -1195,6 +1197,25 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     };
   }, []);
 
+  useEffect(() => {
+    if (!restoreSelectionRef.current) return;
+    if (!editorRef.current) return;
+    const selection = lastSelectionRef.current;
+    if (selection) {
+      editorRef.current.setSelection(selection);
+      editorRef.current.revealRangeInCenterIfOutsideViewport(selection);
+    }
+    restoreSelectionRef.current = false;
+  }, [value]);
+
+  const handleEditorChange = (newValue?: string) => {
+    if (editorRef.current) {
+      lastSelectionRef.current = editorRef.current.getSelection();
+      restoreSelectionRef.current = true;
+    }
+    onChange(newValue || '');
+  };
+
   // Build container class based on paragraph settings (only title centering works with Monaco)
   const containerClasses = [
     'poetry-editor-container',
@@ -1299,7 +1320,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         defaultLanguage="poetry"
         path={`poem-${poemId || 'local'}`}
         value={value}
-        onChange={(newValue) => onChange(newValue || '')}
+        onChange={handleEditorChange}
         onMount={handleEditorDidMount}
         options={{
           fontSize: 17,
