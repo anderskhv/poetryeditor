@@ -1687,7 +1687,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                     {analysis.expectedPattern && (
                       <>
                         <span className="rhyme-col-expected">Expected</span>
-                        <span className="rhyme-col-status">Match</span>
+                        <span className="rhyme-col-status">Matches</span>
                       </>
                     )}
                   </div>
@@ -1699,6 +1699,8 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                     const compliance = analysis.rhymeCompliance[index];
                     const actualLineNumber = analysis.rhymeScheme.lineNumbers[index];
                     const isHighlightedFromEditor = editorHoveredLine === actualLineNumber;
+                    const matchingLines = (analysis.rhymeScheme.rhymeGroups.get(detectedLetter) || [])
+                      .filter(lineNum => lineNum !== actualLineNumber);
 
                     // Determine match status
                     let matchStatus: 'match' | 'slant' | 'mismatch' | 'none' = 'none';
@@ -1722,9 +1724,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                           <>
                             <span className="rhyme-col-expected rhyme-letter">{expectedLetter || '—'}</span>
                             <span className={`rhyme-col-status rhyme-status-${matchStatus}`}>
-                              {matchStatus === 'match' && '●'}
-                              {matchStatus === 'slant' && '◐'}
-                              {matchStatus === 'mismatch' && '○'}
+                              {matchingLines.length > 0 ? matchingLines.join(', ') : '—'}
                             </span>
                           </>
                         )}

@@ -1412,7 +1412,7 @@
 
 .rhyme-comparison-header {
   display: grid;
-  grid-template-columns: 40px 1fr 60px 60px 50px;
+  grid-template-columns: 40px minmax(90px, 1fr) 60px 60px minmax(80px, 1fr);
   gap: 8px;
   padding: 8px 12px;
   background: #f5f5f5;
@@ -1428,7 +1428,7 @@
 
 .rhyme-comparison-row {
   display: grid;
-  grid-template-columns: 40px 1fr 60px 60px 50px;
+  grid-template-columns: 40px minmax(90px, 1fr) 60px 60px minmax(80px, 1fr);
   gap: 8px;
   padding: 10px 12px;
   border-radius: 6px;
@@ -1471,9 +1471,8 @@
   font-size: 13px;
   color: #333;
   font-style: italic;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .rhyme-col-detected,
