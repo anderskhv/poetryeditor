@@ -34,7 +34,9 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
   const [wordInfoError, setWordInfoError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const slowTimerRef = useRef<number | null>(null);
+  const hardTimeoutRef = useRef<number | null>(null);
   const wordRef = useRef<string>(word);
+  const requestIdRef = useRef<number>(0);
 
   const stresses = getStressPattern(word);
   const syllableCount = stresses.length;
@@ -104,10 +106,23 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     if (slowTimerRef.current) {
       window.clearTimeout(slowTimerRef.current);
     }
+    if (hardTimeoutRef.current) {
+      window.clearTimeout(hardTimeoutRef.current);
+      hardTimeoutRef.current = null;
+    }
     const requestWord = word;
+    requestIdRef.current += 1;
+    const requestId = requestIdRef.current;
     slowTimerRef.current = window.setTimeout(() => {
       setWordInfoSlow(true);
     }, 2000);
+
+    hardTimeoutRef.current = window.setTimeout(() => {
+      if (requestId !== requestIdRef.current) return;
+      setLoadingWordInfo(false);
+      setWordInfoLoaded(true);
+      setWordInfoError('Definition service timed out. Try again.');
+    }, 6500);
 
     fetchWordInfo(word).then((result) => {
       if (slowTimerRef.current) {
@@ -115,12 +130,17 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
         slowTimerRef.current = null;
       }
       if (requestWord !== wordRef.current) return;
+      if (requestId !== requestIdRef.current) return;
+      if (hardTimeoutRef.current) {
+        window.clearTimeout(hardTimeoutRef.current);
+        hardTimeoutRef.current = null;
+      }
       if (result) {
         setWordOrigin(result.origin);
         setWordDefinitions(result.definitions);
         setPronunciation(result.pronunciation);
       } else {
-        setWordInfoError('Definition service is slow. Try again.');
+        setWordInfoError('Definition service is unavailable. Try again.');
       }
       setWordInfoLoaded(true);
       setLoadingWordInfo(false);
@@ -138,6 +158,9 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     return () => {
       if (slowTimerRef.current) {
         window.clearTimeout(slowTimerRef.current);
+      }
+      if (hardTimeoutRef.current) {
+        window.clearTimeout(hardTimeoutRef.current);
       }
     };
   }, []);
@@ -395,7 +418,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
           {activeTab === 'origin' && (
             <div className="word-popup-section">
               {loadingWordInfo ? (
-                <p className="loading">{wordInfoSlow ? 'Still loading definitions...' : 'Loading definitions...'}</p>
+                <p className="loading">{wordInfoSlow ? 'Still loading definition...' : 'Loading definition...'}</p>
               ) : wordOrigin || wordDefinitions.length > 0 ? (
                 <div className="word-origin">
                   {wordDefinitions.length > 0 && (
@@ -450,6 +473,10 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
 }
   useEffect(() => {
     wordRef.current = word;
+    if (hardTimeoutRef.current) {
+      window.clearTimeout(hardTimeoutRef.current);
+      hardTimeoutRef.current = null;
+    }
     setRhymes([]);
     setNearRhymes([]);
     setSynonyms([]);
