@@ -928,8 +928,8 @@
 }
 
 
-/* First line indent - adds indent to each line in the editor */
-.poetry-editor-container.first-line-indent .view-line {
+/* First line indent - applied via Monaco line decorations */
+.line-first-indent {
   text-indent: 2em;
 }
 

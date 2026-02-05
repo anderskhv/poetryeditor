@@ -775,6 +775,26 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       }
     }
 
+    // First line indent per paragraph
+    if (firstLineIndent) {
+      const lines = currentText.split('\n');
+      lines.forEach((line, index) => {
+        const lineNumber = index + 1;
+        const trimmed = line.trim();
+        if (trimmed.length === 0) return;
+        const prevLine = index === 0 ? '' : lines[index - 1].trim();
+        if (index !== 0 && prevLine.length > 0) return;
+
+        newDecorations.push({
+          range: new monacoRef.current!.Range(lineNumber, 1, lineNumber, line.length + 1),
+          options: {
+            className: 'line-first-indent',
+            isWholeLine: true,
+          },
+        });
+      });
+    }
+
     // Word-level highlighting for rhymes and sound patterns - ALWAYS applies on top of other decorations
     if (highlightedWords && highlightedWords.length > 0) {
       const lines = currentText.split('\n');
