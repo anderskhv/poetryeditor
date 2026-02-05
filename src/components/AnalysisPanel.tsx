@@ -167,7 +167,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
     const detectedMeter = detectMeter(text);
     const meterConsistency = analyzeMeterConsistency(text);
     const isHaikuPoem = isHaiku(text);
-    const repetitionResults = analyzeRepetition(words);
+    const repetitionResults = analyzeRepetition(words, text);
     const rhythmVariation = analyzeRhythmVariation(syllableCounts);
     const lineLengthConsistency = analyzeLineLengthConsistency(text);
     const punctuationPatterns = analyzePunctuationPatterns(text);

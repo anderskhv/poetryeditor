@@ -33,15 +33,23 @@ const FUNCTION_WORDS = new Set([
  * Analyze word repetition in the text
  * Returns words that appear 3+ times (excluding common function words)
  */
-export function analyzeRepetition(words: WordInfo[]): RepetitionResult[] {
+export function analyzeRepetition(words: WordInfo[], text: string = ''): RepetitionResult[] {
   const wordCounts = new Map<string, { count: number; positions: number[] }>();
 
   words.forEach(word => {
     const lower = word.word.toLowerCase();
 
-    // Skip function words
-    if (FUNCTION_WORDS.has(lower)) {
-      return;
+    // Only consider words with 2+ letters, except 'a' and 'I' (if followed by a space)
+    if (lower.length < 2) {
+      const isAllowedSingle = lower === 'a' || lower === 'i';
+      if (!isAllowedSingle) return;
+      const nextChar = text[word.endOffset] || '';
+      if (nextChar !== ' ') return;
+    } else {
+      // Skip function words
+      if (FUNCTION_WORDS.has(lower)) {
+        return;
+      }
     }
 
     if (!wordCounts.has(lower)) {
