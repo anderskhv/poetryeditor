@@ -262,7 +262,8 @@
   margin-bottom: 28px;
 }
 
-.rhyme-syllable-group h2 {
+.rhyme-syllable-group h2,
+.rhyme-topic-group h2 {
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 500;
@@ -272,6 +273,10 @@
   margin: 0 0 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--color-border);
+}
+
+.rhyme-topic-group {
+  margin-bottom: 28px;
 }
 
 .rhyme-word-list {

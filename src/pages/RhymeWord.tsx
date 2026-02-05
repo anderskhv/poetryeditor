@@ -7,11 +7,13 @@ import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables }
 import { getRhymeOriginalityScore } from '../utils/rhymeCliches';
 import { DefinitionTooltip } from '../components/DefinitionTooltip';
 import { getWordEnhancement } from '../data/wordEnhancements';
+import { rhymeCategories } from './RhymeCategoryPage';
 import './RhymeWord.css';
 
 type MeterFilter = 'all' | 'iambic' | 'trochaic';
 type OriginalityFilter = 'all' | 'original' | 'fresh' | 'common' | 'overused' | 'cliche';
 type WordTypeFilter = 'all' | 'noun' | 'verb' | 'adjective' | 'adverb';
+type SortMode = 'syllables' | 'topic';
 
 // Map Datamuse tags to human-readable labels
 const POS_LABELS: Record<string, string> = {
@@ -22,6 +24,12 @@ const POS_LABELS: Record<string, string> = {
   u: 'unknown',
   prop: 'proper noun',
 };
+
+const RHYME_CATEGORY_LIST = Object.entries(rhymeCategories).map(([key, data]) => ({
+  key,
+  title: data.title,
+  words: new Set(data.words.map(word => word.toLowerCase())),
+}));
 
 // Get word type from parts of speech array
 function getWordType(partsOfSpeech?: string[]): string {
@@ -46,6 +54,7 @@ export function RhymeWord() {
   const [meterFilter, setMeterFilter] = useState<MeterFilter>('all');
   const [originalityFilter, setOriginalityFilter] = useState<OriginalityFilter>('all');
   const [wordTypeFilter, setWordTypeFilter] = useState<WordTypeFilter>('all');
+  const [sortMode, setSortMode] = useState<SortMode>('syllables');
 
   const decodedWord = word ? decodeURIComponent(word).toLowerCase() : '';
   const topicTerm = topicWord.trim().toLowerCase();
@@ -102,6 +111,46 @@ export function RhymeWord() {
       acc[sylCount].push(rhyme);
       return acc;
     }, {} as Record<number, RhymeWordType[]>);
+  };
+
+  const groupByTopic = (rhymes: RhymeWordType[]) => {
+    const groups = new Map<string, RhymeWordType[]>();
+
+    rhymes.forEach((rhyme) => {
+      const lowerWord = rhyme.word.toLowerCase();
+      const category = RHYME_CATEGORY_LIST.find((entry) => entry.words.has(lowerWord));
+      const groupKey = category ? category.key : 'other';
+      const current = groups.get(groupKey) ?? [];
+      current.push(rhyme);
+      groups.set(groupKey, current);
+    });
+
+    const orderedGroups = RHYME_CATEGORY_LIST
+      .filter(entry => groups.has(entry.key))
+      .map(entry => ({
+        key: entry.key,
+        title: entry.title,
+        items: groups.get(entry.key) ?? [],
+      }));
+
+    if (groups.has('other')) {
+      orderedGroups.push({
+        key: 'other',
+        title: 'Other',
+        items: groups.get('other') ?? [],
+      });
+    }
+
+    orderedGroups.forEach(group => {
+      group.items.sort((a, b) => {
+        const aSyl = a.numSyllables || 0;
+        const bSyl = b.numSyllables || 0;
+        if (aSyl !== bSyl) return aSyl - bSyl;
+        return a.word.localeCompare(b.word);
+      });
+    });
+
+    return orderedGroups;
   };
 
   // Check if a word fits a specific meter pattern
@@ -187,9 +236,16 @@ export function RhymeWord() {
       variants: getWordVariants(rhyme.word, rhyme.partsOfSpeech || []),
     }));
 
-  const groupedPerfect = groupBySyllables(withVariants(filteredPerfect));
-  const groupedNear = groupBySyllables(withVariants(filteredNear));
+  const perfectWithVariants = withVariants(filteredPerfect);
+  const nearWithVariants = withVariants(filteredNear);
+
+  const groupedPerfect = groupBySyllables(perfectWithVariants);
+  const groupedNear = groupBySyllables(nearWithVariants);
+  const groupedPerfectByTopic = groupByTopic(perfectWithVariants);
+  const groupedNearByTopic = groupByTopic(nearWithVariants);
+
   const activeResults = activeTab === 'perfect' ? groupedPerfect : groupedNear;
+  const activeTopicGroups = activeTab === 'perfect' ? groupedPerfectByTopic : groupedNearByTopic;
 
   // Get related words for internal linking - more varied selection
   const topRhymes = perfectRhymes
@@ -342,6 +398,18 @@ export function RhymeWord() {
                 </select>
               </div>
 
+              <div className="filter-item">
+                <label className="filter-label">Group</label>
+                <select
+                  value={sortMode}
+                  onChange={(e) => setSortMode(e.target.value as SortMode)}
+                  className="filter-select"
+                >
+                  <option value="syllables">Syllables</option>
+                  <option value="topic">Topic</option>
+                </select>
+              </div>
+
               {topicTerm && (
                 <div className="filter-item filter-topic-pill">
                   <span className="filter-label">Topic</span>
@@ -365,14 +433,21 @@ export function RhymeWord() {
               )}
             </div>
 
-            {Object.keys(activeResults).length === 0 ? (
+            {sortMode === 'syllables' && Object.keys(activeResults).length === 0 ? (
               <div className="rhyme-no-results">
                 No {activeTab === 'perfect' ? 'perfect' : 'near'} rhymes found for "{decodedWord}".
                 {activeTab === 'perfect' && nearRhymes.length > 0 && (
                   <> Try <button onClick={() => setActiveTab('near')} className="link-button">near rhymes</button> instead.</>
                 )}
               </div>
-            ) : (
+            ) : sortMode === 'topic' && activeTopicGroups.length === 0 ? (
+              <div className="rhyme-no-results">
+                No {activeTab === 'perfect' ? 'perfect' : 'near'} rhymes found for "{decodedWord}".
+                {activeTab === 'perfect' && nearRhymes.length > 0 && (
+                  <> Try <button onClick={() => setActiveTab('near')} className="link-button">near rhymes</button> instead.</>
+                )}
+              </div>
+            ) : sortMode === 'syllables' ? (
               <div className="rhyme-results">
                 {Object.keys(activeResults)
                   .sort((a, b) => Number(a) - Number(b))
@@ -424,6 +499,48 @@ export function RhymeWord() {
                       </div>
                     </div>
                   ))}
+              </div>
+            ) : (
+              <div className="rhyme-results topic-groups">
+                {activeTopicGroups.map((group) => (
+                  <div key={group.key} className="rhyme-topic-group">
+                    <h2>{group.title}</h2>
+                    <div className="rhyme-word-list">
+                      {group.items
+                        .filter(r => !r.word.includes(' '))
+                        .map((rhyme, idx) => {
+                          const rarityClass = rhyme.score > 5000 ? 'common' : rhyme.score > 1000 ? '' : 'rare';
+                          const variants = (rhyme as RhymeWordType & { variants?: string[] }).variants || [];
+
+                          return (
+                            <div key={idx} className="rhyme-word-stack">
+                              <DefinitionTooltip word={rhyme.word}>
+                                <Link
+                                  to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
+                                  className={`rhyme-word-item ${rarityClass}`}
+                                >
+                                  {rhyme.word}
+                                </Link>
+                              </DefinitionTooltip>
+                              {variants.length > 0 && (
+                                <div className="rhyme-variants">
+                                  {variants.slice(0, 4).map(variant => (
+                                    <Link
+                                      key={variant}
+                                      to={`/rhymes/${encodeURIComponent(variant)}`}
+                                      className="rhyme-variant-pill"
+                                    >
+                                      {variant}
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
