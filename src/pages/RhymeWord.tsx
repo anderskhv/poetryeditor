@@ -35,6 +35,7 @@ function getWordType(partsOfSpeech?: string[]): string {
 
 export function RhymeWord() {
   const { word } = useParams<{ word: string }>();
+  const [topicWord, setTopicWord] = useState('');
   const [perfectRhymes, setPerfectRhymes] = useState<RhymeWordType[]>([]);
   const [nearRhymes, setNearRhymes] = useState<RhymeWordType[]>([]);
   const [synonyms, setSynonyms] = useState<SynonymWord[]>([]);
@@ -47,6 +48,7 @@ export function RhymeWord() {
   const [wordTypeFilter, setWordTypeFilter] = useState<WordTypeFilter>('all');
 
   const decodedWord = word ? decodeURIComponent(word).toLowerCase() : '';
+  const topicTerm = topicWord.trim().toLowerCase();
   const stresses = getStressPattern(decodedWord);
   const syllables = getSyllables(decodedWord);
   const syllableCount = stresses.length || syllables.length;
@@ -171,8 +173,13 @@ export function RhymeWord() {
     );
   };
 
-  const filteredPerfect = applyAllFilters(perfectRhymes);
-  const filteredNear = applyAllFilters(nearRhymes);
+  const applyTopicFilter = (rhymes: RhymeWordType[]): RhymeWordType[] => {
+    if (!topicTerm) return rhymes;
+    return rhymes.filter(r => r.word.toLowerCase().includes(topicTerm));
+  };
+
+  const filteredPerfect = applyTopicFilter(applyAllFilters(perfectRhymes));
+  const filteredNear = applyTopicFilter(applyAllFilters(nearRhymes));
 
   const groupedPerfect = groupBySyllables(filteredPerfect);
   const groupedNear = groupBySyllables(filteredNear);
@@ -231,6 +238,18 @@ export function RhymeWord() {
         </nav>
 
         <h1>Words That Rhyme with {displayWord}</h1>
+
+        <div className="rhyme-topic-row">
+          <label className="rhyme-topic-label" htmlFor="rhyme-topic-input">Topic</label>
+          <input
+            id="rhyme-topic-input"
+            type="text"
+            value={topicWord}
+            onChange={(e) => setTopicWord(e.target.value)}
+            placeholder="Type a topic (optional)"
+            className="rhyme-topic-input"
+          />
+        </div>
 
         {syllableCount > 0 && (
           <div className="word-info">
@@ -317,13 +336,21 @@ export function RhymeWord() {
                 </select>
               </div>
 
-              {(meterFilter !== 'all' || originalityFilter !== 'all' || wordTypeFilter !== 'all') && (
+              {topicTerm && (
+                <div className="filter-item filter-topic-pill">
+                  <span className="filter-label">Topic</span>
+                  <span className="topic-pill">{topicTerm}</span>
+                </div>
+              )}
+
+              {(meterFilter !== 'all' || originalityFilter !== 'all' || wordTypeFilter !== 'all' || topicTerm) && (
                 <button
                   type="button"
                   onClick={() => {
                     setMeterFilter('all');
                     setOriginalityFilter('all');
                     setWordTypeFilter('all');
+                    setTopicWord('');
                   }}
                   className="clear-filters-btn"
                 >

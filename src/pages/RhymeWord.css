@@ -5,6 +5,52 @@
   margin: 0 auto;
 }
 
+.rhyme-topic-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 20px;
+  flex-wrap: wrap;
+}
+
+.rhyme-topic-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rhyme-topic-input {
+  flex: 1 1 260px;
+  min-width: 200px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-paper);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+
+.rhyme-topic-input:focus {
+  outline: none;
+  border-color: var(--color-text-secondary);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.filter-topic-pill {
+  gap: 6px;
+}
+
+.topic-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--color-highlight-subtle);
+  color: var(--color-text-primary);
+  font-size: 12px;
+}
+
 /* Breadcrumb */
 .rhyme-breadcrumb {
   font-family: var(--font-sans);
