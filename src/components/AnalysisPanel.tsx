@@ -1624,6 +1624,9 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
     </div>
   );
 
+  const hasDetectedRhymes = Array.from(analysis.rhymeScheme.rhymeGroups.values())
+    .some(group => group.length > 1);
+
   const rhymeSchemeSection = (
     <div key="rhyme-scheme" className="analysis-section collapsible">
       <h3 onClick={() => toggleSection('rhymeScheme')} className={`collapsible-header ${analysis.activeForm && isConstrained(analysis.activeForm, 'rhymeScheme') ? 'constrained' : ''}`}>
@@ -1634,13 +1637,18 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
       </h3>
       {expandedSection === 'rhymeScheme' && (
         <div className="rhyme-scheme-info">
-          {/* For free verse, show "Not available" message */}
-          {analysis.activeForm === 'Free Verse' ? (
+          {/* For free verse, only hide when no rhymes are detected */}
+          {analysis.activeForm === 'Free Verse' && !hasDetectedRhymes ? (
             <div className="free-verse-note">
               Rhyme scheme analysis is not available for free verse. Free verse does not follow a predetermined rhyme pattern.
             </div>
           ) : (
             <>
+              {analysis.activeForm === 'Free Verse' && (
+                <div className="free-verse-note">
+                  Free verse can still use rhyme. Showing detected pattern for this poem.
+                </div>
+              )}
               {/* Show fit to scheme for structured forms */}
               {analysis.expectedPattern && (
                 <div className="fit-to-scheme">
