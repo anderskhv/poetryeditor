@@ -16,6 +16,8 @@ export type WordRange = {
   endColumn: number;
 };
 
+type EditorSelection = ReturnType<editor.IStandaloneCodeEditor['getSelection']>;
+
 interface PoetryEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -106,7 +108,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   } | null>(null);
   const [showCopyToast, setShowCopyToast] = useState(false);
   const copyToastTimerRef = useRef<number | null>(null);
-  const lastSelectionRef = useRef<editor.ISelection | null>(null);
+  const lastSelectionRef = useRef<EditorSelection>(null);
   const restoreSelectionRef = useRef(false);
 
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {

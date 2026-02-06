@@ -42,6 +42,27 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
   const syllableCount = stresses.length;
   const syllables = getSyllables(word);
 
+  useEffect(() => {
+    wordRef.current = word;
+    if (hardTimeoutRef.current) {
+      window.clearTimeout(hardTimeoutRef.current);
+      hardTimeoutRef.current = null;
+    }
+    setRhymes([]);
+    setNearRhymes([]);
+    setSynonyms([]);
+    setLoadingRhymes(false);
+    setLoadingNearRhymes(false);
+    setLoadingSynonyms(false);
+    setWordOrigin(null);
+    setWordDefinitions([]);
+    setPronunciation(null);
+    setLoadingWordInfo(false);
+    setWordInfoLoaded(false);
+    setWordInfoSlow(false);
+    setWordInfoError(null);
+  }, [word]);
+
   // Group rhymes by syllable count
   const groupedRhymes: GroupedWords<RhymeWord> = rhymes.reduce((acc, rhyme) => {
     const sylCount = rhyme.numSyllables || 0;
@@ -471,23 +492,3 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     </>
   );
 }
-  useEffect(() => {
-    wordRef.current = word;
-    if (hardTimeoutRef.current) {
-      window.clearTimeout(hardTimeoutRef.current);
-      hardTimeoutRef.current = null;
-    }
-    setRhymes([]);
-    setNearRhymes([]);
-    setSynonyms([]);
-    setLoadingRhymes(false);
-    setLoadingNearRhymes(false);
-    setLoadingSynonyms(false);
-    setWordOrigin(null);
-    setWordDefinitions([]);
-    setPronunciation(null);
-    setLoadingWordInfo(false);
-    setWordInfoLoaded(false);
-    setWordInfoSlow(false);
-    setWordInfoError(null);
-  }, [word]);
