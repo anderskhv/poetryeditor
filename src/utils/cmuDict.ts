@@ -12,6 +12,11 @@ export interface Pronunciation {
 let dictionaryCache: Map<string, Pronunciation[]> | null = null;
 let isLoading = false;
 let loadPromise: Promise<void> | null = null;
+let rhymeIndexCache: {
+  perfect: Map<string, string[]>;
+  near: Map<string, string[]>;
+  spelling: Map<string, string[]>;
+} | null = null;
 
 /**
  * Load the CMU dictionary from the public folder
@@ -31,6 +36,7 @@ export async function loadCMUDictionary(): Promise<void> {
       const response = await fetch('/cmudict.dict');
       const text = await response.text();
       dictionaryCache = parseCMUDict(text);
+      rhymeIndexCache = null;
       isLoading = false;
     } catch (error) {
       console.error('Failed to load CMU dictionary:', error);
@@ -156,6 +162,7 @@ export function getAllStressPatterns(word: string): number[][] {
  */
 export function injectDictionary(dict: Map<string, Pronunciation[]>): void {
   dictionaryCache = dict;
+  rhymeIndexCache = null;
 }
 
 /**
@@ -164,7 +171,7 @@ export function injectDictionary(dict: Map<string, Pronunciation[]>): void {
  */
 export function getSyllables(word: string): string[] {
   const pronunciations = getPronunciations(word);
-  if (pronunciations.length === 0) return [];
+  if (pronunciations.length === 0) return estimateSyllables(word);
 
   // Prefer the pronunciation with the most syllables (better for poetry)
   const sorted = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length);
@@ -284,6 +291,208 @@ export function getRhymePhonemes(word: string): string[] | null {
 
   // Return phonemes from the stressed vowel to the end (normalized without stress numbers)
   return phones.slice(lastStressIndex).map(p => p.replace(/[012]$/, ''));
+}
+
+function getRhymeKeyFromPhones(phones: string[]): string | null {
+  let lastStressIndex = -1;
+  for (let i = phones.length - 1; i >= 0; i--) {
+    if (/[12]$/.test(phones[i])) {
+      lastStressIndex = i;
+      break;
+    }
+  }
+  if (lastStressIndex === -1) {
+    for (let i = phones.length - 1; i >= 0; i--) {
+      if (/[012]$/.test(phones[i])) {
+        lastStressIndex = i;
+        break;
+      }
+    }
+  }
+  if (lastStressIndex === -1) return null;
+  return phones.slice(lastStressIndex).map(p => p.replace(/[012]$/, '')).join('-');
+}
+
+function getNearKeyFromPhones(phones: string[]): string | null {
+  for (let i = phones.length - 1; i >= 0; i--) {
+    if (/[012]$/.test(phones[i])) {
+      return phones[i].replace(/[012]$/, '');
+    }
+  }
+  return null;
+}
+
+function getSpellingRhymeKey(word: string): string | null {
+  const cleaned = word.toLowerCase().replace(/[^a-z]/g, '');
+  if (cleaned.length < 3) return null;
+  const vowelMatch = cleaned.match(/([aeiouy]+[^aeiouy]*)$/);
+  if (vowelMatch) return vowelMatch[1];
+  return cleaned.slice(-3);
+}
+
+function buildRhymeIndex() {
+  if (!dictionaryCache) {
+    return {
+      perfect: new Map<string, string[]>(),
+      near: new Map<string, string[]>(),
+      spelling: new Map<string, string[]>(),
+    };
+  }
+
+  const perfect = new Map<string, string[]>();
+  const near = new Map<string, string[]>();
+  const spelling = new Map<string, string[]>();
+
+  for (const [word, pronunciations] of dictionaryCache.entries()) {
+    if (!pronunciations || pronunciations.length === 0) continue;
+    const best = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length)[0];
+    const perfectKey = getRhymeKeyFromPhones(best.phones);
+    const nearKey = getNearKeyFromPhones(best.phones);
+    const spellingKey = getSpellingRhymeKey(word);
+
+    if (perfectKey) {
+      const list = perfect.get(perfectKey) ?? [];
+      list.push(word);
+      perfect.set(perfectKey, list);
+    }
+
+    if (nearKey) {
+      const list = near.get(nearKey) ?? [];
+      list.push(word);
+      near.set(nearKey, list);
+    }
+
+    if (spellingKey) {
+      const list = spelling.get(spellingKey) ?? [];
+      list.push(word);
+      spelling.set(spellingKey, list);
+    }
+  }
+
+  return { perfect, near, spelling };
+}
+
+function ensureRhymeIndex() {
+  if (!rhymeIndexCache) {
+    rhymeIndexCache = buildRhymeIndex();
+  }
+  return rhymeIndexCache;
+}
+
+export function getPerfectRhymesOffline(word: string, limit = 200): string[] {
+  const pronunciations = getPronunciations(word);
+  if (pronunciations.length === 0) return [];
+  const best = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length)[0];
+  const key = getRhymeKeyFromPhones(best.phones);
+  if (!key) return [];
+  const { perfect } = ensureRhymeIndex();
+  const results = perfect.get(key) ?? [];
+  return results.filter(w => w !== word).slice(0, limit);
+}
+
+export function getNearRhymesOffline(word: string, limit = 200): string[] {
+  const pronunciations = getPronunciations(word);
+  if (pronunciations.length === 0) return [];
+  const best = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length)[0];
+  const nearKey = getNearKeyFromPhones(best.phones);
+  if (!nearKey) return [];
+  const { near } = ensureRhymeIndex();
+  const results = near.get(nearKey) ?? [];
+  return results.filter(w => w !== word).slice(0, limit);
+}
+
+export function getSpellingRhymesOffline(word: string, limit = 200): string[] {
+  const key = getSpellingRhymeKey(word);
+  if (!key) return [];
+  const { spelling } = ensureRhymeIndex();
+  const results = spelling.get(key) ?? [];
+  return results.filter(w => w !== word).slice(0, limit);
+}
+
+export function estimateSyllableCount(word: string): number {
+  const cleaned = word.toLowerCase().replace(/[^a-z]/g, '');
+  if (!cleaned) return 0;
+
+  const vowels = 'aeiouy';
+  let count = 0;
+  let prevWasVowel = false;
+
+  for (let i = 0; i < cleaned.length; i++) {
+    const isVowel = vowels.includes(cleaned[i]);
+    if (isVowel && !prevWasVowel) {
+      count += 1;
+    }
+    prevWasVowel = isVowel;
+  }
+
+  if (cleaned.endsWith('e') && !cleaned.endsWith('le') && count > 1) {
+    count -= 1;
+  }
+
+  if (cleaned.startsWith('y')) {
+    count = Math.max(1, count);
+  }
+
+  const splitPairs = cleaned.match(/(ia|io|eo|ua|ui|iu|ya|yo|ye)/g);
+  if (splitPairs) {
+    count += splitPairs.length;
+  }
+
+  return Math.max(1, count);
+}
+
+export function getSyllableCount(word: string): number {
+  const stresses = getStressPattern(word);
+  if (stresses.length > 0) return stresses.length;
+  return estimateSyllableCount(word);
+}
+
+export function estimateSyllables(word: string): string[] {
+  const cleaned = word.toLowerCase().replace(/[^a-z]/g, '');
+  if (!cleaned) return [];
+  const vowels = 'aeiouy';
+  const syllables: string[] = [];
+  let current = '';
+
+  for (let i = 0; i < cleaned.length; i++) {
+    const char = cleaned[i];
+    const isVowel = vowels.includes(char);
+    const nextIsVowel = i < cleaned.length - 1 && vowels.includes(cleaned[i + 1]);
+    current += char;
+    if (isVowel && !nextIsVowel) {
+      syllables.push(current);
+      current = '';
+    }
+  }
+
+  if (current) {
+    if (syllables.length === 0) {
+      syllables.push(current);
+    } else {
+      syllables[syllables.length - 1] += current;
+    }
+  }
+
+  if (syllables.length > 1 && syllables[syllables.length - 1] === 'e' && !cleaned.endsWith('le')) {
+    syllables.pop();
+  }
+
+  const splitPatterns = /(ia|io|eo|ua|ui|iu|ya|yo|ye)/;
+  const expanded: string[] = [];
+  for (const syl of syllables) {
+    const match = syl.match(splitPatterns);
+    if (match && syl.length > 2) {
+      const idx = syl.indexOf(match[0]);
+      const left = syl.slice(0, idx + 1);
+      const right = syl.slice(idx + 1);
+      if (left) expanded.push(left);
+      if (right) expanded.push(right);
+    } else {
+      expanded.push(syl);
+    }
+  }
+
+  return expanded;
 }
 
 /**

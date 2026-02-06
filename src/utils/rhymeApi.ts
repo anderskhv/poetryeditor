@@ -4,7 +4,7 @@
  */
 
 import nlp from 'compromise';
-import { getRhymePhonemes } from './cmuDict';
+import { getRhymePhonemes, getPerfectRhymesOffline, getNearRhymesOffline, getSpellingRhymesOffline, getSyllableCount, isDictionaryLoaded, loadCMUDictionary } from './cmuDict';
 
 /**
  * Fast rhyme quality calculation - reuses source phonemes
@@ -91,40 +91,22 @@ export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
   try {
     console.log(`Fetching perfect rhymes for: ${word}`);
 
-    // Add md=p to get parts of speech metadata
-    const response = await fetch(
-      `https://api.datamuse.com/words?rel_rhy=${encodeURIComponent(word)}&md=p&max=50`,
-      {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      }
-    );
-
-    if (!response.ok) {
-      console.error(`Rhyme API response not OK: ${response.status} ${response.statusText}`);
-      throw new Error('Failed to fetch rhymes');
+    if (!isDictionaryLoaded()) {
+      await loadCMUDictionary();
     }
 
-    const data = await response.json();
-    console.log(`Received ${data.length} perfect rhymes for "${word}"`);
-
-    // Get source word phonemes once, then reuse for all comparisons
     const sourcePhonemes = getRhymePhonemes(word);
+    const offlineRhymes = getPerfectRhymesOffline(word, 200);
+    console.log(`Received ${offlineRhymes.length} offline perfect rhymes for "${word}"`);
 
-    // Calculate rhyme quality for each word using CMU dictionary phonetics
-    // Also extract parts of speech from tags
-    const rhymesWithQuality = data.map((item: any) => {
-      // Extract parts of speech from tags (e.g., ["n", "v"])
-      const partsOfSpeech = item.tags?.filter((tag: string) =>
-        ['n', 'v', 'adj', 'adv', 'u', 'prop'].includes(tag)
-      ) || [];
-
+    const rhymesWithQuality = offlineRhymes.map((rhymeWord) => {
+      const score = Math.max(100, 5000 - rhymeWord.length * 100);
       return {
-        word: item.word,
-        score: item.score || 0,
-        numSyllables: item.numSyllables,
-        rhymeQuality: calculateRhymeQualityFast(sourcePhonemes, item.word),
-        partsOfSpeech,
+        word: rhymeWord,
+        score,
+        numSyllables: getSyllableCount(rhymeWord),
+        rhymeQuality: calculateRhymeQualityFast(sourcePhonemes, rhymeWord),
+        partsOfSpeech: [],
       };
     });
 
@@ -152,55 +134,24 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
   try {
     console.log(`Fetching near rhymes and slant rhymes for: ${word}`);
 
-    // First try near rhymes endpoint with parts of speech metadata
-    const nearResponse = await fetch(
-      `https://api.datamuse.com/words?rel_nry=${encodeURIComponent(word)}&md=p&max=100`,
-      {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      }
-    );
-
-    if (!nearResponse.ok) {
-      console.error(`Near rhyme API response not OK: ${nearResponse.status} ${nearResponse.statusText}`);
-      throw new Error('Failed to fetch near rhymes');
+    if (!isDictionaryLoaded()) {
+      await loadCMUDictionary();
     }
 
-    let nearData = await nearResponse.json();
-    console.log(`Received ${nearData.length} near rhymes for "${word}"`);
+    const nearRhymes = getNearRhymesOffline(word, 200);
+    const spellingRhymes = getSpellingRhymesOffline(word, 200);
+    const combined = Array.from(new Set([...nearRhymes, ...spellingRhymes]))
+      .filter(rhyme => rhyme !== word);
 
-    // If no near rhymes found, try sounds-like as fallback
-    if (nearData.length === 0) {
-      console.log(`No near rhymes found, trying sounds-like fallback for: ${word}`);
-      const slResponse = await fetch(
-        `https://api.datamuse.com/words?sl=${encodeURIComponent(word)}&md=p&max=100`,
-        {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' }
-        }
-      );
+    console.log(`Received ${combined.length} offline near/slant rhymes for "${word}"`);
 
-      if (slResponse.ok) {
-        const slData = await slResponse.json();
-        // Filter out exact matches and homophones (score 100)
-        nearData = slData.filter((item: any) =>
-          item.word.toLowerCase() !== word.toLowerCase() && item.score < 100
-        );
-        console.log(`Received ${nearData.length} sounds-like words for "${word}"`);
-      }
-    }
-
-    return nearData.map((item: any) => {
-      // Extract parts of speech from tags
-      const partsOfSpeech = item.tags?.filter((tag: string) =>
-        ['n', 'v', 'adj', 'adv', 'u', 'prop'].includes(tag)
-      ) || [];
-
+    return combined.map((rhymeWord) => {
+      const score = Math.max(100, 4000 - rhymeWord.length * 80);
       return {
-        word: item.word,
-        score: item.score || 0,
-        numSyllables: item.numSyllables,
-        partsOfSpeech,
+        word: rhymeWord,
+        score,
+        numSyllables: getSyllableCount(rhymeWord),
+        partsOfSpeech: [],
       };
     });
   } catch (error) {
