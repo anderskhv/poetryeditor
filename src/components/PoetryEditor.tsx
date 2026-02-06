@@ -116,7 +116,8 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     const editorInstance = editorRef.current;
     if (!editorInstance || !containerRef.current) return;
     const domNode = editorInstance.getDomNode();
-    const linesContent = domNode?.querySelector('.lines-content') as HTMLElement | null;
+    const linesContent = (domNode?.querySelector('.lines-content') as HTMLElement | null)
+      || (domNode?.querySelector('.view-lines') as HTMLElement | null);
     const editorSurface = domNode?.querySelector('.monaco-editor') as HTMLElement | null;
     if (!linesContent || !editorSurface) return;
 
@@ -126,11 +127,21 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       const editorCenter = editorRect.left + editorRect.width / 2;
       const linesCenter = linesRect.left + linesRect.width / 2;
       const centerShift = editorCenter - linesCenter;
-      linesContent.style.position = 'relative';
-      linesContent.style.left = `${centerShift}px`;
+      const baseTransform =
+        linesContent.dataset.baseTransform
+        || linesContent.style.transform
+        || getComputedStyle(linesContent).transform;
+      if (!linesContent.dataset.baseTransform) {
+        linesContent.dataset.baseTransform = baseTransform && baseTransform !== 'none' ? baseTransform : '';
+      }
+      const safeBase = linesContent.dataset.baseTransform || '';
+      linesContent.style.transform = `${safeBase} translateX(${centerShift}px)`;
     } else {
-      linesContent.style.left = '';
-      linesContent.style.position = '';
+      if (linesContent.dataset.baseTransform) {
+        linesContent.style.transform = linesContent.dataset.baseTransform;
+      } else {
+        linesContent.style.transform = '';
+      }
     }
   };
 
