@@ -472,7 +472,6 @@ export function assessRhymeQuality(word1: string, word2: string): 'perfect' | 's
  * Returns true if they share the same ending sounds (perfect or slant rhyme)
  * @internal Used by internal logic, exported assessRhymeQuality is preferred
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function _doWordsRhyme(word1: string, word2: string): boolean {
   const quality = assessRhymeQuality(word1, word2);
   return quality === 'perfect' || quality === 'slant';
@@ -482,7 +481,11 @@ function _doWordsRhyme(word1: string, word2: string): boolean {
  * Normalize a line for comparison (lowercase, trim, remove punctuation)
  */
 function normalizeLine(line: string): string {
-  return line.toLowerCase().trim().replace(/[.,!?;:'")\]}>—–-]+$/, '').replace(/^['"(\[{<—–-]+/, '');
+  return line
+    .toLowerCase()
+    .trim()
+    .replace(/[.,!?;:'")\]}>—–-]+$/, '')
+    .replace(/^[['"({<—–-]+/, '');
 }
 
 /**
@@ -490,7 +493,6 @@ function normalizeLine(line: string): string {
  * This is important for villanelle detection where repeating lines should rhyme with themselves
  * @internal Used internally, detectRefrains is the main API
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function _areLinesIdentical(line1: string, line2: string): boolean {
   const norm1 = normalizeLine(line1);
   const norm2 = normalizeLine(line2);

@@ -480,7 +480,7 @@ function App() {
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/\"/g, '&quot;')
+        .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
 
     let content: string;
@@ -498,7 +498,7 @@ function App() {
         .split('\n')
         .map(line => escapeHtml(line))
         .join('<br />');
-      content = `<!DOCTYPE html><html><head><meta charset=\"utf-8\" /></head><body><h1>${escapeHtml(title)}</h1><p>${plainText}</p></body></html>`;
+      content = `<!DOCTYPE html><html><head><meta charset="utf-8" /></head><body><h1>${escapeHtml(title)}</h1><p>${plainText}</p></body></html>`;
       filename = `${safeTitle}.doc`;
       mimeType = 'application/msword';
     } else {

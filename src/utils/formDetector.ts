@@ -596,7 +596,7 @@ function detectVillanelle(schemeStr: string): DetectedForm {
   // If at least 70% of both A and B positions match, consider it a villanelle
   if (aMatchPercent >= 70 && bMatchPercent >= 70) {
     const avgMatchPercent = (aMatchPercent + bMatchPercent) / 2;
-    let fitScore = Math.round(avgMatchPercent);
+    const fitScore = Math.round(avgMatchPercent);
 
     if (aMatches < expectedA.length) {
       const missing = expectedA.length - aMatches;

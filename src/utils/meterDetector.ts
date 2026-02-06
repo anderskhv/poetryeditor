@@ -147,7 +147,7 @@ function detectMeterBySyllables(text: string): string {
   const consistency = countFrequency[mostCommonCount] / nonEmptyLines.length;
 
   // Detect meter based on syllable count patterns
-  let detectedMeter = detectMeterByPattern(mostCommonCount);
+  const detectedMeter = detectMeterByPattern(mostCommonCount);
 
   // Add consistency note
   if (consistency < 0.5) {

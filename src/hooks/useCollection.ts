@@ -149,7 +149,7 @@ export function useCollection() {
     const zipFiles = fileArray.filter(isZipFile);
     const mdFiles = fileArray.filter(f => !isZipFile(f));
 
-    let combinedResult: UploadResult = { success: [], failed: [] };
+    const combinedResult: UploadResult = { success: [], failed: [] };
 
     // Process ZIP files
     for (const zipFile of zipFiles) {

@@ -79,7 +79,7 @@ export async function exportCollectionAsZip(
       : '';
 
     // Generate filename
-    let baseFilename = sanitizeFilename(poem.title);
+    const baseFilename = sanitizeFilename(poem.title);
     const fullBasePath = folderPath ? `${folderPath}/${baseFilename}` : baseFilename;
 
     // Handle duplicates by adding a number suffix

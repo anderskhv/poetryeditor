@@ -224,13 +224,14 @@ export function evaluateConstraint(
   if (!constraints[aspect]) return 'none';
 
   switch (aspect) {
-    case 'lineCount':
+    case 'lineCount': {
       if (!constraints.lineCount) return 'none';
       if (poemData.lineCount === constraints.lineCount) return 'perfect';
       // Close but not exact
       const diff = Math.abs(poemData.lineCount - constraints.lineCount);
       if (diff <= 2) return 'poor';
       return 'poor';
+    }
 
     case 'meter':
     case 'syllablePattern':

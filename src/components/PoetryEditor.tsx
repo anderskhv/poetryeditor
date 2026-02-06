@@ -393,7 +393,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       }
 
       // WRAP: no existing formatting of this type found at cursor/selection
-      let selectedText = model.getValueInRange(sel);
+      const selectedText = model.getValueInRange(sel);
 
       // If no selection, expand to word at cursor
       if (!selectedText) {

@@ -59,7 +59,7 @@ function parseCMUDict(text: string): Map<string, Pronunciation[]> {
     const parts = line.split(/\s+/);
     if (parts.length < 2) continue;
 
-    let word = parts[0];
+    const word = parts[0];
     const phones = parts.slice(1);
 
     // Handle word variants (e.g., "WORD(2)")
@@ -169,8 +169,6 @@ export function getSyllables(word: string): string[] {
   // Prefer the pronunciation with the most syllables (better for poetry)
   const sorted = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length);
   const phones = sorted[0].phones;
-  const stresses = sorted[0].stresses;
-
   // Build syllables from phonemes
   const syllables: string[] = [];
   let currentPhonemes: string[] = [];
