@@ -60,7 +60,7 @@ interface PoetryEditorProps {
   highlightedWords?: { word: string; lineNumber: number }[] | null;
   onLineHover?: (lineNumber: number | null) => void;
   editorFont?: string;
-  paragraphAlign?: 'left' | 'center';
+  paragraphAlign?: 'left' | 'center' | 'right';
   editorTheme?: 'light' | 'dark' | 'yellow';
   firstLineIndent?: boolean;
   lineSpacing?: 'normal' | 'relaxed' | 'spacious';
@@ -1222,6 +1222,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   const containerClasses = [
     'poetry-editor-container',
     paragraphAlign === 'center' ? 'align-center' : '',
+    paragraphAlign === 'right' ? 'align-right' : '',
     firstLineIndent ? 'first-line-indent' : '',
   ].filter(Boolean).join(' ');
 

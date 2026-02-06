@@ -927,6 +927,16 @@
   background-color: var(--color-paper);
 }
 
+.poetry-editor-container.align-center .monaco-editor .view-lines,
+.poetry-editor-container.align-center .monaco-editor .view-line {
+  text-align: center;
+}
+
+.poetry-editor-container.align-right .monaco-editor .view-lines,
+.poetry-editor-container.align-right .monaco-editor .view-line {
+  text-align: right;
+}
+
 
 /* First line indent - applied via Monaco line decorations */
 .line-first-indent {
@@ -943,10 +953,26 @@
   border-bottom: none;
 }
 
+.poetry-editor-container.align-center .poem-title-container {
+  text-align: center;
+}
+
+.poetry-editor-container.align-right .poem-title-container {
+  text-align: right;
+}
+
 .poem-title-inline {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.poetry-editor-container.align-center .poem-title-inline {
+  justify-content: center;
+}
+
+.poetry-editor-container.align-right .poem-title-inline {
+  justify-content: flex-end;
 }
 
 .poem-copy-toast {
@@ -973,6 +999,14 @@
   transition: none;
   flex: 1 1 auto;
   min-width: 0;
+}
+
+.poetry-editor-container.align-center .poem-title-editor-input {
+  text-align: center;
+}
+
+.poetry-editor-container.align-right .poem-title-editor-input {
+  text-align: right;
 }
 
 
@@ -1046,6 +1080,14 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
+}
+
+.poetry-editor-container.align-center .poem-metadata {
+  justify-content: center;
+}
+
+.poetry-editor-container.align-right .poem-metadata {
+  justify-content: flex-end;
 }
 
 .poem-metadata-link {

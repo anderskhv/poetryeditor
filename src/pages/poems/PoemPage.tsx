@@ -39,8 +39,8 @@ export function PoemPage() {
   const [selectedFont] = useState<string>(() => localStorage.getItem('selectedFont') || 'libre-baskerville');
   const [lineSpacing] = useState<'normal' | 'relaxed' | 'spacious'>(() =>
     (localStorage.getItem('lineSpacing') as 'normal' | 'relaxed' | 'spacious') || 'normal');
-  const [paragraphAlign] = useState<'left' | 'center'>(() =>
-    (localStorage.getItem('paragraphAlign') as 'left' | 'center') || 'left');
+  const [paragraphAlign] = useState<'left' | 'center' | 'right'>(() =>
+    (localStorage.getItem('paragraphAlign') as 'left' | 'center' | 'right') || 'left');
   const [firstLineIndent] = useState<boolean>(() => localStorage.getItem('firstLineIndent') === 'true');
 
   // Highlighting state for technical analysis

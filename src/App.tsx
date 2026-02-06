@@ -131,8 +131,11 @@ function App() {
   const [lineSpacing, setLineSpacing] = useState<'normal' | 'relaxed' | 'spacious'>(() => {
     return (localStorage.getItem('lineSpacing') as 'normal' | 'relaxed' | 'spacious') || 'normal';
   });
+  const [paragraphAlign, setParagraphAlign] = useState<'left' | 'center' | 'right'>(() => {
+    return (localStorage.getItem('paragraphAlign') as 'left' | 'center' | 'right') || 'left';
+  });
   const [showParagraphMenu, setShowParagraphMenu] = useState<boolean>(false);
-    const [firstLineIndent, setFirstLineIndent] = useState<boolean>(() => {
+  const [firstLineIndent, setFirstLineIndent] = useState<boolean>(() => {
     return localStorage.getItem('firstLineIndent') === 'true';
   });
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -324,6 +327,11 @@ function App() {
     localStorage.setItem('lineSpacing', lineSpacing);
   }, [lineSpacing]);
 
+  // Save paragraph alignment settings
+  useEffect(() => {
+    localStorage.setItem('paragraphAlign', paragraphAlign);
+  }, [paragraphAlign]);
+
   // Apply selected font and load from Google Fonts if needed
   useEffect(() => {
     const font = FONT_OPTIONS.find(f => f.id === selectedFont);
@@ -475,6 +483,7 @@ function App() {
     setShowExportMenu(false);
     const title = poemTitle.trim() || 'Untitled';
     const safeTitle = title.replace(/[^a-zA-Z0-9-_ ]/g, '').replace(/\s+/g, '-');
+    const alignment = paragraphAlign;
     const escapeHtml = (value: string) =>
       value
         .replace(/&/g, '&amp;')
@@ -488,8 +497,16 @@ function App() {
     let mimeType: string;
 
     if (format === 'md') {
-      // Markdown format with H1 title
-      content = `# ${title}\n\n${text}`;
+      if (alignment === 'left') {
+        // Markdown format with H1 title
+        content = `# ${title}\n\n${text}`;
+      } else {
+        const plainText = stripMarkdownFormatting(text)
+          .split('\n')
+          .map(line => escapeHtml(line))
+          .join('<br />');
+        content = `<div style="text-align:${alignment}">\n<h1>${escapeHtml(title)}</h1>\n<p>${plainText}</p>\n</div>`;
+      }
       filename = `${safeTitle}.md`;
       mimeType = 'text/markdown';
     } else if (format === 'docx') {
@@ -498,7 +515,7 @@ function App() {
         .split('\n')
         .map(line => escapeHtml(line))
         .join('<br />');
-      content = `<!DOCTYPE html><html><head><meta charset="utf-8" /></head><body><h1>${escapeHtml(title)}</h1><p>${plainText}</p></body></html>`;
+      content = `<!DOCTYPE html><html><head><meta charset="utf-8" /></head><body><div style="text-align:${alignment}"><h1>${escapeHtml(title)}</h1><p>${plainText}</p></div></body></html>`;
       filename = `${safeTitle}.doc`;
       mimeType = 'application/msword';
     } else {
@@ -879,7 +896,31 @@ function App() {
                       Spacious
                     </button>
                   </div>
-                                    {/* Text Options Section */}
+                  <div className="paragraph-menu-section">
+                    <div className="paragraph-menu-label">Alignment</div>
+                    <button
+                      className={`paragraph-item ${paragraphAlign === 'left' ? 'active' : ''}`}
+                      onClick={() => setParagraphAlign('left')}
+                    >
+                      {paragraphAlign === 'left' && <span className="checkmark">✓</span>}
+                      Left
+                    </button>
+                    <button
+                      className={`paragraph-item ${paragraphAlign === 'center' ? 'active' : ''}`}
+                      onClick={() => setParagraphAlign('center')}
+                    >
+                      {paragraphAlign === 'center' && <span className="checkmark">✓</span>}
+                      Center
+                    </button>
+                    <button
+                      className={`paragraph-item ${paragraphAlign === 'right' ? 'active' : ''}`}
+                      onClick={() => setParagraphAlign('right')}
+                    >
+                      {paragraphAlign === 'right' && <span className="checkmark">✓</span>}
+                      Right
+                    </button>
+                  </div>
+                  {/* Text Options Section */}
                   <div className="paragraph-menu-section">
                     <div className="paragraph-menu-label">Text Options</div>
                     <button
@@ -1155,7 +1196,7 @@ function App() {
             highlightedWords={highlightedWords}
             onLineHover={setEditorHoveredLine}
             editorFont={FONT_OPTIONS.find(f => f.id === selectedFont)?.family}
-            paragraphAlign="left"
+            paragraphAlign={paragraphAlign}
             firstLineIndent={firstLineIndent}
             lineSpacing={lineSpacing}
             onEditorMount={(editor) => { editorRef.current = editor; }}
