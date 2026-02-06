@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { getStressPattern, getSyllables } from '../utils/cmuDict';
-import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonyms, RhymeWord, SynonymWord } from '../utils/rhymeApi';
+import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonymSenses, RhymeWord, SynonymSense } from '../utils/rhymeApi';
 import { fetchWordInfo, type WordOrigin, type Pronunciation, type WordDefinition } from '../utils/wordInfoApi';
 import './WordPopup.css';
 
@@ -21,7 +21,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
   const [activeTab, setActiveTab] = useState<Tab>('syllables');
   const [rhymes, setRhymes] = useState<RhymeWord[]>([]);
   const [nearRhymes, setNearRhymes] = useState<RhymeWord[]>([]);
-  const [synonyms, setSynonyms] = useState<SynonymWord[]>([]);
+  const [synonymSenses, setSynonymSenses] = useState<SynonymSense[]>([]);
   const [pendingInsert, setPendingInsert] = useState<string | null>(null);
   const [loadingRhymes, setLoadingRhymes] = useState(false);
   const [loadingNearRhymes, setLoadingNearRhymes] = useState(false);
@@ -51,7 +51,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     }
     setRhymes([]);
     setNearRhymes([]);
-    setSynonyms([]);
+    setSynonymSenses([]);
     setLoadingRhymes(false);
     setLoadingNearRhymes(false);
     setLoadingSynonyms(false);
@@ -81,14 +81,6 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     return acc;
   }, {} as GroupedWords<RhymeWord>);
 
-  // Group synonyms by syllable count
-  const groupedSynonyms: GroupedWords<SynonymWord> = synonyms.reduce((acc, synonym) => {
-    const sylCount = getStressPattern(synonym.word).length || 0;
-    if (!acc[sylCount]) acc[sylCount] = [];
-    acc[sylCount].push(synonym);
-    return acc;
-  }, {} as GroupedWords<SynonymWord>);
-
   // Fetch rhymes when the rhymes tab is active
   useEffect(() => {
     if (activeTab === 'rhymes' && rhymes.length === 0 && !loadingRhymes) {
@@ -113,14 +105,14 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
 
   // Fetch synonyms when the synonyms tab is active
   useEffect(() => {
-    if (activeTab === 'synonyms' && synonyms.length === 0 && !loadingSynonyms) {
+    if (activeTab === 'synonyms' && synonymSenses.length === 0 && !loadingSynonyms) {
       setLoadingSynonyms(true);
-      fetchSynonyms(word).then((result) => {
-        setSynonyms(result);
+      fetchSynonymSenses(word).then((result) => {
+        setSynonymSenses(result);
         setLoadingSynonyms(false);
       });
     }
-  }, [activeTab, word, synonyms.length, loadingSynonyms]);
+  }, [activeTab, word, synonymSenses.length, loadingSynonyms]);
 
   const loadWordInfo = () => {
     setLoadingWordInfo(true);
@@ -353,44 +345,34 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
             <div className="word-popup-section">
               {loadingSynonyms ? (
                 <p className="loading">Loading synonyms...</p>
-              ) : synonyms.length > 0 ? (
+              ) : synonymSenses.length > 0 ? (
                 <div className="grouped-words">
-                  {Object.keys(groupedSynonyms)
-                    .sort((a, b) => {
-                      const aNum = Number(a) || 0;
-                      const bNum = Number(b) || 0;
-                      if (aNum === 0) return 1;
-                      if (bNum === 0) return -1;
-                      return aNum - bNum;
-                    })
-                    .map((sylCount) => {
-                      const filteredSynonyms = groupedSynonyms[Number(sylCount)].filter(synonym => !synonym.word.includes(' '));
-                      if (filteredSynonyms.length === 0) return null;
-
-                      return (
-                        <div key={sylCount} className="syllable-group">
-                          <h4 className="group-header">
-                            {sylCount} {Number(sylCount) === 1 ? 'syllable' : 'syllables'}
-                          </h4>
-                          <div className="word-list">
-                            {filteredSynonyms
-                              .sort((a, b) => b.score - a.score)
-                              .map((synonym, idx) => (
-                                <button
-                                  key={idx}
-                                  type="button"
-                                  className="word-item word-item-button"
-                                  onClick={() => setPendingInsert(synonym.word)}
-                                  title="Insert and copy"
-                                >
-                                  <span className="word-text">{synonym.word}</span>
-                                  <span className="word-meta">#{idx + 1}</span>
-                                </button>
-                              ))}
-                          </div>
-                        </div>
-                      );
-                    })}
+                  {synonymSenses.map((sense, senseIdx) => (
+                    <div key={`${senseIdx}-${sense.gloss}`} className="meaning-group">
+                      <div className="meaning-header">
+                        <span className="meaning-title">Meaning {senseIdx + 1}</span>
+                        {sense.pos && <span className="meaning-pos">{sense.pos}</span>}
+                      </div>
+                      <div className="meaning-gloss">{sense.gloss}</div>
+                      <div className="word-list">
+                        {sense.synonyms
+                          .filter((synonym) => !synonym.word.includes(' '))
+                          .sort((a, b) => b.score - a.score)
+                          .map((synonym, idx) => (
+                            <button
+                              key={`${synonym.word}-${idx}`}
+                              type="button"
+                              className="word-item word-item-button"
+                              onClick={() => setPendingInsert(synonym.word)}
+                              title="Insert and copy"
+                            >
+                              <span className="word-text">{synonym.word}</span>
+                              <span className="word-meta">#{idx + 1}</span>
+                            </button>
+                          ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <p className="no-data">No synonyms found</p>

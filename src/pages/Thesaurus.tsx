@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
-import { fetchSynonyms, fetchAntonyms, fetchHyponyms, SynonymWord, ImageryWord } from '../utils/rhymeApi';
+import { fetchSynonymSenses, fetchAntonyms, fetchHyponyms, SynonymWord, ImageryWord, SynonymSense } from '../utils/rhymeApi';
 import { getSyllables } from '../utils/cmuDict';
 import { DefinitionTooltip } from '../components/DefinitionTooltip';
 import './Thesaurus.css';
@@ -19,7 +19,7 @@ const PAGE_TITLE = 'Synonym Finder';
 type TabType = 'synonyms' | 'hyponyms' | 'antonyms';
 
 interface ThesaurusResult {
-  synonyms: SynonymWord[];
+  synonymSenses: SynonymSense[];
   hyponyms: ImageryWord[];
   antonyms: SynonymWord[];
 }
@@ -31,6 +31,7 @@ export function Thesaurus() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('synonyms');
+  const [syllableFilter, setSyllableFilter] = useState<number | 'any'>('any');
   const navigate = useNavigate();
 
   const performSearch = useCallback(async (word: string) => {
@@ -38,19 +39,20 @@ export function Thesaurus() {
 
     setLoading(true);
     setSearched(true);
+    setSyllableFilter('any');
 
     try {
       // Fetch synonyms, hyponyms, and antonyms in parallel
-      const [synonyms, hyponyms, antonyms] = await Promise.all([
-        fetchSynonyms(word),
+      const [synonymSenses, hyponyms, antonyms] = await Promise.all([
+        fetchSynonymSenses(word),
         fetchHyponyms(word),
         fetchAntonyms(word),
       ]);
 
-      setResults({ synonyms, hyponyms, antonyms });
+      setResults({ synonymSenses, hyponyms, antonyms });
 
       // Default to the first tab with results
-      if (synonyms.length > 0) {
+      if (synonymSenses.length > 0) {
         setActiveTab('synonyms');
       } else if (hyponyms.length > 0) {
         setActiveTab('hyponyms');
@@ -61,7 +63,7 @@ export function Thesaurus() {
       }
     } catch (error) {
       console.error('Error searching thesaurus:', error);
-      setResults({ synonyms: [], hyponyms: [], antonyms: [] });
+      setResults({ synonymSenses: [], hyponyms: [], antonyms: [] });
     } finally {
       setLoading(false);
     }
@@ -91,34 +93,43 @@ export function Thesaurus() {
   const currentWords = useMemo(() => {
     if (!results) return [];
     switch (activeTab) {
-      case 'synonyms': return results.synonyms;
       case 'hyponyms': return results.hyponyms;
       case 'antonyms': return results.antonyms;
       default: return [];
     }
   }, [results, activeTab]);
 
+  const synonymCount = useMemo(() => {
+    if (!results) return 0;
+    return results.synonymSenses.reduce((total, sense) => total + sense.synonyms.length, 0);
+  }, [results]);
+
   const displayWord = urlWord || searchWord;
 
-  // Memoize grouped words to avoid expensive syllable calculations on every render
-  const groupedWords = useMemo(() => {
-    return currentWords.reduce((acc, word) => {
-      const sylCount = getSyllables(word.word).length || 1;
-      if (!acc[sylCount]) acc[sylCount] = [];
-      acc[sylCount].push(word);
-      return acc;
-    }, {} as Record<number, (SynonymWord | ImageryWord)[]>);
-  }, [currentWords]);
+  const filteredSynonymSenses = useMemo(() => {
+    if (!results) return [];
+    if (syllableFilter === 'any') return results.synonymSenses;
+
+    return results.synonymSenses
+      .map((sense) => ({
+        ...sense,
+        synonyms: sense.synonyms.filter((syn) => {
+          const count = getSyllables(syn.word).length || 1;
+          return count === syllableFilter;
+        }),
+      }))
+      .filter((sense) => sense.synonyms.length > 0);
+  }, [results, syllableFilter]);
 
   return (
     <Layout>
       <SEOHead
         title={urlWord && results
-          ? `${urlWord.charAt(0).toUpperCase() + urlWord.slice(1)} Synonyms (${results.synonyms.length}+) - Find Similar Words`
+          ? `${urlWord.charAt(0).toUpperCase() + urlWord.slice(1)} Synonyms (${synonymCount}+) - Find Similar Words`
           : 'Synonym Finder - Word Alternatives for Poetry'}
         description={urlWord && results
-          ? `Find ${results.synonyms.length}+ synonyms, ${results.hyponyms.length}+ hyponyms, and ${results.antonyms.length}+ antonyms for "${urlWord}". Words organized by syllable count for poets and songwriters.`
-          : 'Free synonym finder for poets. Find synonyms, specific examples (hyponyms), and antonyms organized by syllable count. Discover the perfect word for your poem or song.'
+          ? `Find ${synonymCount}+ synonyms, ${results.hyponyms.length}+ hyponyms, and ${results.antonyms.length}+ antonyms for "${urlWord}". Words organized by meaning and strength for poets and songwriters.`
+          : 'Free synonym finder for poets. Find synonyms, specific examples (hyponyms), and antonyms organized by meaning and strength. Discover the perfect word for your poem or song.'
         }
         canonicalPath={urlWord ? `/synonyms/${urlWord}` : '/synonyms'}
         keywords="synonyms, hyponyms, antonyms, poetry words, word alternatives, similar words, specific words, opposite words, thesaurus for poets, concrete imagery"
@@ -204,7 +215,7 @@ export function Thesaurus() {
                 className={`thesaurus-tab ${activeTab === 'synonyms' ? 'active' : ''}`}
                 onClick={() => setActiveTab('synonyms')}
               >
-                Synonyms ({results.synonyms.length})
+                Synonyms ({synonymCount})
               </button>
               <button
                 className={`thesaurus-tab ${activeTab === 'hyponyms' ? 'active' : ''}`}
@@ -227,48 +238,93 @@ export function Thesaurus() {
               </p>
             )}
 
-            {currentWords.length === 0 ? (
+            {(activeTab === 'synonyms' ? filteredSynonymSenses.length === 0 : currentWords.length === 0) ? (
               <div className="thesaurus-no-results">
                 No {activeTab} found for "{displayWord}".
                 {activeTab === 'synonyms' && (results.hyponyms.length > 0 || results.antonyms.length > 0) && (
                   <> Try checking the other tabs.</>
                 )}
-                {activeTab === 'hyponyms' && (results.synonyms.length > 0 || results.antonyms.length > 0) && (
+                {activeTab === 'hyponyms' && (synonymCount > 0 || results.antonyms.length > 0) && (
                   <> Try checking the synonyms or antonyms tabs.</>
                 )}
-                {activeTab === 'antonyms' && (results.synonyms.length > 0 || results.hyponyms.length > 0) && (
+                {activeTab === 'antonyms' && (synonymCount > 0 || results.hyponyms.length > 0) && (
                   <> Try checking the other tabs.</>
                 )}
               </div>
             ) : (
               <>
-                <p className="thesaurus-results-count">
-                  Found {currentWords.length} {activeTab}
-                </p>
-
-                {Object.keys(groupedWords)
-                  .sort((a, b) => Number(a) - Number(b))
-                  .map((sylCount) => (
-                    <div key={sylCount} className="thesaurus-syllable-group">
-                      <h3>
-                        {sylCount} {Number(sylCount) === 1 ? 'syllable' : 'syllables'}
-                      </h3>
-                      <div className="thesaurus-word-list">
-                        {groupedWords[Number(sylCount)]
-                          .filter(w => !w.word.includes(' '))
-                          .map((word, idx) => (
-                            <DefinitionTooltip key={idx} word={word.word}>
-                              <button
-                                onClick={() => handleQuickSearch(word.word)}
-                                className="thesaurus-word-item"
-                              >
-                                {word.word}
-                              </button>
-                            </DefinitionTooltip>
-                          ))}
-                      </div>
+                <div className="thesaurus-results-meta">
+                  <p className="thesaurus-results-count">
+                    Found {activeTab === 'synonyms' ? synonymCount : currentWords.length} {activeTab}
+                  </p>
+                  {activeTab === 'synonyms' && (
+                    <div className="thesaurus-filter">
+                      <label htmlFor="syn-syllable-filter">Syllables</label>
+                      <select
+                        id="syn-syllable-filter"
+                        value={syllableFilter}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setSyllableFilter(value === 'any' ? 'any' : Number(value));
+                        }}
+                      >
+                        <option value="any">Any</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                      </select>
                     </div>
-                  ))}
+                  )}
+                </div>
+
+                {activeTab === 'synonyms' ? (
+                  <div className="thesaurus-sense-list">
+                    {filteredSynonymSenses.map((sense, senseIdx) => (
+                      <div key={`${senseIdx}-${sense.gloss}`} className="thesaurus-sense-group">
+                        <div className="thesaurus-sense-heading">
+                          <span className="thesaurus-sense-title">Meaning {senseIdx + 1}</span>
+                          {sense.pos && <span className="thesaurus-sense-pos">{sense.pos}</span>}
+                        </div>
+                        <div className="thesaurus-sense-gloss">{sense.gloss}</div>
+                        <div className="thesaurus-word-list">
+                          {sense.synonyms
+                            .filter((syn) => !syn.word.includes(' '))
+                            .sort((a, b) => b.score - a.score)
+                            .map((syn, idx) => (
+                              <DefinitionTooltip key={`${syn.word}-${idx}`} word={syn.word}>
+                                <button
+                                  onClick={() => handleQuickSearch(syn.word)}
+                                  className="thesaurus-word-item"
+                                >
+                                  {syn.word}
+                                </button>
+                              </DefinitionTooltip>
+                            ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="thesaurus-sense-list">
+                    <div className="thesaurus-word-list">
+                      {currentWords
+                        .filter(w => !w.word.includes(' '))
+                        .map((word, idx) => (
+                          <DefinitionTooltip key={idx} word={word.word}>
+                            <button
+                              onClick={() => handleQuickSearch(word.word)}
+                              className="thesaurus-word-item"
+                            >
+                              {word.word}
+                            </button>
+                          </DefinitionTooltip>
+                        ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="thesaurus-cta">
                   <p>Found the word you need?</p>

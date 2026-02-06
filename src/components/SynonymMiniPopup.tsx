@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { fetchSynonyms, SynonymWord } from '../utils/rhymeApi';
+import { fetchSynonymSenses, SynonymWord } from '../utils/rhymeApi';
 import './SynonymMiniPopup.css';
 
 interface SynonymMiniPopupProps {
@@ -15,8 +15,9 @@ export function SynonymMiniPopup({ word, position, onClose }: SynonymMiniPopupPr
 
   useEffect(() => {
     setLoading(true);
-    fetchSynonyms(word).then((result) => {
-      setSynonyms(result.slice(0, 5)); // Only top 5
+    fetchSynonymSenses(word).then((result) => {
+      const firstSense = result[0];
+      setSynonyms((firstSense?.synonyms || []).slice(0, 5));
       setLoading(false);
     });
   }, [word]);

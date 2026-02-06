@@ -6,6 +6,7 @@
 import nlp from 'compromise';
 import { getRhymePhonemes, getPerfectRhymesOffline, getNearRhymesOffline, getSpellingRhymesOffline, getSyllableCount, isDictionaryLoaded, loadCMUDictionary } from './cmuDict';
 import offlineSynonyms from '../data/offlineSynonyms.json';
+import { getWordnetSenses, type WordnetSensePayload } from './wordnetSenses';
 
 const DATAMUSE_ENABLED = true;
 const DATAMUSE_CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7;
@@ -132,6 +133,13 @@ export interface RhymeWord {
 export interface SynonymWord {
   word: string;
   score: number;
+}
+
+export interface SynonymSense {
+  gloss: string;
+  pos?: string;
+  synonyms: SynonymWord[];
+  source: 'wordnet' | 'fallback';
 }
 
 type OfflineSynonymEntry = {
@@ -441,32 +449,76 @@ function applyWordForm(synonymWord: string, originalWord: string): string {
 /**
  * Fetch synonyms for the given word
  */
+async function fetchSynonymsFlat(word: string): Promise<SynonymWord[]> {
+  console.log(`Fetching offline synonyms for: ${word}`);
+  const entry = getOfflineSynonymEntry(word);
+  const offline = entry?.synonyms?.map((synonym, idx) => ({
+    word: synonym,
+    score: 1000 - idx * 10,
+  })) || [];
+
+  if (offline.length >= 6) return offline;
+
+  const data = await fetchDatamuseJson(
+    `https://api.datamuse.com/words?ml=${encodeURIComponent(word)}&md=p&max=50`,
+    `ml:${word}`
+  );
+  const fallback = data.map((item: any) => ({
+    word: item.word,
+    score: item.score || 0,
+  }));
+
+  const merged = new Map<string, SynonymWord>();
+  [...offline, ...fallback].forEach(item => {
+    if (!merged.has(item.word)) merged.set(item.word, item);
+  });
+
+  return Array.from(merged.values());
+}
+
+function mapWordnetToSenses(payload: WordnetSensePayload[]): SynonymSense[] {
+  return payload.map((sense) => ({
+    gloss: sense.gloss,
+    pos: sense.pos,
+    synonyms: sense.synonyms,
+    source: 'wordnet',
+  }));
+}
+
+export async function fetchSynonymSenses(word: string): Promise<SynonymSense[]> {
+  try {
+    const wordnet = await getWordnetSenses(word);
+    if (wordnet && wordnet.length > 0) {
+      return mapWordnetToSenses(wordnet);
+    }
+
+    const fallbackSynonyms = await fetchSynonymsFlat(word);
+    if (fallbackSynonyms.length === 0) return [];
+    return [
+      {
+        gloss: 'General meaning',
+        synonyms: fallbackSynonyms,
+        source: 'fallback',
+      },
+    ];
+  } catch (error) {
+    console.error('Error fetching synonym senses:', error);
+    return [];
+  }
+}
+
 export async function fetchSynonyms(word: string): Promise<SynonymWord[]> {
   try {
-    console.log(`Fetching offline synonyms for: ${word}`);
-    const entry = getOfflineSynonymEntry(word);
-    const offline = entry?.synonyms?.map((synonym, idx) => ({
-      word: synonym,
-      score: 1000 - idx * 10,
-    })) || [];
-
-    if (offline.length >= 6) return offline;
-
-    const data = await fetchDatamuseJson(
-      `https://api.datamuse.com/words?ml=${encodeURIComponent(word)}&md=p&max=50`,
-      `ml:${word}`
-    );
-    const fallback = data.map((item: any) => ({
-      word: item.word,
-      score: item.score || 0,
-    }));
-
+    const senses = await fetchSynonymSenses(word);
     const merged = new Map<string, SynonymWord>();
-    [...offline, ...fallback].forEach(item => {
-      if (!merged.has(item.word)) merged.set(item.word, item);
+    senses.forEach((sense) => {
+      sense.synonyms.forEach((syn) => {
+        if (!merged.has(syn.word) || merged.get(syn.word)!.score < syn.score) {
+          merged.set(syn.word, syn);
+        }
+      });
     });
-
-    return Array.from(merged.values());
+    return Array.from(merged.values()).sort((a, b) => b.score - a.score);
   } catch (error) {
     console.error('Error fetching synonyms:', error);
     return [];

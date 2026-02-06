@@ -370,6 +370,39 @@
   gap: 8px;
 }
 
+.meaning-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.meaning-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.meaning-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+}
+
+.meaning-pos {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.meaning-gloss {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
 .group-header {
   margin: 0;
   font-size: 12px;
