@@ -14,6 +14,7 @@ type MeterFilter = 'all' | 'iambic' | 'trochaic';
 type OriginalityFilter = 'all' | 'original' | 'fresh' | 'common' | 'overused' | 'cliche';
 type WordTypeFilter = 'all' | 'noun' | 'verb' | 'adjective' | 'adverb';
 type SortMode = 'syllables' | 'topic';
+type RhymeStrength = 'strict' | 'balanced' | 'loose';
 
 // Map Datamuse tags to human-readable labels
 const POS_LABELS: Record<string, string> = {
@@ -55,6 +56,7 @@ export function RhymeWord() {
   const [originalityFilter, setOriginalityFilter] = useState<OriginalityFilter>('all');
   const [wordTypeFilter, setWordTypeFilter] = useState<WordTypeFilter>('all');
   const [sortMode, setSortMode] = useState<SortMode>('syllables');
+  const [rhymeStrength, setRhymeStrength] = useState<RhymeStrength>('strict');
 
   const decodedWord = word ? decodeURIComponent(word).toLowerCase() : '';
   const topicTerm = topicWord.trim().toLowerCase();
@@ -244,8 +246,67 @@ export function RhymeWord() {
   const groupedPerfectByTopic = groupByTopic(perfectWithVariants);
   const groupedNearByTopic = groupByTopic(nearWithVariants);
 
-  const activeResults = activeTab === 'perfect' ? groupedPerfect : groupedNear;
-  const activeTopicGroups = activeTab === 'perfect' ? groupedPerfectByTopic : groupedNearByTopic;
+  const mergeBySyllables = (
+    primary: Record<number, RhymeWordType[]>,
+    secondary: Record<number, RhymeWordType[]>
+  ) => {
+    const merged: Record<number, (RhymeWordType & { source: 'perfect' | 'near' })[]> = {};
+    const counts = new Set([...Object.keys(primary), ...Object.keys(secondary)]);
+    counts.forEach((countKey) => {
+      const count = Number(countKey);
+      const primaryList = primary[count] || [];
+      const secondaryList = secondary[count] || [];
+      const seen = new Set<string>();
+      merged[count] = [];
+      primaryList.forEach((item) => {
+        seen.add(item.word);
+        merged[count].push({ ...item, source: 'perfect' });
+      });
+      secondaryList.forEach((item) => {
+        if (seen.has(item.word)) return;
+        merged[count].push({ ...item, source: 'near' });
+      });
+    });
+    return merged;
+  };
+
+  const mergeTopicGroups = (
+    primary: { key: string; title: string; items: RhymeWordType[] }[],
+    secondary: { key: string; title: string; items: RhymeWordType[] }[]
+  ) => {
+    const mergedMap = new Map<string, { key: string; title: string; items: (RhymeWordType & { source: 'perfect' | 'near' })[] }>();
+    primary.forEach(group => {
+      mergedMap.set(group.key, {
+        key: group.key,
+        title: group.title,
+        items: group.items.map(item => ({ ...item, source: 'perfect' })),
+      });
+    });
+    secondary.forEach(group => {
+      const existing = mergedMap.get(group.key) || {
+        key: group.key,
+        title: group.title,
+        items: [],
+      };
+      const seen = new Set(existing.items.map(item => item.word));
+      group.items.forEach(item => {
+        if (seen.has(item.word)) return;
+        existing.items.push({ ...item, source: 'near' });
+      });
+      mergedMap.set(group.key, existing);
+    });
+    return Array.from(mergedMap.values());
+  };
+
+  const mergedPerfect = mergeBySyllables(groupedPerfect, groupedNear);
+  const mergedPerfectTopics = mergeTopicGroups(groupedPerfectByTopic, groupedNearByTopic);
+
+  const activeResults = activeTab === 'perfect'
+    ? (rhymeStrength === 'strict' ? groupedPerfect : mergedPerfect)
+    : groupedNear;
+  const activeTopicGroups = activeTab === 'perfect'
+    ? (rhymeStrength === 'strict' ? groupedPerfectByTopic : mergedPerfectTopics)
+    : groupedNearByTopic;
 
   // Get related words for internal linking - more varied selection
   const topRhymes = perfectRhymes
@@ -410,6 +471,19 @@ export function RhymeWord() {
                 </select>
               </div>
 
+              <div className="filter-item">
+                <label className="filter-label">Rhyme Strength</label>
+                <select
+                  value={rhymeStrength}
+                  onChange={(e) => setRhymeStrength(e.target.value as RhymeStrength)}
+                  className="filter-select"
+                >
+                  <option value="strict">Strict</option>
+                  <option value="balanced">Balanced</option>
+                  <option value="loose">Loose</option>
+                </select>
+              </div>
+
               {topicTerm && (
                 <div className="filter-item filter-topic-pill">
                   <span className="filter-label">Topic</span>
@@ -425,6 +499,7 @@ export function RhymeWord() {
                     setOriginalityFilter('all');
                     setWordTypeFilter('all');
                     setTopicWord('');
+                    setRhymeStrength('strict');
                   }}
                   className="clear-filters-btn"
                 >
@@ -469,6 +544,7 @@ export function RhymeWord() {
                             // Higher score = more common word
                             const rarityClass = rhyme.score > 5000 ? 'common' : rhyme.score > 1000 ? '' : 'rare';
                             const variants = (rhyme as RhymeWordType & { variants?: string[] }).variants || [];
+                            const sourceLabel = (rhyme as RhymeWordType & { source?: 'perfect' | 'near' }).source;
 
                             return (
                               <div key={idx} className="rhyme-word-stack">
@@ -476,8 +552,10 @@ export function RhymeWord() {
                                   <Link
                                     to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
                                     className={`rhyme-word-item ${rarityClass}`}
+                                    title={`Syllables: ${rhyme.numSyllables || 0}`}
                                   >
                                     {rhyme.word}
+                                    {sourceLabel === 'near' && <span className="rhyme-source-tag">near</span>}
                                   </Link>
                                 </DefinitionTooltip>
                                 {variants.length > 0 && (
@@ -511,6 +589,7 @@ export function RhymeWord() {
                         .map((rhyme, idx) => {
                           const rarityClass = rhyme.score > 5000 ? 'common' : rhyme.score > 1000 ? '' : 'rare';
                           const variants = (rhyme as RhymeWordType & { variants?: string[] }).variants || [];
+                          const sourceLabel = (rhyme as RhymeWordType & { source?: 'perfect' | 'near' }).source;
 
                           return (
                             <div key={idx} className="rhyme-word-stack">
@@ -518,8 +597,10 @@ export function RhymeWord() {
                                 <Link
                                   to={`/rhymes/${encodeURIComponent(rhyme.word)}`}
                                   className={`rhyme-word-item ${rarityClass}`}
+                                  title={`Syllables: ${rhyme.numSyllables || 0}`}
                                 >
                                   {rhyme.word}
+                                  {sourceLabel === 'near' && <span className="rhyme-source-tag">near</span>}
                                 </Link>
                               </DefinitionTooltip>
                               {variants.length > 0 && (

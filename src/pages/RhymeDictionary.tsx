@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { AutocompleteInput } from '../components/AutocompleteInput';
-import { fetchRhymes, getWordVariants, RhymeWord } from '../utils/rhymeApi';
+import { fetchRhymes, fetchNearAndSlantRhymes, fetchRhymesWithTopic, getWordVariants, RhymeWord } from '../utils/rhymeApi';
 import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables } from '../utils/cmuDict';
 import { getRhymeOriginalityScore } from '../utils/rhymeCliches';
 import { DefinitionTooltip } from '../components/DefinitionTooltip';
@@ -22,6 +22,7 @@ interface EnhancedRhymeWord extends RhymeWord {
 }
 
 type WordTypeFilter = 'all' | 'noun' | 'verb' | 'adjective' | 'adverb';
+type RhymeStrength = 'strict' | 'balanced' | 'loose';
 
 export function RhymeDictionary() {
   const [searchWord, setSearchWord] = useState('');
@@ -29,6 +30,7 @@ export function RhymeDictionary() {
   const [syllableFilter, setSyllableFilter] = useState<string>('all');
   const [clicheFilter, setClicheFilter] = useState<string>('all');
   const [wordTypeFilter, setWordTypeFilter] = useState<WordTypeFilter>('all');
+  const [rhymeStrength, setRhymeStrength] = useState<RhymeStrength>('strict');
   const [results, setResults] = useState<EnhancedRhymeWord[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -57,22 +59,20 @@ export function RhymeDictionary() {
 
       // If topic is provided, use combined rhyme+meaning search
       if (topicWord.trim()) {
-        const response = await fetch(
-          `https://api.datamuse.com/words?rel_rhy=${encodeURIComponent(word)}&ml=${encodeURIComponent(topicWord.trim())}&md=sp&max=100`
-        );
-        if (!response.ok) throw new Error('Failed to fetch');
-        const data = await response.json();
-        rhymes = data.map((item: any) => ({
-          word: item.word,
-          score: item.score || 0,
-          numSyllables: item.numSyllables,
-          partsOfSpeech: item.tags?.filter((tag: string) =>
-            ['n', 'v', 'adj', 'adv', 'u', 'prop'].includes(tag)
-          ) || [],
-        }));
+        rhymes = await fetchRhymesWithTopic(word, topicWord.trim());
       } else {
         // Standard rhyme search
-        rhymes = await fetchRhymes(word);
+        const perfect = (await fetchRhymes(word)).map(r => ({ ...r, rhymeType: 'perfect' as const }));
+        if (rhymeStrength === 'strict') {
+          rhymes = perfect;
+        } else {
+          const near = (await fetchNearAndSlantRhymes(word)).map(r => ({ ...r, rhymeType: r.rhymeType || 'near' }));
+          const merged = new Map<string, RhymeWord>();
+          [...perfect, ...near].forEach(item => {
+            if (!merged.has(item.word)) merged.set(item.word, item);
+          });
+          rhymes = Array.from(merged.values());
+        }
       }
 
       // Enhance with originality scores
@@ -119,6 +119,7 @@ export function RhymeDictionary() {
     setSyllableFilter('all');
     setClicheFilter('all');
     setWordTypeFilter('all');
+    setRhymeStrength('strict');
   };
 
   // Apply filters to results
@@ -166,7 +167,7 @@ export function RhymeDictionary() {
     r.numSyllables || getSyllables(r.word).length || 0
   ))].sort((a, b) => a - b);
 
-  const hasActiveFilters = topicWord.trim() || syllableFilter !== 'all' || clicheFilter !== 'all' || wordTypeFilter !== 'all';
+  const hasActiveFilters = topicWord.trim() || syllableFilter !== 'all' || clicheFilter !== 'all' || wordTypeFilter !== 'all' || rhymeStrength !== 'strict';
 
   return (
     <Layout>
@@ -286,6 +287,21 @@ export function RhymeDictionary() {
               </select>
             </div>
 
+            <div className="filter-item">
+              <label className="filter-label">Rhyme Strength</label>
+              <select
+                value={rhymeStrength}
+                onChange={(e) => setRhymeStrength(e.target.value as RhymeStrength)}
+                className="filter-select"
+                disabled={Boolean(topicWord.trim())}
+                title={topicWord.trim() ? 'Rhyme strength is fixed when using a topic filter.' : undefined}
+              >
+                <option value="strict">Strict</option>
+                <option value="balanced">Balanced</option>
+                <option value="loose">Loose</option>
+              </select>
+            </div>
+
             {hasActiveFilters && (
               <button type="button" onClick={clearFilters} className="clear-filters-btn">
                 Clear
@@ -367,6 +383,9 @@ export function RhymeDictionary() {
                               >
                                 {rhyme.word}
                                 {rhyme.isCliche && <span className="cliche-indicator" title="Commonly used rhyme">•</span>}
+                                {rhyme.rhymeType && rhyme.rhymeType !== 'perfect' && (
+                                  <span className="rhyme-type-indicator">{rhyme.rhymeType}</span>
+                                )}
                               </Link>
                             </DefinitionTooltip>
                             {variants.length > 0 && (

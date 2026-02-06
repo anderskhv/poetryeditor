@@ -22,6 +22,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
   const [rhymes, setRhymes] = useState<RhymeWord[]>([]);
   const [nearRhymes, setNearRhymes] = useState<RhymeWord[]>([]);
   const [synonyms, setSynonyms] = useState<SynonymWord[]>([]);
+  const [pendingInsert, setPendingInsert] = useState<string | null>(null);
   const [loadingRhymes, setLoadingRhymes] = useState(false);
   const [loadingNearRhymes, setLoadingNearRhymes] = useState(false);
   const [loadingSynonyms, setLoadingSynonyms] = useState(false);
@@ -61,6 +62,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     setWordInfoLoaded(false);
     setWordInfoSlow(false);
     setWordInfoError(null);
+    setPendingInsert(null);
   }, [word]);
 
   // Group rhymes by syllable count
@@ -286,7 +288,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
                                   key={idx}
                                   type="button"
                                   className="word-item word-item-button"
-                                  onClick={() => onInsertWord?.(rhyme.word)}
+                                  onClick={() => setPendingInsert(rhyme.word)}
                                   title="Insert and copy"
                                 >
                                   <span className="word-text">{rhyme.word}</span>
@@ -329,7 +331,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
                                   key={idx}
                                   type="button"
                                   className="word-item word-item-button"
-                                  onClick={() => onInsertWord?.(rhyme.word)}
+                                  onClick={() => setPendingInsert(rhyme.word)}
                                   title="Insert and copy"
                                 >
                                   <span className="word-text">{rhyme.word}</span>
@@ -378,7 +380,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
                                   key={idx}
                                   type="button"
                                   className="word-item word-item-button"
-                                  onClick={() => onInsertWord?.(synonym.word)}
+                                  onClick={() => setPendingInsert(synonym.word)}
                                   title="Insert and copy"
                                 >
                                   <span className="word-text">{synonym.word}</span>
@@ -484,6 +486,31 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
               ) : (
                 <p className="no-data">No information available for this word</p>
               )}
+            </div>
+          )}
+
+          {pendingInsert && (
+            <div className="insert-confirm">
+              <span className="insert-text">Insert "{pendingInsert}"?</span>
+              <div className="insert-actions">
+                <button
+                  type="button"
+                  className="insert-btn"
+                  onClick={() => {
+                    onInsertWord?.(pendingInsert);
+                    setPendingInsert(null);
+                  }}
+                >
+                  Insert
+                </button>
+                <button
+                  type="button"
+                  className="insert-cancel"
+                  onClick={() => setPendingInsert(null)}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
 
