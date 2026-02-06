@@ -5,6 +5,7 @@
 
 import nlp from 'compromise';
 import { getRhymePhonemes, getPerfectRhymesOffline, getNearRhymesOffline, getSpellingRhymesOffline, getSyllableCount, isDictionaryLoaded, loadCMUDictionary } from './cmuDict';
+import offlineSynonyms from '../data/offlineSynonyms.json';
 
 /**
  * Fast rhyme quality calculation - reuses source phonemes
@@ -48,6 +49,17 @@ export interface RhymeWord {
 export interface SynonymWord {
   word: string;
   score: number;
+}
+
+type OfflineSynonymEntry = {
+  synonyms: string[];
+  antonyms?: string[];
+  hyponyms?: string[];
+};
+
+function getOfflineSynonymEntry(word: string): OfflineSynonymEntry | undefined {
+  const normalized = word.toLowerCase();
+  return (offlineSynonyms as Record<string, OfflineSynonymEntry>)[normalized];
 }
 
 export function getWordVariants(word: string, partsOfSpeech: string[] = []): string[] {
@@ -297,50 +309,12 @@ function applyWordForm(synonymWord: string, originalWord: string): string {
  */
 export async function fetchSynonyms(word: string): Promise<SynonymWord[]> {
   try {
-    // Use the word as-is - Datamuse API returns correctly inflected forms
-    // (e.g., searching "desperately" returns "badly", not "bad")
-    console.log(`Fetching synonyms for: ${word}`);
-
-    // Use "means like" endpoint which is more semantically focused than rel_syn
-    const response = await fetch(
-      `https://api.datamuse.com/words?ml=${encodeURIComponent(word)}&md=p&max=50`,
-      {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      }
-    );
-
-    if (!response.ok) {
-      console.error(`Synonym API response not OK: ${response.status} ${response.statusText}`);
-      throw new Error('Failed to fetch synonyms');
-    }
-
-    const data = await response.json();
-    console.log(`Received ${data.length} similar meaning words for "${word}"`);
-
-    // Log top scores to understand the distribution
-    if (data.length > 0) {
-      const topScores = data.slice(0, 10).map((item: any) => `${item.word}:${item.score}`);
-      console.log(`Top scores: ${topScores.join(', ')}`);
-    }
-
-    // Filter by score tiers and primary_rel tag:
-    // - Primary synonyms: score >= 40,000,000 OR has "results_type:primary_rel" tag
-    // - Secondary synonyms: score >= 29,500,000 (mid-tier)
-    // This eliminates weak associations while keeping good secondary matches
-    const filtered = data.filter((item: any) => {
-      const score = item.score || 0;
-      const isPrimary = item.tags?.includes('results_type:primary_rel');
-
-      // Keep if it's a primary result OR has a high score (40M+) OR decent mid-tier (29.5M+)
-      return isPrimary || score >= 40000000 || score >= 29500000;
-    });
-    console.log(`Filtered to ${filtered.length} quality synonyms (primary + high/mid scores)`);
-
-    // Return synonyms in base form (don't try to transform them)
-    return filtered.map((item: any) => ({
-      word: item.word,
-      score: item.score || 0,
+    console.log(`Fetching offline synonyms for: ${word}`);
+    const entry = getOfflineSynonymEntry(word);
+    if (!entry || entry.synonyms.length === 0) return [];
+    return entry.synonyms.map((synonym, idx) => ({
+      word: synonym,
+      score: 1000 - idx * 10,
     }));
   } catch (error) {
     console.error('Error fetching synonyms:', error);
@@ -353,18 +327,11 @@ export async function fetchSynonyms(word: string): Promise<SynonymWord[]> {
  */
 export async function fetchSimilarWords(word: string): Promise<SynonymWord[]> {
   try {
-    const response = await fetch(
-      `https://api.datamuse.com/words?ml=${encodeURIComponent(word)}&max=15`
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch similar words');
-    }
-
-    const data = await response.json();
-    return data.map((item: any) => ({
-      word: item.word,
-      score: item.score || 0,
+    const entry = getOfflineSynonymEntry(word);
+    if (!entry || entry.synonyms.length === 0) return [];
+    return entry.synonyms.slice(0, 15).map((synonym, idx) => ({
+      word: synonym,
+      score: 1000 - idx * 10,
     }));
   } catch (error) {
     console.error('Error fetching similar words:', error);
@@ -377,27 +344,12 @@ export async function fetchSimilarWords(word: string): Promise<SynonymWord[]> {
  */
 export async function fetchAntonyms(word: string): Promise<SynonymWord[]> {
   try {
-    console.log(`Fetching antonyms for: ${word}`);
-
-    const response = await fetch(
-      `https://api.datamuse.com/words?rel_ant=${encodeURIComponent(word)}&max=20`,
-      {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      }
-    );
-
-    if (!response.ok) {
-      console.error(`Antonym API response not OK: ${response.status} ${response.statusText}`);
-      throw new Error('Failed to fetch antonyms');
-    }
-
-    const data = await response.json();
-    console.log(`Received ${data.length} antonyms for "${word}"`);
-
-    return data.map((item: any) => ({
-      word: item.word,
-      score: item.score || 0,
+    console.log(`Fetching offline antonyms for: ${word}`);
+    const entry = getOfflineSynonymEntry(word);
+    if (!entry || !entry.antonyms || entry.antonyms.length === 0) return [];
+    return entry.antonyms.map((antonym, idx) => ({
+      word: antonym,
+      score: 1000 - idx * 10,
     }));
   } catch (error) {
     console.error('Error fetching antonyms:', error);
@@ -425,96 +377,12 @@ export interface ImageryWord {
  */
 export async function fetchHyponyms(word: string): Promise<ImageryWord[]> {
   try {
-    console.log(`Fetching concrete examples for: ${word}`);
-
-    // Primary: try hyponyms (specific types/instances)
-    const hyponymResponse = await fetch(
-      `https://api.datamuse.com/words?rel_gen=${encodeURIComponent(word)}&max=100`,
-      {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      }
-    );
-
-    if (!hyponymResponse.ok) {
-      console.error(`Imagery API response not OK: ${hyponymResponse.status} ${hyponymResponse.statusText}`);
-      throw new Error('Failed to fetch concrete examples');
-    }
-
-    const hyponymData = await hyponymResponse.json();
-    console.log(`Received ${hyponymData.length} hyponyms for "${word}"`);
-
-    // If we got good results, return them
-    if (hyponymData.length >= 5) {
-      return hyponymData.map((item: any) => ({
-        word: item.word,
-        score: item.score || 0,
-      }));
-    }
-
-    // Fallback 1: For adjectives/descriptors, try "nouns described by this adjective"
-    // rel_jjb returns nouns that are often described by the adjective
-    const jjbResponse = await fetch(
-      `https://api.datamuse.com/words?rel_jjb=${encodeURIComponent(word)}&max=50`,
-      {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      }
-    );
-
-    if (jjbResponse.ok) {
-      const jjbData = await jjbResponse.json();
-      console.log(`Received ${jjbData.length} nouns described by "${word}"`);
-
-      if (jjbData.length >= 3) {
-        // Combine hyponyms with described nouns
-        const combined = [
-          ...hyponymData.map((item: any) => ({ word: item.word, score: item.score || 0 })),
-          ...jjbData.map((item: any) => ({ word: item.word, score: item.score || 0 }))
-        ];
-        // Remove duplicates
-        const seen = new Set<string>();
-        return combined.filter(item => {
-          if (seen.has(item.word)) return false;
-          seen.add(item.word);
-          return true;
-        });
-      }
-    }
-
-    // Fallback 2: Try "means like" for semantic associations
-    const mlResponse = await fetch(
-      `https://api.datamuse.com/words?ml=${encodeURIComponent(word)}&max=50`,
-      {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      }
-    );
-
-    if (mlResponse.ok) {
-      const mlData = await mlResponse.json();
-      console.log(`Received ${mlData.length} semantically related words for "${word}"`);
-
-      // Combine all results
-      const combined = [
-        ...hyponymData.map((item: any) => ({ word: item.word, score: item.score || 0 })),
-        ...mlData.slice(0, 30).map((item: any) => ({ word: item.word, score: item.score || 0 }))
-      ];
-      // Remove duplicates and the original word
-      const seen = new Set<string>();
-      seen.add(word.toLowerCase());
-      return combined.filter(item => {
-        const lower = item.word.toLowerCase();
-        if (seen.has(lower)) return false;
-        seen.add(lower);
-        return true;
-      });
-    }
-
-    // Return whatever hyponyms we got
-    return hyponymData.map((item: any) => ({
-      word: item.word,
-      score: item.score || 0,
+    console.log(`Fetching offline hyponyms for: ${word}`);
+    const entry = getOfflineSynonymEntry(word);
+    if (!entry || !entry.hyponyms || entry.hyponyms.length === 0) return [];
+    return entry.hyponyms.map((item, idx) => ({
+      word: item,
+      score: 1000 - idx * 10,
     }));
   } catch (error) {
     console.error('Error fetching concrete examples:', error);
@@ -532,28 +400,8 @@ export async function fetchHyponyms(word: string): Promise<ImageryWord[]> {
  */
 export async function fetchHypernyms(word: string): Promise<ImageryWord[]> {
   try {
-    console.log(`Fetching general categories for: ${word}`);
-
-    const response = await fetch(
-      `https://api.datamuse.com/words?rel_spc=${encodeURIComponent(word)}&max=20`,
-      {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      }
-    );
-
-    if (!response.ok) {
-      console.error(`Hypernym API response not OK: ${response.status} ${response.statusText}`);
-      throw new Error('Failed to fetch categories');
-    }
-
-    const data = await response.json();
-    console.log(`Received ${data.length} general categories for "${word}"`);
-
-    return data.map((item: any) => ({
-      word: item.word,
-      score: item.score || 0,
-    }));
+    console.log(`Fetching offline hypernyms for: ${word}`);
+    return [];
   } catch (error) {
     console.error('Error fetching categories:', error);
     return [];

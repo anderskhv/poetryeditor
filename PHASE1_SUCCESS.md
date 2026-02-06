@@ -17,6 +17,10 @@ Perfect rhyme expectations:
 - moon -> tune, soon, loon
 - love -> dove, glove, above
 - cold -> bold, told, fold
+- nation -> station, relation, creation
+- flower -> power, shower, tower
+- ocean -> motion, notion, lotion
+- story -> glory, gory, allegory
 
 Syllable count expectations (known words):
 - cat: 1

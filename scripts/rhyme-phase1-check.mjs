@@ -98,6 +98,10 @@ const rhymeTests = [
   { word: 'moon', expect: ['tune', 'soon', 'loon'] },
   { word: 'love', expect: ['dove', 'glove', 'above'] },
   { word: 'cold', expect: ['bold', 'told', 'fold'] },
+  { word: 'nation', expect: ['station', 'relation', 'creation'] },
+  { word: 'flower', expect: ['power', 'shower', 'tower'] },
+  { word: 'ocean', expect: ['motion', 'notion', 'lotion'] },
+  { word: 'story', expect: ['glory', 'gory', 'allegory'] },
 ];
 
 const syllableTests = [
