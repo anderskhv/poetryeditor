@@ -15,6 +15,11 @@ const synonymTests = [
   { word: 'bright', expect: ['radiant', 'luminous'] },
   { word: 'dark', expect: ['gloomy', 'shadowy'] },
   { word: 'cold', expect: ['chilly', 'icy'] },
+  { word: 'angry', expect: ['furious', 'irate'] },
+  { word: 'brave', expect: ['courageous', 'bold'] },
+  { word: 'gentle', expect: ['soft', 'tender'] },
+  { word: 'silence', expect: ['quiet', 'hush'] },
+  { word: 'storm', expect: ['tempest', 'gale'] },
 ];
 
 const antonymTests = [
@@ -23,6 +28,9 @@ const antonymTests = [
   { word: 'big', expect: ['small'] },
   { word: 'fast', expect: ['slow'] },
   { word: 'bright', expect: ['dark'] },
+  { word: 'gentle', expect: ['harsh'] },
+  { word: 'calm', expect: ['chaotic'] },
+  { word: 'awake', expect: ['asleep'] },
 ];
 
 let synonymPass = 0;
