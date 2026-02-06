@@ -115,6 +115,13 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     editorRef.current = editorInstance;
     monacoRef.current = monaco;
 
+    const updateLayoutVars = () => {
+      if (!containerRef.current) return;
+      const layout = editorInstance.getLayoutInfo();
+      containerRef.current.style.setProperty('--editor-content-left', `${layout.contentLeft}px`);
+      containerRef.current.style.setProperty('--editor-content-width', `${layout.contentWidth}px`);
+    };
+
     // Expose editor to parent component
     if (onEditorMount) {
       onEditorMount(editorInstance);
@@ -192,6 +199,11 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     // Set initial theme
     const themeName = editorTheme === 'dark' ? 'poetry-theme-dark' : editorTheme === 'yellow' ? 'poetry-theme-yellow' : 'poetry-theme';
     monaco.editor.setTheme(themeName);
+
+    updateLayoutVars();
+    editorInstance.onDidLayoutChange(() => {
+      updateLayoutVars();
+    });
 
     // Handle click events to show word popup
     editorInstance.onMouseDown((e) => {
