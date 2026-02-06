@@ -110,6 +110,30 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   const copyToastTimerRef = useRef<number | null>(null);
   const lastSelectionRef = useRef<EditorSelection>(null);
   const restoreSelectionRef = useRef(false);
+  const paragraphAlignRef = useRef(paragraphAlign);
+
+  const applyAlignmentShift = () => {
+    const editorInstance = editorRef.current;
+    if (!editorInstance || !containerRef.current) return;
+    const layout = editorInstance.getLayoutInfo();
+    const visibleWidth = layout.width - layout.verticalScrollbarWidth;
+    const contentCenter = layout.contentLeft + layout.contentWidth / 2;
+    const visibleCenter = visibleWidth / 2;
+    const centerShift = visibleCenter - contentCenter;
+    containerRef.current.style.setProperty('--editor-center-shift', `${centerShift}px`);
+
+    const domNode = editorInstance.getDomNode();
+    const linesContent = domNode?.querySelector('.lines-content') as HTMLElement | null;
+    if (!linesContent) return;
+
+    if (paragraphAlignRef.current === 'center') {
+      linesContent.style.position = 'relative';
+      linesContent.style.left = `${centerShift}px`;
+    } else {
+      linesContent.style.left = '';
+      linesContent.style.position = '';
+    }
+  };
 
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editorRef.current = editorInstance;
@@ -120,11 +144,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       const layout = editorInstance.getLayoutInfo();
       containerRef.current.style.setProperty('--editor-content-left', `${layout.contentLeft}px`);
       containerRef.current.style.setProperty('--editor-content-width', `${layout.contentWidth}px`);
-      const visibleWidth = layout.width - layout.verticalScrollbarWidth;
-      const contentCenter = layout.contentLeft + layout.contentWidth / 2;
-      const visibleCenter = visibleWidth / 2;
-      const centerShift = visibleCenter - contentCenter;
-      containerRef.current.style.setProperty('--editor-center-shift', `${centerShift}px`);
+      applyAlignmentShift();
     };
 
     // Expose editor to parent component
@@ -1194,6 +1214,11 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   useEffect(() => {
     updateDecorations();
   }, [tenseColoringData]);
+
+  useEffect(() => {
+    paragraphAlignRef.current = paragraphAlign;
+    applyAlignmentShift();
+  }, [paragraphAlign]);
 
   // Update decorations when scansionColoringData changes
   useEffect(() => {
