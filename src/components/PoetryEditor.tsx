@@ -116,31 +116,31 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     const editorInstance = editorRef.current;
     if (!editorInstance || !containerRef.current) return;
     const domNode = editorInstance.getDomNode();
-    const linesContent = (domNode?.querySelector('.lines-content') as HTMLElement | null)
-      || (domNode?.querySelector('.view-lines') as HTMLElement | null);
+    const viewLines = domNode?.querySelector('.view-lines') as HTMLElement | null;
     const editorSurface = domNode?.querySelector('.monaco-editor') as HTMLElement | null;
-    if (!linesContent || !editorSurface) return;
+    if (!viewLines || !editorSurface) return;
+
+    const layout = editorInstance.getLayoutInfo();
+    const visibleWidth = layout.width - layout.verticalScrollbarWidth;
+    const contentCenter = layout.contentLeft + layout.contentWidth / 2;
+    const visibleCenter = visibleWidth / 2;
+    const centerShift = visibleCenter - contentCenter;
 
     if (paragraphAlignRef.current === 'center') {
-      const editorRect = editorSurface.getBoundingClientRect();
-      const linesRect = linesContent.getBoundingClientRect();
-      const editorCenter = editorRect.left + editorRect.width / 2;
-      const linesCenter = linesRect.left + linesRect.width / 2;
-      const centerShift = editorCenter - linesCenter;
       const baseTransform =
-        linesContent.dataset.baseTransform
-        || linesContent.style.transform
-        || getComputedStyle(linesContent).transform;
-      if (!linesContent.dataset.baseTransform) {
-        linesContent.dataset.baseTransform = baseTransform && baseTransform !== 'none' ? baseTransform : '';
+        viewLines.dataset.baseTransform
+        || viewLines.style.transform
+        || getComputedStyle(viewLines).transform;
+      if (!viewLines.dataset.baseTransform) {
+        viewLines.dataset.baseTransform = baseTransform && baseTransform !== 'none' ? baseTransform : '';
       }
-      const safeBase = linesContent.dataset.baseTransform || '';
-      linesContent.style.transform = `${safeBase} translateX(${centerShift}px)`;
+      const safeBase = viewLines.dataset.baseTransform || '';
+      viewLines.style.transform = `${safeBase} translateX(${centerShift}px)`;
     } else {
-      if (linesContent.dataset.baseTransform) {
-        linesContent.style.transform = linesContent.dataset.baseTransform;
+      if (viewLines.dataset.baseTransform) {
+        viewLines.style.transform = viewLines.dataset.baseTransform;
       } else {
-        linesContent.style.transform = '';
+        viewLines.style.transform = '';
       }
     }
   };
