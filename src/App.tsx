@@ -20,6 +20,7 @@ import { type PassiveVoiceInstance } from './utils/passiveVoiceDetector';
 import { type TenseInstance } from './utils/tenseChecker';
 import { type StressedSyllableInstance } from './utils/scansionAnalyzer';
 import { stripMarkdownFormatting } from './utils/markdownFormatter';
+import { getAllPoems } from './data/poems';
 import './App.css';
 
 // Expanded font options for poetry
@@ -58,6 +59,40 @@ const SAMPLE_POEM = `Shall I compare thee to a summer's day?
 Thou art more lovely and more temperate.
 Rough winds do shake the darling buds of May,
 And summer's lease hath all too short a date.`;
+
+const hashString = (value: string) => {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+};
+
+const mulberry32 = (seed: number) => () => {
+  let t = seed += 0x6D2B79F5;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+
+const getLocalDateKey = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const getDailyShuffle = <T,>(items: T[], count: number, seedKey: string) => {
+  const rng = mulberry32(hashString(seedKey));
+  const shuffled = [...items];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(rng() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, Math.min(count, shuffled.length));
+};
 
 // Poem storage type
 interface SavedPoem {
@@ -181,6 +216,16 @@ function App() {
   const [highlightedLines, setHighlightedLines] = useState<number[] | null>(null);
   const [highlightedWords, setHighlightedWords] = useState<{ word: string; lineNumber: number }[] | null>(null);
   const [editorHoveredLine, setEditorHoveredLine] = useState<number | null>(null);
+
+  const poemsList = getAllPoems();
+  const poemsByPoet = poemsList.reduce((acc, poem) => {
+    if (!acc[poem.poet]) acc[poem.poet] = [];
+    acc[poem.poet].push(poem);
+    return acc;
+  }, {} as Record<string, typeof poemsList>);
+  const dailyKey = getLocalDateKey();
+  const dailyFeatured = getDailyShuffle(poemsList, 4, `featured:${dailyKey}`);
+  const dailyPoets = getDailyShuffle(Object.keys(poemsByPoet), 4, `poets:${dailyKey}`);
 
   // Apply theme class to document
   useEffect(() => {
@@ -988,45 +1033,39 @@ function App() {
                 <div className="inspiration-menu">
                   <div className="inspiration-section">
                     <div className="inspiration-section-label">Featured</div>
-                    <a href="/poems/first-fig" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
-                      <span className="inspiration-poem-title">"First Fig"</span>
-                      <span className="inspiration-poet">Millay</span>
-                    </a>
-                    <a href="/poems/sonnet-18" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
-                      <span className="inspiration-poem-title">"Sonnet 18"</span>
-                      <span className="inspiration-poet">Shakespeare</span>
-                    </a>
-                    <a href="/poems/november-night" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
-                      <span className="inspiration-poem-title">"November Night"</span>
-                      <span className="inspiration-poet">Crapsey</span>
-                    </a>
-                    <a href="/poems/stopping-by-woods" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
-                      <span className="inspiration-poem-title">"Stopping by Woods"</span>
-                      <span className="inspiration-poet">Frost</span>
-                    </a>
+                    {dailyFeatured.map(poem => (
+                      <a
+                        key={poem.slug}
+                        href={`/poems/${poem.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inspiration-item"
+                        onClick={() => setShowInspirationMenu(false)}
+                      >
+                        <span className="inspiration-poem-title">"{poem.title}"</span>
+                        <span className="inspiration-poet">{poem.poet.split(' ').slice(-1)[0]}</span>
+                      </a>
+                    ))}
                   </div>
                   <div className="inspiration-section">
                     <div className="inspiration-section-label">Browse by Poet</div>
-                    <a href="/poems?poet=shakespeare" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
-                      <span className="inspiration-poet-name">Shakespeare</span>
-                      <span className="inspiration-count">21</span>
-                    </a>
-                    <a href="/poems?poet=dickinson" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
-                      <span className="inspiration-poet-name">Dickinson</span>
-                      <span className="inspiration-count">10</span>
-                    </a>
-                    <a href="/poems?poet=wordsworth" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
-                      <span className="inspiration-poet-name">Wordsworth</span>
-                      <span className="inspiration-count">4</span>
-                    </a>
-                    <a href="/poems?poet=frost" target="_blank" rel="noopener noreferrer" className="inspiration-item" onClick={() => setShowInspirationMenu(false)}>
-                      <span className="inspiration-poet-name">Frost</span>
-                      <span className="inspiration-count">3</span>
-                    </a>
+                    {dailyPoets.map(poet => (
+                      <a
+                        key={poet}
+                        href={`/poems?poet=${encodeURIComponent(poet.toLowerCase())}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inspiration-item"
+                        onClick={() => setShowInspirationMenu(false)}
+                      >
+                        <span className="inspiration-poet-name">{poet}</span>
+                        <span className="inspiration-count">{poemsByPoet[poet].length}</span>
+                      </a>
+                    ))}
                   </div>
                   <div className="inspiration-section inspiration-browse-all">
                     <a href="/poems" target="_blank" rel="noopener noreferrer" className="inspiration-item browse-all-link" onClick={() => setShowInspirationMenu(false)}>
-                      Browse All 63 Poems
+                      Browse All {poemsList.length} Poems
                       <span className="browse-arrow">→</span>
                     </a>
                   </div>

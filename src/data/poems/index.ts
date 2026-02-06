@@ -34,6 +34,15 @@ import { onLove } from './gibran-on-love';
 import { onChildren } from './gibran-on-children';
 import { onJoyAndSorrow } from './gibran-on-joy-and-sorrow';
 
+// Lazarus
+import { newColossus } from './lazarus-new-colossus';
+
+// Browning
+import { sonnet43 } from './browning-sonnet-43';
+
+// Burns
+import { redRedRose } from './burns-red-red-rose';
+
 // Rilke
 import { wideningCircles } from './rilke-widening-circles';
 import { godSpeaks } from './rilke-god-speaks';
@@ -67,6 +76,9 @@ import { brightStar } from './keats-bright-star';
 // Blake
 import { theTyger } from './blake-tyger';
 import { theLamb } from './blake-lamb';
+import { sickRose } from './blake-sick-rose';
+import { london } from './blake-london';
+import { chimneySweeper } from './blake-chimney-sweeper';
 
 // Wordsworth
 import { daffodils } from './wordsworth-daffodils';
@@ -93,15 +105,19 @@ import { dickinson1129 } from './dickinson-1129';
 // Whitman
 import { oCaptain } from './whitman-o-captain';
 import { noiselessSpider } from './whitman-noiseless-spider';
+import { americaSinging } from './whitman-america-singing';
 
 // Poe
 import { annabelLee } from './poe-annabel-lee';
 import { alone } from './poe-alone';
+import { dreamWithinADream } from './poe-dream-within-a-dream';
 
 // Frost
 import { roadNotTaken } from './frost-road-not-taken';
 import { nothingGoldCanStay } from './frost-nothing-gold';
 import { stoppingByWoods } from './frost-stopping-by-woods';
+import { fireAndIce } from './frost-fire-and-ice';
+import { thePasture } from './frost-the-pasture';
 
 // Henley
 import { invictus } from './henley-invictus';
@@ -125,6 +141,28 @@ import { thereWillComeSoftRains } from './teasdale-there-will-come-soft-rains';
 import { iAmNotYours } from './teasdale-i-am-not-yours';
 import { barter } from './teasdale-barter';
 
+// Yeats
+import { innisfree } from './yeats-innisfree';
+import { secondComing } from './yeats-second-coming';
+
+// Dunbar
+import { weWearTheMask } from './dunbar-we-wear-the-mask';
+
+// Longfellow
+import { arrowAndSong } from './longfellow-arrow-and-song';
+
+// Marlowe & Raleigh
+import { passionateShepherd } from './marlowe-passionate-shepherd';
+import { nymphReply } from './raleigh-nymph-reply';
+
+// Keats
+import { toAutumn } from './keats-to-autumn';
+import { grasshopperCricket } from './keats-grasshopper-cricket';
+
+// Rossetti
+import { remember } from './rossetti-remember';
+import { whenIAmDead } from './rossetti-when-i-am-dead';
+
 // Millay
 import { firstFig } from './millay-first-fig';
 import { whatLipsMyLips } from './millay-what-lips-my-lips';
@@ -134,6 +172,12 @@ export const poems: Record<string, PoemAnalysis> = {
   'on-love': onLove,
   'on-children': onChildren,
   'on-joy-and-sorrow': onJoyAndSorrow,
+  // Lazarus
+  'the-new-colossus': newColossus,
+  // Browning
+  'sonnet-43': sonnet43,
+  // Burns
+  'a-red-red-rose': redRedRose,
   // Rilke
   'widening-circles': wideningCircles,
   'god-speaks': godSpeaks,
@@ -164,6 +208,9 @@ export const poems: Record<string, PoemAnalysis> = {
   // Blake
   'the-tyger': theTyger,
   'the-lamb': theLamb,
+  'the-sick-rose': sickRose,
+  'london': london,
+  'the-chimney-sweeper': chimneySweeper,
   // Wordsworth
   'daffodils': daffodils,
   'westminster-bridge': westminsterBridge,
@@ -186,13 +233,17 @@ export const poems: Record<string, PoemAnalysis> = {
   // Whitman
   'o-captain': oCaptain,
   'noiseless-spider': noiselessSpider,
+  'i-hear-america-singing': americaSinging,
   // Poe
   'annabel-lee': annabelLee,
   'alone': alone,
+  'a-dream-within-a-dream': dreamWithinADream,
   // Frost
   'the-road-not-taken': roadNotTaken,
   'nothing-gold-can-stay': nothingGoldCanStay,
   'stopping-by-woods': stoppingByWoods,
+  'fire-and-ice': fireAndIce,
+  'the-pasture': thePasture,
   // Henley
   'invictus': invictus,
   // McCrae
@@ -209,6 +260,22 @@ export const poems: Record<string, PoemAnalysis> = {
   'there-will-come-soft-rains': thereWillComeSoftRains,
   'i-am-not-yours': iAmNotYours,
   'barter': barter,
+  // Yeats
+  'the-lake-isle-of-innisfree': innisfree,
+  'the-second-coming': secondComing,
+  // Dunbar
+  'we-wear-the-mask': weWearTheMask,
+  // Longfellow
+  'the-arrow-and-the-song': arrowAndSong,
+  // Marlowe & Raleigh
+  'the-passionate-shepherd-to-his-love': passionateShepherd,
+  'the-nymphs-reply-to-the-shepherd': nymphReply,
+  // Keats
+  'to-autumn': toAutumn,
+  'on-the-grasshopper-and-cricket': grasshopperCricket,
+  // Rossetti
+  'remember': remember,
+  'when-i-am-dead-my-dearest': whenIAmDead,
   // Millay
   'first-fig': firstFig,
   'what-lips-my-lips-have-kissed': whatLipsMyLips,

@@ -110,40 +110,6 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   const copyToastTimerRef = useRef<number | null>(null);
   const lastSelectionRef = useRef<EditorSelection>(null);
   const restoreSelectionRef = useRef(false);
-  const paragraphAlignRef = useRef(paragraphAlign);
-
-  const applyAlignmentShift = () => {
-    const editorInstance = editorRef.current;
-    if (!editorInstance || !containerRef.current) return;
-    const domNode = editorInstance.getDomNode();
-    const viewLines = domNode?.querySelector('.view-lines') as HTMLElement | null;
-    const editorSurface = domNode?.querySelector('.monaco-editor') as HTMLElement | null;
-    if (!viewLines || !editorSurface) return;
-
-    const layout = editorInstance.getLayoutInfo();
-    const visibleWidth = layout.width - layout.verticalScrollbarWidth;
-    const contentCenter = layout.contentLeft + layout.contentWidth / 2;
-    const visibleCenter = visibleWidth / 2;
-    const centerShift = visibleCenter - contentCenter;
-
-    if (paragraphAlignRef.current === 'center') {
-      const baseTransform =
-        viewLines.dataset.baseTransform
-        || viewLines.style.transform
-        || getComputedStyle(viewLines).transform;
-      if (!viewLines.dataset.baseTransform) {
-        viewLines.dataset.baseTransform = baseTransform && baseTransform !== 'none' ? baseTransform : '';
-      }
-      const safeBase = viewLines.dataset.baseTransform || '';
-      viewLines.style.transform = `${safeBase} translateX(${centerShift}px)`;
-    } else {
-      if (viewLines.dataset.baseTransform) {
-        viewLines.style.transform = viewLines.dataset.baseTransform;
-      } else {
-        viewLines.style.transform = '';
-      }
-    }
-  };
 
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editorRef.current = editorInstance;
@@ -154,9 +120,6 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       const layout = editorInstance.getLayoutInfo();
       containerRef.current.style.setProperty('--editor-content-left', `${layout.contentLeft}px`);
       containerRef.current.style.setProperty('--editor-content-width', `${layout.contentWidth}px`);
-      requestAnimationFrame(() => {
-        applyAlignmentShift();
-      });
     };
 
     // Expose editor to parent component
@@ -240,9 +203,6 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     updateLayoutVars();
     editorInstance.onDidLayoutChange(() => {
       updateLayoutVars();
-    });
-    editorInstance.onDidScrollChange(() => {
-      applyAlignmentShift();
     });
 
     // Handle click events to show word popup
@@ -1230,10 +1190,6 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     updateDecorations();
   }, [tenseColoringData]);
 
-  useEffect(() => {
-    paragraphAlignRef.current = paragraphAlign;
-    applyAlignmentShift();
-  }, [paragraphAlign]);
 
   // Update decorations when scansionColoringData changes
   useEffect(() => {
