@@ -933,7 +933,7 @@
 }
 
 .poetry-editor-container.align-center .monaco-editor .view-lines {
-  margin-left: calc(var(--editor-content-left, 0px) * -0.5);
+  margin-left: var(--editor-center-shift, 0px);
 }
 
 .poetry-editor-container.align-right .monaco-editor .view-lines,

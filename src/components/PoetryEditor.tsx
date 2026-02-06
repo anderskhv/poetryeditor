@@ -120,6 +120,11 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       const layout = editorInstance.getLayoutInfo();
       containerRef.current.style.setProperty('--editor-content-left', `${layout.contentLeft}px`);
       containerRef.current.style.setProperty('--editor-content-width', `${layout.contentWidth}px`);
+      const visibleWidth = layout.width - layout.verticalScrollbarWidth;
+      const contentCenter = layout.contentLeft + layout.contentWidth / 2;
+      const visibleCenter = visibleWidth / 2;
+      const centerShift = visibleCenter - contentCenter;
+      containerRef.current.style.setProperty('--editor-center-shift', `${centerShift}px`);
     };
 
     // Expose editor to parent component
