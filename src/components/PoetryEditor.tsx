@@ -115,18 +115,17 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   const applyAlignmentShift = () => {
     const editorInstance = editorRef.current;
     if (!editorInstance || !containerRef.current) return;
-    const layout = editorInstance.getLayoutInfo();
-    const visibleWidth = layout.width - layout.verticalScrollbarWidth;
-    const contentCenter = layout.contentLeft + layout.contentWidth / 2;
-    const visibleCenter = visibleWidth / 2;
-    const centerShift = visibleCenter - contentCenter;
-    containerRef.current.style.setProperty('--editor-center-shift', `${centerShift}px`);
-
     const domNode = editorInstance.getDomNode();
     const linesContent = domNode?.querySelector('.lines-content') as HTMLElement | null;
-    if (!linesContent) return;
+    const editorSurface = domNode?.querySelector('.monaco-editor') as HTMLElement | null;
+    if (!linesContent || !editorSurface) return;
 
     if (paragraphAlignRef.current === 'center') {
+      const editorRect = editorSurface.getBoundingClientRect();
+      const linesRect = linesContent.getBoundingClientRect();
+      const editorCenter = editorRect.left + editorRect.width / 2;
+      const linesCenter = linesRect.left + linesRect.width / 2;
+      const centerShift = editorCenter - linesCenter;
       linesContent.style.position = 'relative';
       linesContent.style.left = `${centerShift}px`;
     } else {
@@ -144,7 +143,9 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       const layout = editorInstance.getLayoutInfo();
       containerRef.current.style.setProperty('--editor-content-left', `${layout.contentLeft}px`);
       containerRef.current.style.setProperty('--editor-content-width', `${layout.contentWidth}px`);
-      applyAlignmentShift();
+      requestAnimationFrame(() => {
+        applyAlignmentShift();
+      });
     };
 
     // Expose editor to parent component
@@ -228,6 +229,9 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     updateLayoutVars();
     editorInstance.onDidLayoutChange(() => {
       updateLayoutVars();
+    });
+    editorInstance.onDidScrollChange(() => {
+      applyAlignmentShift();
     });
 
     // Handle click events to show word popup
