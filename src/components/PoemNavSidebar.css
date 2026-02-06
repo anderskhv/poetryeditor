@@ -94,6 +94,24 @@
   font-weight: 500;
 }
 
+.poem-nav-draggable.dragging .poem-nav-item {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.poem-nav-draggable.drag-over .poem-nav-item {
+  background: var(--color-background);
+}
+
+.poem-nav-dropzone.is-over {
+  background: var(--color-background);
+}
+
+.poem-nav-section-header.is-over {
+  background: var(--color-background);
+  border-radius: 4px;
+}
+
 /* Section styles */
 .poem-nav-section {
   margin-top: 4px;
