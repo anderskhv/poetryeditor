@@ -150,6 +150,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .versions-btn {
@@ -189,21 +190,28 @@
   overflow: hidden;
 }
 
+.poem-drag-handle,
+.poem-move-btn,
 .delete-poem-btn {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 24px;
-  height: 24px;
-  background: none;
-  border: none;
-  font-size: 18px;
+  border: 1px solid var(--color-border, #e0e0e0);
+  background: transparent;
   color: var(--color-text-muted, #666);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-  border-radius: 4px;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.poem-drag-handle {
+  cursor: grab;
+}
+
+.poem-drag-handle:active {
+  cursor: grabbing;
 }
 
 .poem-versions {
@@ -267,13 +275,23 @@
   color: var(--color-text-muted, #666);
 }
 
-.poem-card:hover .delete-poem-btn {
-  opacity: 1;
-}
-
 .delete-poem-btn:hover {
   color: #d32f2f;
   background: rgba(211, 47, 47, 0.1);
+  border-color: rgba(211, 47, 47, 0.4);
+}
+
+.poem-drag-handle:hover,
+.poem-move-btn:hover {
+  color: var(--color-text-primary, #000);
+  border-color: var(--color-text-muted, #666);
+  background: var(--color-highlight-subtle);
+}
+
+.poems-section-drop.is-over .poems-section {
+  outline: 2px dashed var(--color-border, #e0e0e0);
+  outline-offset: 6px;
+  border-radius: 12px;
 }
 
 /* Stats */

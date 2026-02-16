@@ -21,11 +21,15 @@ function PoemNavItem({
   isActive,
   onSelect,
   sectionId,
+  onMoveToRoot,
+  onDelete,
 }: {
   poem: Poem;
   isActive: boolean;
   onSelect: (poemId: string) => void;
   sectionId: string | null;
+  onMoveToRoot?: (poemId: string) => void;
+  onDelete?: (poemId: string) => void;
 }) {
   const { attributes, listeners, setNodeRef: setDragRef, isDragging } = useDraggable({
     id: poem.id,
@@ -46,14 +50,42 @@ function PoemNavItem({
       ref={setRefs}
       className={`poem-nav-draggable ${isDragging ? 'dragging' : ''} ${isOver ? 'drag-over' : ''}`}
     >
-      <button
-        className={`poem-nav-item ${isActive ? 'active' : ''}`}
-        onClick={() => onSelect(poem.id)}
-        {...attributes}
-        {...listeners}
-      >
-        {poem.title}
-      </button>
+      <div className={`poem-nav-item ${isActive ? 'active' : ''}`}>
+        <button className="poem-nav-title" onClick={() => onSelect(poem.id)}>
+          {poem.title}
+        </button>
+        <div className="poem-nav-actions">
+          {sectionId && onMoveToRoot && (
+            <button
+              type="button"
+              className="poem-nav-action-btn"
+              title="Move to root"
+              onClick={() => onMoveToRoot(poem.id)}
+            >
+              ⤴
+            </button>
+          )}
+          {onDelete && (
+            <button
+              type="button"
+              className="poem-nav-action-btn delete"
+              title="Delete poem"
+              onClick={() => onDelete(poem.id)}
+            >
+              ×
+            </button>
+          )}
+          <button
+            type="button"
+            className="poem-nav-action-btn drag"
+            title="Drag to reorder"
+            {...attributes}
+            {...listeners}
+          >
+            ⋮⋮
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -156,23 +188,16 @@ export function PoemNavSidebar({
     if (current.sectionId === targetSectionId) return;
     if (!supabase) return;
 
+    const sourceList = current.sectionId
+      ? sections.find(section => section.id === current.sectionId)?.poems || []
+      : unsectionedPoems;
     const targetList = targetSectionId
       ? sections.find(section => section.id === targetSectionId)?.poems || []
       : unsectionedPoems;
 
-    const nextSortOrder = (targetList[targetList.length - 1]?.sort_order ?? 0) + 1;
-
-    const { error } = await supabase
-      .from('poems')
-      .update({ section_id: targetSectionId, sort_order: nextSortOrder })
-      .eq('id', poemId);
-
-    if (error) {
-      console.error('Failed to move poem:', error);
-      return;
-    }
-
-    const updatedPoem = { ...current.poem, section_id: targetSectionId, sort_order: nextSortOrder };
+    const updatedPoem = { ...current.poem, section_id: targetSectionId };
+    const nextSourceList = sourceList.filter(poem => poem.id !== poemId);
+    const nextTargetList = [...targetList, updatedPoem];
 
     setUnsectionedPoems(prev => prev.filter(poem => poem.id !== poemId));
     setSections(prev =>
@@ -186,13 +211,79 @@ export function PoemNavSidebar({
       setSections(prev =>
         prev.map(section =>
           section.id === targetSectionId
-            ? { ...section, poems: [...section.poems, updatedPoem] }
+            ? { ...section, poems: nextTargetList }
             : section
         )
       );
     } else {
-      setUnsectionedPoems(prev => [...prev, updatedPoem]);
+      setUnsectionedPoems(nextTargetList);
     }
+
+    await persistOrders(nextSourceList, current.sectionId);
+    await persistOrders(nextTargetList, targetSectionId);
+  };
+
+  const createPoem = async () => {
+    if (!supabase) return;
+    const nextSortOrder = (unsectionedPoems[unsectionedPoems.length - 1]?.sort_order ?? 0) + 1;
+    const { data, error } = await supabase
+      .from('poems')
+      .insert({
+        collection_id: collectionId,
+        section_id: null,
+        title: 'Untitled',
+        content: '',
+        sort_order: nextSortOrder,
+      } as any)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Failed to create poem:', error);
+      return;
+    }
+
+    const created = data as Poem;
+    setUnsectionedPoems(prev => [...prev, created]);
+    onPoemSelect(created.id);
+  };
+
+  const deletePoem = async (poemId: string) => {
+    if (!supabase) return;
+    const poem = poemLookup.get(poemId)?.poem;
+    if (!poem || !confirm(`Delete "${poem.title}"? This cannot be undone.`)) return;
+    const { error } = await supabase
+      .from('poems')
+      .delete()
+      .eq('id', poemId);
+    if (error) {
+      console.error('Failed to delete poem:', error);
+      return;
+    }
+    setUnsectionedPoems(prev => prev.filter(p => p.id !== poemId));
+    setSections(prev =>
+      prev.map(section => ({
+        ...section,
+        poems: section.poems.filter(p => p.id !== poemId),
+      }))
+    );
+  };
+
+  const moveToRoot = async (poemId: string) => {
+    await movePoem(poemId, null);
+  };
+
+  const persistOrders = async (poemsToUpdate: Poem[], sectionId: string | null) => {
+    if (!supabase) return;
+    const client = supabase;
+    await Promise.all(
+      poemsToUpdate.map((poem, index) =>
+        client
+          .from('poems')
+          .update({ section_id: sectionId, sort_order: index } as any)
+          .eq('id', poem.id)
+      )
+    );
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -202,6 +293,7 @@ export function PoemNavSidebar({
     const activeId = active.id as string;
     const overData = over.data.current as { sectionId?: string | null } | undefined;
     let targetSectionId: string | null = null;
+    const overId = over.id as string;
 
     if (overData && 'sectionId' in overData) {
       targetSectionId = overData.sectionId ?? null;
@@ -210,7 +302,36 @@ export function PoemNavSidebar({
     } else if (over.id === 'section-none') {
       targetSectionId = null;
     }
+    const activeEntry = poemLookup.get(activeId);
+    if (!activeEntry) return;
 
+    const sourceSectionId = activeEntry.sectionId;
+    if (targetSectionId === sourceSectionId && overId.startsWith('poem-')) {
+      const targetPoemId = overId.replace('poem-', '');
+      const list = sourceSectionId
+        ? sections.find(section => section.id === sourceSectionId)?.poems || []
+        : unsectionedPoems;
+      const fromIndex = list.findIndex(poem => poem.id === activeId);
+      const toIndex = list.findIndex(poem => poem.id === targetPoemId);
+      if (fromIndex === -1 || toIndex === -1) return;
+      const reordered = [...list];
+      const [moved] = reordered.splice(fromIndex, 1);
+      reordered.splice(toIndex, 0, moved);
+
+      if (sourceSectionId) {
+        setSections(prev =>
+          prev.map(section =>
+            section.id === sourceSectionId ? { ...section, poems: reordered } : section
+          )
+        );
+      } else {
+        setUnsectionedPoems(reordered);
+      }
+      void persistOrders(reordered, sourceSectionId);
+      return;
+    }
+
+    if (targetSectionId === sourceSectionId) return;
     void movePoem(activeId, targetSectionId);
   };
 
@@ -228,10 +349,15 @@ export function PoemNavSidebar({
       ) : (
         <>
       <div className="poem-nav-header">
-        <span className="poem-nav-title">Poems</span>
-        <button className="poem-nav-close" onClick={onToggle} title="Hide poems">
-          ‹
-        </button>
+        <span className="poem-nav-heading">Poems</span>
+        <div className="poem-nav-header-actions">
+          <button className="poem-nav-add" onClick={createPoem} title="New poem">
+            +
+          </button>
+          <button className="poem-nav-close" onClick={onToggle} title="Hide poems">
+            ‹
+          </button>
+        </div>
       </div>
 
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
@@ -252,6 +378,7 @@ export function PoemNavSidebar({
                   isActive={poem.id === currentPoemId}
                   onSelect={onPoemSelect}
                   sectionId={null}
+                  onDelete={deletePoem}
                 />
               ))}
             </div>
@@ -274,6 +401,8 @@ export function PoemNavSidebar({
                         isActive={poem.id === currentPoemId}
                         onSelect={onPoemSelect}
                         sectionId={section.id}
+                        onMoveToRoot={moveToRoot}
+                        onDelete={deletePoem}
                       />
                     ))}
                     {section.poems.length === 0 && (

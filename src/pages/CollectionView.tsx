@@ -1,5 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
+import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors, useDroppable } from '@dnd-kit/core';
+import { SortableContext, useSortable, rectSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
@@ -29,11 +32,12 @@ export function CollectionView() {
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loadingCollection, setLoadingCollection] = useState(true);
   const { sections, createManySections } = useSections(id);
-  const { poems, createManyPoems, updatePoem, deletePoem, loading: loadingPoems } = usePoems(id);
+  const { poems, createPoem, createManyPoems, updatePoem, updatePoemMeta, updatePoemOrders, deletePoem, loading: loadingPoems } = usePoems(id);
   const [processingUpload, setProcessingUpload] = useState(false);
   const processingRef = useRef(false); // Sync flag to prevent duplicate uploads
   const [expandedVersions, setExpandedVersions] = useState<Set<string>>(new Set());
   const [versionsByPoem, setVersionsByPoem] = useState<Record<string, PoemVersion[]>>({});
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   // Fetch collection details
   useEffect(() => {
@@ -190,6 +194,93 @@ export function CollectionView() {
     }
   };
 
+  const handleCreatePoem = async () => {
+    const created = await createPoem('Untitled', '', null, null);
+    if (created) {
+      navigate(`/?poem=${created.id}`);
+    }
+  };
+
+  const getSectionKey = (sectionId: string | null) => sectionId ?? 'root';
+
+  const poemsBySection = useMemo(() => {
+    const grouped = new Map<string, typeof poems>();
+    poems.forEach(poem => {
+      const key = getSectionKey(poem.section_id);
+      if (!grouped.has(key)) grouped.set(key, []);
+      grouped.get(key)!.push(poem);
+    });
+    grouped.forEach((list, key) => {
+      grouped.set(key, [...list].sort((a, b) => a.sort_order - b.sort_order));
+    });
+    return grouped;
+  }, [poems]);
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const activePoem = poems.find(poem => poem.id === active.id);
+    if (!activePoem) return;
+
+    const overId = over.id as string;
+    const overPoem = poems.find(poem => poem.id === overId);
+    const overSectionId = overId.startsWith('section-') ? overId.replace('section-', '') : null;
+
+    const fromSectionId = activePoem.section_id ?? null;
+    const targetSectionId = overPoem
+      ? (overPoem.section_id ?? null)
+      : overSectionId === 'root'
+        ? null
+        : overSectionId;
+    if (targetSectionId === undefined) return;
+
+    const fromKey = getSectionKey(fromSectionId);
+    const toKey = getSectionKey(targetSectionId);
+
+    const fromList = [...(poemsBySection.get(fromKey) || [])];
+    const toList = fromKey === toKey ? fromList : [...(poemsBySection.get(toKey) || [])];
+
+    const fromIndex = fromList.findIndex(poem => poem.id === active.id);
+    if (fromIndex === -1) return;
+
+    if (fromKey === toKey) {
+      const toIndex = toList.findIndex(poem => poem.id === overId);
+      if (toIndex === -1) return;
+      const reordered = arrayMove(fromList, fromIndex, toIndex);
+      const updates = reordered.map((poem, idx) => ({
+        id: poem.id,
+        section_id: targetSectionId,
+        sort_order: idx,
+      }));
+      await updatePoemOrders(updates);
+      return;
+    }
+
+    const [moved] = fromList.splice(fromIndex, 1);
+    const insertIndex = overPoem ? toList.findIndex(poem => poem.id === overId) : toList.length;
+    toList.splice(insertIndex < 0 ? toList.length : insertIndex, 0, { ...moved, section_id: targetSectionId });
+
+    const updates = [
+      ...fromList.map((poem, idx) => ({
+        id: poem.id,
+        section_id: fromSectionId,
+        sort_order: idx,
+      })),
+      ...toList.map((poem, idx) => ({
+        id: poem.id,
+        section_id: targetSectionId,
+        sort_order: idx,
+      })),
+    ];
+    await updatePoemOrders(updates);
+  };
+
+  const handleMoveToRoot = async (poemId: string) => {
+    const targetList = poemsBySection.get('root') || [];
+    await updatePoemMeta(poemId, { section_id: null, sort_order: targetList.length });
+  };
+
   const toggleVersions = (poemId: string) => {
     setExpandedVersions(prev => {
       const next = new Set(prev);
@@ -255,22 +346,8 @@ export function CollectionView() {
     );
   }
 
-  // Group poems by section for display
-  const poemsBySection = new Map<string | null, typeof poems>();
-  const rootPoems: typeof poems = [];
-
-  poems.forEach(poem => {
-    if (poem.section_id) {
-      if (!poemsBySection.has(poem.section_id)) {
-        poemsBySection.set(poem.section_id, []);
-      }
-      poemsBySection.get(poem.section_id)!.push(poem);
-    } else {
-      rootPoems.push(poem);
-    }
-  });
-
   const sectionMap = new Map(sections.map(s => [s.id, s]));
+  const rootPoems = poemsBySection.get('root') || [];
 
   return (
     <Layout>
@@ -290,6 +367,9 @@ export function CollectionView() {
         <div className="collection-header">
           <h1>{collection.name}</h1>
           <div className="collection-actions">
+            <button className="export-button" onClick={handleCreatePoem}>
+              New Poem
+            </button>
             <button className="export-button" onClick={handleExport} disabled={poems.length === 0}>
               Export as ZIP
             </button>
@@ -309,141 +389,61 @@ export function CollectionView() {
             <p>This collection is empty.</p>
           </div>
         ) : (
-          <div className="poems-container">
-            {/* Root level poems */}
-            {rootPoems.length > 0 && (
-              <div className="poems-section">
-                <div className="poems-grid">
-                  {rootPoems.map(poem => (
-                    <div key={poem.id} className="poem-card">
-                      <Link
-                        to={`/?poem=${poem.id}`}
-                        className="poem-link"
-                      >
-                        <h3>{poem.title}</h3>
-                        <p className="poem-preview">
-                          {poem.content.substring(0, 100)}
-                          {poem.content.length > 100 ? '...' : ''}
-                        </p>
-                      </Link>
-                      <div className="poem-card-actions">
-                        <button
-                          className="versions-btn"
-                          onClick={() => toggleVersions(poem.id)}
-                        >
-                          Versions ({versionsByPoem[poem.id]?.length || 0})
-                        </button>
-                        <button
-                          className="delete-poem-btn"
-                          onClick={() => handleDeletePoem(poem.id, poem.title)}
-                          title="Delete poem"
-                        >
-                          &times;
-                        </button>
+          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+            <div className="poems-container">
+              {/* Root level poems */}
+              {rootPoems.length > 0 && (
+                <SectionDropTarget sectionId="root">
+                  <div className="poems-section">
+                    <SortableContext items={rootPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
+                      <div className="poems-grid">
+                        {rootPoems.map(poem => (
+                          <SortablePoemCard
+                            key={poem.id}
+                            poem={poem}
+                            onDelete={handleDeletePoem}
+                            onToggleVersions={toggleVersions}
+                            expanded={expandedVersions.has(poem.id)}
+                            versions={versionsByPoem[poem.id] || []}
+                            onRestoreVersion={handleRestoreVersion}
+                          />
+                        ))}
                       </div>
-                      {expandedVersions.has(poem.id) && (
-                        <div className="poem-versions">
-                          {(versionsByPoem[poem.id] || []).length === 0 ? (
-                            <div className="poem-version-empty">No saved versions yet.</div>
-                          ) : (
-                            (versionsByPoem[poem.id] || []).map(version => (
-                              <div key={version.id} className="poem-version-item">
-                                <div className="poem-version-meta">
-                                  <span className="poem-version-date">
-                                    {new Date(version.created_at).toLocaleString()}
-                                  </span>
-                                  <span className="poem-version-title">{version.title}</span>
-                                </div>
-                                <p className="poem-version-preview">
-                                  {version.content.substring(0, 120)}
-                                  {version.content.length > 120 ? '...' : ''}
-                                </p>
-                                <button
-                                  className="poem-version-restore"
-                                  onClick={() => handleRestoreVersion(poem, version)}
-                                >
-                                  Restore
-                                </button>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Sectioned poems */}
-            {Array.from(poemsBySection.entries()).map(([sectionId, sectionPoems]) => {
-              const section = sectionId ? sectionMap.get(sectionId) : null;
-              return (
-                <div key={sectionId || 'root'} className="poems-section">
-                  {section && <h2 className="section-title">{section.name}</h2>}
-                  <div className="poems-grid">
-                    {sectionPoems.map(poem => (
-                      <div key={poem.id} className="poem-card">
-                        <Link
-                          to={`/?poem=${poem.id}`}
-                          className="poem-link"
-                        >
-                          <h3>{poem.title}</h3>
-                          <p className="poem-preview">
-                            {poem.content.substring(0, 100)}
-                            {poem.content.length > 100 ? '...' : ''}
-                          </p>
-                        </Link>
-                        <div className="poem-card-actions">
-                          <button
-                            className="versions-btn"
-                            onClick={() => toggleVersions(poem.id)}
-                          >
-                            Versions ({versionsByPoem[poem.id]?.length || 0})
-                          </button>
-                          <button
-                            className="delete-poem-btn"
-                            onClick={() => handleDeletePoem(poem.id, poem.title)}
-                            title="Delete poem"
-                          >
-                            &times;
-                          </button>
-                        </div>
-                        {expandedVersions.has(poem.id) && (
-                          <div className="poem-versions">
-                            {(versionsByPoem[poem.id] || []).length === 0 ? (
-                              <div className="poem-version-empty">No saved versions yet.</div>
-                            ) : (
-                              (versionsByPoem[poem.id] || []).map(version => (
-                                <div key={version.id} className="poem-version-item">
-                                  <div className="poem-version-meta">
-                                    <span className="poem-version-date">
-                                      {new Date(version.created_at).toLocaleString()}
-                                    </span>
-                                    <span className="poem-version-title">{version.title}</span>
-                                  </div>
-                                  <p className="poem-version-preview">
-                                    {version.content.substring(0, 120)}
-                                    {version.content.length > 120 ? '...' : ''}
-                                  </p>
-                                  <button
-                                    className="poem-version-restore"
-                                    onClick={() => handleRestoreVersion(poem, version)}
-                                  >
-                                    Restore
-                                  </button>
-                                </div>
-                              ))
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                    </SortableContext>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                </SectionDropTarget>
+              )}
+
+              {/* Sectioned poems */}
+              {Array.from(poemsBySection.entries()).map(([sectionKey, sectionPoems]) => {
+                if (sectionKey === 'root') return null;
+                const section = sectionMap.get(sectionKey);
+                return (
+                  <SectionDropTarget key={sectionKey} sectionId={sectionKey}>
+                    <div className="poems-section">
+                      {section && <h2 className="section-title">{section.name}</h2>}
+                      <SortableContext items={sectionPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
+                        <div className="poems-grid">
+                          {sectionPoems.map(poem => (
+                            <SortablePoemCard
+                              key={poem.id}
+                              poem={poem}
+                              onDelete={handleDeletePoem}
+                              onToggleVersions={toggleVersions}
+                              expanded={expandedVersions.has(poem.id)}
+                              versions={versionsByPoem[poem.id] || []}
+                              onRestoreVersion={handleRestoreVersion}
+                              onMoveToRoot={handleMoveToRoot}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </div>
+                  </SectionDropTarget>
+                );
+              })}
+            </div>
+          </DndContext>
         )}
 
         <div className="collection-stats">
@@ -454,5 +454,100 @@ export function CollectionView() {
         </div>
       </div>
     </Layout>
+  );
+}
+
+function SectionDropTarget({ sectionId, children }: { sectionId: string; children: React.ReactNode }) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: `section-${sectionId}`,
+    data: { sectionId },
+  });
+
+  return (
+    <div ref={setNodeRef} className={`poems-section-drop ${isOver ? 'is-over' : ''}`}>
+      {children}
+    </div>
+  );
+}
+
+function SortablePoemCard({
+  poem,
+  onDelete,
+  onToggleVersions,
+  expanded,
+  versions,
+  onRestoreVersion,
+  onMoveToRoot,
+}: {
+  poem: { id: string; title: string; content: string; section_id: string | null };
+  onDelete: (poemId: string, title: string) => void;
+  onToggleVersions: (poemId: string) => void;
+  expanded: boolean;
+  versions: PoemVersion[];
+  onRestoreVersion: (poem: { id: string; title: string; content: string }, version: PoemVersion) => void;
+  onMoveToRoot?: (poemId: string) => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: poem.id,
+    data: { sectionId: poem.section_id },
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="poem-card">
+      <Link to={`/?poem=${poem.id}`} className="poem-link">
+        <h3>{poem.title}</h3>
+        <p className="poem-preview">
+          {poem.content.substring(0, 100)}
+          {poem.content.length > 100 ? '...' : ''}
+        </p>
+      </Link>
+      <div className="poem-card-actions">
+        <button className="poem-drag-handle" {...attributes} {...listeners} title="Drag to reorder">
+          ⋮⋮
+        </button>
+        {poem.section_id && onMoveToRoot && (
+          <button className="poem-move-btn" onClick={() => onMoveToRoot(poem.id)} title="Move to root">
+            ⤴
+          </button>
+        )}
+        <button className="versions-btn" onClick={() => onToggleVersions(poem.id)}>
+          Versions ({versions.length})
+        </button>
+        <button className="delete-poem-btn" onClick={() => onDelete(poem.id, poem.title)} title="Delete poem">
+          &times;
+        </button>
+      </div>
+      {expanded && (
+        <div className="poem-versions">
+          {versions.length === 0 ? (
+            <div className="poem-version-empty">No saved versions yet.</div>
+          ) : (
+            versions.map(version => (
+              <div key={version.id} className="poem-version-item">
+                <div className="poem-version-meta">
+                  <span className="poem-version-date">
+                    {new Date(version.created_at).toLocaleString()}
+                  </span>
+                  <span className="poem-version-title">{version.title}</span>
+                </div>
+                <p className="poem-version-preview">
+                  {version.content.substring(0, 120)}
+                  {version.content.length > 120 ? '...' : ''}
+                </p>
+                <button className="poem-version-restore" onClick={() => onRestoreVersion(poem, version)}>
+                  Restore
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
   );
 }

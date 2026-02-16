@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { editor } from 'monaco-editor';
+import { editor, Range } from 'monaco-editor';
 import { supabase } from './lib/supabase';
 import { useAuth } from './hooks/useAuth';
 import { AuthButton } from './components/AuthButton';
@@ -522,6 +522,25 @@ function App() {
       action.run();
     }
     editorInstance.focus();
+  }, []);
+
+  const handlePasteFromClipboard = useCallback(async () => {
+    const editorInstance = editorRef.current;
+    if (!editorInstance) return;
+    try {
+      const textToPaste = await navigator.clipboard.readText();
+      if (!textToPaste) return;
+      const model = editorInstance.getModel();
+      if (!model) return;
+      const selection = editorInstance.getSelection();
+      const position = editorInstance.getPosition() || model.getPositionAt(model.getValueLength());
+      const range = selection || new Range(position.lineNumber, position.column, position.lineNumber, position.column);
+      editorInstance.executeEdits('clipboard-paste', [{ range, text: textToPaste }]);
+      editorInstance.focus();
+    } catch (err) {
+      console.error('Clipboard paste failed:', err);
+      alert('Paste is not available on this device. Try long-press > Paste or use the share menu.');
+    }
   }, []);
 
   const handleExportPoem = (format: 'txt' | 'md' | 'docx') => {
@@ -1116,6 +1135,15 @@ function App() {
               </button>
               {showMobileMenu && (
                 <div className="mobile-overflow-menu">
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      handlePasteFromClipboard();
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    Paste from Clipboard
+                  </button>
                   <button
                     className="mobile-overflow-item"
                     onClick={() => {

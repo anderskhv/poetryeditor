@@ -927,19 +927,28 @@
   background-color: var(--color-paper);
 }
 
-.poetry-editor-container.align-center .monaco-editor .view-lines,
-.poetry-editor-container.align-center .monaco-editor .view-line {
+.poetry-editor-container .monaco-editor {
+  touch-action: manipulation;
+}
+
+.poetry-editor-container .monaco-editor .inputarea {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+/* Monaco's .view-line > span is position: absolute with no width, so it shrinks
+   to content. We stretch it to full width so text-align actually works. Cursor and
+   selection overlays stay correct because Monaco measures actual DOM positions. */
+.poetry-editor-container.align-center .monaco-editor .lines-content > .view-lines > .view-line > span {
+  left: 0 !important;
+  right: 0 !important;
   text-align: center;
 }
 
-.poetry-editor-container.align-center .monaco-editor .view-lines {
-  margin-left: 0;
-  width: var(--editor-total-width, 0px) !important;
-  left: calc(var(--editor-content-left, 0px) * -1) !important;
-}
-
-.poetry-editor-container.align-right .monaco-editor .view-lines,
-.poetry-editor-container.align-right .monaco-editor .view-line {
+.poetry-editor-container.align-right .monaco-editor .lines-content > .view-lines > .view-line > span {
+  left: 0 !important;
+  right: 0 !important;
   text-align: right;
 }
 

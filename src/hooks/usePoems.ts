@@ -123,6 +123,55 @@ export function usePoems(collectionId: string | undefined) {
     }
   };
 
+  const updatePoemMeta = async (
+    id: string,
+    updates: { section_id?: string | null; sort_order?: number }
+  ): Promise<boolean> => {
+    if (!supabase) return false;
+    try {
+      const { error } = await supabase
+        .from('poems')
+        .update({ ...updates, updated_at: new Date().toISOString() } as any)
+        .eq('id', id);
+
+      if (error) throw error;
+      setPoems(prev =>
+        prev.map(p => (p.id === id ? { ...p, ...updates } : p))
+      );
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update poem');
+      return false;
+    }
+  };
+
+  const updatePoemOrders = async (
+    updates: Array<{ id: string; section_id?: string | null; sort_order: number }>
+  ): Promise<boolean> => {
+    if (!supabase) return false;
+    const client = supabase;
+    try {
+      await Promise.all(
+        updates.map(update =>
+          client
+            .from('poems')
+            .update({ section_id: update.section_id, sort_order: update.sort_order } as any)
+            .eq('id', update.id)
+        )
+      );
+      setPoems(prev =>
+        prev.map(poem => {
+          const match = updates.find(update => update.id === poem.id);
+          return match ? { ...poem, section_id: match.section_id ?? poem.section_id, sort_order: match.sort_order } : poem;
+        })
+      );
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update poems');
+      return false;
+    }
+  };
+
   const deletePoem = async (id: string): Promise<boolean> => {
     if (!supabase) return false;
     try {
@@ -164,6 +213,8 @@ export function usePoems(collectionId: string | undefined) {
     createPoem,
     createManyPoems,
     updatePoem,
+    updatePoemMeta,
+    updatePoemOrders,
     deletePoem,
     deleteManyPoems,
     refetch: fetchPoems,
