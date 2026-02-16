@@ -286,11 +286,22 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
       return true;
     };
 
+    const targetRhyme = getRhymePhonemes(word);
+    const targetVowel = targetRhyme?.[0]?.replace(/[012]$/, '') || null;
+
+    const matchesTargetVowel = (candidate: string) => {
+      if (!targetVowel) return true;
+      const rhyme = getRhymePhonemes(candidate);
+      const vowel = rhyme?.[0]?.replace(/[012]$/, '');
+      return vowel === targetVowel;
+    };
+
     const nearRhymes = getNearRhymesOffline(word, 200);
-    const spellingRhymes = getSpellingRhymesOffline(word, 200);
+    const spellingRhymes = nearRhymes.length < 20 ? getSpellingRhymesOffline(word, 120) : [];
     const combined = Array.from(new Set([...nearRhymes, ...spellingRhymes]))
       .filter(rhyme => rhyme !== word)
-      .filter(isValidNearRhyme);
+      .filter(isValidNearRhyme)
+      .filter(matchesTargetVowel);
 
     console.log(`Received ${combined.length} offline near/slant rhymes for "${word}"`);
 
@@ -324,7 +335,9 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
       [...results, ...fallback].forEach(item => {
         if (!merged.has(item.word)) merged.set(item.word, item);
       });
-      results = Array.from(merged.values()).filter(rhyme => isValidNearRhyme(rhyme.word));
+      results = Array.from(merged.values())
+        .filter(rhyme => isValidNearRhyme(rhyme.word))
+        .filter(rhyme => matchesTargetVowel(rhyme.word));
     }
 
     return results;
