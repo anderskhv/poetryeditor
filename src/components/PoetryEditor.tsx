@@ -437,12 +437,22 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       // Only handle single-line selections for wrapping
       if (sel.startLineNumber !== sel.endLineNumber) return;
 
+      const match = selectedText.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      const leading = match?.[1] ?? '';
+      const core = match?.[2] ?? '';
+      const trailing = match?.[3] ?? '';
+      if (!core) return;
+
+      const formatted = `${leading}${prefix}${core}${suffix}${trailing}`;
+      const selectionStart = sel.startColumn + leading.length + prefix.length;
+      const selectionEnd = selectionStart + core.length;
+
       editorInstance.executeEdits('formatting', [{
         range: sel,
-        text: `${prefix}${selectedText}${suffix}`,
+        text: formatted,
       }], [new monaco.Selection(
-        sel.startLineNumber, sel.startColumn + prefix.length,
-        sel.startLineNumber, sel.startColumn + prefix.length + selectedText.length
+        sel.startLineNumber, selectionStart,
+        sel.startLineNumber, selectionEnd
       )]);
       updateDecorations();
     };
