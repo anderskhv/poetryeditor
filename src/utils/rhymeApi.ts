@@ -267,10 +267,30 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
       await loadCMUDictionary();
     }
 
+    const stopwords = new Set([
+      'a', 'an', 'the', 'and', 'or', 'to', 'of', 'in', 'on', 'for', 'at', 'by', 'from',
+      'is', 'am', 'are', 'be', 'was', 'were', 'been', 'being', 'i', 'me', 'my', 'you',
+      'your', 'yours', 'we', 'us', 'our', 'he', 'him', 'his', 'she', 'her', 'it', 'its',
+      'they', 'them', 'their', 'this', 'that', 'these', 'those',
+    ]);
+
+    const isValidNearRhyme = (candidate: string) => {
+      const trimmed = candidate.trim();
+      if (!trimmed) return false;
+      if (trimmed.startsWith("'")) return false;
+      const normalized = trimmed.toLowerCase();
+      if (normalized.length < 3) return false;
+      if (stopwords.has(normalized)) return false;
+      if (!/^[a-zA-Z-]+$/.test(trimmed)) return false;
+      if (!/[aeiouy]/i.test(trimmed)) return false;
+      return true;
+    };
+
     const nearRhymes = getNearRhymesOffline(word, 200);
     const spellingRhymes = getSpellingRhymesOffline(word, 200);
     const combined = Array.from(new Set([...nearRhymes, ...spellingRhymes]))
-      .filter(rhyme => rhyme !== word);
+      .filter(rhyme => rhyme !== word)
+      .filter(isValidNearRhyme);
 
     console.log(`Received ${combined.length} offline near/slant rhymes for "${word}"`);
 
@@ -304,7 +324,7 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
       [...results, ...fallback].forEach(item => {
         if (!merged.has(item.word)) merged.set(item.word, item);
       });
-      results = Array.from(merged.values());
+      results = Array.from(merged.values()).filter(rhyme => isValidNearRhyme(rhyme.word));
     }
 
     return results;
