@@ -127,7 +127,8 @@ const buildSenses = () => {
         }
       });
       if (senses.length > 0) {
-        wordMap.set(entry.lemma, senses);
+        const existing = wordMap.get(entry.lemma) || [];
+        wordMap.set(entry.lemma, [...existing, ...senses]);
       }
     }
   });
