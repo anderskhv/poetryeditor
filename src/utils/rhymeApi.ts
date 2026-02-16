@@ -487,9 +487,48 @@ function mapWordnetToSenses(payload: WordnetSensePayload[]): SynonymSense[] {
 
 export async function fetchSynonymSenses(word: string): Promise<SynonymSense[]> {
   try {
-    const wordnet = await getWordnetSenses(word);
-    if (wordnet && wordnet.length > 0) {
-      return mapWordnetToSenses(wordnet);
+    const candidateWords: string[] = [];
+    const normalized = word.trim().toLowerCase();
+    if (normalized) {
+      candidateWords.push(normalized);
+
+      if (normalized.endsWith('ies') && normalized.length > 3) {
+        candidateWords.push(`${normalized.slice(0, -3)}y`);
+      }
+
+      if (normalized.endsWith('ing') && normalized.length > 4) {
+        const base = normalized.slice(0, -3);
+        candidateWords.push(base);
+        if (!base.endsWith('e')) {
+          candidateWords.push(`${base}e`);
+        }
+        if (base.length > 2 && base[base.length - 1] === base[base.length - 2]) {
+          candidateWords.push(base.slice(0, -1));
+        }
+      }
+
+      if (normalized.endsWith('ed') && normalized.length > 3) {
+        const base = normalized.slice(0, -2);
+        candidateWords.push(base);
+        if (!base.endsWith('e')) {
+          candidateWords.push(`${base}e`);
+        }
+      }
+
+      if (normalized.endsWith('s') && normalized.length > 2) {
+        const base = normalized.endsWith('es') ? normalized.slice(0, -2) : normalized.slice(0, -1);
+        candidateWords.push(base);
+      }
+    }
+
+    const seen = new Set<string>();
+    for (const candidate of candidateWords) {
+      if (!candidate || seen.has(candidate)) continue;
+      seen.add(candidate);
+      const wordnet = await getWordnetSenses(candidate);
+      if (wordnet && wordnet.length > 0) {
+        return mapWordnetToSenses(wordnet);
+      }
     }
 
     const fallbackSynonyms = await fetchSynonymsFlat(word);
