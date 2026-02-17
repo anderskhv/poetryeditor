@@ -192,6 +192,7 @@
 
 .poem-drag-handle,
 .poem-move-btn,
+.poem-insert-btn,
 .delete-poem-btn {
   border: 1px solid var(--color-border, #e0e0e0);
   background: transparent;
@@ -282,7 +283,8 @@
 }
 
 .poem-drag-handle:hover,
-.poem-move-btn:hover {
+.poem-move-btn:hover,
+.poem-insert-btn:hover {
   color: var(--color-text-primary, #000);
   border-color: var(--color-text-muted, #666);
   background: var(--color-highlight-subtle);

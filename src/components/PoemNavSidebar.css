@@ -237,6 +237,41 @@
   padding-left: 24px;
 }
 
+.poem-nav-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.poem-nav-insert {
+  align-self: stretch;
+  margin: 0 10px 4px;
+  border: 1px dashed var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  font-size: 12px;
+  height: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.poem-nav-insert:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+  background: var(--color-highlight-subtle);
+}
+
+.poem-nav-insert.end {
+  margin: 6px 10px 8px;
+}
+
+.poem-nav-section-items.is-over {
+  background: var(--color-highlight-subtle);
+  border-radius: 6px;
+}
+
 .poem-nav-section-items .poem-nav-empty {
   padding: 6px 20px;
   font-size: 12px;

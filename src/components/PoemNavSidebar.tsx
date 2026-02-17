@@ -21,6 +21,7 @@ function PoemNavItem({
   isActive,
   onSelect,
   sectionId,
+  index,
   onMoveToRoot,
   onDelete,
 }: {
@@ -28,6 +29,7 @@ function PoemNavItem({
   isActive: boolean;
   onSelect: (poemId: string) => void;
   sectionId: string | null;
+  index: number;
   onMoveToRoot?: (poemId: string) => void;
   onDelete?: (poemId: string) => void;
 }) {
@@ -37,7 +39,7 @@ function PoemNavItem({
   });
   const { setNodeRef: setDropRef, isOver } = useDroppable({
     id: `poem-${poem.id}`,
-    data: { sectionId },
+    data: { sectionId, index },
   });
 
   const setRefs = (node: HTMLDivElement | null) => {
@@ -248,6 +250,48 @@ export function PoemNavSidebar({
     onPoemSelect(created.id);
   };
 
+  const createPoemAt = async (sectionId: string | null, index: number) => {
+    if (!supabase) return;
+    const list = sectionId
+      ? sections.find(section => section.id === sectionId)?.poems || []
+      : unsectionedPoems;
+    const clampedIndex = Math.max(0, Math.min(index, list.length));
+
+    const { data, error } = await supabase
+      .from('poems')
+      .insert({
+        collection_id: collectionId,
+        section_id: sectionId,
+        title: 'Untitled',
+        content: '',
+        sort_order: clampedIndex,
+      } as any)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Failed to create poem:', error);
+      return;
+    }
+
+    const created = data as Poem;
+    const updatedList = [...list];
+    updatedList.splice(clampedIndex, 0, created);
+
+    if (sectionId) {
+      setSections(prev =>
+        prev.map(section =>
+          section.id === sectionId ? { ...section, poems: updatedList } : section
+        )
+      );
+    } else {
+      setUnsectionedPoems(updatedList);
+    }
+
+    await persistOrders(updatedList, sectionId);
+    onPoemSelect(created.id);
+  };
+
   const deletePoem = async (poemId: string) => {
     if (!supabase) return;
     const poem = poemLookup.get(poemId)?.poem;
@@ -291,32 +335,55 @@ export function PoemNavSidebar({
     if (!over) return;
 
     const activeId = active.id as string;
-    const overData = over.data.current as { sectionId?: string | null } | undefined;
-    let targetSectionId: string | null = null;
+    const overData = over.data.current as { sectionId?: string | null; index?: number } | undefined;
     const overId = over.id as string;
 
-    if (overData && 'sectionId' in overData) {
-      targetSectionId = overData.sectionId ?? null;
-    } else if (typeof over.id === 'string' && over.id.startsWith('section-')) {
-      targetSectionId = over.id.replace('section-', '') || null;
-    } else if (over.id === 'section-none') {
-      targetSectionId = null;
-    }
     const activeEntry = poemLookup.get(activeId);
     if (!activeEntry) return;
 
     const sourceSectionId = activeEntry.sectionId;
-    if (targetSectionId === sourceSectionId && overId.startsWith('poem-')) {
+    let targetSectionId: string | null = null;
+    let targetIndex: number | null = null;
+
+    if (overData && 'sectionId' in overData) {
+      targetSectionId = overData.sectionId ?? null;
+      targetIndex = typeof overData.index === 'number' ? overData.index : null;
+    } else if (overId.startsWith('section-')) {
+      const sectionId = overId.replace('section-', '');
+      targetSectionId = sectionId === 'root' ? null : sectionId || null;
+      targetIndex = null;
+    }
+
+    if (targetSectionId === null && targetIndex === null && overId.startsWith('poem-')) {
       const targetPoemId = overId.replace('poem-', '');
-      const list = sourceSectionId
-        ? sections.find(section => section.id === sourceSectionId)?.poems || []
-        : unsectionedPoems;
-      const fromIndex = list.findIndex(poem => poem.id === activeId);
-      const toIndex = list.findIndex(poem => poem.id === targetPoemId);
-      if (fromIndex === -1 || toIndex === -1) return;
-      const reordered = [...list];
+      const targetEntry = poemLookup.get(targetPoemId);
+      targetSectionId = targetEntry?.sectionId ?? null;
+      targetIndex = targetEntry
+        ? (targetSectionId
+            ? sections.find(section => section.id === targetSectionId)?.poems.findIndex(poem => poem.id === targetPoemId)
+            : unsectionedPoems.findIndex(poem => poem.id === targetPoemId)) ?? null
+        : null;
+    }
+
+    if (targetSectionId === null && targetIndex === null) return;
+
+    const sourceList = sourceSectionId
+      ? sections.find(section => section.id === sourceSectionId)?.poems || []
+      : unsectionedPoems;
+    const targetList = targetSectionId
+      ? sections.find(section => section.id === targetSectionId)?.poems || []
+      : unsectionedPoems;
+
+    const fromIndex = sourceList.findIndex(poem => poem.id === activeId);
+    if (fromIndex === -1) return;
+
+    const insertIndex = targetIndex ?? targetList.length;
+
+    if (sourceSectionId === targetSectionId) {
+      const reordered = [...sourceList];
       const [moved] = reordered.splice(fromIndex, 1);
-      reordered.splice(toIndex, 0, moved);
+      const adjustedIndex = fromIndex < insertIndex ? insertIndex - 1 : insertIndex;
+      reordered.splice(adjustedIndex, 0, moved);
 
       if (sourceSectionId) {
         setSections(prev =>
@@ -331,13 +398,36 @@ export function PoemNavSidebar({
       return;
     }
 
-    if (targetSectionId === sourceSectionId) return;
-    void movePoem(activeId, targetSectionId);
+    const nextSourceList = sourceList.filter(poem => poem.id !== activeId);
+    const movedPoem = { ...activeEntry.poem, section_id: targetSectionId };
+    const nextTargetList = [...targetList];
+    nextTargetList.splice(insertIndex, 0, movedPoem);
+
+    setUnsectionedPoems(prev => prev.filter(poem => poem.id !== activeId));
+    setSections(prev =>
+      prev.map(section => ({
+        ...section,
+        poems: section.poems.filter(poem => poem.id !== activeId),
+      }))
+    );
+
+    if (targetSectionId) {
+      setSections(prev =>
+        prev.map(section =>
+          section.id === targetSectionId ? { ...section, poems: nextTargetList } : section
+        )
+      );
+    } else {
+      setUnsectionedPoems(nextTargetList);
+    }
+
+    void persistOrders(nextSourceList, sourceSectionId);
+    void persistOrders(nextTargetList, targetSectionId);
   };
 
   const { setNodeRef: setUnsectionedDropRef, isOver: isOverUnsectioned } = useDroppable({
-    id: 'section-none',
-    data: { sectionId: null },
+    id: 'section-list-root',
+    data: { sectionId: null, index: unsectionedPoems.length },
   });
 
   return (
@@ -371,16 +461,34 @@ export function PoemNavSidebar({
               ref={setUnsectionedDropRef}
               className={`poem-nav-dropzone ${isOverUnsectioned ? 'is-over' : ''}`}
             >
-              {unsectionedPoems.map(poem => (
-                <PoemNavItem
-                  key={poem.id}
-                  poem={poem}
-                  isActive={poem.id === currentPoemId}
-                  onSelect={onPoemSelect}
-                  sectionId={null}
-                  onDelete={deletePoem}
-                />
+              {unsectionedPoems.map((poem, idx) => (
+                <div key={poem.id} className="poem-nav-row">
+                  <PoemNavItem
+                    poem={poem}
+                    isActive={poem.id === currentPoemId}
+                    onSelect={onPoemSelect}
+                    sectionId={null}
+                    index={idx}
+                    onDelete={deletePoem}
+                  />
+                  <button
+                    type="button"
+                    className="poem-nav-insert"
+                    onClick={() => createPoemAt(null, idx + 1)}
+                    title="Insert new poem here"
+                  >
+                    +
+                  </button>
+                </div>
               ))}
+              <button
+                type="button"
+                className="poem-nav-insert end"
+                onClick={() => createPoemAt(null, unsectionedPoems.length)}
+                title="Add new poem"
+              >
+                +
+              </button>
             </div>
 
             {/* Sectioned poems */}
@@ -393,22 +501,14 @@ export function PoemNavSidebar({
                   onToggle={() => toggleSection(section.id)}
                 />
                 {!collapsedSections.has(section.id) && (
-                  <div className="poem-nav-section-items">
-                    {section.poems.map(poem => (
-                      <PoemNavItem
-                        key={poem.id}
-                        poem={poem}
-                        isActive={poem.id === currentPoemId}
-                        onSelect={onPoemSelect}
-                        sectionId={section.id}
-                        onMoveToRoot={moveToRoot}
-                        onDelete={deletePoem}
-                      />
-                    ))}
-                    {section.poems.length === 0 && (
-                      <div className="poem-nav-empty">No poems</div>
-                    )}
-                  </div>
+                  <SectionPoemList
+                    section={section}
+                    currentPoemId={currentPoemId}
+                    onPoemSelect={onPoemSelect}
+                    onMoveToRoot={moveToRoot}
+                    onDelete={deletePoem}
+                    onInsertAfter={(index) => createPoemAt(section.id, index)}
+                  />
                 )}
               </div>
             ))}
@@ -453,5 +553,63 @@ function SectionHeader({
       </span>
       <span className="section-name">{name}</span>
     </button>
+  );
+}
+
+function SectionPoemList({
+  section,
+  currentPoemId,
+  onPoemSelect,
+  onMoveToRoot,
+  onDelete,
+  onInsertAfter,
+}: {
+  section: SectionWithPoems;
+  currentPoemId: string;
+  onPoemSelect: (poemId: string) => void;
+  onMoveToRoot: (poemId: string) => void;
+  onDelete: (poemId: string) => void;
+  onInsertAfter: (index: number) => void;
+}) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: `section-list-${section.id}`,
+    data: { sectionId: section.id, index: section.poems.length },
+  });
+
+  return (
+    <div ref={setNodeRef} className={`poem-nav-section-items ${isOver ? 'is-over' : ''}`}>
+      {section.poems.map((poem, idx) => (
+        <div key={poem.id} className="poem-nav-row">
+          <PoemNavItem
+            poem={poem}
+            isActive={poem.id === currentPoemId}
+            onSelect={onPoemSelect}
+            sectionId={section.id}
+            index={idx}
+            onMoveToRoot={onMoveToRoot}
+            onDelete={onDelete}
+          />
+          <button
+            type="button"
+            className="poem-nav-insert"
+            onClick={() => onInsertAfter(idx + 1)}
+            title="Insert new poem here"
+          >
+            +
+          </button>
+        </div>
+      ))}
+      <button
+        type="button"
+        className="poem-nav-insert end"
+        onClick={() => onInsertAfter(section.poems.length)}
+        title="Add new poem"
+      >
+        +
+      </button>
+      {section.poems.length === 0 && (
+        <div className="poem-nav-empty">No poems</div>
+      )}
+    </div>
   );
 }

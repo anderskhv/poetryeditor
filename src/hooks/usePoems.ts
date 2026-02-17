@@ -69,6 +69,78 @@ export function usePoems(collectionId: string | undefined) {
     }
   };
 
+  const createPoemAt = async (
+    title: string,
+    content: string,
+    sectionId: string | null,
+    index: number
+  ): Promise<Poem | null> => {
+    if (!collectionId || !supabase) return null;
+    const client = supabase;
+
+    try {
+      const sectionPoems = poems
+        .filter(poem => (poem.section_id ?? null) === sectionId)
+        .sort((a, b) => a.sort_order - b.sort_order);
+      const clampedIndex = Math.max(0, Math.min(index, sectionPoems.length));
+
+      const { data, error } = await client
+        .from('poems')
+        .insert({
+          collection_id: collectionId,
+          section_id: sectionId,
+          title,
+          content,
+          filename: null,
+          sort_order: clampedIndex,
+        } as any)
+        .select()
+        .single();
+
+      if (error) throw error;
+      const newPoem = data as Poem;
+
+      const reordered = [
+        ...sectionPoems.slice(0, clampedIndex),
+        newPoem,
+        ...sectionPoems.slice(clampedIndex),
+      ].map((poem, order) => ({
+        id: poem.id,
+        section_id: sectionId,
+        sort_order: order,
+      }));
+
+      await Promise.all(
+        reordered.map(update =>
+          client
+            .from('poems')
+            .update({ section_id: update.section_id, sort_order: update.sort_order } as any)
+            .eq('id', update.id)
+        )
+      );
+
+      setPoems(prev => {
+        const others = prev.filter(poem => (poem.section_id ?? null) !== sectionId);
+        const updatedSection = sectionPoems
+          .slice(0, clampedIndex)
+          .map((poem, order) => ({ ...poem, sort_order: order }))
+          .concat([{ ...newPoem, sort_order: clampedIndex }])
+          .concat(
+            sectionPoems.slice(clampedIndex).map((poem, offset) => ({
+              ...poem,
+              sort_order: clampedIndex + 1 + offset,
+            }))
+          );
+        return [...others, ...updatedSection];
+      });
+
+      return newPoem;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create poem');
+      return null;
+    }
+  };
+
   const createManyPoems = async (
     poemData: Array<{
       title: string;
@@ -211,6 +283,7 @@ export function usePoems(collectionId: string | undefined) {
     loading,
     error,
     createPoem,
+    createPoemAt,
     createManyPoems,
     updatePoem,
     updatePoemMeta,

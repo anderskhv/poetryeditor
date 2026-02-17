@@ -32,7 +32,7 @@ export function CollectionView() {
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loadingCollection, setLoadingCollection] = useState(true);
   const { sections, createManySections } = useSections(id);
-  const { poems, createPoem, createManyPoems, updatePoem, updatePoemMeta, updatePoemOrders, deletePoem, loading: loadingPoems } = usePoems(id);
+  const { poems, createPoem, createPoemAt, createManyPoems, updatePoem, updatePoemMeta, updatePoemOrders, deletePoem, loading: loadingPoems } = usePoems(id);
   const [processingUpload, setProcessingUpload] = useState(false);
   const processingRef = useRef(false); // Sync flag to prevent duplicate uploads
   const [expandedVersions, setExpandedVersions] = useState<Set<string>>(new Set());
@@ -151,31 +151,37 @@ export function CollectionView() {
     // Group poems by section
     const poemsBySection = new Map<string | null, typeof poems>();
     poems.forEach(poem => {
-      const key = poem.section_id;
-      if (!poemsBySection.has(key)) {
-        poemsBySection.set(key, []);
-      }
+      const key = poem.section_id ?? null;
+      if (!poemsBySection.has(key)) poemsBySection.set(key, []);
       poemsBySection.get(key)!.push(poem);
     });
 
-    // Create section folders and add poems
     const sectionMap = new Map(sections.map(s => [s.id, s]));
+    const orderedSections = [...sections].sort((a, b) => a.sort_order - b.sort_order);
+    const globalOrdered: Array<{ poem: typeof poems[number]; sectionId: string | null }> = [];
 
-    poemsBySection.forEach((sectionPoems, sectionId) => {
-      sectionPoems.forEach(poem => {
-        const filename = poem.filename || `${poem.title.replace(/[^a-zA-Z0-9]/g, '-')}.md`;
+    const rootPoems = (poemsBySection.get(null) || []).slice().sort((a, b) => a.sort_order - b.sort_order);
+    rootPoems.forEach(poem => globalOrdered.push({ poem, sectionId: null }));
 
-        if (sectionId) {
-          const section = sectionMap.get(sectionId);
-          if (section) {
-            zip.file(`${section.name}/${filename}`, poem.content);
-          } else {
-            zip.file(filename, poem.content);
-          }
+    orderedSections.forEach(section => {
+      const sectionPoems = (poemsBySection.get(section.id) || []).slice().sort((a, b) => a.sort_order - b.sort_order);
+      sectionPoems.forEach(poem => globalOrdered.push({ poem, sectionId: section.id }));
+    });
+
+    globalOrdered.forEach((entry, idx) => {
+      const orderPrefix = String(idx + 1).padStart(2, '0');
+      const baseTitle = entry.poem.title.replace(/[^a-zA-Z0-9]/g, '-');
+      const filename = `${orderPrefix} - ${baseTitle || 'Untitled'}.md`;
+      if (entry.sectionId) {
+        const section = sectionMap.get(entry.sectionId);
+        if (section) {
+          zip.file(`${section.name}/${filename}`, entry.poem.content);
         } else {
-          zip.file(filename, poem.content);
+          zip.file(filename, entry.poem.content);
         }
-      });
+      } else {
+        zip.file(filename, entry.poem.content);
+      }
     });
 
     // Generate and download
@@ -196,6 +202,13 @@ export function CollectionView() {
 
   const handleCreatePoem = async () => {
     const created = await createPoem('Untitled', '', null, null);
+    if (created) {
+      navigate(`/?poem=${created.id}`);
+    }
+  };
+
+  const handleInsertPoemAfter = async (sectionId: string | null, index: number) => {
+    const created = await createPoemAt('Untitled', '', sectionId, index + 1);
     if (created) {
       navigate(`/?poem=${created.id}`);
     }
@@ -397,7 +410,7 @@ export function CollectionView() {
                   <div className="poems-section">
                     <SortableContext items={rootPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
                       <div className="poems-grid">
-                        {rootPoems.map(poem => (
+                        {rootPoems.map((poem, idx) => (
                           <SortablePoemCard
                             key={poem.id}
                             poem={poem}
@@ -406,6 +419,7 @@ export function CollectionView() {
                             expanded={expandedVersions.has(poem.id)}
                             versions={versionsByPoem[poem.id] || []}
                             onRestoreVersion={handleRestoreVersion}
+                            onInsertAfter={() => handleInsertPoemAfter(null, idx)}
                           />
                         ))}
                       </div>
@@ -424,7 +438,7 @@ export function CollectionView() {
                       {section && <h2 className="section-title">{section.name}</h2>}
                       <SortableContext items={sectionPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
                         <div className="poems-grid">
-                          {sectionPoems.map(poem => (
+                          {sectionPoems.map((poem, idx) => (
                             <SortablePoemCard
                               key={poem.id}
                               poem={poem}
@@ -434,6 +448,7 @@ export function CollectionView() {
                               versions={versionsByPoem[poem.id] || []}
                               onRestoreVersion={handleRestoreVersion}
                               onMoveToRoot={handleMoveToRoot}
+                              onInsertAfter={() => handleInsertPoemAfter(poem.section_id, idx)}
                             />
                           ))}
                         </div>
@@ -478,6 +493,7 @@ function SortablePoemCard({
   versions,
   onRestoreVersion,
   onMoveToRoot,
+  onInsertAfter,
 }: {
   poem: { id: string; title: string; content: string; section_id: string | null };
   onDelete: (poemId: string, title: string) => void;
@@ -486,6 +502,7 @@ function SortablePoemCard({
   versions: PoemVersion[];
   onRestoreVersion: (poem: { id: string; title: string; content: string }, version: PoemVersion) => void;
   onMoveToRoot?: (poemId: string) => void;
+  onInsertAfter?: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: poem.id,
@@ -514,6 +531,11 @@ function SortablePoemCard({
         {poem.section_id && onMoveToRoot && (
           <button className="poem-move-btn" onClick={() => onMoveToRoot(poem.id)} title="Move to root">
             ⤴
+          </button>
+        )}
+        {onInsertAfter && (
+          <button className="poem-insert-btn" onClick={onInsertAfter} title="Insert new poem after">
+            +
           </button>
         )}
         <button className="versions-btn" onClick={() => onToggleVersions(poem.id)}>
