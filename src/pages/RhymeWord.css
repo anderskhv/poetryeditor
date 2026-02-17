@@ -551,6 +551,17 @@
   margin: 0 0 8px;
 }
 
+.related-section.faq-section .faq-item {
+  margin-top: 12px;
+  color: var(--color-text-secondary);
+}
+
+.related-section.faq-section .faq-item p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
 .related-hint {
   font-family: var(--font-sans);
   font-size: 12px;

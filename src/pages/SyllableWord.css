@@ -37,6 +37,14 @@
   text-align: center;
 }
 
+.page-intro {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: -16px 0 32px;
+}
+
 /* Loading & Not Found */
 .syllable-loading,
 .syllable-not-found {
@@ -279,6 +287,90 @@
   align-items: center;
   gap: 12px;
   margin: 40px 0;
+}
+
+.related-links {
+  margin: 32px 0;
+  padding: 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.related-links h2 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 16px;
+}
+
+.related-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.related-link-card {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  background: var(--color-background);
+  transition: all 0.15s ease;
+}
+
+.related-link-card:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
+  background: var(--color-paper);
+}
+
+.page-faq {
+  margin: 32px 0;
+  padding: 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+.page-faq h2 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 16px;
+}
+
+.page-faq .faq-item + .faq-item {
+  margin-top: 16px;
+}
+
+.page-faq h3 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 6px;
+}
+
+.page-faq p {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
 }
 
 .action-button {

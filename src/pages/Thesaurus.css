@@ -22,6 +22,14 @@
   margin: 0 0 32px;
 }
 
+.page-intro {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: -16px 0 32px;
+}
+
 /* Search Form */
 .thesaurus-search-form {
   display: flex;
@@ -342,6 +350,61 @@
 .thesaurus-cta-secondary:hover {
   color: var(--color-text-primary);
   border-color: var(--color-text-muted);
+}
+
+.related-links {
+  margin-top: 40px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-paper);
+}
+
+.related-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.related-link-card {
+  display: block;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  background: var(--color-background);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.related-link-card:hover {
+  border-color: var(--color-text-muted);
+  background: var(--color-highlight-subtle);
+}
+
+.page-faq {
+  margin-top: 32px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-paper);
+}
+
+.page-faq .faq-item + .faq-item {
+  margin-top: 12px;
+}
+
+.page-faq h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-family: var(--font-sans);
+}
+
+.page-faq p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
 }
 
 /* Info Section */

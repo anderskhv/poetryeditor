@@ -331,8 +331,8 @@ export function RhymeWord() {
   return (
     <Layout>
       <SEOHead
-        title={`Rhymes with ${displayWord} (${perfectRhymes.length + nearRhymes.length}+) - Perfect & Near Rhymes`}
-        description={`Find ${perfectRhymes.length}+ perfect rhymes and ${nearRhymes.length}+ near rhymes for "${decodedWord}". Organized by syllable count with meter filters for poets and songwriters.`}
+        title={`Rhymes with ${displayWord} (${perfectRhymes.length + nearRhymes.length}+) | Perfect & Near Rhymes`}
+        description={`Rhymes with ${displayWord}: ${perfectRhymes.length}+ perfect rhymes and ${nearRhymes.length}+ near rhymes, grouped by syllables and filtered by meter.`}
         canonicalPath={`/rhymes/${encodeURIComponent(decodedWord)}`}
         keywords={`rhymes with ${decodedWord}, ${decodedWord} rhymes, words that rhyme with ${decodedWord}`}
         jsonLd={{
@@ -360,7 +360,11 @@ export function RhymeWord() {
           <span>{displayWord}</span>
         </nav>
 
-        <h1>Words That Rhyme with {displayWord}</h1>
+        <h1>Rhymes with {displayWord}</h1>
+        <p className="page-intro">
+          Get perfect rhymes, near rhymes, syllable counts, and meter‑friendly options for <strong>{displayWord}</strong>.
+          Use the filters to find a word that fits your line.
+        </p>
 
         <div className="rhyme-topic-row">
           <label className="rhyme-topic-label" htmlFor="rhyme-topic-input">Topic</label>
@@ -771,6 +775,37 @@ export function RhymeWord() {
               </div>
             </div>
           </>
+        )}
+
+        {!loading && !error && (
+          <div className="related-section related-tools">
+            <h3>Related Tools</h3>
+            <div className="related-words">
+              <Link to={`/synonyms/${encodeURIComponent(decodedWord)}`} className="related-word-link">
+                Synonyms for {displayWord}
+              </Link>
+              <Link to={`/syllables/${encodeURIComponent(decodedWord)}`} className="related-word-link">
+                Syllables in {displayWord}
+              </Link>
+              <Link to="/rhymes" className="related-word-link">
+                Browse Rhyme Dictionary
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {!loading && !error && (
+          <div className="related-section faq-section">
+            <h3>FAQ</h3>
+            <div className="faq-item">
+              <strong>What are near rhymes?</strong>
+              <p>Near rhymes (slant rhymes) share similar vowel sounds or endings but aren’t exact matches.</p>
+            </div>
+            <div className="faq-item">
+              <strong>How do I pick the best rhyme?</strong>
+              <p>Start with syllable count, then check meter. You want both sound and rhythm to fit your line.</p>
+            </div>
+          </div>
         )}
 
         <div className="back-to-search">

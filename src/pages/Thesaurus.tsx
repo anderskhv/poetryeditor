@@ -125,10 +125,10 @@ export function Thesaurus() {
     <Layout>
       <SEOHead
         title={urlWord && results
-          ? `${urlWord.charAt(0).toUpperCase() + urlWord.slice(1)} Synonyms (${synonymCount}+) - Find Similar Words`
+          ? `Synonyms for ${urlWord.charAt(0).toUpperCase() + urlWord.slice(1)} (${synonymCount}+)`
           : 'Synonym Finder - Word Alternatives for Poetry'}
         description={urlWord && results
-          ? `Find ${synonymCount}+ synonyms, ${results.hyponyms.length}+ hyponyms, and ${results.antonyms.length}+ antonyms for "${urlWord}". Words organized by meaning and strength for poets and songwriters.`
+          ? `Synonyms for ${urlWord}: ${synonymCount}+ options with meanings, plus ${results.hyponyms.length}+ specific examples and ${results.antonyms.length}+ opposites.`
           : 'Free synonym finder for poets. Find synonyms, specific examples (hyponyms), and antonyms organized by meaning and strength. Discover the perfect word for your poem or song.'
         }
         canonicalPath={urlWord ? `/synonyms/${urlWord}` : '/synonyms'}
@@ -170,6 +170,11 @@ export function Thesaurus() {
         <p className="thesaurus-subtitle">
           Find synonyms, specific examples, and opposites for any word
         </p>
+        {displayWord && (
+          <p className="page-intro">
+            Synonyms for <strong>{displayWord}</strong>, grouped by meaning with syllable filters to keep your meter tight.
+          </p>
+        )}
 
         <form onSubmit={handleSearch} className="thesaurus-search-form">
           <input
@@ -339,6 +344,37 @@ export function Thesaurus() {
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {!loading && results && displayWord && (
+          <div className="related-links">
+            <h2>Related Tools</h2>
+            <div className="related-links-grid">
+              <Link to={`/rhymes/${encodeURIComponent(displayWord)}`} className="related-link-card">
+                Rhymes with {displayWord}
+              </Link>
+              <Link to={`/syllables/${encodeURIComponent(displayWord)}`} className="related-link-card">
+                Syllables in {displayWord}
+              </Link>
+              <Link to="/synonyms" className="related-link-card">
+                Browse Synonyms
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {!loading && results && displayWord && (
+          <div className="page-faq">
+            <h2>FAQ</h2>
+            <div className="faq-item">
+              <h3>Why are synonyms grouped by meaning?</h3>
+              <p>Many words have multiple senses. Grouping by meaning helps you pick the precise shade you want.</p>
+            </div>
+            <div className="faq-item">
+              <h3>How do syllable filters help?</h3>
+              <p>They let you keep a consistent rhythm in lines like iambic or trochaic meter.</p>
+            </div>
           </div>
         )}
 

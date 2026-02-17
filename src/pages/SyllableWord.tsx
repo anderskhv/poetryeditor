@@ -39,8 +39,8 @@ export function SyllableWord() {
   return (
     <Layout>
       <SEOHead
-        title={`${displayWord}: ${syllableCount} Syllable${syllableCount !== 1 ? 's' : ''} [${syllables.length > 0 ? syllables.join('-') : decodedWord}]`}
-        description={`${displayWord} has ${syllableCount} syllable${syllableCount !== 1 ? 's' : ''}, broken down as ${syllables.length > 0 ? syllables.join('-') : decodedWord}. See stress pattern, pronunciation, and find rhymes for "${decodedWord}".`}
+        title={`Syllables in ${displayWord}: ${syllableCount} (${syllables.length > 0 ? syllables.join('-') : decodedWord})`}
+        description={`Syllables in ${displayWord}: ${syllableCount} syllable${syllableCount !== 1 ? 's' : ''}. Breakdown, stress pattern, pronunciation, and related rhymes.`}
         canonicalPath={`/syllables/${encodeURIComponent(decodedWord)}`}
         keywords={`how many syllables in ${decodedWord}, ${decodedWord} syllables, ${decodedWord} syllable count`}
         jsonLd={syllableCount > 0 ? {
@@ -91,6 +91,9 @@ export function SyllableWord() {
         </nav>
 
         <h1>How Many Syllables in {displayWord}?</h1>
+        <p className="page-intro">
+          Syllables in <strong>{displayWord}</strong>, with stress pattern and pronunciation so you can keep a clean meter.
+        </p>
 
         {loading ? (
           <div className="syllable-loading">Loading syllable data...</div>
@@ -188,6 +191,33 @@ export function SyllableWord() {
               <Link to="/" className="action-button secondary">
                 Use in Poetry Editor
               </Link>
+            </div>
+
+            <div className="related-links">
+              <h2>Related Tools</h2>
+              <div className="related-links-grid">
+                <Link to={`/rhymes/${encodeURIComponent(decodedWord)}`} className="related-link-card">
+                  Rhymes with {displayWord}
+                </Link>
+                <Link to={`/synonyms/${encodeURIComponent(decodedWord)}`} className="related-link-card">
+                  Synonyms for {displayWord}
+                </Link>
+                <Link to="/syllables" className="related-link-card">
+                  Syllable Counter
+                </Link>
+              </div>
+            </div>
+
+            <div className="page-faq">
+              <h2>FAQ</h2>
+              <div className="faq-item">
+                <h3>What is a syllable?</h3>
+                <p>A syllable is a beat in a word. Counting syllables helps poets keep rhythm and meter.</p>
+              </div>
+              <div className="faq-item">
+                <h3>Why does stress matter?</h3>
+                <p>Stress determines where the emphasis falls, which affects how a line scans.</p>
+              </div>
             </div>
           </>
         )}
