@@ -139,7 +139,7 @@ export interface SynonymSense {
   gloss: string;
   pos?: string;
   synonyms: SynonymWord[];
-  source: 'wordnet' | 'fallback';
+  source: 'wordnet' | 'fallback' | 'datamuse';
 }
 
 type OfflineSynonymEntry = {
@@ -509,6 +509,34 @@ async function fetchSynonymsFlat(word: string): Promise<SynonymWord[]> {
   return Array.from(merged.values());
 }
 
+async function fetchDatamuseSynonyms(word: string): Promise<SynonymWord[]> {
+  const stopwords = new Set(['a', 'an', 'the', 'and', 'or', 'to', 'of', 'in', 'on', 'for', 'at', 'by', 'from']);
+  const data = await fetchDatamuseJson(
+    `https://api.datamuse.com/words?rel_syn=${encodeURIComponent(word)}&md=p&max=60`,
+    `rel_syn:${word}`
+  );
+  return data
+    .map((item: any, idx: number) => ({
+      word: item.word,
+      score: (item.score || 0) + (60 - idx) * 5,
+    }))
+    .filter((item: SynonymWord) => item.word && item.word.length > 2 && !stopwords.has(item.word.toLowerCase()));
+}
+
+async function fetchDatamuseRelated(word: string): Promise<SynonymWord[]> {
+  const stopwords = new Set(['a', 'an', 'the', 'and', 'or', 'to', 'of', 'in', 'on', 'for', 'at', 'by', 'from']);
+  const data = await fetchDatamuseJson(
+    `https://api.datamuse.com/words?rel_trg=${encodeURIComponent(word)}&md=p&max=60`,
+    `rel_trg:${word}`
+  );
+  return data
+    .map((item: any, idx: number) => ({
+      word: item.word,
+      score: (item.score || 0) + (60 - idx) * 3,
+    }))
+    .filter((item: SynonymWord) => item.word && item.word.length > 2 && !stopwords.has(item.word.toLowerCase()));
+}
+
 function mapWordnetToSenses(payload: WordnetSensePayload[]): SynonymSense[] {
   return payload.map((sense) => ({
     gloss: sense.gloss,
@@ -560,7 +588,37 @@ export async function fetchSynonymSenses(word: string): Promise<SynonymSense[]> 
       seen.add(candidate);
       const wordnet = await getWordnetSenses(candidate);
       if (wordnet && wordnet.length > 0) {
-        return mapWordnetToSenses(wordnet);
+        const senses = mapWordnetToSenses(wordnet);
+        const totalSynonyms = senses.reduce((sum, sense) => sum + sense.synonyms.length, 0);
+        if (totalSynonyms >= 6) {
+          return senses;
+        }
+        const [datamuseSyn, datamuseRelated] = await Promise.all([
+          fetchDatamuseSynonyms(candidate),
+          fetchDatamuseRelated(candidate),
+        ]);
+        const seenSyn = new Set(
+          senses.flatMap(sense => sense.synonyms.map(syn => syn.word))
+        );
+        const extraSynonyms = datamuseSyn.filter(item => !seenSyn.has(item.word));
+        const related = datamuseRelated.filter(item => !seenSyn.has(item.word));
+        if (extraSynonyms.length > 0) {
+          senses.push({
+            gloss: 'Related meanings',
+            pos: 'verb',
+            synonyms: extraSynonyms,
+            source: 'datamuse',
+          });
+        }
+        if (related.length > 0) {
+          senses.push({
+            gloss: 'Related words',
+            pos: 'verb',
+            synonyms: related,
+            source: 'datamuse',
+          });
+        }
+        return senses;
       }
     }
 
