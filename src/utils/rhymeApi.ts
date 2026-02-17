@@ -580,22 +580,53 @@ export async function fetchSynonymSenses(word: string): Promise<SynonymSense[]> 
         const base = normalized.endsWith('es') ? normalized.slice(0, -2) : normalized.slice(0, -1);
         candidateWords.push(base);
       }
+
+      const verbLemma = nlp(normalized).verbs().toInfinitive().text().trim();
+      if (verbLemma && verbLemma !== normalized) {
+        candidateWords.push(verbLemma.toLowerCase());
+      }
     }
 
-    const seen = new Set<string>();
-    for (const candidate of candidateWords) {
-      if (!candidate || seen.has(candidate)) continue;
-      seen.add(candidate);
+    const uniqueCandidates = Array.from(new Set(candidateWords)).filter(Boolean);
+    const wordnetSensesByKey = new Map<string, SynonymSense>();
+    const wordnetCandidates: string[] = [];
+
+    for (const candidate of uniqueCandidates) {
       const wordnet = await getWordnetSenses(candidate);
-      if (wordnet && wordnet.length > 0) {
-        const senses = mapWordnetToSenses(wordnet);
-        const totalSynonyms = senses.reduce((sum, sense) => sum + sense.synonyms.length, 0);
-        if (totalSynonyms >= 6) {
-          return senses;
+      if (!wordnet || wordnet.length === 0) continue;
+      wordnetCandidates.push(candidate);
+      for (const sense of mapWordnetToSenses(wordnet)) {
+        const key = `${sense.gloss}::${sense.pos || ''}`;
+        const existing = wordnetSensesByKey.get(key);
+        if (!existing) {
+          wordnetSensesByKey.set(key, {
+            ...sense,
+            synonyms: [...sense.synonyms],
+          });
+        } else {
+          const merged = new Map<string, SynonymWord>();
+          [...existing.synonyms, ...sense.synonyms].forEach((syn) => {
+            const prev = merged.get(syn.word);
+            if (!prev || syn.score > prev.score) {
+              merged.set(syn.word, syn);
+            }
+          });
+          existing.synonyms = Array.from(merged.values());
         }
+      }
+    }
+
+    if (wordnetSensesByKey.size > 0) {
+      const senses = Array.from(wordnetSensesByKey.values()).map((sense) => ({
+        ...sense,
+        synonyms: [...sense.synonyms].sort((a, b) => b.score - a.score),
+      }));
+      const totalSynonyms = senses.reduce((sum, sense) => sum + sense.synonyms.length, 0);
+      if (totalSynonyms < 6) {
+        const datamuseCandidates = Array.from(new Set([normalized, ...wordnetCandidates])).filter(Boolean);
         const [datamuseSyn, datamuseRelated] = await Promise.all([
-          fetchDatamuseSynonyms(candidate),
-          fetchDatamuseRelated(candidate),
+          Promise.all(datamuseCandidates.map(fetchDatamuseSynonyms)).then((sets) => sets.flat()),
+          Promise.all(datamuseCandidates.map(fetchDatamuseRelated)).then((sets) => sets.flat()),
         ]);
         const seenSyn = new Set(
           senses.flatMap(sense => sense.synonyms.map(syn => syn.word))
@@ -618,8 +649,8 @@ export async function fetchSynonymSenses(word: string): Promise<SynonymSense[]> 
             source: 'datamuse',
           });
         }
-        return senses;
       }
+      return senses;
     }
 
     const fallbackSynonyms = await fetchSynonymsFlat(word);
