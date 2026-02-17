@@ -9,6 +9,7 @@ import type { Poem } from './types/database';
 import { PoetryEditor } from './components/PoetryEditor';
 import { addPoemVersion, ensureInitialPoemVersion, migrateLocalPoemVersions } from './utils/poemVersions';
 import { AnalysisPanel } from './components/AnalysisPanel';
+import { CommentsPanel } from './components/CommentsPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
 import { ShareModal } from './components/ShareModal';
 import { SEOHead } from './components/SEOHead';
@@ -21,6 +22,7 @@ import { type TenseInstance } from './utils/tenseChecker';
 import { type StressedSyllableInstance } from './utils/scansionAnalyzer';
 import { stripMarkdownFormatting } from './utils/markdownFormatter';
 import { getAllPoems } from './data/poems';
+import { addPoemComment, deletePoemComment, fetchPoemComments, updatePoemComment, type PoemComment, type CommentRange } from './utils/poemComments';
 import './App.css';
 
 // Expanded font options for poetry
@@ -112,6 +114,7 @@ function App() {
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
   const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
+  const [poemComments, setPoemComments] = useState<PoemComment[]>([]);
 
   // Cloud poem state
   const [cloudPoemTitle, setCloudPoemTitle] = useState<string | null>(null);
@@ -183,6 +186,7 @@ function App() {
   const [currentPoemId, setCurrentPoemId] = useState<string | null>(null);
   const [poemTitle, setPoemTitle] = useState<string>('Untitled');
   const [lastSavedContent, setLastSavedContent] = useState<string | null>(null); // Track content at last explicit save
+  const activePoemId = cloudPoemId || currentPoemId || null;
   const [highlightedPOS, setHighlightedPOS] = useState<string | null>(null);
   const [meterColoringData, setMeterColoringData] = useState<{
     syllableCounts: number[];
@@ -333,6 +337,14 @@ function App() {
     ensuredPoemIdsRef.current.add(activeId);
     ensureInitialPoemVersion(activeId, poemTitle, text, user.id);
   }, [cloudPoemId, currentPoemId, poemTitle, text, user, isLoadingCloudPoem]);
+
+  useEffect(() => {
+    if (!activePoemId) {
+      setPoemComments([]);
+      return;
+    }
+    fetchPoemComments(activePoemId, user?.id || null).then(setPoemComments);
+  }, [activePoemId, user?.id]);
 
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
@@ -543,6 +555,46 @@ function App() {
     }
   }, []);
 
+  const buildCommentMarkers = (plainText: string, comments: PoemComment[]) => {
+    if (comments.length === 0) {
+      return { markedText: plainText, ordered: [] as PoemComment[] };
+    }
+
+    const lines = plainText.split('\n');
+    const withOffsets = comments.map((comment) => {
+      const endLine = Math.max(1, Math.min(comment.range.endLineNumber, lines.length));
+      const lineText = lines[endLine - 1] || '';
+      const column = Math.max(1, Math.min(comment.range.endColumn, lineText.length + 1));
+      let offset = 0;
+      for (let i = 0; i < endLine - 1; i += 1) {
+        offset += lines[i].length + 1;
+      }
+      offset += column - 1;
+      return { comment, offset };
+    });
+
+    const ordered = withOffsets
+      .sort((a, b) => b.offset - a.offset)
+      .map(item => item.comment);
+
+    let markedText = plainText;
+    ordered.forEach((comment, idx) => {
+      const marker = ` [C${ordered.length - idx}]`;
+      const lineIdx = Math.max(1, Math.min(comment.range.endLineNumber, lines.length));
+      const lineText = lines[lineIdx - 1] || '';
+      const column = Math.max(1, Math.min(comment.range.endColumn, lineText.length + 1));
+      let offset = 0;
+      for (let i = 0; i < lineIdx - 1; i += 1) {
+        offset += lines[i].length + 1;
+      }
+      offset += column - 1;
+      markedText = markedText.slice(0, offset) + marker + markedText.slice(offset);
+    });
+
+    const orderedAscending = ordered.slice().reverse();
+    return { markedText, ordered: orderedAscending };
+  };
+
   const handleExportPoem = (format: 'txt' | 'md' | 'docx') => {
     setShowExportMenu(false);
     const title = poemTitle.trim() || 'Untitled';
@@ -579,7 +631,22 @@ function App() {
         .split('\n')
         .map(line => escapeHtml(line))
         .join('<br />');
-      content = `<!DOCTYPE html><html><head><meta charset="utf-8" /></head><body><div style="text-align:${alignment}"><h1>${escapeHtml(title)}</h1><p>${plainText}</p></div></body></html>`;
+      const rawText = stripMarkdownFormatting(text);
+      const { markedText, ordered } = buildCommentMarkers(
+        rawText,
+        poemComments.filter(comment => !comment.resolved)
+      );
+      const markedHtml = escapeHtml(markedText).split('\n').join('<br />');
+      const commentsHtml = ordered.length
+        ? `<hr /><h2>Comments</h2>${ordered
+            .map((comment, idx) => {
+              const label = `C${idx + 1}`;
+              const quote = comment.quote ? ` — <em>${escapeHtml(comment.quote)}</em>` : '';
+              return `<p><strong>${label}:</strong> ${escapeHtml(comment.text)}${quote}</p>`;
+            })
+            .join('')}`
+        : '';
+      content = `<!DOCTYPE html><html><head><meta charset="utf-8" /></head><body><div style="text-align:${alignment}"><h1>${escapeHtml(title)}</h1><p>${markedHtml}</p>${commentsHtml}</div></body></html>`;
       filename = `${safeTitle}.doc`;
       mimeType = 'application/msword';
     } else {
@@ -600,6 +667,53 @@ function App() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
+  const handleAddComment = useCallback(async (range: CommentRange, quote: string) => {
+    if (!activePoemId) return;
+    const commentText = window.prompt('Add a comment');
+    if (!commentText || !commentText.trim()) return;
+    const saved = await addPoemComment(activePoemId, user?.id || null, {
+      text: commentText.trim(),
+      quote,
+      range,
+    });
+    setPoemComments(prev => [...prev, saved]);
+  }, [activePoemId, user?.id]);
+
+  const handleResolveComment = useCallback(async (commentId: string) => {
+    if (!activePoemId) return;
+    const resolvedAt = new Date().toISOString();
+    const next = await updatePoemComment(activePoemId, commentId, {
+      resolved: true,
+      resolvedAt,
+    });
+    setPoemComments(next);
+  }, [activePoemId]);
+
+  const handleDeleteComment = useCallback(async (commentId: string) => {
+    if (!activePoemId) return;
+    const next = await deletePoemComment(activePoemId, commentId);
+    setPoemComments(next);
+  }, [activePoemId]);
+
+  const handleJumpToComment = useCallback((comment: PoemComment) => {
+    const editorInstance = editorRef.current;
+    if (!editorInstance) return;
+    const selection = {
+      startLineNumber: comment.range.startLineNumber,
+      startColumn: comment.range.startColumn,
+      endLineNumber: comment.range.endLineNumber,
+      endColumn: comment.range.endColumn,
+    };
+    editorInstance.setSelection(selection);
+    editorInstance.revealRangeInCenterIfOutsideViewport(new Range(
+      comment.range.startLineNumber,
+      comment.range.startColumn,
+      comment.range.endLineNumber,
+      comment.range.endColumn
+    ));
+    editorInstance.focus();
+  }, []);
 
   const handleSavePoem = () => {
     // Use current title from header input (no prompt needed)
@@ -1267,6 +1381,8 @@ function App() {
             firstLineIndent={firstLineIndent}
             lineSpacing={lineSpacing}
             onEditorMount={(editor) => { editorRef.current = editor; }}
+            comments={poemComments}
+            onAddComment={handleAddComment}
           />
 
           <button
@@ -1306,6 +1422,12 @@ function App() {
               onHighlightLines={setHighlightedLines}
               onHighlightWords={setHighlightedWords}
               editorHoveredLine={editorHoveredLine}
+            />
+            <CommentsPanel
+              comments={poemComments}
+              onResolve={handleResolveComment}
+              onDelete={handleDeleteComment}
+              onJump={handleJumpToComment}
             />
           </div>
         )}

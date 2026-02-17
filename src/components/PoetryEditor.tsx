@@ -67,6 +67,14 @@ interface PoetryEditorProps {
   onEditorMount?: (editor: editor.IStandaloneCodeEditor) => void;
   readOnly?: boolean;
   hideTitle?: boolean;
+  comments?: {
+    id: string;
+    range: WordRange;
+    text: string;
+    quote?: string;
+    resolved?: boolean;
+  }[];
+  onAddComment?: (range: WordRange, quote: string) => void;
   poemMetadata?: {
     poet: string;
     poetUrl: string;
@@ -96,7 +104,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, readOnly = false, hideTitle = false, poemMetadata }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, readOnly = false, hideTitle = false, comments = [], onAddComment, poemMetadata }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -110,6 +118,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   const copyToastTimerRef = useRef<number | null>(null);
   const lastSelectionRef = useRef<EditorSelection>(null);
   const restoreSelectionRef = useRef(false);
+  const commentDecorationsRef = useRef<string[]>([]);
 
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editorRef.current = editorInstance;
@@ -195,6 +204,15 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         'editor.selectionBackground': '#e8d8a0',
         'editorLineNumber.foreground': '#b0a080',
         'editorLineNumber.activeForeground': '#8a7a60',
+      },
+    });
+
+    editorInstance.addAction({
+      id: 'add-comment',
+      label: 'Add Comment',
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyM],
+      run: () => {
+        handleAddComment();
       },
     });
 
@@ -483,6 +501,37 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
 
     // Apply initial decorations
     updateDecorations();
+  };
+
+  const handleAddComment = () => {
+    if (!editorRef.current || !monacoRef.current || !onAddComment) return;
+    const selection = editorRef.current.getSelection();
+    const model = editorRef.current.getModel();
+    if (!selection || !model) return;
+
+    let range = selection;
+    if (selection.isEmpty()) {
+      const wordAt = model.getWordAtPosition(selection.getStartPosition());
+      if (wordAt) {
+        range = new monacoRef.current.Range(
+          selection.startLineNumber,
+          wordAt.startColumn,
+          selection.startLineNumber,
+          wordAt.endColumn
+        );
+      }
+    }
+
+    const quote = model.getValueInRange(range).trim() || model.getLineContent(range.startLineNumber).trim();
+    onAddComment(
+      {
+        startLineNumber: range.startLineNumber,
+        startColumn: range.startColumn,
+        endLineNumber: range.endLineNumber,
+        endColumn: range.endColumn,
+      },
+      quote
+    );
   };
 
   const updateDecorations = () => {
@@ -1235,6 +1284,26 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     restoreSelectionRef.current = false;
   }, [value]);
 
+  useEffect(() => {
+    if (!editorRef.current || !monacoRef.current) return;
+    const decorations = comments
+      .filter(comment => !comment.resolved)
+      .map(comment => ({
+        range: new monacoRef.current!.Range(
+          comment.range.startLineNumber,
+          comment.range.startColumn,
+          comment.range.endLineNumber,
+          comment.range.endColumn
+        ),
+        options: { inlineClassName: 'comment-highlight' },
+      }));
+
+    commentDecorationsRef.current = editorRef.current.deltaDecorations(
+      commentDecorationsRef.current,
+      decorations
+    );
+  }, [comments]);
+
   const handleEditorChange = (newValue?: string) => {
     if (editorRef.current) {
       lastSelectionRef.current = editorRef.current.getSelection();
@@ -1334,6 +1403,22 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
                   <rect x="8" y="8" width="10" height="12" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
                   <rect x="5" y="4" width="10" height="12" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                className="poem-comment-button"
+                title="Add comment"
+                onClick={handleAddComment}
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                  <path
+                    d="M6 4h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9l-5 4v-4H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </button>
               {showCopyToast && (

@@ -1039,13 +1039,38 @@
   transition: all 0.15s ease;
 }
 
+.poem-comment-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-left: 6px;
+}
+
 .poem-copy-button:hover {
   color: var(--color-text-primary);
   border-color: var(--color-text-muted);
   background: var(--color-highlight-subtle);
 }
 
+.poem-comment-button:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+  background: var(--color-highlight-subtle);
+}
+
 .poem-copy-button svg {
+  display: block;
+}
+
+.poem-comment-button svg {
   display: block;
 }
 
@@ -1062,6 +1087,11 @@
 .poem-title-editor-input::placeholder {
   color: var(--color-text-muted);
   font-style: normal;
+}
+
+.comment-highlight {
+  background: rgba(255, 230, 150, 0.4);
+  border-radius: 3px;
 }
 
 .poem-title-editor-input.dark {
