@@ -616,11 +616,32 @@ export async function fetchSynonymSenses(word: string): Promise<SynonymSense[]> 
       }
     }
 
+    const applyFormToSenses = (senses: SynonymSense[]) => {
+      const wordForm = detectWordForm(word);
+      if (!wordForm) return senses;
+      return senses.map((sense) => {
+        const merged = new Map<string, SynonymWord>();
+        sense.synonyms.forEach((syn) => {
+          const adjusted = applyWordForm(syn.word, word);
+          const existing = merged.get(adjusted);
+          if (!existing || syn.score > existing.score) {
+            merged.set(adjusted, { word: adjusted, score: syn.score });
+          }
+        });
+        return {
+          ...sense,
+          synonyms: Array.from(merged.values()),
+        };
+      });
+    };
+
     if (wordnetSensesByKey.size > 0) {
-      const senses = Array.from(wordnetSensesByKey.values()).map((sense) => ({
-        ...sense,
-        synonyms: [...sense.synonyms].sort((a, b) => b.score - a.score),
-      }));
+      const senses = applyFormToSenses(
+        Array.from(wordnetSensesByKey.values()).map((sense) => ({
+          ...sense,
+          synonyms: [...sense.synonyms].sort((a, b) => b.score - a.score),
+        }))
+      );
       const totalSynonyms = senses.reduce((sum, sense) => sum + sense.synonyms.length, 0);
       if (totalSynonyms < 6) {
         const datamuseCandidates = Array.from(new Set([normalized, ...wordnetCandidates])).filter(Boolean);
@@ -637,7 +658,14 @@ export async function fetchSynonymSenses(word: string): Promise<SynonymSense[]> 
           senses.push({
             gloss: 'Related meanings',
             pos: 'verb',
-            synonyms: extraSynonyms,
+            synonyms: applyFormToSenses([
+              {
+                gloss: 'Related meanings',
+                pos: 'verb',
+                synonyms: extraSynonyms,
+                source: 'datamuse',
+              },
+            ])[0].synonyms,
             source: 'datamuse',
           });
         }
@@ -645,7 +673,14 @@ export async function fetchSynonymSenses(word: string): Promise<SynonymSense[]> 
           senses.push({
             gloss: 'Related words',
             pos: 'verb',
-            synonyms: related,
+            synonyms: applyFormToSenses([
+              {
+                gloss: 'Related words',
+                pos: 'verb',
+                synonyms: related,
+                source: 'datamuse',
+              },
+            ])[0].synonyms,
             source: 'datamuse',
           });
         }
@@ -655,13 +690,13 @@ export async function fetchSynonymSenses(word: string): Promise<SynonymSense[]> 
 
     const fallbackSynonyms = await fetchSynonymsFlat(word);
     if (fallbackSynonyms.length === 0) return [];
-    return [
+    return applyFormToSenses([
       {
         gloss: 'General meaning',
         synonyms: fallbackSynonyms,
         source: 'fallback',
       },
-    ];
+    ]);
   } catch (error) {
     console.error('Error fetching synonym senses:', error);
     return [];
