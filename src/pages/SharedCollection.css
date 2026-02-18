@@ -1,0 +1,113 @@
+.shared-collection-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1rem 4rem;
+}
+
+.shared-collection-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.shared-collection-header h1 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 2.4rem;
+  font-weight: 400;
+  margin: 0 0 0.5rem;
+}
+
+.shared-subtitle {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-muted, #666);
+  margin: 0;
+}
+
+.shared-status {
+  text-align: center;
+  padding: 3rem;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  color: var(--color-text-muted, #666);
+}
+
+.shared-section {
+  margin-bottom: 3rem;
+}
+
+.shared-section-title {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary, #333);
+  margin: 0 0 1rem;
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
+  padding-bottom: 0.5rem;
+}
+
+.shared-poem {
+  background: var(--color-paper, #fff);
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 12px;
+  padding: 1.5rem 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.shared-poem h2,
+.shared-poem h3 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-weight: 400;
+  margin: 0 0 1rem;
+}
+
+.shared-poem-content {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--color-text-primary, #111);
+}
+
+.shared-comments {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border, #e0e0e0);
+}
+
+.shared-comments h3,
+.shared-comments h4 {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary, #333);
+  margin: 0 0 0.75rem;
+}
+
+.shared-comment {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.shared-comment:last-child {
+  border-bottom: none;
+}
+
+.shared-comment-label {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 11px;
+  color: var(--color-text-muted, #666);
+  margin-bottom: 0.25rem;
+}
+
+.shared-comment-quote {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 14px;
+  color: var(--color-text-primary, #111);
+  margin-bottom: 0.25rem;
+}
+
+.shared-comment-text {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-secondary, #333);
+}

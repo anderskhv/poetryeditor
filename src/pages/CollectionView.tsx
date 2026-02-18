@@ -10,6 +10,7 @@ import { useSections } from '../hooks/useCollections';
 import { usePoems } from '../hooks/usePoems';
 import { supabase } from '../lib/supabase';
 import { fetchPoemVersionsForPoems, fetchPoemVersions, addPoemVersion, ensureInitialPoemVersion, migrateLocalPoemVersions, type PoemVersion } from '../utils/poemVersions';
+import { getOrCreateShare } from '../utils/sharedCollections';
 import type { Collection, Section } from '../types/database';
 import JSZip from 'jszip';
 import './CollectionView.css';
@@ -37,6 +38,9 @@ export function CollectionView() {
   const processingRef = useRef(false); // Sync flag to prevent duplicate uploads
   const [expandedVersions, setExpandedVersions] = useState<Set<string>>(new Set());
   const [versionsByPoem, setVersionsByPoem] = useState<Record<string, PoemVersion[]>>({});
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareLink, setShareLink] = useState<string | null>(null);
+  const [shareBusy, setShareBusy] = useState(false);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   // Fetch collection details
@@ -192,6 +196,17 @@ export function CollectionView() {
     a.download = `${collection.name}.zip`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleShare = async () => {
+    if (!collection || !user) return;
+    setShareBusy(true);
+    const share = await getOrCreateShare(collection.id, user.id);
+    if (share) {
+      setShareLink(`${window.location.origin}/share/${share.token}`);
+      setShowShareModal(true);
+    }
+    setShareBusy(false);
   };
 
   const handleDeletePoem = async (poemId: string, title: string) => {
@@ -386,6 +401,9 @@ export function CollectionView() {
             <button className="export-button" onClick={handleExport} disabled={poems.length === 0}>
               Export as ZIP
             </button>
+            <button className="export-button" onClick={handleShare} disabled={shareBusy}>
+              {shareBusy ? 'Sharing...' : 'Share'}
+            </button>
           </div>
         </div>
 
@@ -459,6 +477,51 @@ export function CollectionView() {
               })}
             </div>
           </DndContext>
+        )}
+
+        {showShareModal && (
+          <div className="share-modal-overlay" onClick={() => setShowShareModal(false)}>
+            <div className="share-modal" onClick={(e) => e.stopPropagation()}>
+              <h2>Share Collection</h2>
+              <p>This link gives read-only access to your collection and its comments.</p>
+              <div className="share-link-row">
+                <input type="text" readOnly value={shareLink || ''} />
+                <button
+                  className="export-button"
+                  onClick={async () => {
+                    if (!shareLink) return;
+                    try {
+                      await navigator.clipboard.writeText(shareLink);
+                    } catch {
+                      const textarea = document.createElement('textarea');
+                      textarea.value = shareLink;
+                      textarea.style.position = 'fixed';
+                      textarea.style.opacity = '0';
+                      document.body.appendChild(textarea);
+                      textarea.select();
+                      document.execCommand('copy');
+                      document.body.removeChild(textarea);
+                    }
+                  }}
+                >
+                  Copy
+                </button>
+              </div>
+              <div className="share-modal-actions">
+                <button
+                  className="export-button"
+                  onClick={() => setShowShareModal(false)}
+                >
+                  Close
+                </button>
+                {shareLink && (
+                  <a className="share-open-link" href={shareLink} target="_blank" rel="noopener noreferrer">
+                    Open
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
         )}
 
         <div className="collection-stats">

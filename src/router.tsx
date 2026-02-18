@@ -26,6 +26,7 @@ import { CollectionView } from './pages/CollectionView';
 import { Widget } from './pages/Widget';
 import { EmbedPage } from './pages/EmbedPage';
 import { ResetPassword } from './pages/ResetPassword';
+import { SharedCollection } from './pages/SharedCollection';
 
 export const router = createBrowserRouter([
   {
@@ -193,5 +194,9 @@ export const router = createBrowserRouter([
   {
     path: '/reset-password',
     element: <ResetPassword />,
+  },
+  {
+    path: '/share/:token',
+    element: <SharedCollection />,
   },
 ]);
