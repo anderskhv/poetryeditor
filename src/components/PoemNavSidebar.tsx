@@ -7,6 +7,7 @@ import './PoemNavSidebar.css';
 interface PoemNavSidebarProps {
   collectionId: string;
   currentPoemId: string;
+  currentPoemTitle: string;
   onPoemSelect: (poemId: string) => void;
   isOpen: boolean;
   onToggle: () => void;
@@ -83,6 +84,7 @@ function PoemNavItem({
 export function PoemNavSidebar({
   collectionId,
   currentPoemId,
+  currentPoemTitle,
   onPoemSelect,
   isOpen,
   onToggle,
@@ -159,6 +161,21 @@ export function PoemNavSidebar({
 
     loadPoems();
   }, [collectionId]);
+
+  useEffect(() => {
+    if (!currentPoemId || !currentPoemTitle) return;
+    setUnsectionedPoems((prev) =>
+      prev.map((poem) => (poem.id === currentPoemId ? { ...poem, title: currentPoemTitle } : poem))
+    );
+    setSections((prev) =>
+      prev.map((section) => ({
+        ...section,
+        poems: section.poems.map((poem) =>
+          poem.id === currentPoemId ? { ...poem, title: currentPoemTitle } : poem
+        ),
+      }))
+    );
+  }, [currentPoemId, currentPoemTitle]);
 
   const toggleSection = (sectionId: string) => {
     setCollapsedSections(prev => {

@@ -1427,6 +1427,7 @@ function App() {
           <PoemNavSidebar
             collectionId={cloudPoemCollectionId}
             currentPoemId={cloudPoemId}
+            currentPoemTitle={poemTitle}
             onPoemSelect={handleNavPoemSelect}
             isOpen={navSidebarOpen}
             onToggle={() => setNavSidebarOpen(!navSidebarOpen)}
