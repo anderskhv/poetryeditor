@@ -121,6 +121,25 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   const lastSelectionRef = useRef<EditorSelection>(null);
   const restoreSelectionRef = useRef(false);
   const commentDecorationsRef = useRef<string[]>([]);
+  const commentsRef = useRef(comments);
+  const [activeComment, setActiveComment] = useState<typeof comments[number] | null>(null);
+  const [commentPopupPos, setCommentPopupPos] = useState<{ top: number; left: number } | null>(null);
+  const commentPopupRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    commentsRef.current = comments;
+  }, [comments]);
+
+  const findCommentAtPosition = (lineNumber: number, column: number) => {
+    return commentsRef.current.find((comment) => {
+      if (comment.resolved) return false;
+      const { startLineNumber, startColumn, endLineNumber, endColumn } = comment.range;
+      if (lineNumber < startLineNumber || lineNumber > endLineNumber) return false;
+      if (lineNumber === startLineNumber && column < startColumn) return false;
+      if (lineNumber === endLineNumber && column > endColumn) return false;
+      return true;
+    }) || null;
+  };
 
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
     editorRef.current = editorInstance;
@@ -1306,7 +1325,10 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
           comment.range.endLineNumber,
           comment.range.endColumn
         ),
-        options: { inlineClassName: 'comment-highlight' },
+        options: {
+          inlineClassName: 'comment-highlight',
+          hoverMessage: { value: `**Comment:** ${comment.text}` },
+        },
       }));
 
     commentDecorationsRef.current = editorRef.current.deltaDecorations(
