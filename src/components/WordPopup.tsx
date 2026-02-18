@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { getStressPattern, getSyllables } from '../utils/cmuDict';
 import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonymSenses, RhymeWord, SynonymSense } from '../utils/rhymeApi';
 import { fetchWordInfo, type WordOrigin, type Pronunciation, type WordDefinition } from '../utils/wordInfoApi';
@@ -38,6 +38,8 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
   const hardTimeoutRef = useRef<number | null>(null);
   const wordRef = useRef<string>(word);
   const requestIdRef = useRef<number>(0);
+  const popupRef = useRef<HTMLDivElement | null>(null);
+  const [clampedPosition, setClampedPosition] = useState<{ top: number; left: number } | null>(null);
 
   const stresses = getStressPattern(word);
   const syllableCount = stresses.length;
@@ -64,6 +66,24 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     setWordInfoError(null);
     setPendingInsert(null);
   }, [word]);
+
+  useLayoutEffect(() => {
+    if (!position || !popupRef.current) {
+      setClampedPosition(position || null);
+      return;
+    }
+    const { innerWidth, innerHeight } = window;
+    const margin = 12;
+    const rect = popupRef.current.getBoundingClientRect();
+    const maxLeft = Math.max(margin, innerWidth - rect.width - margin);
+    const maxTop = Math.max(margin, innerHeight - rect.height - margin);
+    const nextLeft = Math.min(Math.max(position.left, margin), maxLeft);
+    const nextTop = Math.min(Math.max(position.top, margin), maxTop);
+    setClampedPosition((prev) => {
+      if (prev && prev.left === nextLeft && prev.top === nextTop) return prev;
+      return { left: nextLeft, top: nextTop };
+    });
+  }, [position, word, activeTab, rhymes.length, nearRhymes.length, synonymSenses.length, wordDefinitions.length, wordOrigin]);
 
   // Group rhymes by syllable count
   const groupedRhymes: GroupedWords<RhymeWord> = rhymes.reduce((acc, rhyme) => {
@@ -188,12 +208,15 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
     }
   };
 
+  const popupPosition = clampedPosition || position;
+
   return (
     <>
       <div className="word-popup-overlay" onClick={onClose} />
       <div
         className="word-popup"
-        style={position ? { top: `${position.top}px`, left: `${position.left}px` } : undefined}
+        ref={popupRef}
+        style={popupPosition ? { top: `${popupPosition.top}px`, left: `${popupPosition.left}px` } : undefined}
       >
         <div className="word-popup-header">
           <div className="word-popup-title">
