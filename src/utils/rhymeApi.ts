@@ -288,6 +288,7 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
 
     const targetRhyme = getRhymePhonemes(word);
     const targetVowel = targetRhyme?.[0]?.replace(/[012]$/, '') || null;
+    const targetSyllables = getSyllableCount(word);
 
     const matchesTargetVowel = (candidate: string) => {
       if (!targetVowel) return true;
@@ -296,21 +297,53 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
       return vowel === targetVowel;
     };
 
+    const getTailMatchCount = (target: string[], candidate: string[]) => {
+      const minLen = Math.min(target.length, candidate.length);
+      let matches = 0;
+      for (let i = 1; i <= minLen; i += 1) {
+        if (target[target.length - i] === candidate[candidate.length - i]) {
+          matches += 1;
+        }
+      }
+      return { matches, minLen };
+    };
+
+    const passesPhonemeFilter = (candidate: string) => {
+      if (!targetRhyme) return true;
+      const rhyme = getRhymePhonemes(candidate);
+      if (!rhyme) return false;
+      if (rhyme.length < 2 || targetRhyme.length < 2) return false;
+      const { matches, minLen } = getTailMatchCount(targetRhyme, rhyme);
+      const requiredMatches = minLen >= 3 ? 2 : 1;
+      if (matches < requiredMatches) return false;
+      const quality = calculateRhymeQualityFast(targetRhyme, candidate);
+      return quality >= 0.45;
+    };
+
+    const matchesSyllables = (candidate: string) => {
+      const syllables = getSyllableCount(candidate);
+      return Math.abs(syllables - targetSyllables) <= 1;
+    };
+
     const nearRhymes = getNearRhymesOffline(word, 200);
     const spellingRhymes = nearRhymes.length < 20 ? getSpellingRhymesOffline(word, 120) : [];
     const combined = Array.from(new Set([...nearRhymes, ...spellingRhymes]))
       .filter(rhyme => rhyme !== word)
       .filter(isValidNearRhyme)
-      .filter(matchesTargetVowel);
+      .filter(matchesTargetVowel)
+      .filter(matchesSyllables)
+      .filter(passesPhonemeFilter);
 
     console.log(`Received ${combined.length} offline near/slant rhymes for "${word}"`);
 
     let results: RhymeWord[] = combined.map((rhymeWord) => {
       const score = Math.max(100, 4000 - rhymeWord.length * 80);
+      const rhymeQuality = targetRhyme ? calculateRhymeQualityFast(targetRhyme, rhymeWord) : 0;
       return {
         word: rhymeWord,
         score,
         numSyllables: getSyllableCount(rhymeWord),
+        rhymeQuality,
         partsOfSpeech: [],
       };
     });
@@ -337,8 +370,20 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
       });
       results = Array.from(merged.values())
         .filter(rhyme => isValidNearRhyme(rhyme.word))
-        .filter(rhyme => matchesTargetVowel(rhyme.word));
+        .filter(rhyme => matchesTargetVowel(rhyme.word))
+        .filter(rhyme => matchesSyllables(rhyme.word))
+        .filter(rhyme => passesPhonemeFilter(rhyme.word))
+        .map((rhyme) => ({
+          ...rhyme,
+          rhymeQuality: targetRhyme ? calculateRhymeQualityFast(targetRhyme, rhyme.word) : 0,
+        }));
     }
+
+    results.sort((a, b) => {
+      const qualityDiff = (b.rhymeQuality || 0) - (a.rhymeQuality || 0);
+      if (Math.abs(qualityDiff) > 0.05) return qualityDiff;
+      return b.score - a.score;
+    });
 
     return results;
   } catch (error) {
