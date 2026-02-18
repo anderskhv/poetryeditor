@@ -529,6 +529,41 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       run: () => wrapSelection('__', '__'),
     });
 
+    editorInstance.onKeyDown((event) => {
+      if (event.keyCode !== monaco.KeyCode.Enter) return;
+      const selection = editorInstance.getSelection();
+      if (!selection || !selection.isEmpty()) return;
+      const model = editorInstance.getModel();
+      if (!model) return;
+
+      const cursorOffset = model.getOffsetAt(selection.getPosition());
+      const formattedRanges = parseMarkdownFormatting(model.getValue());
+      const region = formattedRanges.find((range) =>
+        cursorOffset > range.contentStartOffset && cursorOffset < range.contentEndOffset
+      );
+      if (!region) return;
+
+      const marker = region.type === 'bold' ? '**' : region.type === 'underline' ? '__' : '*';
+      event.preventDefault();
+
+      editorInstance.executeEdits('formatting', [
+        {
+          range: selection,
+          text: `${marker}\n${marker}`,
+        },
+      ]);
+
+      const newOffset = cursorOffset + marker.length + 1 + marker.length;
+      const newPosition = model.getPositionAt(newOffset);
+      editorInstance.setSelection(new monaco.Selection(
+        newPosition.lineNumber,
+        newPosition.column,
+        newPosition.lineNumber,
+        newPosition.column
+      ));
+      updateDecorations();
+    });
+
     // Apply initial decorations
     updateDecorations();
   };
