@@ -1054,6 +1054,21 @@
   margin-left: 6px;
 }
 
+.poem-comment-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-left: 6px;
+}
+
 .poem-copy-button:hover {
   color: var(--color-text-primary);
   border-color: var(--color-text-muted);
@@ -1066,11 +1081,27 @@
   background: var(--color-highlight-subtle);
 }
 
+.poem-comment-toggle:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+  background: var(--color-highlight-subtle);
+}
+
+.poem-comment-toggle.active {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
+  background: var(--color-highlight-subtle);
+}
+
 .poem-copy-button svg {
   display: block;
 }
 
 .poem-comment-button svg {
+  display: block;
+}
+
+.poem-comment-toggle svg {
   display: block;
 }
 
@@ -1225,17 +1256,43 @@
   overflow: hidden;
 }
 
-.panel-tabs {
-  display: none; /* Hide tabs, show Analysis directly */
+.side-panel-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-paper);
 }
 
-.tab {
-  display: none;
+.side-panel-tab {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.panel-content {
-  flex: 1;
-  overflow: hidden;
+.side-panel-tab.active {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+  background: var(--color-highlight-subtle);
+}
+
+.side-panel-tab-badge {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 1px 6px;
+  font-size: 10px;
+  color: var(--color-text-muted);
 }
 
 .coach-panel {

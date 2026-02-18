@@ -75,6 +75,8 @@ interface PoetryEditorProps {
     resolved?: boolean;
   }[];
   onAddComment?: (range: WordRange, quote: string) => void;
+  showCommentHighlights?: boolean;
+  onToggleCommentHighlights?: () => void;
   poemMetadata?: {
     poet: string;
     poetUrl: string;
@@ -104,7 +106,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, readOnly = false, hideTitle = false, comments = [], onAddComment, poemMetadata }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, readOnly = false, hideTitle = false, comments = [], onAddComment, showCommentHighlights = true, onToggleCommentHighlights, poemMetadata }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -1430,6 +1432,24 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
                   />
                 </svg>
               </button>
+              {onToggleCommentHighlights && (
+                <button
+                  type="button"
+                  className={`poem-comment-toggle ${showCommentHighlights ? 'active' : ''}`}
+                  title={showCommentHighlights ? 'Hide comments' : 'Show comments'}
+                  onClick={onToggleCommentHighlights}
+                >
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path
+                      d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    />
+                    <circle cx="12" cy="12" r="2.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  </svg>
+                </button>
+              )}
               {showCopyToast && (
                 <span className="poem-copy-toast">Copied</span>
               )}

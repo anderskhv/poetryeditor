@@ -115,6 +115,8 @@ function App() {
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
   const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
   const [poemComments, setPoemComments] = useState<PoemComment[]>([]);
+  const [activeSideTab, setActiveSideTab] = useState<'analysis' | 'comments'>('analysis');
+  const [showCommentHighlights, setShowCommentHighlights] = useState<boolean>(true);
 
   // Cloud poem state
   const [cloudPoemTitle, setCloudPoemTitle] = useState<string | null>(null);
@@ -678,6 +680,7 @@ function App() {
       range,
     });
     setPoemComments(prev => [...prev, saved]);
+    setActiveSideTab('comments');
   }, [activePoemId, user?.id]);
 
   const handleResolveComment = useCallback(async (commentId: string) => {
@@ -1381,8 +1384,10 @@ function App() {
             firstLineIndent={firstLineIndent}
             lineSpacing={lineSpacing}
             onEditorMount={(editor) => { editorRef.current = editor; }}
-            comments={poemComments}
+            comments={showCommentHighlights ? poemComments : []}
             onAddComment={handleAddComment}
+            showCommentHighlights={showCommentHighlights}
+            onToggleCommentHighlights={() => setShowCommentHighlights(prev => !prev)}
           />
 
           <button
@@ -1405,30 +1410,50 @@ function App() {
 
         {isPanelOpen && (
           <div className="side-panel">
-            <AnalysisPanel
-              text={text}
-              words={analyzedWords}
-              lastSaved={lastSaved}
-              onHighlightPOS={setHighlightedPOS}
-              onMeterExpand={handleMeterExpand}
-              onSyllableExpand={handleSyllableExpand}
-              onRhythmVariationExpand={handleRhythmVariationExpand}
-              onLineLengthExpand={handleLineLengthExpand}
-              onPunctuationExpand={handlePunctuationExpand}
-              onPassiveVoiceExpand={handlePassiveVoiceExpand}
-              onTenseExpand={handleTenseExpand}
-              onScansionExpand={handleScansionExpand}
-              onSectionCollapse={handleSectionCollapse}
-              onHighlightLines={setHighlightedLines}
-              onHighlightWords={setHighlightedWords}
-              editorHoveredLine={editorHoveredLine}
-            />
-            <CommentsPanel
-              comments={poemComments}
-              onResolve={handleResolveComment}
-              onDelete={handleDeleteComment}
-              onJump={handleJumpToComment}
-            />
+            <div className="side-panel-tabs">
+              <button
+                className={`side-panel-tab ${activeSideTab === 'analysis' ? 'active' : ''}`}
+                onClick={() => setActiveSideTab('analysis')}
+              >
+                Analysis
+              </button>
+              <button
+                className={`side-panel-tab ${activeSideTab === 'comments' ? 'active' : ''}`}
+                onClick={() => setActiveSideTab('comments')}
+              >
+                Comments
+                {poemComments.length > 0 && (
+                  <span className="side-panel-tab-badge">{poemComments.length}</span>
+                )}
+              </button>
+            </div>
+            {activeSideTab === 'analysis' ? (
+              <AnalysisPanel
+                text={text}
+                words={analyzedWords}
+                lastSaved={lastSaved}
+                onHighlightPOS={setHighlightedPOS}
+                onMeterExpand={handleMeterExpand}
+                onSyllableExpand={handleSyllableExpand}
+                onRhythmVariationExpand={handleRhythmVariationExpand}
+                onLineLengthExpand={handleLineLengthExpand}
+                onPunctuationExpand={handlePunctuationExpand}
+                onPassiveVoiceExpand={handlePassiveVoiceExpand}
+                onTenseExpand={handleTenseExpand}
+                onScansionExpand={handleScansionExpand}
+                onSectionCollapse={handleSectionCollapse}
+                onHighlightLines={setHighlightedLines}
+                onHighlightWords={setHighlightedWords}
+                editorHoveredLine={editorHoveredLine}
+              />
+            ) : (
+              <CommentsPanel
+                comments={poemComments}
+                onResolve={handleResolveComment}
+                onDelete={handleDeleteComment}
+                onJump={handleJumpToComment}
+              />
+            )}
           </div>
         )}
       </div>
