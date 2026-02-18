@@ -261,6 +261,15 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
 
       if (!clickedWordText || !clickedRange || !containerRef.current) return;
 
+      editorInstance.setSelection(
+        new monaco.Range(
+          clickedRange.startLineNumber,
+          clickedRange.startColumn,
+          clickedRange.startLineNumber,
+          clickedRange.startColumn
+        )
+      );
+
       const domNode = editorInstance.getDomNode();
       if (!domNode) return;
 
