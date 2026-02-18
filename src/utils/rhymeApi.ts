@@ -427,12 +427,19 @@ function applyWordForm(synonymWord: string, originalWord: string, posHint?: stri
   if (!wordForm) return synonymWord; // No transformation needed
 
   const synDoc = nlp(synonymWord);
+  const normalizeVerbOutput = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return '';
+    const parts = trimmed.split(/\s+/);
+    return parts[parts.length - 1];
+  };
+  const irregularPast = new Set(['done']);
 
   if (wordForm.type === 'verb') {
     if (wordForm.suffix === 'ing') {
       if (synonymWord.endsWith('ing')) return synonymWord;
       // Try to get gerund form
-      const gerund = synDoc.verbs().toGerund().text();
+      const gerund = normalizeVerbOutput(synDoc.verbs().toGerund().text());
       if (gerund && gerund !== synonymWord) return gerund;
 
       // Fallback: simple concatenation
@@ -444,8 +451,16 @@ function applyWordForm(synonymWord: string, originalWord: string, posHint?: stri
 
     if (wordForm.suffix === 'ed') {
       if (synonymWord.endsWith('ed')) return synonymWord;
+      if (irregularPast.has(synonymWord)) return synonymWord;
+      const conjugations = synDoc.verbs().conjugate();
+      const isPast = conjugations.some(conj =>
+        Object.entries(conj).some(([key, value]) =>
+          key.toLowerCase().includes('past') && value === synonymWord
+        )
+      );
+      if (isPast) return synonymWord;
       // Try to get past tense
-      const past = synDoc.verbs().toPastTense().text();
+      const past = normalizeVerbOutput(synDoc.verbs().toPastTense().text());
       if (past && past !== synonymWord) return past;
 
       // Fallback: simple concatenation
@@ -456,9 +471,8 @@ function applyWordForm(synonymWord: string, originalWord: string, posHint?: stri
     }
 
     if (wordForm.suffix === 's') {
-      if (synonymWord.endsWith('s')) return synonymWord;
       // Try to get present tense (3rd person)
-      const present = synDoc.verbs().toPresentTense().text();
+      const present = normalizeVerbOutput(synDoc.verbs().toPresentTense().text());
       if (present && present !== synonymWord) return present;
 
       // Fallback: simple concatenation
