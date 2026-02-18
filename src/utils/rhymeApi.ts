@@ -400,17 +400,20 @@ function lemmatize(word: string): string {
 /**
  * Detect the suffix/form of the original word
  */
-function detectWordForm(word: string): { type: string; suffix: string } | null {
+function detectWordForm(word: string, posHint?: string): { type: string; suffix: string } | null {
   const lower = word.toLowerCase();
+  const doc = nlp(lower);
+  const isVerb = posHint ? posHint.startsWith('v') : doc.verbs().length > 0;
+  const isNoun = posHint ? posHint.startsWith('n') : doc.nouns().length > 0;
 
-  // Verb forms
-  if (lower.endsWith('ing')) return { type: 'verb', suffix: 'ing' };
-  if (lower.endsWith('ed')) return { type: 'verb', suffix: 'ed' };
-  if (lower.endsWith('s') && !lower.endsWith('ss')) return { type: 'verb', suffix: 's' };
+  // Verb forms (only if we actually see a verb)
+  if (lower.endsWith('ing') && isVerb) return { type: 'verb', suffix: 'ing' };
+  if (lower.endsWith('ed') && isVerb) return { type: 'verb', suffix: 'ed' };
+  if (lower.endsWith('s') && !lower.endsWith('ss') && isVerb) return { type: 'verb', suffix: 's' };
 
-  // Noun plurals
-  if (lower.endsWith('es')) return { type: 'noun', suffix: 'es' };
-  if (lower.endsWith('s')) return { type: 'noun', suffix: 's' };
+  // Noun plurals (only if we actually see a noun)
+  if (lower.endsWith('es') && isNoun) return { type: 'noun', suffix: 'es' };
+  if (lower.endsWith('s') && isNoun) return { type: 'noun', suffix: 's' };
 
   return null;
 }
@@ -419,14 +422,15 @@ function detectWordForm(word: string): { type: string; suffix: string } | null {
  * Apply the same form/conjugation from originalWord to synonymWord
  * E.g., if originalWord is "drowning", transform "submerge" to "submerging"
  */
-function applyWordForm(synonymWord: string, originalWord: string): string {
-  const wordForm = detectWordForm(originalWord);
+function applyWordForm(synonymWord: string, originalWord: string, posHint?: string): string {
+  const wordForm = detectWordForm(originalWord, posHint);
   if (!wordForm) return synonymWord; // No transformation needed
 
   const synDoc = nlp(synonymWord);
 
   if (wordForm.type === 'verb') {
     if (wordForm.suffix === 'ing') {
+      if (synonymWord.endsWith('ing')) return synonymWord;
       // Try to get gerund form
       const gerund = synDoc.verbs().toGerund().text();
       if (gerund && gerund !== synonymWord) return gerund;
@@ -439,6 +443,7 @@ function applyWordForm(synonymWord: string, originalWord: string): string {
     }
 
     if (wordForm.suffix === 'ed') {
+      if (synonymWord.endsWith('ed')) return synonymWord;
       // Try to get past tense
       const past = synDoc.verbs().toPastTense().text();
       if (past && past !== synonymWord) return past;
@@ -451,6 +456,7 @@ function applyWordForm(synonymWord: string, originalWord: string): string {
     }
 
     if (wordForm.suffix === 's') {
+      if (synonymWord.endsWith('s')) return synonymWord;
       // Try to get present tense (3rd person)
       const present = synDoc.verbs().toPresentTense().text();
       if (present && present !== synonymWord) return present;
@@ -464,6 +470,7 @@ function applyWordForm(synonymWord: string, originalWord: string): string {
   }
 
   if (wordForm.type === 'noun' && (wordForm.suffix === 's' || wordForm.suffix === 'es')) {
+    if (synonymWord.endsWith(wordForm.suffix)) return synonymWord;
     // Try to get plural form
     const plural = synDoc.nouns().toPlural().text();
     if (plural && plural !== synonymWord) return plural;
@@ -617,12 +624,12 @@ export async function fetchSynonymSenses(word: string): Promise<SynonymSense[]> 
     }
 
     const applyFormToSenses = (senses: SynonymSense[]) => {
-      const wordForm = detectWordForm(word);
-      if (!wordForm) return senses;
       return senses.map((sense) => {
+        const wordForm = detectWordForm(word, sense.pos);
+        if (!wordForm) return sense;
         const merged = new Map<string, SynonymWord>();
         sense.synonyms.forEach((syn) => {
-          const adjusted = applyWordForm(syn.word, word);
+          const adjusted = applyWordForm(syn.word, word, sense.pos);
           const existing = merged.get(adjusted);
           if (!existing || syn.score > existing.score) {
             merged.set(adjusted, { word: adjusted, score: syn.score });
