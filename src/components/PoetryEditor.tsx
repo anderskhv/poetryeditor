@@ -264,9 +264,9 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       editorInstance.setSelection(
         new monaco.Range(
           clickedRange.startLineNumber,
-          clickedRange.startColumn,
+          clickedRange.endColumn,
           clickedRange.startLineNumber,
-          clickedRange.startColumn
+          clickedRange.endColumn
         )
       );
 
