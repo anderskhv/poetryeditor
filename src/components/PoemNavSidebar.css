@@ -255,6 +255,8 @@
   line-height: 1;
   cursor: pointer;
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .poem-nav-insert:hover {
@@ -265,6 +267,17 @@
 
 .poem-nav-insert.end {
   margin: 6px 10px 8px;
+}
+
+.poem-nav-row:hover .poem-nav-insert {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.poem-nav-section-items:hover .poem-nav-insert.end,
+.poem-nav-dropzone:hover .poem-nav-insert.end {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .poem-nav-section-items.is-over {

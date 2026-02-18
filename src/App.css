@@ -918,6 +918,44 @@
   background-color: var(--color-paper);
 }
 
+.version-preview-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-highlight-subtle);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.version-preview-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.version-preview-btn {
+  border: 1px solid var(--color-border);
+  background: var(--color-paper);
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.version-preview-btn.secondary {
+  background: transparent;
+}
+
+.version-preview-btn:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+}
+
 /* Poem writing surface */
 .poetry-editor-container {
   flex: 1;

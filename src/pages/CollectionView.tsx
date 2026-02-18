@@ -33,7 +33,7 @@ export function CollectionView() {
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loadingCollection, setLoadingCollection] = useState(true);
   const { sections, createManySections } = useSections(id);
-  const { poems, createPoem, createPoemAt, createManyPoems, updatePoem, updatePoemMeta, updatePoemOrders, deletePoem, loading: loadingPoems } = usePoems(id);
+  const { poems, createPoem, createPoemAt, createManyPoems, updatePoem, updatePoemOrders, deletePoem, loading: loadingPoems } = usePoems(id);
   const [processingUpload, setProcessingUpload] = useState(false);
   const processingRef = useRef(false); // Sync flag to prevent duplicate uploads
   const [expandedVersions, setExpandedVersions] = useState<Set<string>>(new Set());
@@ -41,6 +41,7 @@ export function CollectionView() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [shareBusy, setShareBusy] = useState(false);
+  const [shareError, setShareError] = useState<string | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   // Fetch collection details
@@ -201,9 +202,14 @@ export function CollectionView() {
   const handleShare = async () => {
     if (!collection || !user) return;
     setShareBusy(true);
+    setShareError(null);
     const share = await getOrCreateShare(collection.id, user.id);
     if (share) {
       setShareLink(`${window.location.origin}/share/${share.token}`);
+      setShowShareModal(true);
+    } else {
+      setShareLink(null);
+      setShareError('Sharing is not set up yet. Please run the share SQL in Supabase.');
       setShowShareModal(true);
     }
     setShareBusy(false);
@@ -213,6 +219,10 @@ export function CollectionView() {
     if (window.confirm(`Delete "${title}"? This cannot be undone.`)) {
       await deletePoem(poemId);
     }
+  };
+
+  const handlePreviewVersion = (poem: { id: string; title: string; content: string }, version: PoemVersion) => {
+    navigate(`/?poem=${poem.id}&version=${version.id}`);
   };
 
   const handleCreatePoem = async () => {
@@ -302,11 +312,6 @@ export function CollectionView() {
       })),
     ];
     await updatePoemOrders(updates);
-  };
-
-  const handleMoveToRoot = async (poemId: string) => {
-    const targetList = poemsBySection.get('root') || [];
-    await updatePoemMeta(poemId, { section_id: null, sort_order: targetList.length });
   };
 
   const toggleVersions = (poemId: string) => {
@@ -438,6 +443,7 @@ export function CollectionView() {
                             versions={versionsByPoem[poem.id] || []}
                             onRestoreVersion={handleRestoreVersion}
                             onInsertAfter={() => handleInsertPoemAfter(null, idx)}
+                            onPreviewVersion={handlePreviewVersion}
                           />
                         ))}
                       </div>
@@ -465,8 +471,8 @@ export function CollectionView() {
                               expanded={expandedVersions.has(poem.id)}
                               versions={versionsByPoem[poem.id] || []}
                               onRestoreVersion={handleRestoreVersion}
-                              onMoveToRoot={handleMoveToRoot}
                               onInsertAfter={() => handleInsertPoemAfter(poem.section_id, idx)}
+                              onPreviewVersion={handlePreviewVersion}
                             />
                           ))}
                         </div>
@@ -484,6 +490,9 @@ export function CollectionView() {
             <div className="share-modal" onClick={(e) => e.stopPropagation()}>
               <h2>Share Collection</h2>
               <p>This link gives read-only access to your collection and its comments.</p>
+              {shareError && (
+                <div className="share-error">{shareError}</div>
+              )}
               <div className="share-link-row">
                 <input type="text" readOnly value={shareLink || ''} />
                 <button
@@ -555,8 +564,8 @@ function SortablePoemCard({
   expanded,
   versions,
   onRestoreVersion,
-  onMoveToRoot,
   onInsertAfter,
+  onPreviewVersion,
 }: {
   poem: { id: string; title: string; content: string; section_id: string | null };
   onDelete: (poemId: string, title: string) => void;
@@ -564,8 +573,8 @@ function SortablePoemCard({
   expanded: boolean;
   versions: PoemVersion[];
   onRestoreVersion: (poem: { id: string; title: string; content: string }, version: PoemVersion) => void;
-  onMoveToRoot?: (poemId: string) => void;
   onInsertAfter?: () => void;
+  onPreviewVersion: (poem: { id: string; title: string; content: string }, version: PoemVersion) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: poem.id,
@@ -591,11 +600,6 @@ function SortablePoemCard({
         <button className="poem-drag-handle" {...attributes} {...listeners} title="Drag to reorder">
           ⋮⋮
         </button>
-        {poem.section_id && onMoveToRoot && (
-          <button className="poem-move-btn" onClick={() => onMoveToRoot(poem.id)} title="Move to root">
-            ⤴
-          </button>
-        )}
         {onInsertAfter && (
           <button className="poem-insert-btn" onClick={onInsertAfter} title="Insert new poem after">
             +
@@ -615,12 +619,16 @@ function SortablePoemCard({
           ) : (
             versions.map(version => (
               <div key={version.id} className="poem-version-item">
-                <div className="poem-version-meta">
+                <button
+                  className="poem-version-meta"
+                  onClick={() => onPreviewVersion(poem, version)}
+                  title="Open this version"
+                >
                   <span className="poem-version-date">
                     {new Date(version.created_at).toLocaleString()}
                   </span>
                   <span className="poem-version-title">{version.title}</span>
-                </div>
+                </button>
                 <p className="poem-version-preview">
                   {version.content.substring(0, 120)}
                   {version.content.length > 120 ? '...' : ''}

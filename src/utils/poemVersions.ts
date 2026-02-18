@@ -140,6 +140,24 @@ export const fetchPoemVersions = async (poemId: string, userId: string) => {
   return data || [];
 };
 
+export const fetchPoemVersionById = async (versionId: string, userId: string) => {
+  if (!supabase || !versionId || !userId) return null as PoemVersion | null;
+
+  const { data, error } = await supabase
+    .from('poem_versions')
+    .select('*')
+    .eq('id', versionId)
+    .eq('user_id', userId)
+    .single();
+
+  if (error) {
+    console.error('Failed to fetch poem version:', error);
+    return null;
+  }
+
+  return data as PoemVersion;
+};
+
 export const ensureInitialPoemVersion = async (poemId: string, title: string, content: string, userId: string) => {
   if (!supabase || !poemId || !userId) return;
 

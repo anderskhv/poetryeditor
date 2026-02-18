@@ -22,7 +22,6 @@ function PoemNavItem({
   onSelect,
   sectionId,
   index,
-  onMoveToRoot,
   onDelete,
 }: {
   poem: Poem;
@@ -30,7 +29,6 @@ function PoemNavItem({
   onSelect: (poemId: string) => void;
   sectionId: string | null;
   index: number;
-  onMoveToRoot?: (poemId: string) => void;
   onDelete?: (poemId: string) => void;
 }) {
   const { attributes, listeners, setNodeRef: setDragRef, isDragging } = useDraggable({
@@ -57,16 +55,6 @@ function PoemNavItem({
           {poem.title}
         </button>
         <div className="poem-nav-actions">
-          {sectionId && onMoveToRoot && (
-            <button
-              type="button"
-              className="poem-nav-action-btn"
-              title="Move to root"
-              onClick={() => onMoveToRoot(poem.id)}
-            >
-              ⤴
-            </button>
-          )}
           {onDelete && (
             <button
               type="button"
@@ -225,31 +213,6 @@ export function PoemNavSidebar({
     await persistOrders(nextTargetList, targetSectionId);
   };
 
-  const createPoem = async () => {
-    if (!supabase) return;
-    const nextSortOrder = (unsectionedPoems[unsectionedPoems.length - 1]?.sort_order ?? 0) + 1;
-    const { data, error } = await supabase
-      .from('poems')
-      .insert({
-        collection_id: collectionId,
-        section_id: null,
-        title: 'Untitled',
-        content: '',
-        sort_order: nextSortOrder,
-      } as any)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Failed to create poem:', error);
-      return;
-    }
-
-    const created = data as Poem;
-    setUnsectionedPoems(prev => [...prev, created]);
-    onPoemSelect(created.id);
-  };
-
   const createPoemAt = async (sectionId: string | null, index: number) => {
     if (!supabase) return;
     const list = sectionId
@@ -311,10 +274,6 @@ export function PoemNavSidebar({
         poems: section.poems.filter(p => p.id !== poemId),
       }))
     );
-  };
-
-  const moveToRoot = async (poemId: string) => {
-    await movePoem(poemId, null);
   };
 
   const persistOrders = async (poemsToUpdate: Poem[], sectionId: string | null) => {
@@ -441,9 +400,6 @@ export function PoemNavSidebar({
       <div className="poem-nav-header">
         <span className="poem-nav-heading">Poems</span>
         <div className="poem-nav-header-actions">
-          <button className="poem-nav-add" onClick={createPoem} title="New poem">
-            +
-          </button>
           <button className="poem-nav-close" onClick={onToggle} title="Hide poems">
             ‹
           </button>
@@ -505,7 +461,6 @@ export function PoemNavSidebar({
                     section={section}
                     currentPoemId={currentPoemId}
                     onPoemSelect={onPoemSelect}
-                    onMoveToRoot={moveToRoot}
                     onDelete={deletePoem}
                     onInsertAfter={(index) => createPoemAt(section.id, index)}
                   />
@@ -560,14 +515,12 @@ function SectionPoemList({
   section,
   currentPoemId,
   onPoemSelect,
-  onMoveToRoot,
   onDelete,
   onInsertAfter,
 }: {
   section: SectionWithPoems;
   currentPoemId: string;
   onPoemSelect: (poemId: string) => void;
-  onMoveToRoot: (poemId: string) => void;
   onDelete: (poemId: string) => void;
   onInsertAfter: (index: number) => void;
 }) {
@@ -586,7 +539,6 @@ function SectionPoemList({
             onSelect={onPoemSelect}
             sectionId={section.id}
             index={idx}
-            onMoveToRoot={onMoveToRoot}
             onDelete={onDelete}
           />
           <button

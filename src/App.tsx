@@ -7,7 +7,7 @@ import { AuthButton } from './components/AuthButton';
 import { PoemNavSidebar } from './components/PoemNavSidebar';
 import type { Poem } from './types/database';
 import { PoetryEditor } from './components/PoetryEditor';
-import { addPoemVersion, ensureInitialPoemVersion, migrateLocalPoemVersions } from './utils/poemVersions';
+import { addPoemVersion, ensureInitialPoemVersion, fetchPoemVersionById, migrateLocalPoemVersions, type PoemVersion } from './utils/poemVersions';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CommentsPanel } from './components/CommentsPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
@@ -108,6 +108,7 @@ function App() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const cloudPoemId = searchParams.get('poem');
+  const versionId = searchParams.get('version');
   const { user } = useAuth();
 
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
@@ -189,6 +190,10 @@ function App() {
   const [poemTitle, setPoemTitle] = useState<string>('Untitled');
   const [lastSavedContent, setLastSavedContent] = useState<string | null>(null); // Track content at last explicit save
   const activePoemId = cloudPoemId || currentPoemId || null;
+  const [versionPreview, setVersionPreview] = useState<PoemVersion | null>(null);
+  const previewTextRef = useRef<string | null>(null);
+  const previewTitleRef = useRef<string | null>(null);
+  const isPreviewing = Boolean(versionPreview);
   const [highlightedPOS, setHighlightedPOS] = useState<string | null>(null);
   const [meterColoringData, setMeterColoringData] = useState<{
     syllableCounts: number[];
@@ -282,9 +287,41 @@ function App() {
     loadCloudPoem();
   }, [cloudPoemId, user, setText]);
 
+  useEffect(() => {
+    if (!versionId) {
+      if (versionPreview) {
+        if (previewTextRef.current !== null) {
+          setText(previewTextRef.current);
+          setPoemTitle(previewTitleRef.current || 'Untitled');
+        }
+        previewTextRef.current = null;
+        previewTitleRef.current = null;
+        setVersionPreview(null);
+      }
+      return;
+    }
+    if (!cloudPoemId || !user) return;
+
+    if (previewTextRef.current === null) {
+      previewTextRef.current = text;
+      previewTitleRef.current = poemTitle;
+    }
+
+    fetchPoemVersionById(versionId, user.id).then((version) => {
+      if (!version || version.poem_id !== cloudPoemId) {
+        setCloudPoemError('Version not found.');
+        setVersionPreview(null);
+        return;
+      }
+      setVersionPreview(version);
+      setText(version.content);
+      setPoemTitle(version.title);
+    });
+  }, [versionId, cloudPoemId, user, text, poemTitle, setText]);
+
   // Auto-save cloud poem changes (debounced)
   useEffect(() => {
-    if (!cloudPoemId || !user || isLoadingCloudPoem || !supabase) return;
+    if (!cloudPoemId || !user || isLoadingCloudPoem || !supabase || isPreviewing) return;
 
     // Clear existing timeout
     if (saveTimeoutRef.current) {
@@ -325,6 +362,7 @@ function App() {
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
     if (!activeId || !user) return;
+    if (isPreviewing) return;
     if (cloudPoemId && isLoadingCloudPoem) return;
     if (migratedPoemIdsRef.current.has(activeId)) return;
     migratedPoemIdsRef.current.add(activeId);
@@ -334,6 +372,7 @@ function App() {
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
     if (!activeId || !user) return;
+    if (isPreviewing) return;
     if (cloudPoemId && isLoadingCloudPoem) return;
     if (ensuredPoemIdsRef.current.has(activeId)) return;
     ensuredPoemIdsRef.current.add(activeId);
@@ -351,6 +390,7 @@ function App() {
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
     if (!activeId || !user) return;
+    if (isPreviewing) return;
     const interval = window.setInterval(() => {
       const id = activePoemIdRef.current;
       if (!id) return;
@@ -717,6 +757,42 @@ function App() {
     ));
     editorInstance.focus();
   }, []);
+
+  const exitVersionPreview = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
+    params.delete('version');
+    navigate({ pathname: '/', search: params.toString() ? `?${params.toString()}` : '' }, { replace: true });
+    setVersionPreview(null);
+    if (previewTextRef.current !== null) {
+      setText(previewTextRef.current);
+      setPoemTitle(previewTitleRef.current || 'Untitled');
+      previewTextRef.current = null;
+      previewTitleRef.current = null;
+    }
+  }, [navigate, searchParams, setText]);
+
+  const handleRestorePreviewVersion = useCallback(async () => {
+    if (!versionPreview || !cloudPoemId || !user || !supabase) return;
+    const confirmRestore = window.confirm('Restore this version to the current poem?');
+    if (!confirmRestore) return;
+    try {
+      await supabase
+        .from('poems')
+        .update({
+          content: versionPreview.content,
+          title: versionPreview.title,
+          updated_at: new Date().toISOString(),
+        } as any)
+        .eq('id', cloudPoemId);
+      setText(versionPreview.content);
+      setPoemTitle(versionPreview.title);
+      setLastSavedContent(versionPreview.content);
+    } catch (err) {
+      console.error('Failed to restore version:', err);
+    } finally {
+      exitVersionPreview();
+    }
+  }, [versionPreview, cloudPoemId, user, supabase, exitVersionPreview, setText]);
 
   const handleSavePoem = () => {
     // Use current title from header input (no prompt needed)
@@ -1358,6 +1434,21 @@ function App() {
         )}
 
         <div className="editor-pane">
+          {versionPreview && (
+            <div className="version-preview-banner">
+              <div className="version-preview-info">
+                Viewing version from {new Date(versionPreview.created_at).toLocaleString()}
+              </div>
+              <div className="version-preview-actions">
+                <button className="version-preview-btn" onClick={handleRestorePreviewVersion}>
+                  Restore this version
+                </button>
+                <button className="version-preview-btn secondary" onClick={exitVersionPreview}>
+                  Exit preview
+                </button>
+              </div>
+            </div>
+          )}
           <PoetryEditor
             value={text}
             onChange={handleTextChange}
@@ -1388,6 +1479,7 @@ function App() {
             onAddComment={handleAddComment}
             showCommentHighlights={showCommentHighlights}
             onToggleCommentHighlights={() => setShowCommentHighlights(prev => !prev)}
+            readOnly={Boolean(versionPreview)}
           />
 
           <button
