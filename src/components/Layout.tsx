@@ -1,7 +1,9 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthButton } from './AuthButton';
 import './Layout.css';
+import { trackPageview } from '../utils/analytics';
+import { useAuth } from '../hooks/useAuth';
 
 interface LayoutProps {
   children: ReactNode;
@@ -21,6 +23,11 @@ export function Layout({ children }: LayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showOtherTools, setShowOtherTools] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    trackPageview(`${location.pathname}${location.search || ''}`, user?.id);
+  }, [location.pathname, location.search, user?.id]);
 
   // Get current tool name to exclude from "Other Tools"
   const currentPath = location.pathname;

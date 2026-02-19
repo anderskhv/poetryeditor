@@ -27,6 +27,7 @@ import { Widget } from './pages/Widget';
 import { EmbedPage } from './pages/EmbedPage';
 import { ResetPassword } from './pages/ResetPassword';
 import { SharedCollection } from './pages/SharedCollection';
+import { Analytics } from './pages/Analytics';
 
 export const router = createBrowserRouter([
   {
@@ -198,5 +199,9 @@ export const router = createBrowserRouter([
   {
     path: '/share/:token',
     element: <SharedCollection />,
+  },
+  {
+    path: '/analytics',
+    element: <Analytics />,
   },
 ]);

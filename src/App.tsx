@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { editor, Range } from 'monaco-editor';
 import { supabase } from './lib/supabase';
 import { useAuth } from './hooks/useAuth';
@@ -23,6 +23,7 @@ import { type StressedSyllableInstance } from './utils/scansionAnalyzer';
 import { stripMarkdownFormatting } from './utils/markdownFormatter';
 import { getAllPoems } from './data/poems';
 import { addPoemComment, deletePoemComment, fetchPoemComments, updatePoemComment, type PoemComment, type CommentRange } from './utils/poemComments';
+import { trackPageview } from './utils/analytics';
 import './App.css';
 
 // Expanded font options for poetry
@@ -107,6 +108,7 @@ interface SavedPoem {
 function App() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const cloudPoemId = searchParams.get('poem');
   const versionId = searchParams.get('version');
   const { user } = useAuth();
@@ -287,6 +289,10 @@ function App() {
 
     loadCloudPoem();
   }, [cloudPoemId, user, setText]);
+
+  useEffect(() => {
+    trackPageview(`${location.pathname}${location.search || ''}`, user?.id);
+  }, [location.pathname, location.search, user?.id]);
 
   useEffect(() => {
     if (!user || !cloudPoemId) return;
