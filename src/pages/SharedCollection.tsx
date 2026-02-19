@@ -123,64 +123,69 @@ export function SharedCollection() {
         canonicalPath={`/share/${token}`}
       />
       <div className="shared-collection-page">
-        <header className="shared-collection-header">
-          <h1>{payload.collection.name}</h1>
-          <p className="shared-subtitle">Shared collection</p>
-          <button
-            className="shared-comments-toggle"
-            onClick={() => setShowComments(prev => !prev)}
-          >
-            {showComments ? 'Hide comments' : 'Show comments'}
-          </button>
-        </header>
-
-        <section className="shared-section">
-          {(poemsBySection.get(null) || []).map(poem => {
-            const comments = commentsByPoem.get(poem.id) || [];
-            return (
-              <article key={poem.id} className="shared-poem">
-                <h2>{poem.title || 'Untitled'}</h2>
-                <div
-                  className="shared-poem-content"
-                  dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(poem.content) }}
-                />
-                {showComments && comments.length > 0 && (
-                  <div className="shared-comments">
-                    <h3>Comments</h3>
-                    {comments.map((comment, idx) => (
-                      <div key={comment.id} className="shared-comment">
-                        <div className="shared-comment-label">C{idx + 1}</div>
-                        {comment.quote && (
-                          <div className="shared-comment-quote">“{comment.quote}”</div>
-                        )}
-                        <div className="shared-comment-text">{comment.text}</div>
-                      </div>
+        <div className="shared-collection-layout">
+          <aside className="shared-nav">
+            <div className="shared-nav-title">Contents</div>
+            <nav className="shared-nav-list">
+              {(poemsBySection.get(null) || []).length > 0 && (
+                <div className="shared-nav-section">
+                  <a className="shared-nav-section-link" href="#section-root">Unsorted</a>
+                  <div className="shared-nav-poems">
+                    {(poemsBySection.get(null) || []).map(poem => (
+                      <a key={poem.id} className="shared-nav-poem" href={`#poem-${poem.id}`}>
+                        {poem.title || 'Untitled'}
+                      </a>
                     ))}
                   </div>
-                )}
-              </article>
-            );
-          })}
-        </section>
+                </div>
+              )}
 
-        {orderedSections.map(section => {
-          const poems = poemsBySection.get(section.id) || [];
-          if (poems.length === 0) return null;
-          return (
-            <section key={section.id} className="shared-section">
-              <h2 className="shared-section-title">{section.name}</h2>
-              {poems.map(poem => {
+              {orderedSections.map(section => {
+                const poems = poemsBySection.get(section.id) || [];
+                if (poems.length === 0) return null;
+                return (
+                  <div key={section.id} className="shared-nav-section">
+                    <a className="shared-nav-section-link" href={`#section-${section.id}`}>
+                      {section.name}
+                    </a>
+                    <div className="shared-nav-poems">
+                      {poems.map(poem => (
+                        <a key={poem.id} className="shared-nav-poem" href={`#poem-${poem.id}`}>
+                          {poem.title || 'Untitled'}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </nav>
+          </aside>
+
+          <div className="shared-collection-main">
+            <header className="shared-collection-header">
+              <h1>{payload.collection.name}</h1>
+              <p className="shared-subtitle">Shared collection</p>
+              <button
+                className="shared-comments-toggle"
+                onClick={() => setShowComments(prev => !prev)}
+              >
+                {showComments ? 'Hide comments' : 'Show comments'}
+              </button>
+            </header>
+
+            <section className="shared-section" id="section-root">
+              {(poemsBySection.get(null) || []).map(poem => {
                 const comments = commentsByPoem.get(poem.id) || [];
                 return (
-                  <article key={poem.id} className="shared-poem">
-                    <h3>{poem.title || 'Untitled'}</h3>
+                  <article key={poem.id} className="shared-poem" id={`poem-${poem.id}`}>
+                    <h2>{poem.title || 'Untitled'}</h2>
                     <div
                       className="shared-poem-content"
                       dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(poem.content) }}
                     />
                     {showComments && comments.length > 0 && (
                       <div className="shared-comments">
-                        <h4>Comments</h4>
+                        <h3>Comments</h3>
                         {comments.map((comment, idx) => (
                           <div key={comment.id} className="shared-comment">
                             <div className="shared-comment-label">C{idx + 1}</div>
@@ -196,8 +201,44 @@ export function SharedCollection() {
                 );
               })}
             </section>
-          );
-        })}
+
+            {orderedSections.map(section => {
+              const poems = poemsBySection.get(section.id) || [];
+              if (poems.length === 0) return null;
+              return (
+                <section key={section.id} className="shared-section" id={`section-${section.id}`}>
+                  <h2 className="shared-section-title">{section.name}</h2>
+                  {poems.map(poem => {
+                    const comments = commentsByPoem.get(poem.id) || [];
+                    return (
+                      <article key={poem.id} className="shared-poem" id={`poem-${poem.id}`}>
+                        <h3>{poem.title || 'Untitled'}</h3>
+                        <div
+                          className="shared-poem-content"
+                          dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(poem.content) }}
+                        />
+                        {showComments && comments.length > 0 && (
+                          <div className="shared-comments">
+                            <h4>Comments</h4>
+                            {comments.map((comment, idx) => (
+                              <div key={comment.id} className="shared-comment">
+                                <div className="shared-comment-label">C{idx + 1}</div>
+                                {comment.quote && (
+                                  <div className="shared-comment-quote">“{comment.quote}”</div>
+                                )}
+                                <div className="shared-comment-text">{comment.text}</div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </article>
+                    );
+                  })}
+                </section>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </Layout>
   );

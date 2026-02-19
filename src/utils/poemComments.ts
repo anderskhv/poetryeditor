@@ -38,6 +38,13 @@ const setLocalComments = (poemId: string, comments: PoemComment[]) => {
   localStorage.setItem(storageKey(poemId), JSON.stringify(comments));
 };
 
+const commentKey = (comment: {
+  text: string;
+  quote?: string;
+  range: CommentRange;
+  createdAt: string;
+}) => `${comment.text}||${comment.quote || ''}||${JSON.stringify(comment.range)}||${comment.createdAt}`;
+
 export const fetchPoemComments = async (poemId: string, userId?: string | null) => {
   if (!poemId) return [];
   if (!supabase || !userId) {
@@ -68,8 +75,47 @@ export const fetchPoemComments = async (poemId: string, userId?: string | null) 
     resolvedAt: row.resolved_at || null,
   })) as PoemComment[];
 
-  setLocalComments(poemId, mapped);
-  return mapped;
+  const existingKeys = new Set(mapped.map(commentKey));
+  const local = getLocalComments(poemId);
+  const pending = local.filter(comment => !existingKeys.has(commentKey(comment)));
+
+  let combined = mapped;
+  if (pending.length > 0) {
+    const { data: inserted, error: insertError } = await supabase
+      .from('poem_comments')
+      .insert(pending.map((comment) => ({
+        poem_id: poemId,
+        user_id: userId,
+        text: comment.text,
+        quote: comment.quote || null,
+        range: comment.range,
+        resolved: comment.resolved,
+        resolved_at: comment.resolvedAt,
+        created_at: comment.createdAt,
+      })))
+      .select();
+
+    if (insertError) {
+      console.warn('Failed to sync local comments to Supabase:', insertError.message);
+    } else if (inserted) {
+      const synced = inserted.map((row: any) => ({
+        id: row.id,
+        poemId: row.poem_id,
+        userId: row.user_id,
+        text: row.text,
+        quote: row.quote || undefined,
+        range: row.range,
+        createdAt: row.created_at,
+        resolved: !!row.resolved,
+        resolvedAt: row.resolved_at || null,
+      })) as PoemComment[];
+      combined = [...mapped, ...synced];
+    }
+  }
+
+  combined.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  setLocalComments(poemId, combined);
+  return combined;
 };
 
 export const addPoemComment = async (
