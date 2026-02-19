@@ -130,15 +130,20 @@ export const getOrCreateShare = async (
   return createCollectionShare(collectionId, userId, showCommentsDefault);
 };
 
-export const fetchSharedCollection = async (token: string): Promise<SharedCollectionPayload | null> => {
-  if (!supabase) return null;
+export const fetchSharedCollection = async (token: string): Promise<{
+  data: SharedCollectionPayload | null;
+  error: string | null;
+}> => {
+  if (!supabase) {
+    return { data: null, error: 'Supabase client not configured.' };
+  }
   const { data, error } = await supabase
     .rpc('get_shared_collection', { share_token: token })
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error('Failed to fetch shared collection:', error);
-    return null;
+    return { data: null, error: error.message || 'Unknown error' };
   }
-  return data as SharedCollectionPayload;
+  return { data: data as SharedCollectionPayload, error: null };
 };

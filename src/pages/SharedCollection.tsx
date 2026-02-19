@@ -34,14 +34,32 @@ export function SharedCollection() {
     setLoading(true);
     setError(null);
     fetchSharedCollection(token)
-      .then((result) => {
-        if (!result) {
-          setError('This share link is invalid or expired.');
-        } else {
-          setPayload(result);
-          if (result.share && typeof result.share.show_comments_default === 'boolean') {
-            setShowComments(result.share.show_comments_default);
+      .then(({ data, error: fetchError }) => {
+        if (fetchError) {
+          const normalized = fetchError.toLowerCase();
+          if (
+            normalized.includes('permission denied') ||
+            normalized.includes('function') && normalized.includes('does not exist')
+          ) {
+            setError('Sharing is not fully set up. Please run the share SQL in Supabase.');
+          } else if (
+            normalized.includes('no rows') ||
+            normalized.includes('json object requested') ||
+            normalized.includes('pgrst116')
+          ) {
+            setError('This share link is invalid or expired.');
+          } else {
+            setError(fetchError);
           }
+          return;
+        }
+        if (!data) {
+          setError('This share link is invalid or expired.');
+          return;
+        }
+        setPayload(data);
+        if (data.share && typeof data.share.show_comments_default === 'boolean') {
+          setShowComments(data.share.show_comments_default);
         }
       })
       .catch(() => setError('Failed to load shared collection.'))
