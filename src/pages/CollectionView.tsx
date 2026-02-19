@@ -384,6 +384,7 @@ export function CollectionView() {
   }
 
   const sectionMap = new Map(sections.map(s => [s.id, s]));
+  const orderedSections = [...sections].sort((a, b) => a.sort_order - b.sort_order);
   const rootPoems = poemsBySection.get('root') || [];
 
   return (
@@ -457,13 +458,13 @@ export function CollectionView() {
               )}
 
               {/* Sectioned poems */}
-              {Array.from(poemsBySection.entries()).map(([sectionKey, sectionPoems]) => {
-                if (sectionKey === 'root') return null;
-                const section = sectionMap.get(sectionKey);
+              {orderedSections.map((section) => {
+                const sectionPoems = poemsBySection.get(section.id) || [];
+                if (sectionPoems.length === 0) return null;
                 return (
-                  <SectionDropTarget key={sectionKey} sectionId={sectionKey}>
+                  <SectionDropTarget key={section.id} sectionId={section.id}>
                     <div className="poems-section">
-                      {section && <h2 className="section-title">{section.name}</h2>}
+                      <h2 className="section-title">{section.name}</h2>
                       <SortableContext items={sectionPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
                         <div className="poems-grid">
                           {sectionPoems.map((poem, idx) => (

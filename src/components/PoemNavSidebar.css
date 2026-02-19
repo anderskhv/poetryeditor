@@ -245,18 +245,19 @@
 
 .poem-nav-insert {
   align-self: stretch;
-  margin: 0 10px 4px;
-  border: 1px dashed var(--color-border);
+  margin: 0;
+  border: none;
   background: transparent;
   color: var(--color-text-muted);
   border-radius: 6px;
   font-size: 12px;
-  height: 20px;
+  height: 0;
   line-height: 1;
   cursor: pointer;
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
   opacity: 0;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .poem-nav-insert:hover {
@@ -266,18 +267,24 @@
 }
 
 .poem-nav-insert.end {
-  margin: 6px 10px 8px;
+  margin: 0;
 }
 
 .poem-nav-row:hover .poem-nav-insert {
   opacity: 1;
   pointer-events: auto;
+  height: 20px;
+  margin: 0 10px 4px;
+  border: 1px dashed var(--color-border);
 }
 
 .poem-nav-section-items:hover .poem-nav-insert.end,
 .poem-nav-dropzone:hover .poem-nav-insert.end {
   opacity: 1;
   pointer-events: auto;
+  height: 20px;
+  margin: 6px 10px 8px;
+  border: 1px dashed var(--color-border);
 }
 
 .poem-nav-section-items.is-over {
