@@ -79,7 +79,7 @@ export function migrateFromLegacySavedPoems(): PoetryCollection | null {
     localStorage.setItem(MIGRATION_FLAG, 'true');
 
     // Keep savedPoems as backup (don't delete)
-    console.log(`Migrated ${collectionPoems.length} poems to new collection format`);
+    // Migration completed successfully
 
     return collection;
   } catch (error) {

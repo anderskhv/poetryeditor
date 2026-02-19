@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { fetchSharedCollection, type SharedCollectionPayload } from '../utils/sharedCollections';
-import { stripMarkdownFormatting } from '../utils/markdownFormatter';
 import './SharedCollection.css';
 
 const escapeHtml = (value: string) =>

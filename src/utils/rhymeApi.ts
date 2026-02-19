@@ -192,7 +192,7 @@ export function getWordVariants(word: string, partsOfSpeech: string[] = []): str
  */
 export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
   try {
-    console.log(`Fetching perfect rhymes for: ${word}`);
+    // Fetch perfect rhymes for the given word
 
     if (!isDictionaryLoaded()) {
       await loadCMUDictionary();
@@ -261,7 +261,7 @@ export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
  */
 export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]> {
   try {
-    console.log(`Fetching near rhymes and slant rhymes for: ${word}`);
+    // Fetch near rhymes and slant rhymes for the given word
 
     if (!isDictionaryLoaded()) {
       await loadCMUDictionary();
@@ -334,7 +334,7 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
       .filter(matchesSyllables)
       .filter(passesPhonemeFilter);
 
-    console.log(`Received ${combined.length} offline near/slant rhymes for "${word}"`);
+    // Offline near/slant rhymes fetched
 
     let results: RhymeWord[] = combined.map((rhymeWord) => {
       const score = Math.max(100, 4000 - rhymeWord.length * 80);
