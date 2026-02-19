@@ -65,11 +65,16 @@ begin
   from public.poems p
   where p.collection_id = share_row.collection_id;
 
-  select coalesce(jsonb_agg(pc order by pc.created_at), '[]'::jsonb) into comments_row
-  from public.poem_comments pc
-  where pc.poem_id in (
-    select id from public.poems where collection_id = share_row.collection_id
-  );
+  begin
+    select coalesce(jsonb_agg(pc order by pc.created_at), '[]'::jsonb) into comments_row
+    from public.poem_comments pc
+    where pc.poem_id in (
+      select id from public.poems where collection_id = share_row.collection_id
+    );
+  exception
+    when undefined_table then
+      comments_row := '[]'::jsonb;
+  end;
 
   return jsonb_build_object(
     'collection', collection_row,
