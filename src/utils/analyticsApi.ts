@@ -2,7 +2,11 @@ import { supabase } from '../lib/supabase';
 
 export interface AnalyticsSummary {
   total_pageviews: number;
+  bot_pageviews: number;
+  human_pageviews: number;
   unique_sessions: number;
+  bot_sessions: number;
+  human_sessions: number;
   top_paths: Array<{ path: string; count: number }>;
   top_referrers: Array<{ referrer: string; count: number }>;
   top_devices: Array<{ device: string; count: number }>;

@@ -122,6 +122,23 @@ export function Analytics() {
               <div className="analytics-card-label">Unique sessions</div>
               <div className="analytics-card-value">{summary.unique_sessions}</div>
             </div>
+            <div className="analytics-card">
+              <div className="analytics-card-label">Human pageviews</div>
+              <div className="analytics-card-value">{summary.human_pageviews}</div>
+              <div className="analytics-card-sub">Bots excluded</div>
+            </div>
+            <div className="analytics-card">
+              <div className="analytics-card-label">Bot pageviews</div>
+              <div className="analytics-card-value">{summary.bot_pageviews}</div>
+            </div>
+            <div className="analytics-card">
+              <div className="analytics-card-label">Human sessions</div>
+              <div className="analytics-card-value">{summary.human_sessions}</div>
+            </div>
+            <div className="analytics-card">
+              <div className="analytics-card-label">Bot sessions</div>
+              <div className="analytics-card-value">{summary.bot_sessions}</div>
+            </div>
             <div className="analytics-card analytics-chart">
               <div className="analytics-card-label">Daily trend</div>
               <div className="analytics-chart-list">

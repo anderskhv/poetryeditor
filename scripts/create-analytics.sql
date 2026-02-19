@@ -70,6 +70,8 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  bot_regex text := '(bot|crawler|spider|crawling|slurp|bingpreview|facebookexternalhit|discordbot|twitterbot|linkedinbot|whatsapp|telegrambot|pinterest|embedly|quora link preview|slackbot|applebot|semrush|ahrefs|mj12|dotbot|yandex|baiduspider|duckduckbot)';
 begin
   if not exists (select 1 from public.site_admins where user_id = auth.uid()) then
     raise exception 'not authorized';
@@ -81,10 +83,34 @@ begin
       where event_type = 'pageview'
         and created_at between start_ts and end_ts
     ),
+    'bot_pageviews', (
+      select count(*) from public.analytics_events
+      where event_type = 'pageview'
+        and created_at between start_ts and end_ts
+        and coalesce(lower(user_agent), '') ~ bot_regex
+    ),
+    'human_pageviews', (
+      select count(*) from public.analytics_events
+      where event_type = 'pageview'
+        and created_at between start_ts and end_ts
+        and coalesce(lower(user_agent), '') !~ bot_regex
+    ),
     'unique_sessions', (
       select count(distinct session_id) from public.analytics_events
       where event_type = 'pageview'
         and created_at between start_ts and end_ts
+    ),
+    'bot_sessions', (
+      select count(distinct session_id) from public.analytics_events
+      where event_type = 'pageview'
+        and created_at between start_ts and end_ts
+        and coalesce(lower(user_agent), '') ~ bot_regex
+    ),
+    'human_sessions', (
+      select count(distinct session_id) from public.analytics_events
+      where event_type = 'pageview'
+        and created_at between start_ts and end_ts
+        and coalesce(lower(user_agent), '') !~ bot_regex
     ),
     'top_paths', (
       select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb)
