@@ -42,6 +42,7 @@ export function CollectionView() {
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [shareBusy, setShareBusy] = useState(false);
   const [shareError, setShareError] = useState<string | null>(null);
+  const [shareCommentsDefault, setShareCommentsDefault] = useState(true);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   // Fetch collection details
@@ -201,16 +202,19 @@ export function CollectionView() {
 
   const handleShare = async () => {
     if (!collection || !user) return;
+    setShowShareModal(true);
+  };
+
+  const handleGenerateShare = async () => {
+    if (!collection || !user) return;
     setShareBusy(true);
     setShareError(null);
-    const share = await getOrCreateShare(collection.id, user.id);
+    const share = await getOrCreateShare(collection.id, user.id, shareCommentsDefault);
     if (share) {
       setShareLink(`${window.location.origin}/share/${share.token}`);
-      setShowShareModal(true);
     } else {
       setShareLink(null);
       setShareError('Sharing is not set up yet. Please run the share SQL in Supabase.');
-      setShowShareModal(true);
     }
     setShareBusy(false);
   };
@@ -490,6 +494,27 @@ export function CollectionView() {
             <div className="share-modal" onClick={(e) => e.stopPropagation()}>
               <h2>Share Collection</h2>
               <p>This link gives read-only access to your collection and its comments.</p>
+              <div className="share-comments-choice">
+                <div className="share-comments-label">Show comments by default?</div>
+                <label className="share-comments-option">
+                  <input
+                    type="radio"
+                    name="share-comments-default"
+                    checked={shareCommentsDefault}
+                    onChange={() => setShareCommentsDefault(true)}
+                  />
+                  Show comments
+                </label>
+                <label className="share-comments-option">
+                  <input
+                    type="radio"
+                    name="share-comments-default"
+                    checked={!shareCommentsDefault}
+                    onChange={() => setShareCommentsDefault(false)}
+                  />
+                  Hide comments
+                </label>
+              </div>
               {shareError && (
                 <div className="share-error">{shareError}</div>
               )}
@@ -522,6 +547,13 @@ export function CollectionView() {
                   onClick={() => setShowShareModal(false)}
                 >
                   Close
+                </button>
+                <button className="export-button" onClick={handleGenerateShare} disabled={shareBusy}>
+                  {shareBusy
+                    ? 'Generating...'
+                    : shareLink
+                      ? 'Update link'
+                      : 'Generate link'}
                 </button>
                 {shareLink && (
                   <a className="share-open-link" href={shareLink} target="_blank" rel="noopener noreferrer">

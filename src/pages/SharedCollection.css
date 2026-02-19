@@ -7,6 +7,10 @@
 .shared-collection-header {
   text-align: center;
   margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .shared-collection-header h1 {
@@ -21,6 +25,24 @@
   font-size: 14px;
   color: var(--color-text-muted, #666);
   margin: 0;
+}
+
+.shared-comments-toggle {
+  border: 1px solid var(--color-border, #e0e0e0);
+  background: transparent;
+  color: var(--color-text-muted, #666);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.shared-comments-toggle:hover {
+  color: var(--color-text-primary, #000);
+  border-color: var(--color-text-muted, #666);
+  background: var(--color-highlight-subtle);
 }
 
 .shared-status {

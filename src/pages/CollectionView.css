@@ -123,6 +123,30 @@
   color: var(--color-text-secondary, #333);
 }
 
+.share-comments-choice {
+  margin: 12px 0 16px;
+  padding: 10px 12px;
+  background: var(--color-highlight-subtle);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.share-comments-label {
+  font-size: 13px;
+  color: var(--color-text-primary, #000);
+  font-weight: 500;
+}
+
+.share-comments-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text-muted, #666);
+}
+
 .share-modal-actions {
   display: flex;
   justify-content: space-between;

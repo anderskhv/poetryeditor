@@ -28,6 +28,7 @@ export function SharedCollection() {
   const [payload, setPayload] = useState<SharedCollectionPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showComments, setShowComments] = useState(true);
 
   useEffect(() => {
     if (!token) return;
@@ -39,6 +40,9 @@ export function SharedCollection() {
           setError('This share link is invalid or expired.');
         } else {
           setPayload(result);
+          if (result.share && typeof result.share.show_comments_default === 'boolean') {
+            setShowComments(result.share.show_comments_default);
+          }
         }
       })
       .catch(() => setError('Failed to load shared collection.'))
@@ -105,6 +109,12 @@ export function SharedCollection() {
         <header className="shared-collection-header">
           <h1>{payload.collection.name}</h1>
           <p className="shared-subtitle">Shared collection</p>
+          <button
+            className="shared-comments-toggle"
+            onClick={() => setShowComments(prev => !prev)}
+          >
+            {showComments ? 'Hide comments' : 'Show comments'}
+          </button>
         </header>
 
         <section className="shared-section">
@@ -117,7 +127,7 @@ export function SharedCollection() {
                   className="shared-poem-content"
                   dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(poem.content) }}
                 />
-                {comments.length > 0 && (
+                {showComments && comments.length > 0 && (
                   <div className="shared-comments">
                     <h3>Comments</h3>
                     {comments.map((comment, idx) => (
@@ -151,7 +161,7 @@ export function SharedCollection() {
                       className="shared-poem-content"
                       dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(poem.content) }}
                     />
-                    {comments.length > 0 && (
+                    {showComments && comments.length > 0 && (
                       <div className="shared-comments">
                         <h4>Comments</h4>
                         {comments.map((comment, idx) => (

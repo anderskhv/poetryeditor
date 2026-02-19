@@ -4,8 +4,12 @@ create table if not exists public.collection_shares (
   collection_id uuid not null references public.collections(id) on delete cascade,
   user_id uuid not null references auth.users(id) on delete cascade,
   token text not null unique,
+  show_comments_default boolean not null default true,
   created_at timestamptz default now()
 );
+
+alter table public.collection_shares
+  add column if not exists show_comments_default boolean not null default true;
 
 alter table public.collection_shares enable row level security;
 
@@ -69,6 +73,7 @@ begin
 
   return jsonb_build_object(
     'collection', collection_row,
+    'share', jsonb_build_object('show_comments_default', share_row.show_comments_default),
     'sections', sections_row,
     'poems', poems_row,
     'comments', comments_row

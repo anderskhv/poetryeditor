@@ -5,6 +5,7 @@ export interface CollectionShare {
   collection_id: string;
   user_id: string;
   token: string;
+  show_comments_default: boolean;
   created_at: string;
 }
 
@@ -14,6 +15,9 @@ export interface SharedCollectionPayload {
     name: string;
     created_at: string;
     updated_at: string;
+  };
+  share?: {
+    show_comments_default?: boolean;
   };
   sections: Array<{
     id: string;
@@ -51,7 +55,11 @@ const generateToken = () => {
   return `${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
 };
 
-export const createCollectionShare = async (collectionId: string, userId: string) => {
+export const createCollectionShare = async (
+  collectionId: string,
+  userId: string,
+  showCommentsDefault: boolean
+) => {
   if (!supabase) return null;
   const token = generateToken();
   const { data, error } = await supabase
@@ -60,6 +68,7 @@ export const createCollectionShare = async (collectionId: string, userId: string
       collection_id: collectionId,
       user_id: userId,
       token,
+      show_comments_default: showCommentsDefault,
     } as any)
     .select()
     .single();
@@ -89,10 +98,36 @@ export const getExistingShare = async (collectionId: string, userId: string) => 
   return data as CollectionShare | null;
 };
 
-export const getOrCreateShare = async (collectionId: string, userId: string) => {
+export const updateShareCommentsDefault = async (shareId: string, showCommentsDefault: boolean) => {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from('collection_shares')
+    .update({ show_comments_default: showCommentsDefault } as any)
+    .eq('id', shareId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Failed to update share settings:', error);
+    return null;
+  }
+  return data as CollectionShare;
+};
+
+export const getOrCreateShare = async (
+  collectionId: string,
+  userId: string,
+  showCommentsDefault: boolean
+) => {
   const existing = await getExistingShare(collectionId, userId);
-  if (existing) return existing;
-  return createCollectionShare(collectionId, userId);
+  if (existing) {
+    if (existing.show_comments_default !== showCommentsDefault) {
+      const updated = await updateShareCommentsDefault(existing.id, showCommentsDefault);
+      return updated || existing;
+    }
+    return existing;
+  }
+  return createCollectionShare(collectionId, userId, showCommentsDefault);
 };
 
 export const fetchSharedCollection = async (token: string): Promise<SharedCollectionPayload | null> => {
