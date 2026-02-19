@@ -112,6 +112,7 @@ function App() {
   const { user } = useAuth();
 
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
+  const [localTitle, setLocalTitle] = useDebouncedLocalStorage('poetryTitle', 'Untitled', 800);
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
   const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
@@ -286,6 +287,37 @@ function App() {
 
     loadCloudPoem();
   }, [cloudPoemId, user, setText]);
+
+  useEffect(() => {
+    if (!user || !cloudPoemId) return;
+    try {
+      window.localStorage.setItem('lastCloudPoemId', cloudPoemId);
+    } catch (error) {
+      console.warn('Failed to store last cloud poem id:', error);
+    }
+  }, [user, cloudPoemId]);
+
+  useEffect(() => {
+    if (!user || cloudPoemId || versionId) return;
+    try {
+      const lastCloudPoemId = window.localStorage.getItem('lastCloudPoemId');
+      if (lastCloudPoemId) {
+        navigate(`/?poem=${lastCloudPoemId}`, { replace: true });
+        return;
+      }
+    } catch (error) {
+      console.warn('Failed to read last cloud poem id:', error);
+    }
+    setText('');
+    setPoemTitle('Untitled');
+    setCurrentPoemId(null);
+    setLastSavedContent(null);
+  }, [user, cloudPoemId, versionId, navigate, setText]);
+
+  useEffect(() => {
+    if (user || cloudPoemId) return;
+    setPoemTitle(localTitle);
+  }, [user, cloudPoemId, localTitle]);
 
   useEffect(() => {
     if (!versionId) {
@@ -1455,7 +1487,12 @@ function App() {
             onChange={handleTextChange}
             poemId={cloudPoemId || currentPoemId || 'local'}
             poemTitle={poemTitle}
-            onTitleChange={setPoemTitle}
+            onTitleChange={(nextTitle) => {
+              setPoemTitle(nextTitle);
+              if (!user && !cloudPoemId) {
+                setLocalTitle(nextTitle);
+              }
+            }}
             onWordsAnalyzed={handleWordsAnalyzed}
             highlightedPOS={highlightedPOS}
             isDarkMode={theme === 'dark'}
