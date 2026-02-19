@@ -23,6 +23,20 @@ export function SEOHead({
   const fullTitle = title.includes('Poetry Editor') ? title : `${title} | Poetry Editor`;
   const canonicalUrl = canonicalPath ? `https://poetryeditor.com${canonicalPath}` : 'https://poetryeditor.com';
 
+  const sanitizeJsonLd = (value: any): any => {
+    if (!value || typeof value !== 'object') return value;
+    if (Array.isArray(value)) return value.map(sanitizeJsonLd);
+    const cloned: Record<string, any> = { ...value };
+    delete cloned.aggregateRating;
+    delete cloned.review;
+    Object.keys(cloned).forEach((key) => {
+      cloned[key] = sanitizeJsonLd(cloned[key]);
+    });
+    return cloned;
+  };
+
+  const sanitizedJsonLd = jsonLd ? sanitizeJsonLd(jsonLd) : null;
+
   return (
     <Helmet>
       <title>{fullTitle}</title>
@@ -53,9 +67,9 @@ export function SEOHead({
       <link rel="canonical" href={canonicalUrl} />
 
       {/* JSON-LD Structured Data */}
-      {jsonLd && (
+      {sanitizedJsonLd && (
         <script type="application/ld+json">
-          {JSON.stringify(jsonLd)}
+          {JSON.stringify(sanitizedJsonLd)}
         </script>
       )}
     </Helmet>
