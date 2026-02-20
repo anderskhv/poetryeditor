@@ -133,101 +133,127 @@ export function Analytics() {
         ) : error ? (
           <div className="analytics-empty">{error}</div>
         ) : summary ? (
-          <div className="analytics-grid">
-            <div className="analytics-card">
-              <div className="analytics-card-label">Total pageviews</div>
-              <div className="analytics-card-value">{summary.total_pageviews}</div>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Unique sessions</div>
-              <div className="analytics-card-value">{summary.unique_sessions}</div>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Human pageviews</div>
-              <div className="analytics-card-value">{summary.human_pageviews}</div>
-              <div className="analytics-card-sub">Bots excluded</div>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Bot pageviews</div>
-              <div className="analytics-card-value">{summary.bot_pageviews}</div>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Human sessions</div>
-              <div className="analytics-card-value">{summary.human_sessions}</div>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Bot sessions</div>
-              <div className="analytics-card-value">{summary.bot_sessions}</div>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Avg time on page</div>
-              <div className="analytics-card-value">{formatDuration(summary.avg_page_duration_ms)}</div>
-              <div className="analytics-card-sub">
-                Humans: {formatDuration(summary.avg_page_duration_human_ms)}
+          <div className="analytics-stack">
+            <section className="analytics-section">
+              <div className="analytics-section-header">
+                <h2>Overview</h2>
+                <span className="analytics-section-meta">Bots separated</span>
               </div>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Avg session length</div>
-              <div className="analytics-card-value">{formatDuration(summary.avg_session_duration_ms)}</div>
-              <div className="analytics-card-sub">
-                Humans: {formatDuration(summary.avg_session_duration_human_ms)}
+              <div className="analytics-grid analytics-grid--overview">
+                <div className="analytics-card analytics-card--hero">
+                  <div className="analytics-card-label">Total pageviews</div>
+                  <div className="analytics-card-value">{summary.total_pageviews}</div>
+                </div>
+                <div className="analytics-card analytics-card--hero">
+                  <div className="analytics-card-label">Unique sessions</div>
+                  <div className="analytics-card-value">{summary.unique_sessions}</div>
+                </div>
+                <div className="analytics-card">
+                  <div className="analytics-card-label">Human pageviews</div>
+                  <div className="analytics-card-value">{summary.human_pageviews}</div>
+                  <div className="analytics-card-sub">Bots excluded</div>
+                </div>
+                <div className="analytics-card">
+                  <div className="analytics-card-label">Bot pageviews</div>
+                  <div className="analytics-card-value">{summary.bot_pageviews}</div>
+                </div>
+                <div className="analytics-card">
+                  <div className="analytics-card-label">Human sessions</div>
+                  <div className="analytics-card-value">{summary.human_sessions}</div>
+                </div>
+                <div className="analytics-card">
+                  <div className="analytics-card-label">Bot sessions</div>
+                  <div className="analytics-card-value">{summary.bot_sessions}</div>
+                </div>
               </div>
-            </div>
-            <div className="analytics-card analytics-chart">
-              <div className="analytics-card-label">Daily trend</div>
-              <div className="analytics-chart-list">
-                {timeseries.map(point => (
-                  <div key={point.day} className="analytics-chart-row">
-                    <span>{point.day}</span>
-                    <span>{point.pageviews}</span>
+            </section>
+
+            <section className="analytics-section">
+              <div className="analytics-section-header">
+                <h2>Engagement</h2>
+                <span className="analytics-section-meta">Time-based signals</span>
+              </div>
+              <div className="analytics-grid analytics-grid--engagement">
+                <div className="analytics-card analytics-card--focus">
+                  <div className="analytics-card-label">Avg time on page</div>
+                  <div className="analytics-card-value">{formatDuration(summary.avg_page_duration_ms)}</div>
+                  <div className="analytics-card-sub">
+                    Humans: {formatDuration(summary.avg_page_duration_human_ms)}
                   </div>
-                ))}
+                </div>
+                <div className="analytics-card analytics-card--focus">
+                  <div className="analytics-card-label">Avg session length</div>
+                  <div className="analytics-card-value">{formatDuration(summary.avg_session_duration_ms)}</div>
+                  <div className="analytics-card-sub">
+                    Humans: {formatDuration(summary.avg_session_duration_human_ms)}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Top pages</div>
-              <ul>
-                {summary.top_paths.map(item => (
-                  <li key={item.path}>
-                    <span>{item.path}</span>
-                    <span>{item.count}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Top referrers</div>
-              <ul>
-                {summary.top_referrers.map(item => (
-                  <li key={item.referrer}>
-                    <span>{item.referrer}</span>
-                    <span>{item.count}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Devices</div>
-              <ul>
-                {summary.top_devices.map(item => (
-                  <li key={item.device}>
-                    <span>{item.device}</span>
-                    <span>{item.count}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="analytics-card">
-              <div className="analytics-card-label">Countries</div>
-              <ul>
-                {(summary.top_countries || []).map(item => (
-                  <li key={item.country}>
-                    <span>{item.country}</span>
-                    <span>{item.count}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            </section>
+
+            <section className="analytics-section">
+              <div className="analytics-section-header">
+                <h2>Traffic & Sources</h2>
+                <span className="analytics-section-meta">Where attention comes from</span>
+              </div>
+              <div className="analytics-grid analytics-grid--sources">
+                <div className="analytics-card analytics-chart">
+                  <div className="analytics-card-label">Daily trend</div>
+                  <div className="analytics-chart-list">
+                    {timeseries.map(point => (
+                      <div key={point.day} className="analytics-chart-row">
+                        <span>{point.day}</span>
+                        <span>{point.pageviews}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="analytics-card">
+                  <div className="analytics-card-label">Top pages</div>
+                  <ul>
+                    {summary.top_paths.map(item => (
+                      <li key={item.path}>
+                        <span>{item.path}</span>
+                        <span>{item.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="analytics-card">
+                  <div className="analytics-card-label">Top referrers</div>
+                  <ul>
+                    {summary.top_referrers.map(item => (
+                      <li key={item.referrer}>
+                        <span>{item.referrer}</span>
+                        <span>{item.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="analytics-card">
+                  <div className="analytics-card-label">Devices</div>
+                  <ul>
+                    {summary.top_devices.map(item => (
+                      <li key={item.device}>
+                        <span>{item.device}</span>
+                        <span>{item.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="analytics-card">
+                  <div className="analytics-card-label">Countries</div>
+                  <ul>
+                    {(summary.top_countries || []).map(item => (
+                      <li key={item.country}>
+                        <span>{item.country}</span>
+                        <span>{item.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </section>
           </div>
         ) : null}
       </div>
