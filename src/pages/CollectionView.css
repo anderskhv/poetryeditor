@@ -154,15 +154,29 @@
   margin-top: 1.25rem;
 }
 
+.share-modal-actions-left,
+.share-modal-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.share-modal-actions-right {
+  justify-content: flex-end;
+}
+
 .share-open-link {
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 13px;
   color: var(--color-text-primary, #000);
   text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
 }
 
 .share-open-link:hover {
-  text-decoration: underline;
+  border-color: var(--color-border, #e0e0e0);
 }
 
 .loading,

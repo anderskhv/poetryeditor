@@ -543,24 +543,28 @@ export function CollectionView() {
                 </button>
               </div>
               <div className="share-modal-actions">
-                <button
-                  className="export-button"
-                  onClick={() => setShowShareModal(false)}
-                >
-                  Close
-                </button>
-                <button className="export-button" onClick={handleGenerateShare} disabled={shareBusy}>
-                  {shareBusy
-                    ? 'Generating...'
-                    : shareLink
-                      ? 'Update link'
-                      : 'Generate link'}
-                </button>
-                {shareLink && (
-                  <a className="share-open-link" href={shareLink} target="_blank" rel="noopener noreferrer">
-                    Open
-                  </a>
-                )}
+                <div className="share-modal-actions-left">
+                  <button
+                    className="export-button"
+                    onClick={() => setShowShareModal(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+                <div className="share-modal-actions-right">
+                  <button className="export-button" onClick={handleGenerateShare} disabled={shareBusy}>
+                    {shareBusy
+                      ? 'Generating...'
+                      : shareLink
+                        ? 'Update link'
+                        : 'Generate link'}
+                  </button>
+                  {shareLink && (
+                    <a className="share-open-link" href={shareLink} target="_blank" rel="noopener noreferrer">
+                      Open
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           </div>
