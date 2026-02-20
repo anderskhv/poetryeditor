@@ -1330,6 +1330,65 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     }
   }, [editorTheme]);
 
+  // JavaScript-based text alignment (center/right) for Monaco editor lines.
+  // CSS-only approaches fail because Monaco's .view-line > span is position: absolute
+  // without explicit width, so text-align has no effect. Instead, we calculate and
+  // apply padding-left on each line's span after Monaco renders.
+  useEffect(() => {
+    if (!editorRef.current || paragraphAlign === 'left') return;
+
+    const editor = editorRef.current;
+    const editorDom = editor.getDomNode();
+    if (!editorDom) return;
+
+    const viewLines = editorDom.querySelector('.view-lines');
+    if (!viewLines) return;
+
+    const applyAlignment = () => {
+      const layoutInfo = editor.getLayoutInfo();
+      const contentWidth = layoutInfo.contentWidth;
+      const lines = viewLines.querySelectorAll<HTMLElement>('.view-line > span');
+
+      lines.forEach((span) => {
+        const prevPadding = span.style.paddingLeft;
+        span.style.paddingLeft = '0px';
+        const textWidth = span.scrollWidth;
+
+        let padding = 0;
+        if (paragraphAlign === 'center') {
+          padding = Math.max(0, (contentWidth - textWidth) / 2);
+        } else if (paragraphAlign === 'right') {
+          padding = Math.max(0, contentWidth - textWidth);
+        }
+
+        const newPadding = padding > 0 ? `${padding}px` : '';
+        span.style.paddingLeft = newPadding;
+      });
+    };
+
+    // Apply on mount
+    requestAnimationFrame(applyAlignment);
+
+    // Apply when Monaco re-renders lines (scroll, text changes)
+    const observer = new MutationObserver(() => {
+      requestAnimationFrame(applyAlignment);
+    });
+    observer.observe(viewLines, { childList: true, subtree: true });
+
+    // Apply on layout change (resize)
+    const layoutDisposable = editor.onDidLayoutChange(() => {
+      requestAnimationFrame(applyAlignment);
+    });
+
+    return () => {
+      observer.disconnect();
+      layoutDisposable.dispose();
+      // Clean up padding
+      const lines = viewLines.querySelectorAll<HTMLElement>('.view-line > span');
+      lines.forEach((span) => { span.style.paddingLeft = ''; });
+    };
+  }, [paragraphAlign]);
+
   useEffect(() => {
     return () => {
       if (copyToastTimerRef.current) {
