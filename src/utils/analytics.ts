@@ -13,6 +13,7 @@ let pageStart: number | null = null;
 let currentPath = '';
 let trackingInitialized = false;
 let countryPromise: Promise<string> | null = null;
+let heartbeatTimer: number | null = null;
 
 const getDeviceType = (userAgent: string) => {
   if (!userAgent) return 'unknown';
@@ -75,6 +76,20 @@ const ensureDurationTracking = (userId?: string | null) => {
   window.addEventListener('pagehide', () => flushDuration(userId));
 };
 
+const startHeartbeat = (userId?: string | null) => {
+  if (typeof window === 'undefined') return;
+  if (heartbeatTimer) {
+    window.clearInterval(heartbeatTimer);
+  }
+  heartbeatTimer = window.setInterval(() => {
+    if (!currentPath || pageStart === null) return;
+    const duration = Date.now() - pageStart;
+    if (duration < 15000) return;
+    pageStart = Date.now();
+    sendDuration(currentPath, duration, userId);
+  }, 30000);
+};
+
 export async function trackPageview(path: string, userId?: string | null) {
   if (isDev || !supabase) return;
   if (!path || path === lastPath) return;
@@ -85,6 +100,7 @@ export async function trackPageview(path: string, userId?: string | null) {
   currentPath = path;
   pageStart = Date.now();
   ensureDurationTracking(userId);
+  startHeartbeat(userId);
 
   const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
   const payload = {
