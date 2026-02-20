@@ -20,6 +20,15 @@ export function Analytics() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const formatDuration = (ms: number) => {
+    if (!ms || ms <= 0) return '0s';
+    const totalSeconds = Math.round(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    if (minutes === 0) return `${seconds}s`;
+    return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
+  };
+
   useEffect(() => {
     if (!user || !supabase) {
       setIsAdmin(false);
@@ -139,6 +148,20 @@ export function Analytics() {
               <div className="analytics-card-label">Bot sessions</div>
               <div className="analytics-card-value">{summary.bot_sessions}</div>
             </div>
+            <div className="analytics-card">
+              <div className="analytics-card-label">Avg time on page</div>
+              <div className="analytics-card-value">{formatDuration(summary.avg_page_duration_ms)}</div>
+              <div className="analytics-card-sub">
+                Humans: {formatDuration(summary.avg_page_duration_human_ms)}
+              </div>
+            </div>
+            <div className="analytics-card">
+              <div className="analytics-card-label">Avg session length</div>
+              <div className="analytics-card-value">{formatDuration(summary.avg_session_duration_ms)}</div>
+              <div className="analytics-card-sub">
+                Humans: {formatDuration(summary.avg_session_duration_human_ms)}
+              </div>
+            </div>
             <div className="analytics-card analytics-chart">
               <div className="analytics-card-label">Daily trend</div>
               <div className="analytics-chart-list">
@@ -178,6 +201,17 @@ export function Analytics() {
                 {summary.top_devices.map(item => (
                   <li key={item.device}>
                     <span>{item.device}</span>
+                    <span>{item.count}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="analytics-card">
+              <div className="analytics-card-label">Countries</div>
+              <ul>
+                {summary.top_countries.map(item => (
+                  <li key={item.country}>
+                    <span>{item.country}</span>
                     <span>{item.count}</span>
                   </li>
                 ))}

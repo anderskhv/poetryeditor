@@ -9,6 +9,10 @@ const sessionId = (() => {
 })();
 
 let lastPath = '';
+let pageStart: number | null = null;
+let currentPath = '';
+let trackingInitialized = false;
+let countryPromise: Promise<string> | null = null;
 
 const getDeviceType = (userAgent: string) => {
   if (!userAgent) return 'unknown';
@@ -17,14 +21,75 @@ const getDeviceType = (userAgent: string) => {
   return 'desktop';
 };
 
+const getCountryCode = async () => {
+  if (typeof window === 'undefined') return 'unknown';
+  const cached = window.sessionStorage.getItem('analytics_country');
+  if (cached) return cached;
+  if (!countryPromise) {
+    countryPromise = fetch('/cdn-cgi/trace')
+      .then((res) => res.text())
+      .then((text) => {
+        const match = text.split('\n').find((line) => line.startsWith('loc='));
+        const value = match ? match.replace('loc=', '').trim() : 'unknown';
+        window.sessionStorage.setItem('analytics_country', value || 'unknown');
+        return value || 'unknown';
+      })
+      .catch(() => 'unknown');
+  }
+  return countryPromise;
+};
+
+const sendDuration = async (path: string, durationMs: number, userId?: string | null) => {
+  if (isDev || !supabase || !path || durationMs <= 0) return;
+  try {
+    await supabase.from('analytics_events').insert({
+      event_type: 'page_duration',
+      path,
+      referrer: typeof document !== 'undefined' ? document.referrer : null,
+      user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      user_id: userId || null,
+      session_id: sessionId,
+      duration_ms: Math.round(durationMs),
+      payload: { reason: 'duration' },
+    } as any);
+  } catch (error) {
+    console.warn('Analytics duration tracking failed', error);
+  }
+};
+
+const flushDuration = (userId?: string | null) => {
+  if (!currentPath || pageStart === null) return;
+  const duration = Date.now() - pageStart;
+  pageStart = null;
+  sendDuration(currentPath, duration, userId);
+};
+
+const ensureDurationTracking = (userId?: string | null) => {
+  if (trackingInitialized || typeof document === 'undefined') return;
+  trackingInitialized = true;
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      flushDuration(userId);
+    }
+  });
+  window.addEventListener('pagehide', () => flushDuration(userId));
+};
+
 export async function trackPageview(path: string, userId?: string | null) {
   if (isDev || !supabase) return;
   if (!path || path === lastPath) return;
+  if (currentPath && pageStart !== null) {
+    flushDuration(userId);
+  }
   lastPath = path;
+  currentPath = path;
+  pageStart = Date.now();
+  ensureDurationTracking(userId);
 
   const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
   const payload = {
     device: getDeviceType(userAgent),
+    country: await getCountryCode(),
   };
 
   try {

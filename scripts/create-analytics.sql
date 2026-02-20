@@ -25,6 +25,7 @@ create table if not exists public.analytics_events (
   path text not null,
   referrer text,
   user_agent text,
+  duration_ms int,
   screen_width int,
   screen_height int,
   viewport_width int,
@@ -48,7 +49,7 @@ begin
       on public.analytics_events
       for insert
       with check (
-        event_type in ('pageview', 'event')
+        event_type in ('pageview', 'event', 'page_duration')
         and char_length(path) <= 300
         and char_length(session_id) <= 64
       );
@@ -147,6 +148,52 @@ begin
         order by count desc
         limit 5
       ) t
+    ),
+    'top_countries', (
+      select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb)
+      from (
+        select coalesce(nullif(payload->>'country', ''), 'unknown') as country, count(*) as count
+        from public.analytics_events
+        where event_type = 'pageview'
+          and created_at between start_ts and end_ts
+        group by country
+        order by count desc
+        limit 10
+      ) t
+    ),
+    'avg_page_duration_ms', (
+      select coalesce(avg(duration_ms), 0)
+      from public.analytics_events
+      where event_type = 'page_duration'
+        and created_at between start_ts and end_ts
+    ),
+    'avg_page_duration_human_ms', (
+      select coalesce(avg(duration_ms), 0)
+      from public.analytics_events
+      where event_type = 'page_duration'
+        and created_at between start_ts and end_ts
+        and coalesce(lower(user_agent), '') !~ bot_regex
+    ),
+    'avg_session_duration_ms', (
+      select coalesce(avg(session_total), 0)
+      from (
+        select session_id, sum(duration_ms) as session_total
+        from public.analytics_events
+        where event_type = 'page_duration'
+          and created_at between start_ts and end_ts
+        group by session_id
+      ) s
+    ),
+    'avg_session_duration_human_ms', (
+      select coalesce(avg(session_total), 0)
+      from (
+        select session_id, sum(duration_ms) as session_total
+        from public.analytics_events
+        where event_type = 'page_duration'
+          and created_at between start_ts and end_ts
+          and coalesce(lower(user_agent), '') !~ bot_regex
+        group by session_id
+      ) s
     )
   );
 end;

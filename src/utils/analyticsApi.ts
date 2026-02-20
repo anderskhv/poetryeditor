@@ -10,6 +10,11 @@ export interface AnalyticsSummary {
   top_paths: Array<{ path: string; count: number }>;
   top_referrers: Array<{ referrer: string; count: number }>;
   top_devices: Array<{ device: string; count: number }>;
+  top_countries: Array<{ country: string; count: number }>;
+  avg_page_duration_ms: number;
+  avg_page_duration_human_ms: number;
+  avg_session_duration_ms: number;
+  avg_session_duration_human_ms: number;
 }
 
 export interface AnalyticsTimeseriesPoint {
