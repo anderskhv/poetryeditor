@@ -990,6 +990,13 @@
   border-bottom: none;
 }
 
+.poetry-editor-container.align-center .poem-title-container,
+.poetry-editor-container.align-right .poem-title-container {
+  padding-left: var(--editor-content-left, 60px);
+  padding-right: 0;
+  max-width: calc(var(--editor-content-left, 60px) + var(--editor-content-width, 100%));
+}
+
 .poetry-editor-container.align-center .poem-title-container {
   text-align: center;
 }
