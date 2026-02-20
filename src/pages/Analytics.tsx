@@ -209,7 +209,7 @@ export function Analytics() {
             <div className="analytics-card">
               <div className="analytics-card-label">Countries</div>
               <ul>
-                {summary.top_countries.map(item => (
+                {(summary.top_countries || []).map(item => (
                   <li key={item.country}>
                     <span>{item.country}</span>
                     <span>{item.count}</span>
