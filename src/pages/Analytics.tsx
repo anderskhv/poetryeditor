@@ -69,7 +69,18 @@ export function Analytics() {
           setError('Analytics data not available.');
           return;
         }
-        setSummary(summaryResult);
+        const normalized: AnalyticsSummary = {
+          ...summaryResult,
+          top_paths: summaryResult.top_paths || [],
+          top_referrers: summaryResult.top_referrers || [],
+          top_devices: summaryResult.top_devices || [],
+          top_countries: summaryResult.top_countries || [],
+          avg_page_duration_ms: summaryResult.avg_page_duration_ms || 0,
+          avg_page_duration_human_ms: summaryResult.avg_page_duration_human_ms || 0,
+          avg_session_duration_ms: summaryResult.avg_session_duration_ms || 0,
+          avg_session_duration_human_ms: summaryResult.avg_session_duration_human_ms || 0,
+        };
+        setSummary(normalized);
         setTimeseries(timeseriesResult);
       })
       .catch(() => setError('Failed to load analytics.'))
