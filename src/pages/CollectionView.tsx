@@ -179,15 +179,28 @@ export function CollectionView() {
       const orderPrefix = String(idx + 1).padStart(2, '0');
       const baseTitle = entry.poem.title.replace(/[^a-zA-Z0-9]/g, '-');
       const filename = `${orderPrefix} - ${baseTitle || 'Untitled'}.md`;
+
+      // Build content with alignment markup when non-left-aligned
+      const align = entry.poem.formatting?.align;
+      let fileContent = `# ${entry.poem.title}\n\n`;
+      if (align && align !== 'left') {
+        const escapedLines = entry.poem.content.split('\n').map(l =>
+          l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        ).join('<br />\n');
+        fileContent += `<div style="text-align:${align}">\n${escapedLines}\n</div>`;
+      } else {
+        fileContent += entry.poem.content;
+      }
+
       if (entry.sectionId) {
         const section = sectionMap.get(entry.sectionId);
         if (section) {
-          zip.file(`${section.name}/${filename}`, entry.poem.content);
+          zip.file(`${section.name}/${filename}`, fileContent);
         } else {
-          zip.file(filename, entry.poem.content);
+          zip.file(filename, fileContent);
         }
       } else {
-        zip.file(filename, entry.poem.content);
+        zip.file(filename, fileContent);
       }
     });
 

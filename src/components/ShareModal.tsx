@@ -6,6 +6,7 @@ interface ShareModalProps {
   onClose: () => void;
   poemTitle: string;
   poemText: string;
+  paragraphAlign?: 'left' | 'center' | 'right';
 }
 
 type ShareFormat = 'square' | 'vertical';
@@ -49,7 +50,7 @@ interface PageContent {
   totalPages: number;
 }
 
-export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalProps) {
+export function ShareModal({ isOpen, onClose, poemTitle, poemText, paragraphAlign = 'left' }: ShareModalProps) {
   const [selectedFormat, setSelectedFormat] = useState<ShareFormat>('square');
   const [selectedBgIndex, setSelectedBgIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -170,7 +171,19 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
     const lineHeight = 1.9;
 
     ctx.fillStyle = selectedBg.textColor;
-    ctx.textAlign = 'left'; // Left-align like the editor
+
+    // Set text alignment based on poem formatting
+    let textX = padding;
+    if (paragraphAlign === 'center') {
+      ctx.textAlign = 'center';
+      textX = width / 2;
+    } else if (paragraphAlign === 'right') {
+      ctx.textAlign = 'right';
+      textX = width - padding;
+    } else {
+      ctx.textAlign = 'left';
+      textX = padding;
+    }
 
     const pageData = pages[pageIndex];
     if (!pageData) return;
@@ -180,7 +193,7 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
     // Draw title only on first page
     if (pageIndex === 0 && poemTitle && poemTitle.trim() !== 'Untitled') {
       ctx.font = `italic ${titleFontSize}px 'Libre Baskerville', Georgia, serif`;
-      ctx.fillText(poemTitle, padding, y + titleFontSize);
+      ctx.fillText(poemTitle, textX, y + titleFontSize);
       y += titleFontSize + 30 * scale;
     }
 
@@ -190,7 +203,7 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
 
     pageData.lines.forEach((line) => {
       y += poemLineHeight;
-      ctx.fillText(line, padding, y);
+      ctx.fillText(line, textX, y);
     });
 
     // Watermark
@@ -204,7 +217,7 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText }: ShareModalP
     }
     ctx.fillText(watermarkText, width / 2, height - padding / 2);
     ctx.globalAlpha = 1;
-  }, [format, selectedBg, poemTitle, pages]);
+  }, [format, selectedBg, poemTitle, pages, paragraphAlign]);
 
   // Update pages when calculation changes
   useEffect(() => {

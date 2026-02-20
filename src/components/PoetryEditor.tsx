@@ -1332,8 +1332,9 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
 
   // JavaScript-based text alignment (center/right) for Monaco editor lines.
   // CSS-only approaches fail because Monaco's .view-line > span is position: absolute
-  // without explicit width, so text-align has no effect. Instead, we calculate and
-  // apply padding-left on each line's span after Monaco renders.
+  // without explicit width, so text-align has no effect. Instead, we calculate the
+  // offset and apply transform: translateX() on each line's span after Monaco renders.
+  // Using translateX instead of padding-left preserves Monaco's click-to-position hit testing.
   useEffect(() => {
     if (!editorRef.current || paragraphAlign === 'left') return;
 
@@ -1350,19 +1351,17 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       const lines = viewLines.querySelectorAll<HTMLElement>('.view-line > span');
 
       lines.forEach((span) => {
-        const prevPadding = span.style.paddingLeft;
-        span.style.paddingLeft = '0px';
+        span.style.transform = '';
         const textWidth = span.scrollWidth;
 
-        let padding = 0;
+        let offset = 0;
         if (paragraphAlign === 'center') {
-          padding = Math.max(0, (contentWidth - textWidth) / 2);
+          offset = Math.max(0, (contentWidth - textWidth) / 2);
         } else if (paragraphAlign === 'right') {
-          padding = Math.max(0, contentWidth - textWidth);
+          offset = Math.max(0, contentWidth - textWidth);
         }
 
-        const newPadding = padding > 0 ? `${padding}px` : '';
-        span.style.paddingLeft = newPadding;
+        span.style.transform = offset > 0 ? `translateX(${offset}px)` : '';
       });
     };
 
@@ -1380,14 +1379,58 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       requestAnimationFrame(applyAlignment);
     });
 
+    // Intercept mouse events to adjust for translateX offset.
+    // translateX moves pixels visually but Monaco resolves click coordinates
+    // against the un-transformed layout, so cursor snaps to end-of-line.
+    // We re-dispatch with adjusted clientX so Monaco gets correct coordinates.
+    const adjustMouseEvent = (e: MouseEvent) => {
+      const span = (e.target as HTMLElement).closest('.view-line > span') as HTMLElement | null;
+      if (!span?.style.transform) return;
+      const match = span.style.transform.match(/translateX\(([0-9.]+)px\)/);
+      if (!match) return;
+      const offset = parseFloat(match[1]);
+      if (!offset) return;
+
+      e.stopImmediatePropagation();
+
+      const adjusted = new MouseEvent(e.type, {
+        bubbles: e.bubbles,
+        cancelable: e.cancelable,
+        view: e.view,
+        detail: e.detail,
+        screenX: e.screenX - offset,
+        screenY: e.screenY,
+        clientX: e.clientX - offset,
+        clientY: e.clientY,
+        ctrlKey: e.ctrlKey,
+        altKey: e.altKey,
+        shiftKey: e.shiftKey,
+        metaKey: e.metaKey,
+        button: e.button,
+        buttons: e.buttons,
+        relatedTarget: e.relatedTarget,
+      });
+
+      // Temporarily remove listener to prevent infinite loop
+      editorDom!.removeEventListener(e.type, handler, true);
+      (e.target as HTMLElement).dispatchEvent(adjusted);
+      editorDom!.addEventListener(e.type, handler, true);
+    };
+    const handler = adjustMouseEvent as EventListener;
+
+    editorDom.addEventListener('mousedown', handler, true);
+    editorDom.addEventListener('dblclick', handler, true);
+
     return () => {
       observer.disconnect();
       layoutDisposable.dispose();
-      // Clean up padding
+      editorDom.removeEventListener('mousedown', handler, true);
+      editorDom.removeEventListener('dblclick', handler, true);
+      // Clean up transforms
       const lines = viewLines.querySelectorAll<HTMLElement>('.view-line > span');
-      lines.forEach((span) => { span.style.paddingLeft = ''; });
+      lines.forEach((span) => { span.style.transform = ''; });
     };
-  }, [paragraphAlign]);
+  }, [paragraphAlign, value]);
 
   useEffect(() => {
     return () => {
