@@ -47,6 +47,11 @@
   color: var(--color-text-primary, #111);
   text-decoration: none;
   font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
 }
 
 .shared-nav-poems {
@@ -65,11 +70,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
 }
 
 .shared-nav-poem:hover,
 .shared-nav-section-link:hover {
   color: var(--color-text-primary, #000);
+}
+
+.shared-nav-poem.active {
+  color: var(--color-text-primary, #000);
+  font-weight: 600;
 }
 
 .shared-nav-count {
@@ -264,6 +279,29 @@
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 13px;
   color: var(--color-text-secondary, #333);
+}
+
+.shared-poem-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.shared-copy-button {
+  border: 1px solid var(--color-border, #e0e0e0);
+  background: #fff;
+  color: var(--color-text-muted, #666);
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.shared-copy-button:hover {
+  color: var(--color-text-primary, #111);
+  border-color: var(--color-text-muted, #666);
 }
 
 .shared-comments-panel {

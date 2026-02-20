@@ -30,6 +30,7 @@ export function SharedCollection() {
   const [showComments, setShowComments] = useState(true);
   const [activeView, setActiveView] = useState<'poems' | 'comments'>('poems');
   const [commentIndex, setCommentIndex] = useState(0);
+  const [selectedPoemId, setSelectedPoemId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!token) return;
@@ -106,6 +107,16 @@ export function SharedCollection() {
     return ordered;
   }, [poemsBySection, orderedSections]);
 
+  useEffect(() => {
+    if (!selectedPoemId && poemOrder.length > 0) {
+      setSelectedPoemId(poemOrder[0].id);
+    }
+  }, [poemOrder, selectedPoemId]);
+
+  const selectedPoem = useMemo(() => {
+    return poemOrder.find(poem => poem.id === selectedPoemId) || null;
+  }, [poemOrder, selectedPoemId]);
+
   const commentList = useMemo(() => {
     const list: Array<{
       id: string;
@@ -180,16 +191,21 @@ export function SharedCollection() {
               <div className="shared-nav-title">Contents</div>
               <nav className="shared-nav-list">
                 {(poemsBySection.get(null) || []).length > 0 && (
-                <div className="shared-nav-section">
-                  <a className="shared-nav-section-link" href="#section-root">Unsorted</a>
+                  <div className="shared-nav-section">
+                  <button className="shared-nav-section-link" type="button">Unsorted</button>
                   <div className="shared-nav-poems">
                     {(poemsBySection.get(null) || []).map(poem => {
                       const count = commentsByPoem.get(poem.id)?.length || 0;
                       return (
-                      <a key={poem.id} className="shared-nav-poem" href={`#poem-${poem.id}`}>
+                      <button
+                        key={poem.id}
+                        className={`shared-nav-poem ${selectedPoemId === poem.id ? 'active' : ''}`}
+                        onClick={() => setSelectedPoemId(poem.id)}
+                        type="button"
+                      >
                         {poem.title || 'Untitled'}
                         {count > 0 && <span className="shared-nav-count">{count}</span>}
-                      </a>
+                      </button>
                     );
                     })}
                   </div>
@@ -201,17 +217,22 @@ export function SharedCollection() {
                 if (poems.length === 0) return null;
                 return (
                   <div key={section.id} className="shared-nav-section">
-                    <a className="shared-nav-section-link" href={`#section-${section.id}`}>
+                    <button className="shared-nav-section-link" type="button">
                       {section.name}
-                    </a>
+                    </button>
                     <div className="shared-nav-poems">
                       {poems.map(poem => {
                         const count = commentsByPoem.get(poem.id)?.length || 0;
                         return (
-                        <a key={poem.id} className="shared-nav-poem" href={`#poem-${poem.id}`}>
+                        <button
+                          key={poem.id}
+                          className={`shared-nav-poem ${selectedPoemId === poem.id ? 'active' : ''}`}
+                          onClick={() => setSelectedPoemId(poem.id)}
+                          type="button"
+                        >
                           {poem.title || 'Untitled'}
                           {count > 0 && <span className="shared-nav-count">{count}</span>}
-                        </a>
+                        </button>
                       );
                       })}
                     </div>
@@ -262,70 +283,55 @@ export function SharedCollection() {
 
             {activeView === 'poems' ? (
               <>
-                <section className="shared-section" id="section-root">
-                  {(poemsBySection.get(null) || []).map(poem => {
-                    const comments = commentsByPoem.get(poem.id) || [];
-                    return (
-                      <article key={poem.id} className="shared-poem" id={`poem-${poem.id}`}>
-                        <h2>{poem.title || 'Untitled'}</h2>
-                        <div
-                          className="shared-poem-content"
-                          dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(poem.content) }}
-                        />
-                        {showComments && comments.length > 0 && (
-                          <div className="shared-comments">
-                            <h3>Comments</h3>
-                            {comments.map((comment, idx) => (
-                              <div key={comment.id} className="shared-comment" id={`comment-${comment.id}`}>
-                                <div className="shared-comment-label">C{idx + 1}</div>
-                                {comment.quote && (
-                                  <div className="shared-comment-quote">“{comment.quote}”</div>
-                                )}
-                                <div className="shared-comment-text">{comment.text}</div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </article>
-                    );
-                  })}
-                </section>
-
-                {orderedSections.map(section => {
-                  const poems = poemsBySection.get(section.id) || [];
-                  if (poems.length === 0) return null;
-                  return (
-                    <section key={section.id} className="shared-section" id={`section-${section.id}`}>
-                      <h2 className="shared-section-title">{section.name}</h2>
-                      {poems.map(poem => {
-                        const comments = commentsByPoem.get(poem.id) || [];
-                        return (
-                          <article key={poem.id} className="shared-poem" id={`poem-${poem.id}`}>
-                            <h3>{poem.title || 'Untitled'}</h3>
-                            <div
-                              className="shared-poem-content"
-                              dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(poem.content) }}
-                            />
-                            {showComments && comments.length > 0 && (
-                              <div className="shared-comments">
-                                <h4>Comments</h4>
-                                {comments.map((comment, idx) => (
-                                  <div key={comment.id} className="shared-comment" id={`comment-${comment.id}`}>
-                                    <div className="shared-comment-label">C{idx + 1}</div>
-                                    {comment.quote && (
-                                      <div className="shared-comment-quote">“{comment.quote}”</div>
-                                    )}
-                                    <div className="shared-comment-text">{comment.text}</div>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </article>
-                        );
-                      })}
-                    </section>
-                  );
-                })}
+                {selectedPoem ? (
+                  <section className="shared-section">
+                    <article className="shared-poem">
+                      <div className="shared-poem-header">
+                        <h2>{selectedPoem.title || 'Untitled'}</h2>
+                        <button
+                          className="shared-copy-button"
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(selectedPoem.content);
+                            } catch {
+                              const textarea = document.createElement('textarea');
+                              textarea.value = selectedPoem.content;
+                              textarea.style.position = 'fixed';
+                              textarea.style.opacity = '0';
+                              document.body.appendChild(textarea);
+                              textarea.select();
+                              document.execCommand('copy');
+                              document.body.removeChild(textarea);
+                            }
+                          }}
+                          title="Copy poem"
+                        >
+                          ⧉
+                        </button>
+                      </div>
+                      <div
+                        className="shared-poem-content"
+                        dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(selectedPoem.content) }}
+                      />
+                      {showComments && (commentsByPoem.get(selectedPoem.id) || []).length > 0 && (
+                        <div className="shared-comments">
+                          <h3>Comments</h3>
+                          {(commentsByPoem.get(selectedPoem.id) || []).map((comment, idx) => (
+                            <div key={comment.id} className="shared-comment" id={`comment-${comment.id}`}>
+                              <div className="shared-comment-label">C{idx + 1}</div>
+                              {comment.quote && (
+                                <div className="shared-comment-quote">“{comment.quote}”</div>
+                              )}
+                              <div className="shared-comment-text">{comment.text}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </article>
+                  </section>
+                ) : (
+                  <div className="shared-comments-empty">No poems available.</div>
+                )}
               </>
             ) : (
               <section className="shared-comments-panel">

@@ -11,6 +11,7 @@ import { usePoems } from '../hooks/usePoems';
 import { supabase } from '../lib/supabase';
 import { fetchPoemVersionsForPoems, fetchPoemVersions, addPoemVersion, ensureInitialPoemVersion, migrateLocalPoemVersions, type PoemVersion } from '../utils/poemVersions';
 import { getOrCreateShare } from '../utils/sharedCollections';
+import { syncLocalComments } from '../utils/poemComments';
 import type { Collection, Section } from '../types/database';
 import JSZip from 'jszip';
 import './CollectionView.css';
@@ -209,6 +210,7 @@ export function CollectionView() {
     if (!collection || !user) return;
     setShareBusy(true);
     setShareError(null);
+    await Promise.all(poems.map(poem => syncLocalComments(poem.id, user.id)));
     const share = await getOrCreateShare(collection.id, user.id, shareCommentsDefault);
     if (share) {
       setShareLink(`${window.location.origin}/share/${share.token}`);

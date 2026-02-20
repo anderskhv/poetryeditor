@@ -38,6 +38,8 @@ const setLocalComments = (poemId: string, comments: PoemComment[]) => {
   localStorage.setItem(storageKey(poemId), JSON.stringify(comments));
 };
 
+export const getLocalCommentsForSync = (poemId: string) => getLocalComments(poemId);
+
 const commentKey = (comment: {
   text: string;
   quote?: string;
@@ -116,6 +118,52 @@ export const fetchPoemComments = async (poemId: string, userId?: string | null) 
   combined.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   setLocalComments(poemId, combined);
   return combined;
+};
+
+export const syncLocalComments = async (poemId: string, userId?: string | null) => {
+  if (!poemId || !supabase || !userId) return;
+  const local = getLocalComments(poemId);
+  if (local.length === 0) return;
+
+  const { data, error } = await supabase
+    .from('poem_comments')
+    .select('id, text, quote, range, created_at')
+    .eq('poem_id', poemId)
+    .eq('user_id', userId);
+
+  if (error) {
+    console.warn('Failed to fetch existing comments for sync:', error.message);
+    return;
+  }
+
+  const existingKeys = new Set(
+    (data || []).map(row => commentKey({
+      text: row.text,
+      quote: row.quote || undefined,
+      range: row.range,
+      createdAt: row.created_at,
+    }))
+  );
+
+  const pending = local.filter(comment => !existingKeys.has(commentKey(comment)));
+  if (pending.length === 0) return;
+
+  const { error: insertError } = await supabase
+    .from('poem_comments')
+    .insert(pending.map((comment) => ({
+      poem_id: poemId,
+      user_id: userId,
+      text: comment.text,
+      quote: comment.quote || null,
+      range: comment.range,
+      resolved: comment.resolved,
+      resolved_at: comment.resolvedAt,
+      created_at: comment.createdAt,
+    })));
+
+  if (insertError) {
+    console.warn('Failed to sync local comments to Supabase:', insertError.message);
+  }
 };
 
 export const addPoemComment = async (
