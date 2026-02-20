@@ -1336,15 +1336,34 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   // offset and apply transform: translateX() on each line's span after Monaco renders.
   // Using translateX instead of padding-left preserves Monaco's click-to-position hit testing.
   useEffect(() => {
-    if (!editorRef.current || paragraphAlign === 'left') return;
-
     const editor = editorRef.current;
+    if (!editor) return;
+
     const editorDom = editor.getDomNode();
     if (!editorDom) return;
 
     const viewLines = editorDom.querySelector('.view-lines');
     if (!viewLines) return;
 
+    // Always clear stale transforms first (handles switch to 'left' AND stale transforms)
+    const clearTransforms = () => {
+      const lines = viewLines.querySelectorAll<HTMLElement>('.view-line > span');
+      lines.forEach((span) => { span.style.transform = ''; });
+    };
+
+    // If left-aligned, clear transforms and observe for new lines Monaco renders
+    if (paragraphAlign === 'left') {
+      clearTransforms();
+      const observer = new MutationObserver(() => {
+        requestAnimationFrame(clearTransforms);
+      });
+      observer.observe(viewLines, { childList: true, subtree: true });
+      return () => {
+        observer.disconnect();
+      };
+    }
+
+    // Center/right alignment: apply transforms
     const applyAlignment = () => {
       const layoutInfo = editor.getLayoutInfo();
       const contentWidth = layoutInfo.contentWidth;
@@ -1412,9 +1431,9 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       });
 
       // Temporarily remove listener to prevent infinite loop
-      editorDom!.removeEventListener(e.type, handler, true);
+      editorDom.removeEventListener(e.type, handler, true);
       (e.target as HTMLElement).dispatchEvent(adjusted);
-      editorDom!.addEventListener(e.type, handler, true);
+      editorDom.addEventListener(e.type, handler, true);
     };
     const handler = adjustMouseEvent as EventListener;
 
@@ -1426,9 +1445,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       layoutDisposable.dispose();
       editorDom.removeEventListener('mousedown', handler, true);
       editorDom.removeEventListener('dblclick', handler, true);
-      // Clean up transforms
-      const lines = viewLines.querySelectorAll<HTMLElement>('.view-line > span');
-      lines.forEach((span) => { span.style.transform = ''; });
+      clearTransforms();
     };
   }, [paragraphAlign, value]);
 
