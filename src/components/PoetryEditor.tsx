@@ -1470,6 +1470,12 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
   }, []);
 
   useEffect(() => {
+    lastSelectionRef.current = null;
+    restoreSelectionRef.current = false;
+    setPopupState(null);
+  }, [poemId]);
+
+  useEffect(() => {
     if (!restoreSelectionRef.current) return;
     if (!editorRef.current) return;
     const selection = lastSelectionRef.current;
@@ -1646,6 +1652,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         </div>
       )}
       <Editor
+        key={`poetry-editor-${poemId}`}
         height={hideTitle ? "100%" : "calc(100% - 80px)"}
         defaultLanguage="poetry"
         path={`poem-${poemId || 'local'}`}
