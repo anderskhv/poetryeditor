@@ -246,8 +246,20 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       updateLayoutVars();
     });
 
-    // Handle click events to show word popup
+    const isTouchLikeEvent = (event: editor.IEditorMouseEvent) => {
+      const browserEvent = event.event?.browserEvent as MouseEvent | TouchEvent | PointerEvent | undefined;
+      if (browserEvent && 'pointerType' in browserEvent && browserEvent.pointerType === 'touch') return true;
+      if (browserEvent && 'touches' in browserEvent) return true;
+      if (typeof window !== 'undefined') {
+        if (window.matchMedia('(pointer: coarse)').matches) return true;
+        if ((navigator as Navigator).maxTouchPoints > 0) return true;
+      }
+      return false;
+    };
+
+    // Handle click events to show word popup (desktop only)
     editorInstance.onMouseDown((e) => {
+      if (isTouchLikeEvent(e)) return;
       if (e.target.type !== monaco.editor.MouseTargetType.CONTENT_TEXT) return;
 
       const position = e.target.position;

@@ -966,13 +966,25 @@
 }
 
 .poetry-editor-container .monaco-editor {
-  touch-action: manipulation;
+  touch-action: pan-y;
 }
 
 .poetry-editor-container .monaco-editor .inputarea {
   -webkit-user-select: text;
   user-select: text;
   -webkit-touch-callout: default;
+}
+
+.poetry-editor-container .monaco-editor .scrollable-element {
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (pointer: coarse) {
+  .poetry-editor-container .monaco-editor .view-lines,
+  .poetry-editor-container .monaco-editor .inputarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
 }
 
 /* First line indent - applied via Monaco line decorations */
@@ -994,7 +1006,8 @@
 .poetry-editor-container.align-right .poem-title-container {
   padding-left: var(--editor-content-left, 60px);
   padding-right: 0;
-  max-width: calc(var(--editor-content-left, 60px) + var(--editor-content-width, 100%));
+  width: var(--editor-total-width, 100%);
+  box-sizing: border-box;
 }
 
 .poetry-editor-container.align-center .poem-title-container {
