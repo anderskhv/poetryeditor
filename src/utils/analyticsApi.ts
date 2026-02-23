@@ -207,12 +207,25 @@ export async function fetchAnalyticsData(start: Date, end: Date) {
     return { summary: fallback.summary, timeseries: fallback.timeseries, fallbackUsed: true, errorMessage: null as string | null };
   }
 
+  let diagnosticsMessage: string | null = null;
+  if (supabase) {
+    const { error: diagnosticsError, count } = await supabase
+      .from('analytics_events')
+      .select('id', { count: 'exact', head: true });
+    if (diagnosticsError) {
+      diagnosticsMessage = `Analytics diagnostics: ${diagnosticsError.message}`;
+    } else if (typeof count === 'number') {
+      diagnosticsMessage = `Analytics diagnostics: ${count} events readable, but summary could not be computed.`;
+    }
+  }
+
   return {
     summary: null,
     timeseries: [],
     fallbackUsed: true,
     errorMessage: summaryResult?.errorMessage
       || fallback.errorMessage
+      || diagnosticsMessage
       || 'Unable to read analytics events. Please confirm the analytics SQL was run in Supabase and that your admin user is in site_admins.',
   };
 }
