@@ -130,7 +130,15 @@ export function Analytics() {
         {loading ? (
           <div className="analytics-empty">Loading analytics…</div>
         ) : error ? (
-          <div className="analytics-empty">{error}</div>
+          <div className="analytics-empty">
+            <div>{error}</div>
+            <div className="analytics-debug">
+              <div>Signed in: {user ? 'yes' : 'no'}</div>
+              <div>Admin: {isAdmin ? 'yes' : 'no'}</div>
+              <div>Host: {typeof window !== 'undefined' ? window.location.host : 'unknown'}</div>
+              <div>Supabase configured: {Boolean(supabase) ? 'yes' : 'no'}</div>
+            </div>
+          </div>
         ) : summary ? (
           <div className="analytics-stack">
             {usingFallback && (

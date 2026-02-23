@@ -194,6 +194,15 @@
   color: var(--color-text-muted, #6b6256);
 }
 
+.analytics-debug {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #7c6a50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
 @media (max-width: 720px) {
   .analytics-header {
     flex-direction: column;
