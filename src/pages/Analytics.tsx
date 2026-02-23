@@ -288,6 +288,17 @@ export function Analytics() {
                     ))}
                   </ul>
                 </div>
+                <div className="analytics-card analytics-card--bots">
+                  <div className="analytics-card-label">Top bot user agents</div>
+                  <ul>
+                    {(summary.top_bot_user_agents || []).map(item => (
+                      <li key={item.user_agent}>
+                        <span>{item.user_agent}</span>
+                        <span>{item.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </section>
           </div>

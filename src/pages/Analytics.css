@@ -168,6 +168,12 @@
   color: #3e3423;
 }
 
+.analytics-card--bots li span:first-child {
+  white-space: normal;
+  word-break: break-word;
+  max-width: 70%;
+}
+
 .analytics-chart {
   grid-column: span 2;
 }
