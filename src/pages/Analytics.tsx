@@ -278,9 +278,9 @@ export function Analytics() {
                   </ul>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Countries</div>
+                  <div className="analytics-card-label">Countries (human)</div>
                   <ul>
-                    {(summary.top_countries || []).map(item => (
+                    {(summary.top_countries_human || []).map(item => (
                       <li key={item.country}>
                         <span>{item.country}</span>
                         <span>{item.count}</span>
@@ -288,8 +288,8 @@ export function Analytics() {
                     ))}
                   </ul>
                 </div>
-                <div className="analytics-card analytics-card--bots">
-                  <div className="analytics-card-label">Top bot user agents</div>
+                <div className="analytics-card analytics-card--bots analytics-card--subtle">
+                  <div className="analytics-card-label">Bot traffic (top agents)</div>
                   <ul>
                     {(summary.top_bot_user_agents || []).map(item => (
                       <li key={item.user_agent}>

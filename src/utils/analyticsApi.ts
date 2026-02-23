@@ -11,6 +11,7 @@ export interface AnalyticsSummary {
   top_referrers: Array<{ referrer: string; count: number }>;
   top_devices: Array<{ device: string; count: number }>;
   top_countries: Array<{ country: string; count: number }>;
+  top_countries_human: Array<{ country: string; count: number }>;
   top_bot_user_agents: Array<{ user_agent: string; count: number }>;
   avg_page_duration_ms: number;
   avg_page_duration_human_ms: number;
@@ -155,6 +156,10 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
     pageviews.map(row => (row.payload?.country as string) || 'unknown')
   ).map(([country, count]) => ({ country, count }));
 
+  const topCountriesHuman: AnalyticsSummary['top_countries_human'] = topCounts(
+    humanPageviews.map(row => (row.payload?.country as string) || 'unknown')
+  ).map(([country, count]) => ({ country, count }));
+
   const topBotAgents: AnalyticsSummary['top_bot_user_agents'] = topCounts(
     botPageviews.map(row => (row.user_agent && row.user_agent.length ? row.user_agent : 'unknown'))
   ).map(([user_agent, count]) => ({ user_agent, count }));
@@ -185,6 +190,7 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
     top_referrers: topReferrers,
     top_devices: topDevices,
     top_countries: topCountries,
+    top_countries_human: topCountriesHuman,
     top_bot_user_agents: topBotAgents,
     avg_page_duration_ms: average(durationEvents.map(row => row.duration_ms || 0)),
     avg_page_duration_human_ms: average(humanDurationEvents.map(row => row.duration_ms || 0)),
