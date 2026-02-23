@@ -232,3 +232,17 @@ export async function fetchAnalyticsData(start: Date, end: Date) {
       || 'Unable to read analytics events. Please confirm the analytics SQL was run in Supabase and that your admin user is in site_admins.',
   };
 }
+
+export async function fetchAnalyticsDataDirect(start: Date, end: Date) {
+  const fallback = await fetchAnalyticsFallback(start, end);
+  if (fallback.summary) {
+    return { summary: fallback.summary, timeseries: fallback.timeseries, fallbackUsed: true, errorMessage: null as string | null };
+  }
+  return {
+    summary: null,
+    timeseries: [],
+    fallbackUsed: true,
+    errorMessage: fallback.errorMessage
+      || 'Unable to read analytics events directly. Please confirm analytics_events has SELECT policy for admins.',
+  };
+}
