@@ -236,6 +236,65 @@
   color: var(--color-text-primary, #111);
 }
 
+.shared-poem-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.75rem;
+}
+
+.shared-comments-aside {
+  width: 220px;
+  border-left: 1px solid var(--color-border, #e0e0e0);
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.shared-comments-title {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted, #666);
+  margin-bottom: 0.25rem;
+}
+
+.shared-comment-chip {
+  border: 1px solid var(--color-border, #e0e0e0);
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.shared-comment-chip:hover {
+  border-color: var(--color-text-muted, #666);
+}
+
+.shared-comment-chip-label {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #666);
+}
+
+.shared-comment-chip-text {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 12px;
+  color: var(--color-text-secondary, #333);
+}
+
+.shared-comment-highlight {
+  background: rgba(243, 219, 142, 0.65);
+  border-radius: 4px;
+  padding: 0 2px;
+}
+
 .shared-comments {
   margin-top: 1.5rem;
   padding-top: 1rem;
@@ -349,5 +408,17 @@
   .shared-nav {
     position: static;
     width: 100%;
+  }
+
+  .shared-poem-layout {
+    flex-direction: column;
+  }
+
+  .shared-comments-aside {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--color-border, #e0e0e0);
+    padding-left: 0;
+    padding-top: 1rem;
   }
 }

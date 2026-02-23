@@ -42,6 +42,59 @@ const renderMarkdownToHtml = (value: string) => {
     .replace(/\n/g, '<br />');
 };
 
+type CommentRange = {
+  startLineNumber: number;
+  startColumn: number;
+  endLineNumber: number;
+  endColumn: number;
+};
+
+const HSTART = '[[[HSTART]]]';
+const HEND = '[[[HEND]]]';
+
+const renderMarkdownWithHighlights = (value: string, ranges: CommentRange[]) => {
+  if (!ranges.length) {
+    return renderMarkdownToHtml(value);
+  }
+
+  const lines = value.split('\n');
+  const perLine = new Map<number, Array<{ start: number; end: number }>>();
+
+  ranges.forEach((range) => {
+    for (let line = range.startLineNumber; line <= range.endLineNumber; line += 1) {
+      const lineIndex = line - 1;
+      const text = lines[lineIndex] ?? '';
+      const startColumn = line === range.startLineNumber ? range.startColumn : 1;
+      const endColumn = line === range.endLineNumber ? range.endColumn : text.length + 1;
+      const safeStart = Math.max(1, Math.min(startColumn, text.length + 1));
+      const safeEnd = Math.max(safeStart, Math.min(endColumn, text.length + 1));
+      if (!perLine.has(lineIndex)) perLine.set(lineIndex, []);
+      perLine.get(lineIndex)!.push({ start: safeStart, end: safeEnd });
+    }
+  });
+
+  perLine.forEach((segments, lineIndex) => {
+    const line = lines[lineIndex] ?? '';
+    const ordered = segments.sort((a, b) => b.start - a.start);
+    let nextLine = line;
+    ordered.forEach(({ start, end }) => {
+      const startIdx = start - 1;
+      const endIdx = end - 1;
+      nextLine =
+        nextLine.slice(0, startIdx)
+        + HSTART
+        + nextLine.slice(startIdx, endIdx)
+        + HEND
+        + nextLine.slice(endIdx);
+    });
+    lines[lineIndex] = nextLine;
+  });
+
+  return renderMarkdownToHtml(lines.join('\n'))
+    .replace(new RegExp(HSTART.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&'), 'g'), '<mark class="shared-comment-highlight">')
+    .replace(new RegExp(HEND.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&'), 'g'), '</mark>');
+};
+
 export function SharedCollection() {
   const { token } = useParams<{ token: string }>();
   const [payload, setPayload] = useState<SharedCollectionPayload | null>(null);
@@ -161,6 +214,7 @@ export function SharedCollection() {
       poemTitle: string;
       text: string;
       quote: string | null;
+      range: CommentRange | null;
       createdAt: string;
     }> = [];
     poemOrder.forEach(poem => {
@@ -172,6 +226,7 @@ export function SharedCollection() {
           poemTitle: poem.title || 'Untitled',
           text: comment.text,
           quote: comment.quote || null,
+          range: comment.range || null,
           createdAt: comment.created_at,
         });
       });
@@ -194,6 +249,22 @@ export function SharedCollection() {
       target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
+
+  const selectedPoemComments = useMemo(() => {
+    if (!selectedPoem) return [];
+    return (commentsByPoem.get(selectedPoem.id) || []) as Array<{
+      id: string;
+      text: string;
+      quote: string | null;
+      range: CommentRange | null;
+    }>;
+  }, [commentsByPoem, selectedPoem]);
+
+  const selectedPoemRanges = useMemo(() => {
+    return selectedPoemComments
+      .map(comment => comment.range)
+      .filter((range): range is CommentRange => Boolean(range));
+  }, [selectedPoemComments]);
 
   if (loading) {
     return (
@@ -346,25 +417,36 @@ export function SharedCollection() {
                           ⧉
                         </button>
                       </div>
-                      <div
-                        className="shared-poem-content"
-                        style={getFormattingStyle(selectedPoem.formatting)}
-                        dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(selectedPoem.content) }}
-                      />
-                      {showComments && (commentsByPoem.get(selectedPoem.id) || []).length > 0 && (
-                        <div className="shared-comments">
-                          <h3>Comments</h3>
-                          {(commentsByPoem.get(selectedPoem.id) || []).map((comment, idx) => (
-                            <div key={comment.id} className="shared-comment" id={`comment-${comment.id}`}>
-                              <div className="shared-comment-label">C{idx + 1}</div>
-                              {comment.quote && (
-                                <div className="shared-comment-quote">“{comment.quote}”</div>
-                              )}
-                              <div className="shared-comment-text">{comment.text}</div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                      <div className="shared-poem-layout">
+                        <div
+                          className="shared-poem-content"
+                          style={getFormattingStyle(selectedPoem.formatting)}
+                          dangerouslySetInnerHTML={{
+                            __html: renderMarkdownWithHighlights(selectedPoem.content, showComments ? selectedPoemRanges : []),
+                          }}
+                        />
+                        {showComments && selectedPoemComments.length > 0 && (
+                          <aside className="shared-comments-aside">
+                            <div className="shared-comments-title">Comments</div>
+                            {selectedPoemComments.map((comment, idx) => (
+                              <button
+                                key={comment.id}
+                                className="shared-comment-chip"
+                                type="button"
+                                onClick={() => {
+                                  const target = document.getElementById(`comment-${comment.id}`);
+                                  if (target) {
+                                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                  }
+                                }}
+                              >
+                                <span className="shared-comment-chip-label">C{idx + 1}</span>
+                                <span className="shared-comment-chip-text">{comment.text}</span>
+                              </button>
+                            ))}
+                          </aside>
+                        )}
+                      </div>
                     </article>
                   </section>
                 ) : (
