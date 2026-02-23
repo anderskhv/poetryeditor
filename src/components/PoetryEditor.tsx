@@ -432,57 +432,45 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         column: sel.endColumn,
       });
 
-      // Check if cursor/selection overlaps a formatted region of the matching type.
-      // This prevents re-wrapping when the selection includes markers and ensures
-      // toggling removes formatting as expected.
-      const region = formattedRanges.find(r =>
+      // Find ALL formatted regions of the matching type that overlap the selection
+      const overlapping = formattedRanges.filter(r =>
         r.type === formatType &&
         selEndOffset > r.startOffset &&
         selStartOffset < r.endOffset
       );
 
-      if (region) {
-        // UNWRAP: remove the formatting markers from this region
-        const content = fullText.substring(
-          region.contentStartOffset,
-          region.contentEndOffset
-        );
-        const startPos = model.getPositionAt(region.startOffset);
-        const endPos = model.getPositionAt(region.endOffset);
-
-        editorInstance.executeEdits('formatting', [{
-          range: {
-            startLineNumber: startPos.lineNumber,
-            startColumn: startPos.column,
-            endLineNumber: endPos.lineNumber,
-            endColumn: endPos.column,
-          },
-          text: content,
-        }], [new monaco.Selection(
-          startPos.lineNumber, startPos.column,
-          startPos.lineNumber, startPos.column + content.length
-        )]);
-        updateDecorations();
-        return;
-      }
-
-      // WRAP: no existing formatting of this type found at cursor/selection
+      // No selection text — either toggle at cursor or expand to word
       const selectedText = model.getValueInRange(sel);
-
-      // If no selection, expand to word at cursor
       if (!selectedText) {
+        // Cursor inside a formatted region → unwrap it
+        if (overlapping.length === 1) {
+          const region = overlapping[0];
+          const content = fullText.substring(region.contentStartOffset, region.contentEndOffset);
+          const startPos = model.getPositionAt(region.startOffset);
+          const endPos = model.getPositionAt(region.endOffset);
+          editorInstance.executeEdits('formatting', [{
+            range: {
+              startLineNumber: startPos.lineNumber, startColumn: startPos.column,
+              endLineNumber: endPos.lineNumber, endColumn: endPos.column,
+            },
+            text: content,
+          }], [new monaco.Selection(
+            startPos.lineNumber, startPos.column,
+            startPos.lineNumber, startPos.column + content.length
+          )]);
+          updateDecorations();
+          return;
+        }
+
+        // No formatted region at cursor — expand to word and wrap
         const word = model.getWordAtPosition(sel.getPosition());
         if (!word) return;
-
         const wordRange = {
-          startLineNumber: sel.startLineNumber,
-          startColumn: word.startColumn,
-          endLineNumber: sel.startLineNumber,
-          endColumn: word.endColumn,
+          startLineNumber: sel.startLineNumber, startColumn: word.startColumn,
+          endLineNumber: sel.startLineNumber, endColumn: word.endColumn,
         };
         const wordText = model.getValueInRange(wordRange);
         if (!wordText) return;
-
         editorInstance.executeEdits('formatting', [{
           range: wordRange,
           text: `${prefix}${wordText}${suffix}`,
@@ -494,26 +482,82 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         return;
       }
 
-      // Only handle single-line selections for wrapping
-      if (sel.startLineNumber !== sel.endLineNumber) return;
+      // --- Selection exists: handle single-line and multi-line ---
 
-      const match = selectedText.match(/^(\s*)([\s\S]*?)(\s*)$/);
-      const leading = match?.[1] ?? '';
-      const core = match?.[2] ?? '';
-      const trailing = match?.[3] ?? '';
-      if (!core) return;
+      // Determine per-line ranges for the selection
+      const lineInfos: Array<{ lineNumber: number; startCol: number; endCol: number; text: string }> = [];
+      for (let ln = sel.startLineNumber; ln <= sel.endLineNumber; ln++) {
+        const lineContent = model.getLineContent(ln);
+        const startCol = ln === sel.startLineNumber ? sel.startColumn : 1;
+        const endCol = ln === sel.endLineNumber ? sel.endColumn : lineContent.length + 1;
+        const text = model.getValueInRange({
+          startLineNumber: ln, startColumn: startCol,
+          endLineNumber: ln, endColumn: endCol,
+        });
+        lineInfos.push({ lineNumber: ln, startCol, endCol, text });
+      }
 
-      const formatted = `${leading}${prefix}${core}${suffix}${trailing}`;
-      const selectionStart = sel.startColumn + leading.length + prefix.length;
-      const selectionEnd = selectionStart + core.length;
+      // Check which selected lines are fully covered by a formatted region of this type
+      const lineFormatted = lineInfos.map(info => {
+        const lineStartOffset = model.getOffsetAt({ lineNumber: info.lineNumber, column: info.startCol });
+        const lineEndOffset = model.getOffsetAt({ lineNumber: info.lineNumber, column: info.endCol });
+        // A line is "formatted" if there's a region that fully contains its selected text
+        return formattedRanges.find(r =>
+          r.type === formatType &&
+          r.contentStartOffset <= lineStartOffset &&
+          r.contentEndOffset >= lineEndOffset
+        ) || null;
+      });
 
-      editorInstance.executeEdits('formatting', [{
-        range: sel,
-        text: formatted,
-      }], [new monaco.Selection(
-        sel.startLineNumber, selectionStart,
-        sel.startLineNumber, selectionEnd
-      )]);
+      const allFormatted = lineInfos.every((info, i) => {
+        // Consider empty/whitespace lines as "formatted" (don't block unwrap)
+        return !info.text.trim() || lineFormatted[i] !== null;
+      });
+
+      if (allFormatted && overlapping.length > 0) {
+        // UNWRAP all overlapping regions (reverse order to preserve offsets)
+        const edits = [...overlapping].reverse().map(region => {
+          const content = fullText.substring(region.contentStartOffset, region.contentEndOffset);
+          const startPos = model.getPositionAt(region.startOffset);
+          const endPos = model.getPositionAt(region.endOffset);
+          return {
+            range: {
+              startLineNumber: startPos.lineNumber, startColumn: startPos.column,
+              endLineNumber: endPos.lineNumber, endColumn: endPos.column,
+            },
+            text: content,
+          };
+        });
+        editorInstance.executeEdits('formatting', edits);
+        updateDecorations();
+        return;
+      }
+
+      // WRAP: wrap each line that isn't already formatted
+      const edits: Array<{ range: any; text: string }> = [];
+      // Process in reverse line order so earlier edits don't shift offsets
+      for (let i = lineInfos.length - 1; i >= 0; i--) {
+        const info = lineInfos[i];
+        if (!info.text.trim()) continue; // skip empty lines
+        if (lineFormatted[i]) continue; // already formatted, skip
+
+        const match = info.text.match(/^(\s*)([\s\S]*?)(\s*)$/);
+        const leading = match?.[1] ?? '';
+        const core = match?.[2] ?? '';
+        const trailing = match?.[3] ?? '';
+        if (!core) continue;
+
+        edits.push({
+          range: {
+            startLineNumber: info.lineNumber, startColumn: info.startCol,
+            endLineNumber: info.lineNumber, endColumn: info.endCol,
+          },
+          text: `${leading}${prefix}${core}${suffix}${trailing}`,
+        });
+      }
+      if (edits.length > 0) {
+        editorInstance.executeEdits('formatting', edits);
+      }
       updateDecorations();
     };
 
@@ -550,30 +594,213 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
 
       const cursorOffset = model.getOffsetAt(selection.getPosition());
       const formattedRanges = parseMarkdownFormatting(model.getValue());
+
+      // Find region where cursor is inside the content (including boundaries)
       const region = formattedRanges.find((range) =>
-        cursorOffset > range.contentStartOffset && cursorOffset < range.contentEndOffset
+        cursorOffset >= range.contentStartOffset && cursorOffset <= range.contentEndOffset
       );
       if (!region) return;
 
       const marker = region.type === 'bold' ? '**' : region.type === 'underline' ? '__' : '*';
       event.preventDefault();
 
-      editorInstance.executeEdits('formatting', [
-        {
-          range: selection,
-          text: `${marker}\n${marker}`,
-        },
-      ]);
+      if (cursorOffset === region.contentStartOffset) {
+        // Cursor at very start of content (right after opening marker):
+        // Insert a blank line before, keep formatting on current line
+        const markerStart = model.getPositionAt(region.startOffset);
+        editorInstance.executeEdits('formatting', [{
+          range: { startLineNumber: markerStart.lineNumber, startColumn: markerStart.column,
+                   endLineNumber: markerStart.lineNumber, endColumn: markerStart.column },
+          text: '\n',
+        }]);
+        updateDecorations();
+        return;
+      }
+
+      if (cursorOffset === region.contentEndOffset) {
+        // Cursor at very end of content (right before closing marker):
+        // End formatting, start a new plain line
+        const markerEnd = model.getPositionAt(region.endOffset);
+        editorInstance.executeEdits('formatting', [{
+          range: { startLineNumber: markerEnd.lineNumber, startColumn: markerEnd.column,
+                   endLineNumber: markerEnd.lineNumber, endColumn: markerEnd.column },
+          text: '\n',
+        }]);
+        const newPos = model.getPositionAt(region.endOffset + 1);
+        editorInstance.setSelection(new monaco.Selection(
+          newPos.lineNumber, newPos.column, newPos.lineNumber, newPos.column
+        ));
+        updateDecorations();
+        return;
+      }
+
+      // Cursor in the middle: split into two formatted lines
+      editorInstance.executeEdits('formatting', [{
+        range: selection,
+        text: `${marker}\n${marker}`,
+      }]);
 
       const newOffset = cursorOffset + marker.length + 1 + marker.length;
       const newPosition = model.getPositionAt(newOffset);
       editorInstance.setSelection(new monaco.Selection(
-        newPosition.lineNumber,
-        newPosition.column,
-        newPosition.lineNumber,
-        newPosition.column
+        newPosition.lineNumber, newPosition.column,
+        newPosition.lineNumber, newPosition.column
       ));
       updateDecorations();
+    });
+
+    // Backspace handler: merge adjacent formatted lines instead of eating invisible markers
+    editorInstance.onKeyDown((event) => {
+      if (event.keyCode !== monaco.KeyCode.Backspace) return;
+      const selection = editorInstance.getSelection();
+      if (!selection || !selection.isEmpty()) return;
+      const model = editorInstance.getModel();
+      if (!model) return;
+
+      const pos = selection.getPosition();
+      if (pos.column !== 1 || pos.lineNumber <= 1) return;
+
+      const fullText = model.getValue();
+      const cursorOffset = model.getOffsetAt(pos);
+      const formattedRanges = parseMarkdownFormatting(fullText);
+
+      // Find a formatted region ending right before the newline (on previous line)
+      const endingRegion = formattedRanges.find(r =>
+        r.endOffset === cursorOffset - 1 // region ends right before the \n
+      );
+
+      // Find a formatted region starting right at the cursor (on current line)
+      const startingRegion = formattedRanges.find(r =>
+        r.startOffset === cursorOffset
+      );
+
+      if (endingRegion && startingRegion && endingRegion.type === startingRegion.type) {
+        // Both lines formatted with same type: merge them
+        // Replace: closing_marker + \n + opening_marker → space
+        event.preventDefault();
+        const mergeStart = model.getPositionAt(endingRegion.contentEndOffset);
+        const mergeEnd = model.getPositionAt(startingRegion.contentStartOffset);
+        editorInstance.executeEdits('formatting', [{
+          range: {
+            startLineNumber: mergeStart.lineNumber, startColumn: mergeStart.column,
+            endLineNumber: mergeEnd.lineNumber, endColumn: mergeEnd.column,
+          },
+          text: ' ',
+        }]);
+        updateDecorations();
+        return;
+      }
+
+      if (endingRegion && !startingRegion) {
+        // Previous line ends with formatted region, current line is plain:
+        // Join lines cleanly by removing closing_marker + \n
+        event.preventDefault();
+        const joinStart = model.getPositionAt(endingRegion.contentEndOffset);
+        const joinEnd = model.getPositionAt(cursorOffset);
+        editorInstance.executeEdits('formatting', [{
+          range: {
+            startLineNumber: joinStart.lineNumber, startColumn: joinStart.column,
+            endLineNumber: joinEnd.lineNumber, endColumn: joinEnd.column,
+          },
+          text: ' ',
+        }]);
+        updateDecorations();
+        return;
+      }
+
+      if (!endingRegion && startingRegion) {
+        // Previous line is plain, current line starts with formatted region:
+        // Join by removing \n + opening_marker
+        event.preventDefault();
+        const prevLineEnd = model.getPositionAt(cursorOffset - 1); // the \n
+        const contentStart = model.getPositionAt(startingRegion.contentStartOffset);
+        editorInstance.executeEdits('formatting', [{
+          range: {
+            startLineNumber: prevLineEnd.lineNumber, startColumn: prevLineEnd.column,
+            endLineNumber: contentStart.lineNumber, endColumn: contentStart.column,
+          },
+          text: ' ',
+        }]);
+        updateDecorations();
+        return;
+      }
+    });
+
+    // Delete handler: merge adjacent formatted lines when deleting at end of line
+    editorInstance.onKeyDown((event) => {
+      if (event.keyCode !== monaco.KeyCode.Delete) return;
+      const selection = editorInstance.getSelection();
+      if (!selection || !selection.isEmpty()) return;
+      const model = editorInstance.getModel();
+      if (!model) return;
+
+      const pos = selection.getPosition();
+      const lineContent = model.getLineContent(pos.lineNumber);
+      if (pos.column !== lineContent.length + 1) return; // not at end of line
+      if (pos.lineNumber >= model.getLineCount()) return; // no next line
+
+      const fullText = model.getValue();
+      const cursorOffset = model.getOffsetAt(pos);
+      const formattedRanges = parseMarkdownFormatting(fullText);
+
+      // Find a formatted region ending right at cursor (on current line)
+      const endingRegion = formattedRanges.find(r =>
+        r.endOffset === cursorOffset
+      );
+
+      // Find a formatted region starting right after the newline (on next line)
+      const nextLineStart = cursorOffset + 1; // skip the \n
+      const startingRegion = formattedRanges.find(r =>
+        r.startOffset === nextLineStart
+      );
+
+      if (endingRegion && startingRegion && endingRegion.type === startingRegion.type) {
+        // Both lines formatted with same type: merge them
+        event.preventDefault();
+        const mergeStart = model.getPositionAt(endingRegion.contentEndOffset);
+        const mergeEnd = model.getPositionAt(startingRegion.contentStartOffset);
+        editorInstance.executeEdits('formatting', [{
+          range: {
+            startLineNumber: mergeStart.lineNumber, startColumn: mergeStart.column,
+            endLineNumber: mergeEnd.lineNumber, endColumn: mergeEnd.column,
+          },
+          text: ' ',
+        }]);
+        updateDecorations();
+        return;
+      }
+
+      if (endingRegion && !startingRegion) {
+        // Current line ends with formatted, next line is plain:
+        event.preventDefault();
+        const joinStart = model.getPositionAt(endingRegion.contentEndOffset);
+        const nextStart = model.getPositionAt(nextLineStart);
+        editorInstance.executeEdits('formatting', [{
+          range: {
+            startLineNumber: joinStart.lineNumber, startColumn: joinStart.column,
+            endLineNumber: nextStart.lineNumber, endColumn: nextStart.column,
+          },
+          text: ' ',
+        }]);
+        updateDecorations();
+        return;
+      }
+
+      if (!endingRegion && startingRegion) {
+        // Current line is plain, next line starts with formatted:
+        event.preventDefault();
+        const cursorPos = model.getPositionAt(cursorOffset);
+        const contentStart = model.getPositionAt(startingRegion.contentStartOffset);
+        editorInstance.executeEdits('formatting', [{
+          range: {
+            startLineNumber: cursorPos.lineNumber, startColumn: cursorPos.column,
+            endLineNumber: contentStart.lineNumber, endColumn: contentStart.column,
+          },
+          text: ' ',
+        }]);
+        updateDecorations();
+        return;
+      }
     });
 
     // Apply initial decorations
