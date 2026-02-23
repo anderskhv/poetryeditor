@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Layout } from '../components/Layout';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
-import { fetchAnalyticsSummary, fetchAnalyticsTimeseries, type AnalyticsSummary, type AnalyticsTimeseriesPoint } from '../utils/analyticsApi';
+import { fetchAnalyticsData, type AnalyticsSummary, type AnalyticsTimeseriesPoint } from '../utils/analyticsApi';
 import './Analytics.css';
 
 const RANGE_OPTIONS = [
@@ -19,6 +19,7 @@ export function Analytics() {
   const [timeseries, setTimeseries] = useState<AnalyticsTimeseriesPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [usingFallback, setUsingFallback] = useState(false);
 
   const formatDuration = (ms: number) => {
     if (!ms || ms <= 0) return '0s';
@@ -60,11 +61,8 @@ export function Analytics() {
     setLoading(true);
     setError(null);
 
-    Promise.all([
-      fetchAnalyticsSummary(range.start, range.end),
-      fetchAnalyticsTimeseries(range.start, range.end),
-    ])
-      .then(([summaryResult, timeseriesResult]) => {
+    fetchAnalyticsData(range.start, range.end)
+      .then(({ summary: summaryResult, timeseries: timeseriesResult, fallbackUsed }) => {
         if (!summaryResult) {
           setError('Analytics data not available.');
           return;
@@ -82,6 +80,7 @@ export function Analytics() {
         };
         setSummary(normalized);
         setTimeseries(timeseriesResult);
+        setUsingFallback(fallbackUsed);
       })
       .catch(() => setError('Failed to load analytics.'))
       .finally(() => setLoading(false));
@@ -134,6 +133,11 @@ export function Analytics() {
           <div className="analytics-empty">{error}</div>
         ) : summary ? (
           <div className="analytics-stack">
+            {usingFallback && (
+              <div className="analytics-fallback-note">
+                Showing data via lightweight fallback queries. Once the analytics SQL is updated in Supabase, this banner will disappear.
+              </div>
+            )}
             <section className="analytics-section">
               <div className="analytics-section-header">
                 <h2>Overview</h2>
