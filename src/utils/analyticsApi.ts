@@ -8,8 +8,11 @@ export interface AnalyticsSummary {
   bot_sessions: number;
   human_sessions: number;
   top_paths: Array<{ path: string; count: number }>;
+  top_paths_human: Array<{ path: string; count: number }>;
   top_referrers: Array<{ referrer: string; count: number }>;
+  top_referrers_human: Array<{ referrer: string; count: number }>;
   top_devices: Array<{ device: string; count: number }>;
+  top_devices_human: Array<{ device: string; count: number }>;
   top_countries: Array<{ country: string; count: number }>;
   top_countries_human: Array<{ country: string; count: number }>;
   top_bot_user_agents: Array<{ user_agent: string; count: number }>;
@@ -144,12 +147,24 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
     pageviews.map(row => row.path || '/')
   ).map(([path, count]) => ({ path, count }));
 
+  const topPathsHuman: AnalyticsSummary['top_paths_human'] = topCounts(
+    humanPageviews.map(row => row.path || '/')
+  ).map(([path, count]) => ({ path, count }));
+
   const topReferrers: AnalyticsSummary['top_referrers'] = topCounts(
     pageviews.map(row => (row.referrer && row.referrer.length ? row.referrer : '(direct)'))
   ).map(([referrer, count]) => ({ referrer, count }));
 
+  const topReferrersHuman: AnalyticsSummary['top_referrers_human'] = topCounts(
+    humanPageviews.map(row => (row.referrer && row.referrer.length ? row.referrer : '(direct)'))
+  ).map(([referrer, count]) => ({ referrer, count }));
+
   const topDevices: AnalyticsSummary['top_devices'] = topCounts(
     pageviews.map(row => (row.payload?.device as string) || 'unknown')
+  ).map(([device, count]) => ({ device, count }));
+
+  const topDevicesHuman: AnalyticsSummary['top_devices_human'] = topCounts(
+    humanPageviews.map(row => (row.payload?.device as string) || 'unknown')
   ).map(([device, count]) => ({ device, count }));
 
   const topCountries: AnalyticsSummary['top_countries'] = topCounts(
@@ -191,6 +206,9 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
     top_devices: topDevices,
     top_countries: topCountries,
     top_countries_human: topCountriesHuman,
+    top_paths_human: topPathsHuman,
+    top_referrers_human: topReferrersHuman,
+    top_devices_human: topDevicesHuman,
     top_bot_user_agents: topBotAgents,
     avg_page_duration_ms: average(durationEvents.map(row => row.duration_ms || 0)),
     avg_page_duration_human_ms: average(humanDurationEvents.map(row => row.duration_ms || 0)),

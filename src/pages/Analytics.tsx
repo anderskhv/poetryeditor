@@ -245,9 +245,9 @@ export function Analytics() {
                   </div>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Top pages</div>
+                  <div className="analytics-card-label">Top pages (human)</div>
                   <ul>
-                    {summary.top_paths.map(item => (
+                    {(summary.top_paths_human || summary.top_paths).map(item => (
                       <li key={item.path}>
                         <span>{item.path}</span>
                         <span>{item.count}</span>
@@ -256,9 +256,9 @@ export function Analytics() {
                   </ul>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Top referrers</div>
+                  <div className="analytics-card-label">Top referrers (human)</div>
                   <ul>
-                    {summary.top_referrers.map(item => (
+                    {(summary.top_referrers_human || summary.top_referrers).map(item => (
                       <li key={item.referrer}>
                         <span>{item.referrer}</span>
                         <span>{item.count}</span>
@@ -267,9 +267,9 @@ export function Analytics() {
                   </ul>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Devices</div>
+                  <div className="analytics-card-label">Devices (human)</div>
                   <ul>
-                    {summary.top_devices.map(item => (
+                    {(summary.top_devices_human || summary.top_devices).map(item => (
                       <li key={item.device}>
                         <span>{item.device}</span>
                         <span>{item.count}</span>
