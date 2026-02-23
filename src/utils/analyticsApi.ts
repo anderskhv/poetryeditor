@@ -88,15 +88,24 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
   let from = 0;
   const rows: AnalyticsEventRow[] = [];
 
+  const baseFields = 'event_type,path,referrer,user_agent,session_id,payload,created_at';
+  let includeDuration = true;
+
   while (true) {
+    const selectFields = includeDuration ? `${baseFields},duration_ms` : baseFields;
     const { data, error } = await supabase
       .from('analytics_events')
-      .select('event_type,path,referrer,user_agent,session_id,payload,duration_ms,created_at')
+      .select(selectFields)
       .gte('created_at', startIso)
       .lte('created_at', endIso)
       .range(from, from + pageSize - 1);
 
     if (error) {
+      const message = (error.message || '').toLowerCase();
+      if (includeDuration && message.includes('duration_ms') && message.includes('does not exist')) {
+        includeDuration = false;
+        continue;
+      }
       console.error('Failed to fetch analytics fallback rows', error);
       return { summary: null, timeseries: [], errorMessage: error.message || 'Failed to read analytics events' };
     }
