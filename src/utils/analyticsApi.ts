@@ -42,8 +42,8 @@ const average = (values: number[]) => {
   return Math.round(sum / values.length);
 };
 
-export async function fetchAnalyticsSummary(start: Date, end: Date): Promise<AnalyticsSummary | null> {
-  if (!supabase) return null;
+export async function fetchAnalyticsSummary(start: Date, end: Date): Promise<{ data: AnalyticsSummary | null; errorMessage: string | null }> {
+  if (!supabase) return { data: null, errorMessage: 'Supabase client unavailable' };
   const { data, error } = await supabase
     .rpc('get_analytics_summary', {
       start_ts: start.toISOString(),
@@ -53,9 +53,9 @@ export async function fetchAnalyticsSummary(start: Date, end: Date): Promise<Ana
 
   if (error) {
     console.error('Failed to fetch analytics summary', error);
-    return null;
+    return { data: null, errorMessage: error.message || 'Failed to fetch analytics summary' };
   }
-  return data as AnalyticsSummary;
+  return { data: data as AnalyticsSummary, errorMessage: null };
 }
 
 export async function fetchAnalyticsTimeseries(start: Date, end: Date): Promise<AnalyticsTimeseriesPoint[]> {
@@ -76,7 +76,7 @@ export async function fetchAnalyticsTimeseries(start: Date, end: Date): Promise<
 
 const fetchAnalyticsFallback = async (start: Date, end: Date) => {
   if (!supabase) {
-    return { summary: null, timeseries: [] };
+    return { summary: null, timeseries: [], errorMessage: 'Supabase client unavailable' };
   }
 
   const startIso = start.toISOString();
@@ -95,7 +95,7 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
 
     if (error) {
       console.error('Failed to fetch analytics fallback rows', error);
-      return { summary: null, timeseries: [] };
+      return { summary: null, timeseries: [], errorMessage: error.message || 'Failed to read analytics events' };
     }
 
     if (data && data.length) {
@@ -190,11 +190,12 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
       unique_sessions: data.sessions.size,
     }));
 
-  return { summary, timeseries };
+  return { summary, timeseries, errorMessage: null as string | null };
 };
 
 export async function fetchAnalyticsData(start: Date, end: Date) {
-  const summary = await fetchAnalyticsSummary(start, end);
+  const summaryResult = await fetchAnalyticsSummary(start, end);
+  const summary = summaryResult?.data ?? null;
   const timeseries = summary ? await fetchAnalyticsTimeseries(start, end) : [];
 
   if (summary) {
@@ -210,6 +211,8 @@ export async function fetchAnalyticsData(start: Date, end: Date) {
     summary: null,
     timeseries: [],
     fallbackUsed: true,
-    errorMessage: 'Unable to read analytics events. Please confirm the analytics SQL was run in Supabase and that your admin user is in site_admins.',
+    errorMessage: summaryResult?.errorMessage
+      || fallback.errorMessage
+      || 'Unable to read analytics events. Please confirm the analytics SQL was run in Supabase and that your admin user is in site_admins.',
   };
 }
