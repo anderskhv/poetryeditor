@@ -17,6 +17,10 @@ const DIST = path.resolve('dist');
 const SITE = 'https://poetryeditor.com';
 const RHYME_SITEMAP = path.resolve('public/sitemap-rhymes.xml');
 const SYNONYM_SITEMAP = path.resolve('public/sitemap-synonyms.xml');
+// Cloudflare Pages hard limit: 20,000 files per deployment.
+// Keep headroom for all other pages/assets.
+const MAX_RHYME_PAGES = 8000;
+const MAX_SYNONYM_PAGES = 8000;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -584,8 +588,16 @@ async function main() {
   console.log(`  Pre-rendered ${TOOL_PAGES.length} tool pages`);
 
   // 9. Rhyme + synonym word pages (from sitemaps)
-  const rhymeRoutes = loadSitemapRoutes(RHYME_SITEMAP, /\/rhymes\/[^/]+$/);
-  const synonymRoutes = loadSitemapRoutes(SYNONYM_SITEMAP, /\/synonyms\/[^/]+$/);
+  let rhymeRoutes = loadSitemapRoutes(RHYME_SITEMAP, /\/rhymes\/[^/]+$/);
+  let synonymRoutes = loadSitemapRoutes(SYNONYM_SITEMAP, /\/synonyms\/[^/]+$/);
+  if (rhymeRoutes.length > MAX_RHYME_PAGES) {
+    console.log(`  Limiting rhyme pages from ${rhymeRoutes.length} to ${MAX_RHYME_PAGES} for Cloudflare file cap`);
+    rhymeRoutes = rhymeRoutes.slice(0, MAX_RHYME_PAGES);
+  }
+  if (synonymRoutes.length > MAX_SYNONYM_PAGES) {
+    console.log(`  Limiting synonym pages from ${synonymRoutes.length} to ${MAX_SYNONYM_PAGES} for Cloudflare file cap`);
+    synonymRoutes = synonymRoutes.slice(0, MAX_SYNONYM_PAGES);
+  }
 
   for (const route of rhymeRoutes) {
     const slug = route.split('/').pop() || '';
