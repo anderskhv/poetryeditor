@@ -55,6 +55,9 @@ export async function fetchAnalyticsSummary(start: Date, end: Date): Promise<{ d
     console.error('Failed to fetch analytics summary', error);
     return { data: null, errorMessage: error.message || 'Failed to fetch analytics summary' };
   }
+  if (!data) {
+    return { data: null, errorMessage: 'Analytics summary RPC returned no data.' };
+  }
   return { data: data as AnalyticsSummary, errorMessage: null };
 }
 
