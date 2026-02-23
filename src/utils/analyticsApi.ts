@@ -111,7 +111,8 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
     }
 
     if (data && data.length) {
-      rows.push(...(data as AnalyticsEventRow[]));
+      const typedRows = data as unknown as AnalyticsEventRow[];
+      rows.push(...typedRows);
     }
 
     if (!data || data.length < pageSize) {
