@@ -756,6 +756,12 @@ function App() {
     setPoemComments(next);
   }, [activePoemId]);
 
+  const handleEditComment = useCallback(async (commentId: string, text: string) => {
+    if (!activePoemId) return;
+    const next = await updatePoemComment(activePoemId, commentId, { text });
+    setPoemComments(next);
+  }, [activePoemId]);
+
   const handleDeleteComment = useCallback(async (commentId: string) => {
     if (!activePoemId) return;
     const next = await deletePoemComment(activePoemId, commentId);
@@ -1572,6 +1578,7 @@ function App() {
                 comments={poemComments}
                 onResolve={handleResolveComment}
                 onDelete={handleDeleteComment}
+                onEdit={handleEditComment}
                 onJump={handleJumpToComment}
               />
             )}

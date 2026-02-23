@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './CommentsPanel.css';
 import type { PoemComment } from '../utils/poemComments';
 
@@ -5,12 +6,34 @@ interface CommentsPanelProps {
   comments: PoemComment[];
   onResolve: (commentId: string) => void;
   onDelete: (commentId: string) => void;
+  onEdit: (commentId: string, text: string) => void;
   onJump: (comment: PoemComment) => void;
 }
 
-export function CommentsPanel({ comments, onResolve, onDelete, onJump }: CommentsPanelProps) {
+export function CommentsPanel({ comments, onResolve, onDelete, onEdit, onJump }: CommentsPanelProps) {
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState('');
+
   const active = comments.filter(comment => !comment.resolved);
   const resolved = comments.filter(comment => comment.resolved);
+
+  const startEdit = (comment: PoemComment) => {
+    setEditingId(comment.id);
+    setEditText(comment.text);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditText('');
+  };
+
+  const saveEdit = () => {
+    if (editingId && editText.trim()) {
+      onEdit(editingId, editText.trim());
+    }
+    setEditingId(null);
+    setEditText('');
+  };
 
   return (
     <div className="comments-panel">
@@ -32,20 +55,45 @@ export function CommentsPanel({ comments, onResolve, onDelete, onJump }: Comment
             </span>
           </div>
           {comment.quote && (
-            <div className="comment-quote">“{comment.quote}”</div>
+            <div className="comment-quote">&ldquo;{comment.quote}&rdquo;</div>
           )}
-          <div className="comment-text">{comment.text}</div>
-          <div className="comment-actions">
-            <button onClick={() => onJump(comment)} className="comment-action">
-              Jump
-            </button>
-            <button onClick={() => onResolve(comment.id)} className="comment-action">
-              Resolve
-            </button>
-            <button onClick={() => onDelete(comment.id)} className="comment-action danger">
-              Delete
-            </button>
-          </div>
+          {editingId === comment.id ? (
+            <div className="comment-edit">
+              <textarea
+                className="comment-edit-input"
+                value={editText}
+                onChange={e => setEditText(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) saveEdit();
+                  if (e.key === 'Escape') cancelEdit();
+                }}
+                autoFocus
+                rows={3}
+              />
+              <div className="comment-actions">
+                <button onClick={saveEdit} className="comment-action">Save</button>
+                <button onClick={cancelEdit} className="comment-action">Cancel</button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="comment-text">{comment.text}</div>
+              <div className="comment-actions">
+                <button onClick={() => onJump(comment)} className="comment-action">
+                  Jump
+                </button>
+                <button onClick={() => startEdit(comment)} className="comment-action">
+                  Edit
+                </button>
+                <button onClick={() => onResolve(comment.id)} className="comment-action">
+                  Resolve
+                </button>
+                <button onClick={() => onDelete(comment.id)} className="comment-action danger">
+                  Delete
+                </button>
+              </div>
+            </>
+          )}
         </div>
       ))}
 
