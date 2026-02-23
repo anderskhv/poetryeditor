@@ -62,9 +62,9 @@ export function Analytics() {
     setError(null);
 
     fetchAnalyticsData(range.start, range.end)
-      .then(({ summary: summaryResult, timeseries: timeseriesResult, fallbackUsed }) => {
+      .then(({ summary: summaryResult, timeseries: timeseriesResult, fallbackUsed, errorMessage }) => {
         if (!summaryResult) {
-          setError('Analytics data not available.');
+          setError(errorMessage || 'Analytics data not available.');
           return;
         }
         const normalized: AnalyticsSummary = {

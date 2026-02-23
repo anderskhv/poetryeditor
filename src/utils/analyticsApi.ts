@@ -198,9 +198,18 @@ export async function fetchAnalyticsData(start: Date, end: Date) {
   const timeseries = summary ? await fetchAnalyticsTimeseries(start, end) : [];
 
   if (summary) {
-    return { summary, timeseries, fallbackUsed: false };
+    return { summary, timeseries, fallbackUsed: false, errorMessage: null as string | null };
   }
 
   const fallback = await fetchAnalyticsFallback(start, end);
-  return { summary: fallback.summary, timeseries: fallback.timeseries, fallbackUsed: true };
+  if (fallback.summary) {
+    return { summary: fallback.summary, timeseries: fallback.timeseries, fallbackUsed: true, errorMessage: null as string | null };
+  }
+
+  return {
+    summary: null,
+    timeseries: [],
+    fallbackUsed: true,
+    errorMessage: 'Unable to read analytics events. Please confirm the analytics SQL was run in Supabase and that your admin user is in site_admins.',
+  };
 }
