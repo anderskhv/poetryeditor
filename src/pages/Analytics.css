@@ -122,6 +122,22 @@
   color: #6f5c3c;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.analytics-metric-tag {
+  font-size: 10px;
+  text-transform: none;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(132, 108, 73, 0.12);
+  color: #6a5331;
+  border: 1px solid rgba(132, 108, 73, 0.2);
+  font-family: var(--font-sans, system-ui, sans-serif);
 }
 
 .analytics-card-value {

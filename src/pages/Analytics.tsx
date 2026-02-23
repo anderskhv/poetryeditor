@@ -145,28 +145,46 @@ export function Analytics() {
               </div>
               <div className="analytics-grid analytics-grid--overview">
                 <div className="analytics-card analytics-card--hero">
-                  <div className="analytics-card-label">Total pageviews</div>
+                  <div className="analytics-card-label">
+                    Total pageviews
+                    <span className="analytics-metric-tag">Measured</span>
+                  </div>
                   <div className="analytics-card-value">{summary.total_pageviews}</div>
                 </div>
                 <div className="analytics-card analytics-card--hero">
-                  <div className="analytics-card-label">Unique sessions</div>
+                  <div className="analytics-card-label">
+                    Unique sessions
+                    <span className="analytics-metric-tag">Measured</span>
+                  </div>
                   <div className="analytics-card-value">{summary.unique_sessions}</div>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Human pageviews</div>
+                  <div className="analytics-card-label">
+                    Human pageviews
+                    <span className="analytics-metric-tag">Bot‑filtered</span>
+                  </div>
                   <div className="analytics-card-value">{summary.human_pageviews}</div>
                   <div className="analytics-card-sub">Bots excluded</div>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Bot pageviews</div>
+                  <div className="analytics-card-label">
+                    Bot pageviews
+                    <span className="analytics-metric-tag">Detected</span>
+                  </div>
                   <div className="analytics-card-value">{summary.bot_pageviews}</div>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Human sessions</div>
+                  <div className="analytics-card-label">
+                    Human sessions
+                    <span className="analytics-metric-tag">Bot‑filtered</span>
+                  </div>
                   <div className="analytics-card-value">{summary.human_sessions}</div>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Bot sessions</div>
+                  <div className="analytics-card-label">
+                    Bot sessions
+                    <span className="analytics-metric-tag">Detected</span>
+                  </div>
                   <div className="analytics-card-value">{summary.bot_sessions}</div>
                 </div>
               </div>
@@ -179,14 +197,20 @@ export function Analytics() {
               </div>
               <div className="analytics-grid analytics-grid--engagement">
                 <div className="analytics-card analytics-card--focus">
-                  <div className="analytics-card-label">Avg time on page</div>
+                  <div className="analytics-card-label">
+                    Avg time on page
+                    <span className="analytics-metric-tag">Measured</span>
+                  </div>
                   <div className="analytics-card-value">{formatDuration(summary.avg_page_duration_ms)}</div>
                   <div className="analytics-card-sub">
                     Humans: {formatDuration(summary.avg_page_duration_human_ms)}
                   </div>
                 </div>
                 <div className="analytics-card analytics-card--focus">
-                  <div className="analytics-card-label">Avg session length</div>
+                  <div className="analytics-card-label">
+                    Avg session length
+                    <span className="analytics-metric-tag">Measured</span>
+                  </div>
                   <div className="analytics-card-value">{formatDuration(summary.avg_session_duration_ms)}</div>
                   <div className="analytics-card-sub">
                     Humans: {formatDuration(summary.avg_session_duration_human_ms)}
