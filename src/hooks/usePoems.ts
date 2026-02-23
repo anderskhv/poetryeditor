@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
-import type { Poem, PoemInsert } from '../types/database';
+import type { Poem, PoemInsert, PoemFormatting } from '../types/database';
 
 export function usePoems(collectionId: string | undefined) {
   const [poems, setPoems] = useState<Poem[]>([]);
@@ -176,7 +176,7 @@ export function usePoems(collectionId: string | undefined) {
     }
   };
 
-  const updatePoem = async (id: string, updates: { title?: string; content?: string }): Promise<boolean> => {
+  const updatePoem = async (id: string, updates: { title?: string; content?: string; formatting?: PoemFormatting | null }): Promise<boolean> => {
     if (!supabase) return false;
     try {
       const { error } = await supabase
@@ -327,7 +327,7 @@ export function usePoem(poemId: string | undefined) {
     fetchPoem();
   }, [fetchPoem]);
 
-  const updatePoem = async (updates: { title?: string; content?: string }): Promise<boolean> => {
+  const updatePoem = async (updates: { title?: string; content?: string; formatting?: PoemFormatting | null }): Promise<boolean> => {
     if (!poemId || !supabase) return false;
 
     try {

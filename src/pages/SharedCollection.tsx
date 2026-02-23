@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { fetchSharedCollection, type SharedCollectionPayload } from '../utils/sharedCollections';
+import { getFontFamily, getFontOption } from '../utils/fontOptions';
+import type { PoemFormatting } from '../types/database';
 import './SharedCollection.css';
 
 const escapeHtml = (value: string) =>
@@ -12,6 +14,24 @@ const escapeHtml = (value: string) =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+
+const LINE_SPACING_MAP: Record<string, string> = {
+  normal: '1.8',
+  relaxed: '2.2',
+  spacious: '2.8',
+};
+
+function getFormattingStyle(fmt: PoemFormatting | null | undefined): React.CSSProperties {
+  if (!fmt) return {};
+  const style: React.CSSProperties = {};
+  if (fmt.align && fmt.align !== 'left') style.textAlign = fmt.align;
+  if (fmt.font) style.fontFamily = getFontFamily(fmt.font);
+  if (fmt.lineSpacing && fmt.lineSpacing !== 'normal') {
+    style.lineHeight = LINE_SPACING_MAP[fmt.lineSpacing] || '1.8';
+  }
+  if (fmt.firstLineIndent) style.textIndent = '2em';
+  return style;
+}
 
 const renderMarkdownToHtml = (value: string) => {
   const escaped = escapeHtml(value);
@@ -116,6 +136,23 @@ export function SharedCollection() {
   const selectedPoem = useMemo(() => {
     return poemOrder.find(poem => poem.id === selectedPoemId) || null;
   }, [poemOrder, selectedPoemId]);
+
+  // Load Google Font for selected poem's formatting
+  useEffect(() => {
+    const fmt = selectedPoem?.formatting;
+    if (!fmt?.font) return;
+    const fontOpt = getFontOption(fmt.font);
+    if (!fontOpt?.googleFont) return;
+
+    const linkId = `shared-font-${fontOpt.id}`;
+    if (document.getElementById(linkId)) return;
+
+    const link = document.createElement('link');
+    link.id = linkId;
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?family=${fontOpt.googleFont}&display=swap`;
+    document.head.appendChild(link);
+  }, [selectedPoem]);
 
   const commentList = useMemo(() => {
     const list: Array<{
@@ -311,6 +348,7 @@ export function SharedCollection() {
                       </div>
                       <div
                         className="shared-poem-content"
+                        style={getFormattingStyle(selectedPoem.formatting)}
                         dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(selectedPoem.content) }}
                       />
                       {showComments && (commentsByPoem.get(selectedPoem.id) || []).length > 0 && (

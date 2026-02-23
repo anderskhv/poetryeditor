@@ -28,6 +28,7 @@ import { EmbedPage } from './pages/EmbedPage';
 import { ResetPassword } from './pages/ResetPassword';
 import { SharedCollection } from './pages/SharedCollection';
 import { Analytics } from './pages/Analytics';
+import { RouteError } from './components/RouteError';
 
 export const router = createBrowserRouter([
   {
@@ -203,5 +204,6 @@ export const router = createBrowserRouter([
   {
     path: '/analytics',
     element: <Analytics />,
+    errorElement: <RouteError title="Analytics error" message="There was a problem loading analytics. Please refresh or try again in a moment." />,
   },
 ]);

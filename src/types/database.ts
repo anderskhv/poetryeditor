@@ -1,5 +1,12 @@
 // Database types for Supabase tables
 
+export interface PoemFormatting {
+  align?: 'left' | 'center' | 'right';
+  font?: string;
+  lineSpacing?: 'normal' | 'relaxed' | 'spacious';
+  firstLineIndent?: boolean;
+}
+
 export interface Collection {
   id: string;
   user_id: string;
@@ -25,6 +32,7 @@ export interface Poem {
   content: string;
   filename: string | null;
   sort_order: number;
+  formatting?: PoemFormatting | null;
   created_at: string;
   updated_at: string;
 }
@@ -48,4 +56,5 @@ export interface PoemInsert {
   content: string;
   filename?: string | null;
   sort_order?: number;
+  formatting?: PoemFormatting | null;
 }

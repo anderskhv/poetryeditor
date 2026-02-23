@@ -1,0 +1,20 @@
+.route-error {
+  max-width: 720px;
+  margin: 4rem auto;
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 12px;
+  background: var(--color-paper, #fff);
+}
+
+.route-error h1 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-weight: 400;
+  margin-bottom: 0.75rem;
+}
+
+.route-error p {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  color: var(--color-text-muted, #666);
+}

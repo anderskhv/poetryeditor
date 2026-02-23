@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import type { PoemFormatting } from '../types/database';
 
 export interface CollectionShare {
   id: string;
@@ -34,6 +35,7 @@ export interface SharedCollectionPayload {
     title: string;
     content: string;
     sort_order: number;
+    formatting?: PoemFormatting | null;
     created_at: string;
     updated_at: string;
   }>;
