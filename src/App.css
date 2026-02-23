@@ -514,6 +514,13 @@
   border-color: var(--color-text-muted);
 }
 
+@media (pointer: coarse) {
+  .text-style-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
 .tools-menu {
   position: absolute;
   top: 100%;

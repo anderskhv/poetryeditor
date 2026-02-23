@@ -664,15 +664,18 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       const cursorOffset = model.getOffsetAt(pos);
       const formattedRanges = parseMarkdownFormatting(fullText);
 
-      // Find a formatted region ending right before the newline (on previous line)
-      const endingRegion = formattedRanges.find(r =>
-        r.endOffset === cursorOffset - 1 // region ends right before the \n
-      );
+      // Find a formatted region on the previous line (ends anywhere on that line)
+      const prevLine = pos.lineNumber - 1;
+      const endingRegion = formattedRanges.find(r => {
+        const endPos = model.getPositionAt(r.endOffset);
+        return endPos.lineNumber === prevLine;
+      });
 
-      // Find a formatted region starting right at the cursor (on current line)
-      const startingRegion = formattedRanges.find(r =>
-        r.startOffset === cursorOffset
-      );
+      // Find a formatted region starting on the current line
+      const startingRegion = formattedRanges.find(r => {
+        const startPos = model.getPositionAt(r.startOffset);
+        return startPos.lineNumber === pos.lineNumber;
+      });
 
       if (endingRegion && startingRegion && endingRegion.type === startingRegion.type) {
         // Both lines formatted with same type: merge them
@@ -743,16 +746,18 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       const cursorOffset = model.getOffsetAt(pos);
       const formattedRanges = parseMarkdownFormatting(fullText);
 
-      // Find a formatted region ending right at cursor (on current line)
-      const endingRegion = formattedRanges.find(r =>
-        r.endOffset === cursorOffset
-      );
+      // Find a formatted region on the current line
+      const endingRegion = formattedRanges.find(r => {
+        const endPos = model.getPositionAt(r.endOffset);
+        return endPos.lineNumber === pos.lineNumber;
+      });
 
-      // Find a formatted region starting right after the newline (on next line)
-      const nextLineStart = cursorOffset + 1; // skip the \n
-      const startingRegion = formattedRanges.find(r =>
-        r.startOffset === nextLineStart
-      );
+      // Find a formatted region starting on the next line
+      const nextLine = pos.lineNumber + 1;
+      const startingRegion = formattedRanges.find(r => {
+        const startPos = model.getPositionAt(r.startOffset);
+        return startPos.lineNumber === nextLine;
+      });
 
       if (endingRegion && startingRegion && endingRegion.type === startingRegion.type) {
         // Both lines formatted with same type: merge them
@@ -774,7 +779,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         // Current line ends with formatted, next line is plain:
         event.preventDefault();
         const joinStart = model.getPositionAt(endingRegion.contentEndOffset);
-        const nextStart = model.getPositionAt(nextLineStart);
+        const nextStart = { lineNumber: nextLine, column: 1 };
         editorInstance.executeEdits('formatting', [{
           range: {
             startLineNumber: joinStart.lineNumber, startColumn: joinStart.column,
@@ -1641,48 +1646,62 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
     // translateX moves pixels visually but Monaco resolves click coordinates
     // against the un-transformed layout, so cursor snaps to end-of-line.
     // We re-dispatch with adjusted clientX so Monaco gets correct coordinates.
-    const adjustMouseEvent = (e: MouseEvent) => {
-      const span = (e.target as HTMLElement).closest('.view-line > span') as HTMLElement | null;
+    const adjustEvent = (e: Event) => {
+      const me = e as MouseEvent;
+      const span = (me.target as HTMLElement).closest('.view-line > span') as HTMLElement | null;
       if (!span?.style.transform) return;
-      const match = span.style.transform.match(/translateX\(([0-9.]+)px\)/);
+      const match = span.style.transform.match(/translateX\((-?[\d.]+)px\)/);
       if (!match) return;
       const offset = parseFloat(match[1]);
       if (!offset) return;
 
       e.stopImmediatePropagation();
 
-      const adjusted = new MouseEvent(e.type, {
-        bubbles: e.bubbles,
-        cancelable: e.cancelable,
-        view: e.view,
-        detail: e.detail,
-        screenX: e.screenX - offset,
-        screenY: e.screenY,
-        clientX: e.clientX - offset,
-        clientY: e.clientY,
-        ctrlKey: e.ctrlKey,
-        altKey: e.altKey,
-        shiftKey: e.shiftKey,
-        metaKey: e.metaKey,
-        button: e.button,
-        buttons: e.buttons,
-        relatedTarget: e.relatedTarget,
-      });
+      const commonInit = {
+        bubbles: me.bubbles,
+        cancelable: me.cancelable,
+        view: me.view,
+        detail: me.detail,
+        screenX: me.screenX - offset,
+        screenY: me.screenY,
+        clientX: me.clientX - offset,
+        clientY: me.clientY,
+        ctrlKey: me.ctrlKey,
+        altKey: me.altKey,
+        shiftKey: me.shiftKey,
+        metaKey: me.metaKey,
+        button: me.button,
+        buttons: me.buttons,
+        relatedTarget: me.relatedTarget,
+      };
+
+      // Create the right event type so Monaco's internal listeners match
+      const adjusted = e instanceof PointerEvent
+        ? new PointerEvent(e.type, {
+            ...commonInit,
+            pointerId: (e as PointerEvent).pointerId,
+            pointerType: (e as PointerEvent).pointerType,
+            width: (e as PointerEvent).width,
+            height: (e as PointerEvent).height,
+            pressure: (e as PointerEvent).pressure,
+            isPrimary: (e as PointerEvent).isPrimary,
+          })
+        : new MouseEvent(e.type, commonInit);
 
       // Temporarily remove listener to prevent infinite loop
       editorDom.removeEventListener(e.type, handler, true);
-      (e.target as HTMLElement).dispatchEvent(adjusted);
+      (me.target as HTMLElement).dispatchEvent(adjusted);
       editorDom.addEventListener(e.type, handler, true);
     };
-    const handler = adjustMouseEvent as EventListener;
+    const handler = adjustEvent as EventListener;
 
-    editorDom.addEventListener('mousedown', handler, true);
+    editorDom.addEventListener('pointerdown', handler, true);
     editorDom.addEventListener('dblclick', handler, true);
 
     return () => {
       observer.disconnect();
       layoutDisposable.dispose();
-      editorDom.removeEventListener('mousedown', handler, true);
+      editorDom.removeEventListener('pointerdown', handler, true);
       editorDom.removeEventListener('dblclick', handler, true);
       clearTransforms();
     };

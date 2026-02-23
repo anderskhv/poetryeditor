@@ -136,6 +136,13 @@
   border-color: rgba(168, 69, 69, 0.6);
 }
 
+@media (pointer: coarse) {
+  .comment-action {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
 .comments-resolved {
   margin-top: 16px;
 }
