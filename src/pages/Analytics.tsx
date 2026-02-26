@@ -20,6 +20,7 @@ export function Analytics() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [usingFallback, setUsingFallback] = useState(false);
+  const [showBots, setShowBots] = useState(false);
 
   const formatDuration = (ms: number) => {
     if (!ms || ms <= 0) return '0s';
@@ -112,23 +113,32 @@ export function Analytics() {
         <header className="analytics-header">
           <div>
             <h1>Site Analytics</h1>
-            <p>Privacy‑friendly, no cookies.</p>
+            <p>Human traffic only. Privacy-friendly, no cookies.</p>
           </div>
-          <select
-            className="analytics-range"
-            value={rangeDays}
-            onChange={(e) => setRangeDays(Number(e.target.value))}
-          >
-            {RANGE_OPTIONS.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          <div className="analytics-header-controls">
+            <select
+              className="analytics-range"
+              value={rangeDays}
+              onChange={(e) => setRangeDays(Number(e.target.value))}
+            >
+              {RANGE_OPTIONS.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <button
+              className={`analytics-bot-toggle ${showBots ? 'analytics-bot-toggle--active' : ''}`}
+              onClick={() => setShowBots(!showBots)}
+              type="button"
+            >
+              {showBots ? 'Hide bots' : 'Show bots'}
+            </button>
+          </div>
         </header>
 
         {loading ? (
-          <div className="analytics-empty">Loading analytics…</div>
+          <div className="analytics-empty">Loading analytics...</div>
         ) : error ? (
           <div className="analytics-empty">
             <div>{error}</div>
@@ -146,91 +156,73 @@ export function Analytics() {
                 Showing data via lightweight fallback queries. Once the analytics SQL is updated in Supabase, this banner will disappear.
               </div>
             )}
+
+            {/* Overview */}
             <section className="analytics-section">
               <div className="analytics-section-header">
                 <h2>Overview</h2>
-                <span className="analytics-section-meta">Bots separated</span>
               </div>
               <div className="analytics-grid analytics-grid--overview">
                 <div className="analytics-card analytics-card--hero">
-                  <div className="analytics-card-label">
-                    Total pageviews
-                    <span className="analytics-metric-tag">Measured</span>
-                  </div>
-                  <div className="analytics-card-value">{summary.total_pageviews}</div>
+                  <div className="analytics-card-label">Pageviews</div>
+                  <div className="analytics-card-value">{summary.human_pageviews}</div>
                 </div>
                 <div className="analytics-card analytics-card--hero">
-                  <div className="analytics-card-label">
-                    Unique sessions
-                    <span className="analytics-metric-tag">Measured</span>
-                  </div>
-                  <div className="analytics-card-value">{summary.unique_sessions}</div>
-                </div>
-                <div className="analytics-card">
-                  <div className="analytics-card-label">
-                    Human pageviews
-                    <span className="analytics-metric-tag">Bot‑filtered</span>
-                  </div>
-                  <div className="analytics-card-value">{summary.human_pageviews}</div>
-                  <div className="analytics-card-sub">Bots excluded</div>
-                </div>
-                <div className="analytics-card">
-                  <div className="analytics-card-label">
-                    Bot pageviews
-                    <span className="analytics-metric-tag">Detected</span>
-                  </div>
-                  <div className="analytics-card-value">{summary.bot_pageviews}</div>
-                </div>
-                <div className="analytics-card">
-                  <div className="analytics-card-label">
-                    Human sessions
-                    <span className="analytics-metric-tag">Bot‑filtered</span>
-                  </div>
+                  <div className="analytics-card-label">Unique sessions</div>
                   <div className="analytics-card-value">{summary.human_sessions}</div>
                 </div>
-                <div className="analytics-card">
-                  <div className="analytics-card-label">
-                    Bot sessions
-                    <span className="analytics-metric-tag">Detected</span>
-                  </div>
-                  <div className="analytics-card-value">{summary.bot_sessions}</div>
-                </div>
+                {showBots && (
+                  <>
+                    <div className="analytics-card analytics-card--subtle">
+                      <div className="analytics-card-label">
+                        Bot pageviews
+                        <span className="analytics-metric-tag">Bots</span>
+                      </div>
+                      <div className="analytics-card-value">{summary.bot_pageviews}</div>
+                    </div>
+                    <div className="analytics-card analytics-card--subtle">
+                      <div className="analytics-card-label">
+                        Bot sessions
+                        <span className="analytics-metric-tag">Bots</span>
+                      </div>
+                      <div className="analytics-card-value">{summary.bot_sessions}</div>
+                    </div>
+                  </>
+                )}
               </div>
             </section>
 
+            {/* Engagement */}
             <section className="analytics-section">
               <div className="analytics-section-header">
                 <h2>Engagement</h2>
-                <span className="analytics-section-meta">Time-based signals</span>
               </div>
               <div className="analytics-grid analytics-grid--engagement">
                 <div className="analytics-card analytics-card--focus">
-                  <div className="analytics-card-label">
-                    Avg time on page
-                    <span className="analytics-metric-tag">Measured</span>
-                  </div>
-                  <div className="analytics-card-value">{formatDuration(summary.avg_page_duration_ms)}</div>
-                  <div className="analytics-card-sub">
-                    Humans: {formatDuration(summary.avg_page_duration_human_ms)}
-                  </div>
+                  <div className="analytics-card-label">Avg time on page</div>
+                  <div className="analytics-card-value">{formatDuration(summary.avg_page_duration_human_ms)}</div>
+                  {showBots && (
+                    <div className="analytics-card-sub">
+                      Including bots: {formatDuration(summary.avg_page_duration_ms)}
+                    </div>
+                  )}
                 </div>
                 <div className="analytics-card analytics-card--focus">
-                  <div className="analytics-card-label">
-                    Avg session length
-                    <span className="analytics-metric-tag">Measured</span>
-                  </div>
-                  <div className="analytics-card-value">{formatDuration(summary.avg_session_duration_ms)}</div>
-                  <div className="analytics-card-sub">
-                    Humans: {formatDuration(summary.avg_session_duration_human_ms)}
-                  </div>
+                  <div className="analytics-card-label">Avg session length</div>
+                  <div className="analytics-card-value">{formatDuration(summary.avg_session_duration_human_ms)}</div>
+                  {showBots && (
+                    <div className="analytics-card-sub">
+                      Including bots: {formatDuration(summary.avg_session_duration_ms)}
+                    </div>
+                  )}
                 </div>
               </div>
             </section>
 
+            {/* Traffic & Sources */}
             <section className="analytics-section">
               <div className="analytics-section-header">
                 <h2>Traffic & Sources</h2>
-                <span className="analytics-section-meta">Where attention comes from</span>
               </div>
               <div className="analytics-grid analytics-grid--sources">
                 <div className="analytics-card analytics-chart">
@@ -245,7 +237,7 @@ export function Analytics() {
                   </div>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Top pages (human)</div>
+                  <div className="analytics-card-label">Top pages</div>
                   <ul>
                     {(summary.top_paths_human || summary.top_paths).map(item => (
                       <li key={item.path}>
@@ -256,7 +248,7 @@ export function Analytics() {
                   </ul>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Top referrers (human)</div>
+                  <div className="analytics-card-label">Top referrers</div>
                   <ul>
                     {(summary.top_referrers_human || summary.top_referrers).map(item => (
                       <li key={item.referrer}>
@@ -267,7 +259,7 @@ export function Analytics() {
                   </ul>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Devices (human)</div>
+                  <div className="analytics-card-label">Devices</div>
                   <ul>
                     {(summary.top_devices_human || summary.top_devices).map(item => (
                       <li key={item.device}>
@@ -278,7 +270,7 @@ export function Analytics() {
                   </ul>
                 </div>
                 <div className="analytics-card">
-                  <div className="analytics-card-label">Countries (human)</div>
+                  <div className="analytics-card-label">Countries</div>
                   <ul>
                     {(summary.top_countries_human || []).map(item => (
                       <li key={item.country}>
@@ -288,17 +280,22 @@ export function Analytics() {
                     ))}
                   </ul>
                 </div>
-                <div className="analytics-card analytics-card--bots analytics-card--subtle">
-                  <div className="analytics-card-label">Bot traffic (top agents)</div>
-                  <ul>
-                    {(summary.top_bot_user_agents || []).map(item => (
-                      <li key={item.user_agent}>
-                        <span>{item.user_agent}</span>
-                        <span>{item.count}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {showBots && (
+                  <div className="analytics-card analytics-card--bots analytics-card--subtle">
+                    <div className="analytics-card-label">
+                      Bot traffic (top agents)
+                      <span className="analytics-metric-tag">Bots</span>
+                    </div>
+                    <ul>
+                      {(summary.top_bot_user_agents || []).map(item => (
+                        <li key={item.user_agent}>
+                          <span>{item.user_agent}</span>
+                          <span>{item.count}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </section>
           </div>

@@ -14,6 +14,7 @@ let currentPath = '';
 let trackingInitialized = false;
 let countryPromise: Promise<string> | null = null;
 let heartbeatTimer: number | null = null;
+let cumulativeDuration = 0;
 
 const getDeviceType = (userAgent: string) => {
   if (!userAgent) return 'unknown';
@@ -40,8 +41,10 @@ const getCountryCode = async () => {
   return countryPromise;
 };
 
+const MIN_DURATION_MS = 1000;
+
 const sendDuration = async (path: string, durationMs: number, userId?: string | null) => {
-  if (isDev || !supabase || !path || durationMs <= 0) return;
+  if (isDev || !supabase || !path || durationMs < MIN_DURATION_MS) return;
   try {
     await supabase.from('analytics_events').insert({
       event_type: 'page_duration',
@@ -60,9 +63,11 @@ const sendDuration = async (path: string, durationMs: number, userId?: string | 
 
 const flushDuration = (userId?: string | null) => {
   if (!currentPath || pageStart === null) return;
-  const duration = Date.now() - pageStart;
+  const elapsed = Date.now() - pageStart;
+  const totalDuration = cumulativeDuration + elapsed;
   pageStart = null;
-  sendDuration(currentPath, duration, userId);
+  cumulativeDuration = 0;
+  sendDuration(currentPath, totalDuration, userId);
 };
 
 const ensureDurationTracking = (userId?: string | null) => {
@@ -80,13 +85,17 @@ const startHeartbeat = (userId?: string | null) => {
   if (typeof window === 'undefined') return;
   if (heartbeatTimer) {
     window.clearInterval(heartbeatTimer);
+    heartbeatTimer = null;
   }
   heartbeatTimer = window.setInterval(() => {
     if (!currentPath || pageStart === null) return;
-    const duration = Date.now() - pageStart;
-    if (duration < 15000) return;
+    const elapsed = Date.now() - pageStart;
+    const totalDuration = cumulativeDuration + elapsed;
+    if (totalDuration < 15000) return;
+    // Send cumulative duration and reset tracking for next interval
+    cumulativeDuration += elapsed;
     pageStart = Date.now();
-    sendDuration(currentPath, duration, userId);
+    sendDuration(currentPath, cumulativeDuration, userId);
   }, 30000);
 };
 
@@ -99,6 +108,7 @@ export async function trackPageview(path: string, userId?: string | null) {
   lastPath = path;
   currentPath = path;
   pageStart = Date.now();
+  cumulativeDuration = 0;
   ensureDurationTracking(userId);
   startHeartbeat(userId);
 

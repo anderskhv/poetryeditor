@@ -179,7 +179,8 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
     botPageviews.map(row => (row.user_agent && row.user_agent.length ? row.user_agent : 'unknown'))
   ).map(([user_agent, count]) => ({ user_agent, count }));
 
-  const durationEvents = rows.filter(row => row.event_type === 'page_duration' && row.duration_ms != null);
+  const MIN_MEANINGFUL_DURATION = 1000;
+  const durationEvents = rows.filter(row => row.event_type === 'page_duration' && row.duration_ms != null && row.duration_ms >= MIN_MEANINGFUL_DURATION);
   const humanDurationEvents = durationEvents.filter(row => !isBot(row));
   const sessionDurations = new Map<string, number>();
   const sessionDurationsHuman = new Map<string, number>();
