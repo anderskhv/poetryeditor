@@ -25,6 +25,7 @@ import { getAllPoems } from './data/poems';
 import { addPoemComment, deletePoemComment, fetchPoemComments, updatePoemComment, type PoemComment, type CommentRange } from './utils/poemComments';
 import { trackPageview } from './utils/analytics';
 import { FONT_OPTIONS } from './utils/fontOptions';
+import { exportPoemAsPdf } from './utils/pdfExport';
 import type { PoemFormatting } from './types/database';
 import './App.css';
 
@@ -1044,6 +1045,22 @@ function App() {
                         >
                           Word (.doc)
                         </button>
+                        <button
+                          className="export-submenu-item"
+                          onClick={() => {
+                            exportPoemAsPdf({
+                              title: poemTitle,
+                              text,
+                              authorName: user?.email?.split('@')[0] || '',
+                              align: paragraphAlign,
+                              lineSpacing,
+                            });
+                            setShowExportMenu(false);
+                            setShowExportOptions(false);
+                          }}
+                        >
+                          PDF (.pdf)
+                        </button>
                       </div>
                     )}
                   </div>
@@ -1395,6 +1412,21 @@ function App() {
                     }}
                   >
                     Export as Word
+                  </button>
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      exportPoemAsPdf({
+                        title: poemTitle,
+                        text,
+                        authorName: user?.email?.split('@')[0] || '',
+                        align: paragraphAlign,
+                        lineSpacing,
+                      });
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    Export as PDF
                   </button>
                   <div className="mobile-overflow-item submenu-label">Theme</div>
                   <button

@@ -21,6 +21,7 @@ import { analyzeCliches } from '../utils/phraseClicheDetector';
 import { analyzeAbstractConcrete } from '../utils/abstractConcreteAnalyzer';
 import { detectFirstDraftPhrases } from '../utils/firstDraftPhrases';
 import { detectDeadMetaphors, getCategoryDisplayName } from '../utils/deadMetaphors';
+import { generateAnalysisSummary, type SummaryItem } from '../utils/analysisSummary';
 import { HelpTooltip, HELP_CONTENT } from './HelpTooltip';
 import { SynonymMiniPopup } from './SynonymMiniPopup';
 import './AnalysisPanel.css';
@@ -319,6 +320,31 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
       deadMetaphorAnalysis,
     };
   }, [text, words, selectedForm, cmuReady]);
+
+  // Generate natural language summary from analysis data
+  const summaryItems = useMemo((): SummaryItem[] => {
+    if (analysis.totalWords < 3) return [];
+    return generateAnalysisSummary({
+      totalWords: analysis.totalWords,
+      nonEmptyLines: analysis.nonEmptyLines,
+      stanzaCount: analysis.stanzaCount,
+      detectedMeter: analysis.detectedMeter,
+      isFreeOrMixed: analysis.isFreeOrMixed,
+      medianSyllableCount: analysis.medianSyllableCount,
+      violatingLines: analysis.violatingLines,
+      activeForm: analysis.activeForm,
+      rhymeScheme: analysis.rhymeScheme,
+      rhymeCompliance: analysis.rhymeCompliance,
+      soundPatterns: analysis.soundPatterns,
+      clicheAnalysis: analysis.clicheAnalysis,
+      firstDraftAnalysis: analysis.firstDraftAnalysis,
+      passiveVoiceInstances: analysis.passiveVoiceInstances,
+      repetitionResults: analysis.repetitionResults,
+      abstractConcreteAnalysis: analysis.abstractConcreteAnalysis,
+      meterConsistency: analysis.meterConsistency,
+      rhythmVariation: analysis.rhythmVariation,
+    });
+  }, [analysis]);
 
   const formatTimeSince = (date: Date) => {
     const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
@@ -2082,6 +2108,24 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
           })()}
         </div>
       </div>
+
+      {/* AI Summary */}
+      {summaryItems.length > 0 && (
+        <div className="analysis-section analysis-summary">
+          <div className="summary-items">
+            {summaryItems.map((item, idx) => (
+              <div key={idx} className={`summary-item summary-${item.sentiment}`}>
+                <span className="summary-indicator">
+                  {item.sentiment === 'positive' ? '+'
+                    : item.sentiment === 'suggestion' ? '\u2192'
+                    : '\u2014'}
+                </span>
+                <span className="summary-text">{item.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Category tabs */}
       <div className="category-tabs">

@@ -17,6 +17,8 @@ import { LearnHaiku } from './pages/learn/LearnHaiku';
 import { LearnSonnet } from './pages/learn/LearnSonnet';
 import { LearnFreeVerse } from './pages/learn/LearnFreeVerse';
 import { LearnScansion } from './pages/learn/LearnScansion';
+import { LearnRhymeTypes } from './pages/learn/LearnRhymeTypes';
+import { LearnMeter } from './pages/learn/LearnMeter';
 import { PoemPage } from './pages/poems/PoemPage';
 import { PoemsListPage } from './pages/poems/PoemsListPage';
 import { RhymeSchemePage } from './pages/RhymeSchemePage';
@@ -160,6 +162,14 @@ export const router = createBrowserRouter([
   {
     path: '/learn/scansion',
     element: <LearnScansion />,
+  },
+  {
+    path: '/learn/rhyme-types',
+    element: <LearnRhymeTypes />,
+  },
+  {
+    path: '/learn/meter',
+    element: <LearnMeter />,
   },
   // Poem analysis pages
   {

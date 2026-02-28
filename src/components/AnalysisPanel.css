@@ -821,6 +821,52 @@
   color: #666;
 }
 
+/* Analysis Summary - coaching feedback */
+.analysis-summary {
+  margin-bottom: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.summary-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summary-item {
+  display: flex;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--color-text-secondary, #555);
+}
+
+.summary-indicator {
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.summary-positive .summary-indicator {
+  color: var(--color-ink-base, #333);
+}
+
+.summary-suggestion .summary-indicator {
+  color: var(--color-text-muted, #888);
+}
+
+.summary-neutral .summary-indicator {
+  color: var(--color-text-muted, #888);
+}
+
+.summary-text {
+  flex: 1;
+}
+
 /* Category tabs - quiet, editorial */
 .category-tabs {
   display: flex;
