@@ -41,6 +41,12 @@ type AnalyticsEventRow = {
   created_at: string;
 };
 
+const extractDurationMs = (row: AnalyticsEventRow) => {
+  if (typeof row.duration_ms === 'number') return row.duration_ms;
+  const payloadDuration = row.payload?.duration_ms;
+  return typeof payloadDuration === 'number' ? payloadDuration : null;
+};
+
 const average = (values: number[]) => {
   if (!values.length) return 0;
   const sum = values.reduce((acc, val) => acc + val, 0);
@@ -180,19 +186,25 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
   ).map(([user_agent, count]) => ({ user_agent, count }));
 
   const MIN_MEANINGFUL_DURATION = 1000;
-  const durationEvents = rows.filter(row => row.event_type === 'page_duration' && row.duration_ms != null && row.duration_ms >= MIN_MEANINGFUL_DURATION);
+  const durationEvents = rows.filter(row => {
+    if (row.event_type !== 'page_duration') return false;
+    const duration = extractDurationMs(row);
+    return duration != null && duration >= MIN_MEANINGFUL_DURATION;
+  });
   const humanDurationEvents = durationEvents.filter(row => !isBot(row));
   const sessionDurations = new Map<string, number>();
   const sessionDurationsHuman = new Map<string, number>();
 
   durationEvents.forEach((row) => {
+    const duration = extractDurationMs(row) || 0;
     const current = sessionDurations.get(row.session_id) || 0;
-    sessionDurations.set(row.session_id, current + (row.duration_ms || 0));
+    sessionDurations.set(row.session_id, current + duration);
   });
 
   humanDurationEvents.forEach((row) => {
+    const duration = extractDurationMs(row) || 0;
     const current = sessionDurationsHuman.get(row.session_id) || 0;
-    sessionDurationsHuman.set(row.session_id, current + (row.duration_ms || 0));
+    sessionDurationsHuman.set(row.session_id, current + duration);
   });
 
   const summary: AnalyticsSummary = {
@@ -211,8 +223,8 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
     top_referrers_human: topReferrersHuman,
     top_devices_human: topDevicesHuman,
     top_bot_user_agents: topBotAgents,
-    avg_page_duration_ms: average(durationEvents.map(row => row.duration_ms || 0)),
-    avg_page_duration_human_ms: average(humanDurationEvents.map(row => row.duration_ms || 0)),
+    avg_page_duration_ms: average(durationEvents.map(row => extractDurationMs(row) || 0)),
+    avg_page_duration_human_ms: average(humanDurationEvents.map(row => extractDurationMs(row) || 0)),
     avg_session_duration_ms: average(Array.from(sessionDurations.values())),
     avg_session_duration_human_ms: average(Array.from(sessionDurationsHuman.values())),
   };

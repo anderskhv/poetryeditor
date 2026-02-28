@@ -45,17 +45,30 @@ const MIN_DURATION_MS = 1000;
 
 const sendDuration = async (path: string, durationMs: number, userId?: string | null) => {
   if (isDev || !supabase || !path || durationMs < MIN_DURATION_MS) return;
+  const roundedDuration = Math.round(durationMs);
+  const baseEvent = {
+    event_type: 'page_duration',
+    path,
+    referrer: typeof document !== 'undefined' ? document.referrer : null,
+    user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+    user_id: userId || null,
+    session_id: sessionId,
+    payload: { reason: 'duration', duration_ms: roundedDuration },
+  } as any;
   try {
-    await supabase.from('analytics_events').insert({
-      event_type: 'page_duration',
-      path,
-      referrer: typeof document !== 'undefined' ? document.referrer : null,
-      user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
-      user_id: userId || null,
-      session_id: sessionId,
-      duration_ms: Math.round(durationMs),
-      payload: { reason: 'duration' },
-    } as any);
+    const { error } = await supabase.from('analytics_events').insert({
+      ...baseEvent,
+      duration_ms: roundedDuration,
+    });
+    if (error) {
+      const message = (error.message || '').toLowerCase();
+      if (message.includes('duration_ms') && message.includes('does not exist')) {
+        const retry = await supabase.from('analytics_events').insert(baseEvent);
+        if (retry.error) throw retry.error;
+        return;
+      }
+      throw error;
+    }
   } catch (error) {
     console.warn('Analytics duration tracking failed', error);
   }
