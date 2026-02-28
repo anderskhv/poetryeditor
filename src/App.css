@@ -954,28 +954,30 @@
   cursor: pointer;
 }
 
-.welcome-banner {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 16px;
+.welcome-card {
   border-bottom: 1px solid var(--color-border);
   background: var(--color-highlight-subtle);
   font-family: var(--font-sans);
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--color-text-secondary);
+  padding: 14px 18px 12px;
 }
 
-.welcome-banner-text {
-  flex: 1;
+.welcome-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
-.welcome-banner-text strong {
+.welcome-card-title {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 14px;
+  font-weight: 400;
   color: var(--color-text);
+  line-height: 1.4;
 }
 
-.welcome-banner-dismiss {
+.welcome-card-dismiss {
   background: none;
   border: none;
   font-size: 18px;
@@ -986,8 +988,41 @@
   flex-shrink: 0;
 }
 
-.welcome-banner-dismiss:hover {
+.welcome-card-dismiss:hover {
   color: var(--color-text);
+}
+
+.welcome-card-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+  margin-bottom: 8px;
+}
+
+.welcome-feature {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.welcome-feature-key {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.welcome-feature-desc {
+  margin-left: 2px;
+}
+
+.welcome-card-hint {
+  font-size: 11px;
+  color: var(--color-text-muted, #999);
+}
+
+@media (max-width: 600px) {
+  .welcome-card-features {
+    grid-template-columns: 1fr;
+  }
 }
 
 .version-preview-btn.secondary {

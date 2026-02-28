@@ -392,6 +392,7 @@ export function PoemPage() {
         onClose={() => setShowShareModal(false)}
         poemTitle={poem.title}
         poemText={poem.text}
+        paragraphAlign="left"
       />
     </Layout>
   );

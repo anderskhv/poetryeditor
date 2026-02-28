@@ -1468,20 +1468,39 @@ function App() {
 
         <div className="editor-pane">
           {showWelcome && !versionPreview && (
-            <div className="welcome-banner">
-              <div className="welcome-banner-text">
-                <strong>Welcome to Poetry Editor</strong> — a writing tool built for poets. Start typing to replace the sample poem. The analysis panel will update as you write, showing rhythm, rhyme, style, and originality insights.
+            <div className="welcome-card">
+              <div className="welcome-card-header">
+                <div className="welcome-card-title">The best place to write, edit, and share your poems</div>
+                <button
+                  className="welcome-card-dismiss"
+                  onClick={() => {
+                    setShowWelcome(false);
+                    localStorage.setItem('hasSeenWelcome', 'true');
+                  }}
+                  title="Dismiss"
+                >
+                  &times;
+                </button>
               </div>
-              <button
-                className="welcome-banner-dismiss"
-                onClick={() => {
-                  setShowWelcome(false);
-                  localStorage.setItem('hasSeenWelcome', 'true');
-                }}
-                title="Dismiss"
-              >
-                &times;
-              </button>
+              <div className="welcome-card-features">
+                <div className="welcome-feature">
+                  <span className="welcome-feature-key">Click any word</span>
+                  <span className="welcome-feature-desc">to find rhymes, synonyms, syllables, and definitions</span>
+                </div>
+                <div className="welcome-feature">
+                  <span className="welcome-feature-key">Analysis panel</span>
+                  <span className="welcome-feature-desc">shows rhythm, rhyme scheme, cliches, and style feedback</span>
+                </div>
+                <div className="welcome-feature">
+                  <span className="welcome-feature-key">Tools menu</span>
+                  <span className="welcome-feature-desc">has a rhyme dictionary, syllable counter, and form checkers</span>
+                </div>
+                <div className="welcome-feature">
+                  <span className="welcome-feature-key">Share</span>
+                  <span className="welcome-feature-desc">your poems as beautiful images for social media</span>
+                </div>
+              </div>
+              <div className="welcome-card-hint">Start typing to replace the sample poem. Your work saves automatically.</div>
             </div>
           )}
           {versionPreview && (
