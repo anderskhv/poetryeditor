@@ -6,6 +6,7 @@ import { fetchAnalyticsDataDirect, type AnalyticsSummary, type AnalyticsTimeseri
 import './Analytics.css';
 
 const RANGE_OPTIONS = [
+  { label: 'Last 24 hours', value: 1 },
   { label: 'Last 7 days', value: 7 },
   { label: 'Last 30 days', value: 30 },
   { label: 'Last 90 days', value: 90 },
@@ -14,7 +15,7 @@ const RANGE_OPTIONS = [
 export function Analytics() {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [rangeDays, setRangeDays] = useState(30);
+  const [rangeDays, setRangeDays] = useState(1);
   const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
   const [timeseries, setTimeseries] = useState<AnalyticsTimeseriesPoint[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,8 +53,7 @@ export function Analytics() {
 
   const range = useMemo(() => {
     const end = new Date();
-    const start = new Date();
-    start.setDate(end.getDate() - rangeDays + 1);
+    const start = new Date(end.getTime() - rangeDays * 24 * 60 * 60 * 1000);
     return { start, end };
   }, [rangeDays]);
 
