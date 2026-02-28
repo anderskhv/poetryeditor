@@ -86,7 +86,11 @@ function App() {
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
   const [localTitle, setLocalTitle] = useDebouncedLocalStorage('poetryTitle', 'Untitled', 800);
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
-  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
+  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(() => {
+    // Open panel by default for first-time visitors so they discover the analysis
+    return localStorage.getItem('hasOpenedAnalysisPanel') !== 'true'
+      || localStorage.getItem('analysisPanelOpen') === 'true';
+  });
   const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
   const [poemComments, setPoemComments] = useState<PoemComment[]>([]);
   const [activeSideTab, setActiveSideTab] = useState<'analysis' | 'comments'>('analysis');
@@ -123,6 +127,9 @@ function App() {
   } = useCollection();
   const [hasEverOpenedPanel, setHasEverOpenedPanel] = useState<boolean>(() => {
     return localStorage.getItem('hasOpenedAnalysisPanel') === 'true';
+  });
+  const [showWelcome, setShowWelcome] = useState<boolean>(() => {
+    return localStorage.getItem('hasSeenWelcome') !== 'true';
   });
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [theme, setTheme] = useState<'light' | 'dark' | 'yellow'>(() => {
@@ -1278,8 +1285,6 @@ function App() {
                       <a
                         key={poem.slug}
                         href={`/poems/${poem.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="inspiration-item"
                         onClick={() => setShowInspirationMenu(false)}
                       >
@@ -1294,8 +1299,6 @@ function App() {
                       <a
                         key={poet}
                         href={`/poems?poet=${encodeURIComponent(poet.toLowerCase())}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="inspiration-item"
                         onClick={() => setShowInspirationMenu(false)}
                       >
@@ -1305,7 +1308,7 @@ function App() {
                     ))}
                   </div>
                   <div className="inspiration-section inspiration-browse-all">
-                    <a href="/poems" target="_blank" rel="noopener noreferrer" className="inspiration-item browse-all-link" onClick={() => setShowInspirationMenu(false)}>
+                    <a href="/poems" className="inspiration-item browse-all-link" onClick={() => setShowInspirationMenu(false)}>
                       Browse All {poemsList.length} Poems
                       <span className="browse-arrow">→</span>
                     </a>
@@ -1324,22 +1327,22 @@ function App() {
               </button>
               {showToolsMenu && (
                 <div className="tools-menu">
-                  <a href="/rhymes" target="_blank" rel="noopener noreferrer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                  <a href="/rhymes" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Rhyme Dictionary
                   </a>
-                  <a href="/synonyms" target="_blank" rel="noopener noreferrer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                  <a href="/synonyms" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Synonyms
                   </a>
-                  <a href="/syllables" target="_blank" rel="noopener noreferrer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                  <a href="/syllables" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Syllable Counter
                   </a>
-                  <a href="/rhyme-scheme-analyzer" target="_blank" rel="noopener noreferrer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
+                  <a href="/rhyme-scheme-analyzer" className="tools-item" onClick={() => setShowToolsMenu(false)}>
                     Rhyme Scheme Maker
                   </a>
-                  <a href="/haiku-checker" target="_blank" rel="noopener noreferrer" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
+                  <a href="/haiku-checker" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
                     Haiku Checker
                   </a>
-                  <a href="/sonnet-checker" target="_blank" rel="noopener noreferrer" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
+                  <a href="/sonnet-checker" className="tools-item form-tool" onClick={() => setShowToolsMenu(false)}>
                     Sonnet Checker
                   </a>
                 </div>
@@ -1464,6 +1467,23 @@ function App() {
         )}
 
         <div className="editor-pane">
+          {showWelcome && !versionPreview && (
+            <div className="welcome-banner">
+              <div className="welcome-banner-text">
+                <strong>Welcome to Poetry Editor</strong> — a writing tool built for poets. Start typing to replace the sample poem. The analysis panel will update as you write, showing rhythm, rhyme, style, and originality insights.
+              </div>
+              <button
+                className="welcome-banner-dismiss"
+                onClick={() => {
+                  setShowWelcome(false);
+                  localStorage.setItem('hasSeenWelcome', 'true');
+                }}
+                title="Dismiss"
+              >
+                &times;
+              </button>
+            </div>
+          )}
           {versionPreview && (
             <div className="version-preview-banner">
               <div className="version-preview-info">
@@ -1520,8 +1540,10 @@ function App() {
           <button
             className={`panel-toggle ${isPanelOpen ? 'open' : ''}`}
             onClick={() => {
-              setIsPanelOpen(!isPanelOpen);
-              if (!hasEverOpenedPanel && !isPanelOpen) {
+              const next = !isPanelOpen;
+              setIsPanelOpen(next);
+              localStorage.setItem('analysisPanelOpen', String(next));
+              if (!hasEverOpenedPanel && next) {
                 setHasEverOpenedPanel(true);
                 localStorage.setItem('hasOpenedAnalysisPanel', 'true');
               }
