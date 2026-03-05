@@ -98,7 +98,7 @@ function App() {
   });
   const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
   const [poemComments, setPoemComments] = useState<PoemComment[]>([]);
-  const [activeSideTab, setActiveSideTab] = useState<'analysis' | 'comments' | 'editor'>('analysis');
+  const [activeSideTab, setActiveSideTab] = useState<'analysis' | 'comments' | 'editor'>('editor');
   const [showCommentHighlights, setShowCommentHighlights] = useState<boolean>(true);
 
   // Cloud poem state
@@ -118,6 +118,7 @@ function App() {
 
   // Collection management
   const {
+    collection,
     addSection,
     updateSection,
     deleteSection,
@@ -1644,6 +1645,8 @@ function App() {
                 poemId={activePoemId}
                 poemTitle={poemTitle}
                 poemText={text}
+                collectionPoems={collection.poems}
+                collectionName={collection.name}
                 onCompleteOnboarding={completeOnboarding}
                 onAddLearning={(insight: string) => addLearning(insight)}
                 onUpdateSummary={updateSummary}

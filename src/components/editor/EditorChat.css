@@ -145,7 +145,7 @@
   font-size: 13px;
   line-height: 1.6;
   color: var(--color-text-muted);
-  max-width: 240px;
+  max-width: 320px;
 }
 
 /* ── Input Area ── */
@@ -334,4 +334,51 @@
 
 .editor-onboarding .editor-input-area {
   border-top: 1px solid var(--color-border);
+}
+
+/* Typing indicator */
+.editor-typing {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 10px 14px;
+}
+
+.editor-typing span {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  animation: editor-typing-dot 1.2s infinite;
+}
+
+.editor-typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.editor-typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes editor-typing-dot {
+  0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+  30% { opacity: 1; transform: scale(1); }
+}
+
+/* Markdown in messages */
+.editor-msg-content strong {
+  font-weight: 700;
+}
+
+.editor-msg-content em {
+  font-style: italic;
+}
+
+.editor-msg-content code {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  background: var(--color-background);
+  padding: 1px 4px;
+  border-radius: 3px;
 }

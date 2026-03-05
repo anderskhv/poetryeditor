@@ -1368,7 +1368,7 @@
    ============================================ */
 
 .side-panel {
-  width: 320px;
+  width: 400px;
   background-color: var(--color-paper);
   border-left: 1px solid var(--color-border);
   display: flex;

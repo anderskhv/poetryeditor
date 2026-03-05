@@ -27,12 +27,20 @@ import {
 } from '../../utils/editorPrompts';
 import './EditorChat.css';
 
+interface CollectionPoemData {
+  id: string;
+  title: string;
+  content: string;
+}
+
 interface EditorChatProps {
   user: User | null;
   profile: PoetProfile | null;
   poemId: string | null;
   poemTitle: string;
   poemText: string;
+  collectionPoems?: CollectionPoemData[];
+  collectionName?: string;
   analysis?: AnalysisContext;
   onCompleteOnboarding: (data: import('../../types/editor').OnboardingData, style: import('../../types/editor').FeedbackStyle) => void;
   onAddLearning: (insight: string) => void;
@@ -45,6 +53,8 @@ export function EditorChat({
   poemId,
   poemTitle,
   poemText,
+  collectionPoems,
+  collectionName,
   analysis,
   onCompleteOnboarding,
   onAddLearning,
@@ -72,6 +82,8 @@ export function EditorChat({
     poemTitle,
     poemText,
     analysis,
+    collectionPoems,
+    collectionName,
   });
 
   // Auto-scroll on new messages
@@ -266,7 +278,7 @@ export function EditorChat({
       <div className="editor-messages" ref={scrollRef}>
         {messages.length === 0 && (
           <div className="editor-empty-state">
-            <p>I can see your poem. Ask me anything — about a specific line, the overall structure, or where to take it next.</p>
+            <p>I can see your poem{collectionPoems && collectionPoems.length > 1 ? ` and your full collection (${collectionPoems.length} poems)` : ''}. Ask me anything — about a specific line, how it connects to other poems, or where to take it next.</p>
           </div>
         )}
         {messages.map(msg => (

@@ -13,7 +13,7 @@ import type {
   AnalysisContext,
 } from '../types/editor';
 import { streamCoachingMessage } from '../utils/editorApi';
-import { buildCoachingPrompt } from '../utils/editorPrompts';
+import { buildCoachingPrompt, type CollectionContext } from '../utils/editorPrompts';
 import {
   getLocalMessages,
   saveLocalMessages,
@@ -26,6 +26,11 @@ function generateId(): string {
   return `msg-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+interface CollectionPoemData {
+  title: string;
+  content: string;
+}
+
 interface UseEditorChatOptions {
   user: User | null;
   profile: PoetProfile | null;
@@ -33,6 +38,8 @@ interface UseEditorChatOptions {
   poemTitle: string;
   poemText: string;
   analysis?: AnalysisContext;
+  collectionPoems?: CollectionPoemData[];
+  collectionName?: string;
 }
 
 export function useEditorChat({
@@ -42,6 +49,8 @@ export function useEditorChat({
   poemTitle,
   poemText,
   analysis,
+  collectionPoems,
+  collectionName,
 }: UseEditorChatOptions) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -198,8 +207,14 @@ export function useEditorChat({
     setMessages(prev => [...prev, assistantMsg]);
     setIsLoading(true);
 
+    // Build collection context
+    const collectionCtx: CollectionContext | undefined =
+      collectionPoems && collectionPoems.length > 0
+        ? { poems: collectionPoems, collectionName: collectionName || 'Untitled Collection' }
+        : undefined;
+
     // Build the system prompt
-    const systemPrompt = buildCoachingPrompt(profile, poemTitle, poemText, analysis);
+    const systemPrompt = buildCoachingPrompt(profile, poemTitle, poemText, analysis, collectionCtx);
 
     // Build message history for API (excluding the streaming placeholder)
     const apiMessages = [...messages, userMsg].map(m => ({
@@ -268,7 +283,7 @@ export function useEditorChat({
       },
       controller.signal,
     );
-  }, [profile, poemTitle, poemText, analysis, messages, ensureConversation, user]);
+  }, [profile, poemTitle, poemText, analysis, messages, ensureConversation, user, collectionPoems, collectionName]);
 
   // Cancel streaming
   const cancelStreaming = useCallback(() => {
