@@ -37,12 +37,30 @@ export function buildCoachingPrompt(
   let collectionSection = '';
   if (collection && collection.poems.length > 1) {
     const otherPoems = collection.poems
-      .filter(p => p.title !== poemTitle || p.content !== poemText)
-      .map(p => `### ${p.title}\n${p.content}`)
-      .join('\n\n---\n\n');
+      .filter(p => p.title !== poemTitle || p.content !== poemText);
 
-    if (otherPoems) {
-      collectionSection = `\nCOLLECTION: "${collection.collectionName}" (${collection.poems.length} poems total)\nThe poet is currently focused on "${poemTitle}" but you have access to their full collection. Reference other poems naturally when relevant — for themes, patterns, progression, contradictions, or when the poet asks.\n\nOTHER POEMS IN COLLECTION:\n${otherPoems}\n`;
+    if (otherPoems.length > 0) {
+      // List all titles explicitly for grounding
+      const titleList = collection.poems
+        .map((p, i) => `${i + 1}. "${p.title}"${p.title === poemTitle ? ' (CURRENT)' : ''}`)
+        .join('\n');
+
+      // Include full text of other poems
+      const otherPoemTexts = otherPoems
+        .map(p => `### ${p.title}\n${p.content}`)
+        .join('\n\n---\n\n');
+
+      collectionSection = `\nCOLLECTION: "${collection.collectionName}" (${collection.poems.length} poems total)
+
+COMPLETE POEM LIST (these are the ONLY poems in this collection — do not reference any others):
+${titleList}
+
+The poet is currently focused on "${poemTitle}" but you have access to their full collection below. Reference other poems by their exact titles when relevant — for themes, patterns, progression, contradictions, or when the poet asks.
+
+IMPORTANT: Only reference poems that appear in the list above. Never invent or assume poems that aren't listed.
+
+OTHER POEMS IN COLLECTION:
+${otherPoemTexts}\n`;
     }
   }
 
@@ -79,7 +97,8 @@ RESPONSE FORMAT:
 - Never use phrases like "great poem" or "I love this" without specific justification
 - Use the poet's own words when pointing to specific moments
 - You can disagree with the technical analysis if your reading differs — explain why
-- DON'T end by asking the poet a question. Let them come to you.`;
+- DON'T end by asking the poet a question. Let them come to you.
+- NEVER reference, quote, or invent poems that aren't explicitly provided above. If you don't have a poem's text, say so.`;
 }
 
 function buildProfileFromOnboarding(profile: PoetProfile): string {
