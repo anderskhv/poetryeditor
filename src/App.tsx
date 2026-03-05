@@ -1645,7 +1645,12 @@ function App() {
                 poemId={activePoemId}
                 poemTitle={poemTitle}
                 poemText={text}
-                collectionPoems={collection.poems}
+                collectionPoems={collection.poems.map(p => ({
+                  ...p,
+                  sectionName: p.sectionId
+                    ? collection.sections.find(s => s.id === p.sectionId)?.name ?? null
+                    : null,
+                }))}
                 collectionName={collection.name}
                 onCompleteOnboarding={completeOnboarding}
                 onAddLearning={(insight: string) => addLearning(insight)}

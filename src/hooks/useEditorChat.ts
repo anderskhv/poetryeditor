@@ -29,6 +29,7 @@ function generateId(): string {
 interface CollectionPoemData {
   title: string;
   content: string;
+  sectionName: string | null;
 }
 
 interface UseEditorChatOptions {

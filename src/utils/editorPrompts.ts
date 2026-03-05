@@ -8,10 +8,21 @@
 
 import type { PoetProfile, AnalysisContext } from '../types/editor';
 
+export interface CollectionPoemForPrompt {
+  title: string;
+  content: string;
+  sectionName: string | null; // null = root level
+}
+
 export interface CollectionContext {
-  poems: Array<{ title: string; content: string }>;
+  poems: CollectionPoemForPrompt[];
   collectionName: string;
 }
+
+// Rough character budget for collection context in the system prompt.
+// Sonnet 4.5 has a 200k token context; we want to leave plenty of room
+// for conversation history. ~40k chars ≈ ~10k tokens is a safe budget.
+const COLLECTION_CHAR_BUDGET = 40_000;
 
 /**
  * Build the coaching system prompt for the main editor conversation.
@@ -33,36 +44,8 @@ export function buildCoachingPrompt(
     ? `\nTECHNICAL ANALYSIS (reference naturally, don't lead with):\nForm: ${analysis.form}\nMeter: ${analysis.meter}\nRhyme scheme: ${analysis.rhymeScheme}\nCliches found: ${analysis.clicheCount}\nAbstract/concrete balance: ${analysis.abstractConcreteRatio}\n${analysis.summaryItems.length > 0 ? 'Coaching notes: ' + analysis.summaryItems.join(' ') : ''}\n`
     : '';
 
-  // Build collection context — include other poems so the editor can reference them
-  let collectionSection = '';
-  if (collection && collection.poems.length > 1) {
-    const otherPoems = collection.poems
-      .filter(p => p.title !== poemTitle || p.content !== poemText);
-
-    if (otherPoems.length > 0) {
-      // List all titles explicitly for grounding
-      const titleList = collection.poems
-        .map((p, i) => `${i + 1}. "${p.title}"${p.title === poemTitle ? ' (CURRENT)' : ''}`)
-        .join('\n');
-
-      // Include full text of other poems
-      const otherPoemTexts = otherPoems
-        .map(p => `### ${p.title}\n${p.content}`)
-        .join('\n\n---\n\n');
-
-      collectionSection = `\nCOLLECTION: "${collection.collectionName}" (${collection.poems.length} poems total)
-
-COMPLETE POEM LIST (these are the ONLY poems in this collection — do not reference any others):
-${titleList}
-
-The poet is currently focused on "${poemTitle}" but you have access to their full collection below. Reference other poems by their exact titles when relevant — for themes, patterns, progression, contradictions, or when the poet asks.
-
-IMPORTANT: Only reference poems that appear in the list above. Never invent or assume poems that aren't listed.
-
-OTHER POEMS IN COLLECTION:
-${otherPoemTexts}\n`;
-    }
-  }
+  // Build collection context
+  const collectionSection = buildCollectionSection(collection, poemTitle);
 
   const { directness, tone } = profile.feedbackStyle;
 
@@ -76,7 +59,7 @@ Your approach:
 - Reference past conversations naturally when relevant
 - If the technical analysis and your reading disagree, explain both perspectives
 - Think about the poem's internal logic, not just surface technique
-- When referencing other poems in the collection, be specific about connections
+- When referencing other poems in the collection, use their EXACT title as listed
 
 The subtext of everything you do: help this poet find their own voice. Fight the gravity of generic "good poem" language. Find the human inside, the voice inside the human.
 ${profileSection}
@@ -98,7 +81,76 @@ RESPONSE FORMAT:
 - Use the poet's own words when pointing to specific moments
 - You can disagree with the technical analysis if your reading differs — explain why
 - DON'T end by asking the poet a question. Let them come to you.
-- NEVER reference, quote, or invent poems that aren't explicitly provided above. If you don't have a poem's text, say so.`;
+
+CRITICAL GROUNDING RULES:
+- You may ONLY reference poems whose full text appears in this prompt. The poems provided above are the COMPLETE set.
+- Use EXACT titles as listed. Do not add numbers, prefixes, or modify titles in any way.
+- When quoting lines from poems, quote ONLY text that literally appears in the poem text provided above.
+- If the poet asks about a poem you don't have text for, say you don't have access to it.
+- NEVER fabricate, paraphrase, or guess poem content. If it's not in this prompt, you don't know it.`;
+}
+
+/**
+ * Build the collection section of the prompt, respecting size budget.
+ */
+function buildCollectionSection(
+  collection: CollectionContext | undefined,
+  currentPoemTitle: string,
+): string {
+  if (!collection || collection.poems.length <= 1) return '';
+
+  // Filter out the current poem (match by title only — content may be stale)
+  const otherPoems = collection.poems.filter(p => p.title !== currentPoemTitle);
+  if (otherPoems.length === 0) return '';
+
+  // Build title index (no numbering — just titles grouped by section)
+  const sections = new Map<string, string[]>();
+  for (const p of collection.poems) {
+    const section = p.sectionName || '(no section)';
+    if (!sections.has(section)) sections.set(section, []);
+    const marker = p.title === currentPoemTitle ? ' ← CURRENT' : '';
+    sections.get(section)!.push(`  - "${p.title}"${marker}`);
+  }
+
+  let titleIndex = '';
+  for (const [section, titles] of sections) {
+    if (section === '(no section)') {
+      titleIndex += titles.join('\n') + '\n';
+    } else {
+      titleIndex += `[${section}]\n${titles.join('\n')}\n`;
+    }
+  }
+
+  // Build full poem texts, respecting the character budget
+  let totalChars = 0;
+  const includedPoems: string[] = [];
+  const skippedPoems: string[] = [];
+
+  for (const p of otherPoems) {
+    const poemBlock = `=== "${p.title}" ===\n${p.content}\n`;
+    if (totalChars + poemBlock.length <= COLLECTION_CHAR_BUDGET) {
+      includedPoems.push(poemBlock);
+      totalChars += poemBlock.length;
+    } else {
+      skippedPoems.push(p.title);
+    }
+  }
+
+  let result = `\nCOLLECTION: "${collection.collectionName}" (${collection.poems.length} poems total)
+
+POEM INDEX:
+${titleIndex}
+The poet is currently focused on "${currentPoemTitle}". You have access to the other poems in their collection below. Reference them by their EXACT title when relevant.\n`;
+
+  if (includedPoems.length > 0) {
+    result += `\nOTHER POEMS IN COLLECTION:\n\n${includedPoems.join('\n')}\n`;
+  }
+
+  if (skippedPoems.length > 0) {
+    result += `\n(${skippedPoems.length} additional poems not shown due to length: ${skippedPoems.map(t => `"${t}"`).join(', ')})\n`;
+  }
+
+  return result;
 }
 
 function buildProfileFromOnboarding(profile: PoetProfile): string {
