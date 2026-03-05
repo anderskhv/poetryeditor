@@ -26,6 +26,9 @@ import { addPoemComment, deletePoemComment, fetchPoemComments, updatePoemComment
 import { trackPageview } from './utils/analytics';
 import { FONT_OPTIONS } from './utils/fontOptions';
 import { exportPoemAsPdf } from './utils/pdfExport';
+import { EditorChat } from './components/editor/EditorChat';
+import { usePoetProfile } from './hooks/usePoetProfile';
+import type { AnalysisContext } from './types/editor';
 import type { PoemFormatting } from './types/database';
 import './App.css';
 
@@ -83,6 +86,7 @@ function App() {
   const cloudPoemId = searchParams.get('poem');
   const versionId = searchParams.get('version');
   const { user } = useAuth();
+  const { profile: poetProfile, completeOnboarding, addLearning, updateSummary } = usePoetProfile(user);
 
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
   const [localTitle, setLocalTitle] = useDebouncedLocalStorage('poetryTitle', 'Untitled', 800);
@@ -94,7 +98,7 @@ function App() {
   });
   const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
   const [poemComments, setPoemComments] = useState<PoemComment[]>([]);
-  const [activeSideTab, setActiveSideTab] = useState<'analysis' | 'comments'>('analysis');
+  const [activeSideTab, setActiveSideTab] = useState<'analysis' | 'comments' | 'editor'>('analysis');
   const [showCommentHighlights, setShowCommentHighlights] = useState<boolean>(true);
 
   // Cloud poem state
@@ -1604,13 +1608,19 @@ function App() {
             <span className="panel-toggle-icon">
               {isPanelOpen ? '›' : '‹'}
             </span>
-            <span className="panel-toggle-label">Analysis</span>
+            <span className="panel-toggle-label">{activeSideTab === 'editor' ? 'Editor' : 'Analysis'}</span>
           </button>
         </div>
 
         {isPanelOpen && (
           <div className="side-panel">
             <div className="side-panel-tabs">
+              <button
+                className={`side-panel-tab ${activeSideTab === 'editor' ? 'active' : ''}`}
+                onClick={() => setActiveSideTab('editor')}
+              >
+                Editor
+              </button>
               <button
                 className={`side-panel-tab ${activeSideTab === 'analysis' ? 'active' : ''}`}
                 onClick={() => setActiveSideTab('analysis')}
@@ -1627,7 +1637,18 @@ function App() {
                 )}
               </button>
             </div>
-            {activeSideTab === 'analysis' ? (
+            {activeSideTab === 'editor' ? (
+              <EditorChat
+                user={user}
+                profile={poetProfile}
+                poemId={activePoemId}
+                poemTitle={poemTitle}
+                poemText={text}
+                onCompleteOnboarding={completeOnboarding}
+                onAddLearning={(insight: string) => addLearning(insight)}
+                onUpdateSummary={updateSummary}
+              />
+            ) : activeSideTab === 'analysis' ? (
               <AnalysisPanel
                 text={text}
                 words={analyzedWords}

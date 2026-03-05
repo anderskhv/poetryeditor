@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../projects/US"
+		},
+		{
+			"path": "../../health-tracker"
+		},
+		{
+			"path": "../../the-fun-criterion"
+		}
+	],
+	"settings": {}
+}

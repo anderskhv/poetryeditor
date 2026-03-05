@@ -52,7 +52,14 @@
       "Bash(pkill:*)",
       "Bash(git show:*)",
       "Bash(kill:*)",
-      "Bash(git status:*)"
+      "Bash(git status:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(npx supabase:*)",
+      "Bash(BASE_URL=http://localhost:3007 npx playwright test:*)",
+      "Bash(xxd:*)",
+      "Bash(perl:*)",
+      "Bash(gh api:*)"
     ],
     "additionalDirectories": [
       "/tmp",
