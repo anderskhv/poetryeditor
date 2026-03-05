@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Link, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { editor, Range } from 'monaco-editor';
 import { supabase } from './lib/supabase';
@@ -30,6 +30,7 @@ import { EditorChat } from './components/editor/EditorChat';
 import { usePoetProfile } from './hooks/usePoetProfile';
 import type { AnalysisContext } from './types/editor';
 import type { PoemFormatting } from './types/database';
+import { getAllConversationSummaries } from './utils/editorStorage';
 import './App.css';
 
 const SAMPLE_POEM = `Shall I compare thee to a summer's day?
@@ -100,6 +101,7 @@ function App() {
   const [poemComments, setPoemComments] = useState<PoemComment[]>([]);
   const [activeSideTab, setActiveSideTab] = useState<'analysis' | 'comments' | 'editor'>('editor');
   const [showCommentHighlights, setShowCommentHighlights] = useState<boolean>(true);
+  const [collectionReviewMode, setCollectionReviewMode] = useState<boolean>(false);
 
   // Cloud poem state
   const [cloudPoemTitle, setCloudPoemTitle] = useState<string | null>(null);
@@ -124,6 +126,7 @@ function App() {
     deleteSection,
     toggleSectionExpanded,
     importFiles,
+    updatePoem,
     deletePoem,
     buildTree,
     getPoemById,
@@ -213,6 +216,14 @@ function App() {
   const [highlightedLines, setHighlightedLines] = useState<number[] | null>(null);
   const [highlightedWords, setHighlightedWords] = useState<{ word: string; lineNumber: number }[] | null>(null);
   const [editorHoveredLine, setEditorHoveredLine] = useState<number | null>(null);
+
+  // Memoize conversation summaries for cross-poem awareness
+  const conversationSummaries = useMemo(() => {
+    return getAllConversationSummaries(activePoemId || undefined).map(s => ({
+      poemTitle: s.poemTitle,
+      summary: s.summary,
+    }));
+  }, [activePoemId]);
 
   const poemsList = getAllPoems();
   const poemsByPoet = poemsList.reduce((acc, poem) => {
@@ -394,6 +405,17 @@ function App() {
     activePoemTitleRef.current = poemTitle;
     activePoemContentRef.current = text;
   }, [cloudPoemId, currentPoemId, poemTitle, text]);
+
+  // Sync editor text back to collection so AI editor sees current content
+  useEffect(() => {
+    if (!currentPoemId || cloudPoemId) return; // Only for local collection poems
+    const poem = getPoemById(currentPoemId);
+    if (!poem) return;
+    // Only update if content or title actually changed
+    if (poem.content !== text || poem.title !== poemTitle) {
+      updatePoem(currentPoemId, { content: text, title: poemTitle });
+    }
+  }, [currentPoemId, cloudPoemId, text, poemTitle, getPoemById, updatePoem]);
 
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
@@ -1618,7 +1640,10 @@ function App() {
             <div className="side-panel-tabs">
               <button
                 className={`side-panel-tab ${activeSideTab === 'editor' ? 'active' : ''}`}
-                onClick={() => setActiveSideTab('editor')}
+                onClick={() => {
+                  setActiveSideTab('editor');
+                  setCollectionReviewMode(false);
+                }}
               >
                 Editor
               </button>
@@ -1637,6 +1662,15 @@ function App() {
                   <span className="side-panel-tab-badge">{poemComments.length}</span>
                 )}
               </button>
+              {activeSideTab === 'editor' && collection.poems.length > 0 && (
+                <button
+                  className={`side-panel-tab ${collectionReviewMode ? 'active' : ''}`}
+                  onClick={() => setCollectionReviewMode(!collectionReviewMode)}
+                  title={collectionReviewMode ? 'Back to poem editing' : 'Review full collection'}
+                >
+                  {collectionReviewMode ? 'Back to Poem' : 'Review Collection'}
+                </button>
+              )}
             </div>
             {activeSideTab === 'editor' ? (
               <EditorChat
@@ -1652,6 +1686,8 @@ function App() {
                     : null,
                 }))}
                 collectionName={collection.name}
+                mode={collectionReviewMode ? 'collection' : 'per_poem'}
+                conversationSummaries={conversationSummaries}
                 onCompleteOnboarding={completeOnboarding}
                 onAddLearning={(insight: string) => addLearning(insight)}
                 onUpdateSummary={updateSummary}

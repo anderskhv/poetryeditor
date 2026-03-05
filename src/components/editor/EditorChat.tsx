@@ -20,11 +20,14 @@ import { saveLocalApiKey, getLocalApiKey, clearLocalApiKey } from '../../utils/e
 import {
   extractLearnings,
   regenerateSummary,
+  extractConversationSummary,
 } from '../../utils/editorApi';
 import {
   buildLearningExtractionPrompt,
   buildSummaryPrompt,
+  buildConversationSummaryPrompt,
 } from '../../utils/editorPrompts';
+import { saveConversationSummary } from '../../utils/editorStorage';
 import './EditorChat.css';
 
 interface CollectionPoemData {
@@ -42,6 +45,8 @@ interface EditorChatProps {
   collectionPoems?: CollectionPoemData[];
   collectionName?: string;
   analysis?: AnalysisContext;
+  mode?: 'per_poem' | 'collection';
+  conversationSummaries?: Array<{ poemTitle: string; summary: string }>;
   onCompleteOnboarding: (data: import('../../types/editor').OnboardingData, style: import('../../types/editor').FeedbackStyle) => void;
   onAddLearning: (insight: string) => void;
   onUpdateSummary: (summary: string) => void;
@@ -56,6 +61,8 @@ export function EditorChat({
   collectionPoems,
   collectionName,
   analysis,
+  mode = 'per_poem',
+  conversationSummaries,
   onCompleteOnboarding,
   onAddLearning,
   onUpdateSummary,
@@ -84,6 +91,8 @@ export function EditorChat({
     analysis,
     collectionPoems,
     collectionName,
+    mode,
+    conversationSummaries,
   });
 
   // Auto-scroll on new messages
@@ -118,6 +127,7 @@ export function EditorChat({
 
     if (recentMsgs.length < 2) return;
 
+    // Extract learnings for per-poem mode
     const extractionPrompt = buildLearningExtractionPrompt(
       profile.summary,
       recentMsgs,
@@ -127,6 +137,15 @@ export function EditorChat({
 
     for (const learning of newLearnings) {
       onAddLearning(learning.insight);
+    }
+
+    // Extract conversation summary for per-poem mode
+    if (mode === 'per_poem' && poemId) {
+      const summaryPrompt = buildConversationSummaryPrompt(recentMsgs, poemTitle);
+      const summary = await extractConversationSummary(summaryPrompt);
+      if (summary) {
+        saveConversationSummary(poemId, poemTitle, summary, messages.length);
+      }
     }
 
     // Regenerate summary if learnings have accumulated
@@ -145,7 +164,7 @@ export function EditorChat({
         onUpdateSummary(newSummary);
       }
     }
-  }, [profile, messages, onAddLearning, onUpdateSummary]);
+  }, [profile, messages, onAddLearning, onUpdateSummary, mode, poemId, poemTitle]);
 
   function handleSubmit(e?: React.FormEvent) {
     e?.preventDefault();
@@ -260,7 +279,9 @@ export function EditorChat({
   return (
     <div className="editor-chat">
       <div className="editor-chat-header">
-        <span className="editor-chat-title">Editor</span>
+        <span className="editor-chat-title">
+          {mode === 'collection' ? (collectionName || 'Collection Review') : 'Editor'}
+        </span>
         <div className="editor-header-actions">
           <button className="editor-header-btn" onClick={clearConversation} title="New conversation">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -278,7 +299,11 @@ export function EditorChat({
       <div className="editor-messages" ref={scrollRef}>
         {messages.length === 0 && (
           <div className="editor-empty-state">
-            <p>I can see your poem{collectionPoems && collectionPoems.length > 1 ? ` and your full collection (${collectionPoems.length} poems)` : ''}. Ask me anything — about a specific line, how it connects to other poems, or where to take it next.</p>
+            <p>
+              {mode === 'collection'
+                ? `I can see your full collection '${collectionName}' (${collectionPoems?.length || 0} poems). Ask me about the arc, ordering, themes, or request an editorial letter.`
+                : `I can see your poem${collectionPoems && collectionPoems.length > 1 ? ` and your full collection (${collectionPoems.length} poems)` : ''}. Ask me anything — about a specific line, how it connects to other poems, or where to take it next.`}
+            </p>
           </div>
         )}
         {messages.map(msg => (
@@ -299,7 +324,7 @@ export function EditorChat({
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isLoading ? 'Thinking...' : 'Ask about your poem...'}
+            placeholder={isLoading ? 'Thinking...' : (mode === 'collection' ? 'Ask about your collection...' : 'Ask about your poem...')}
             rows={2}
             disabled={isLoading}
           />

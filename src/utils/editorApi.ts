@@ -212,6 +212,21 @@ export async function regenerateSummary(summaryPrompt: string): Promise<string> 
 }
 
 /**
+ * Extract conversation summary from recent messages using Haiku.
+ */
+export async function extractConversationSummary(summaryPrompt: string): Promise<string> {
+  try {
+    return await callExtractionModel(
+      'You write concise conversation summaries. Return only the summary text, no JSON or markdown.',
+      summaryPrompt,
+    );
+  } catch (err) {
+    console.error('Conversation summary extraction failed:', err);
+    return '';
+  }
+}
+
+/**
  * Check if an API key is available.
  */
 export function hasApiKey(): boolean {

@@ -60,6 +60,16 @@ export interface EditorConversation {
   updatedAt: string;
 }
 
+// ── Conversation Summaries (for cross-poem awareness) ──
+
+export interface ConversationSummary {
+  poemId: string;
+  poemTitle: string;
+  summary: string;
+  messageCount: number;
+  updatedAt: string;
+}
+
 export type MessageRole = 'user' | 'assistant';
 
 export interface EditorMessage {

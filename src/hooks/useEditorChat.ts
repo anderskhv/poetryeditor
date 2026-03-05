@@ -13,7 +13,7 @@ import type {
   AnalysisContext,
 } from '../types/editor';
 import { streamCoachingMessage } from '../utils/editorApi';
-import { buildCoachingPrompt, type CollectionContext } from '../utils/editorPrompts';
+import { buildCoachingPrompt, buildCollectionAnalysisPrompt, type CollectionContext } from '../utils/editorPrompts';
 import {
   getLocalMessages,
   saveLocalMessages,
@@ -41,6 +41,8 @@ interface UseEditorChatOptions {
   analysis?: AnalysisContext;
   collectionPoems?: CollectionPoemData[];
   collectionName?: string;
+  mode?: 'per_poem' | 'collection';
+  conversationSummaries?: Array<{ poemTitle: string; summary: string }>;
 }
 
 export function useEditorChat({
@@ -52,6 +54,8 @@ export function useEditorChat({
   analysis,
   collectionPoems,
   collectionName,
+  mode = 'per_poem',
+  conversationSummaries,
 }: UseEditorChatOptions) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,18 +64,33 @@ export function useEditorChat({
   const abortRef = useRef<AbortController | null>(null);
   const messageCountRef = useRef(0);
 
-  // Load existing conversation for this poem
+  // Reset state when switching mode or poem
   useEffect(() => {
-    if (!poemId) return;
+    setMessages([]);
+    setConversation(null);
+    messageCountRef.current = 0;
+  }, [mode, poemId]);
+
+  // Load existing conversation for this poem or collection
+  useEffect(() => {
+    if (mode === 'per_poem' && !poemId) return;
 
     async function loadConversation() {
       if (user && supabase) {
         // Load from Supabase
-        const { data: convs } = await supabase
+        let query = supabase
           .from('editor_conversations')
           .select('*')
           .eq('user_id', user.id)
-          .eq('poem_id', poemId)
+          .eq('mode', mode);
+
+        if (mode === 'per_poem') {
+          query = query.eq('poem_id', poemId);
+        } else {
+          query = query.is('poem_id', null);
+        }
+
+        const { data: convs } = await query
           .order('updated_at', { ascending: false })
           .limit(1);
 
@@ -109,7 +128,9 @@ export function useEditorChat({
         }
       } else {
         // Load from localStorage
-        const convs = getLocalConversations(poemId || undefined);
+        const allConvs = getLocalConversations(mode === 'per_poem' ? poemId || undefined : undefined);
+        // Filter by mode to avoid mixing per-poem and collection conversations
+        const convs = allConvs.filter(c => c.mode === mode);
         if (convs.length > 0) {
           setConversation(convs[0]);
           const msgs = getLocalMessages(convs[0].id);
@@ -120,7 +141,7 @@ export function useEditorChat({
     }
 
     loadConversation();
-  }, [user, poemId]);
+  }, [user, poemId, mode]);
 
   // Ensure a conversation exists (create if needed)
   const ensureConversation = useCallback(async (): Promise<EditorConversation> => {
@@ -131,9 +152,9 @@ export function useEditorChat({
         .from('editor_conversations')
         .insert({
           user_id: user.id,
-          poem_id: poemId,
-          mode: 'per_poem',
-          title: poemTitle || 'Untitled',
+          poem_id: mode === 'per_poem' ? poemId : null,
+          mode: mode,
+          title: mode === 'collection' ? (collectionName || 'Collection Review') : (poemTitle || 'Untitled'),
         })
         .select()
         .single();
@@ -156,11 +177,15 @@ export function useEditorChat({
       return conv;
     } else {
       // localStorage
-      const conv = createLocalConversation(poemId, null, poemTitle || 'Untitled');
+      const conv = createLocalConversation(
+        mode === 'per_poem' ? poemId : null,
+        null,
+        mode === 'collection' ? (collectionName || 'Collection Review') : (poemTitle || 'Untitled'),
+      );
       setConversation(conv);
       return conv;
     }
-  }, [conversation, user, poemId, poemTitle]);
+  }, [conversation, user, poemId, poemTitle, mode, collectionName]);
 
   // Send a message
   const sendMessage = useCallback(async (content: string) => {
@@ -214,8 +239,10 @@ export function useEditorChat({
         ? { poems: collectionPoems, collectionName: collectionName || 'Untitled Collection' }
         : undefined;
 
-    // Build the system prompt
-    const systemPrompt = buildCoachingPrompt(profile, poemTitle, poemText, analysis, collectionCtx);
+    // Build the system prompt based on mode
+    const systemPrompt = mode === 'collection'
+      ? buildCollectionAnalysisPrompt(profile, collectionCtx || { poems: [], collectionName: 'Untitled Collection' }, conversationSummaries)
+      : buildCoachingPrompt(profile, poemTitle, poemText, analysis, collectionCtx, conversationSummaries);
 
     // Build message history for API (excluding the streaming placeholder)
     const apiMessages = [...messages, userMsg].map(m => ({
@@ -284,7 +311,7 @@ export function useEditorChat({
       },
       controller.signal,
     );
-  }, [profile, poemTitle, poemText, analysis, messages, ensureConversation, user, collectionPoems, collectionName]);
+  }, [profile, poemTitle, poemText, analysis, messages, ensureConversation, user, collectionPoems, collectionName, mode, conversationSummaries]);
 
   // Cancel streaming
   const cancelStreaming = useCallback(() => {

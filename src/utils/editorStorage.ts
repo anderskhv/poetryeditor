@@ -12,11 +12,13 @@ import type {
   FeedbackStyle,
   OnboardingData,
   PoetLearning,
+  ConversationSummary,
 } from '../types/editor';
 
 const PROFILE_KEY = 'editor:profile';
 const CONV_PREFIX = 'editor:conv:';
 const CONV_INDEX_KEY = 'editor:conversations';
+const CONV_SUMMARY_PREFIX = 'editor:conv-summary:';
 
 // ── Default profile ──
 
@@ -158,6 +160,55 @@ export function appendLocalMessage(conversationId: string, message: ChatMessage)
   const messages = getLocalMessages(conversationId);
   messages.push(message);
   saveLocalMessages(conversationId, messages);
+}
+
+// ── Conversation Summaries ──
+
+export function saveConversationSummary(
+  poemId: string,
+  poemTitle: string,
+  summary: string,
+  messageCount: number,
+): ConversationSummary {
+  const convSummary: ConversationSummary = {
+    poemId,
+    poemTitle,
+    summary,
+    messageCount,
+    updatedAt: new Date().toISOString(),
+  };
+  localStorage.setItem(CONV_SUMMARY_PREFIX + poemId, JSON.stringify(convSummary));
+  return convSummary;
+}
+
+export function getConversationSummary(poemId: string): ConversationSummary | null {
+  try {
+    const raw = localStorage.getItem(CONV_SUMMARY_PREFIX + poemId);
+    if (raw) return JSON.parse(raw);
+  } catch {
+    // corrupted
+  }
+  return null;
+}
+
+export function getAllConversationSummaries(excludePoemId?: string): ConversationSummary[] {
+  const summaries: ConversationSummary[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith(CONV_SUMMARY_PREFIX)) {
+      const poemId = key.slice(CONV_SUMMARY_PREFIX.length);
+      if (excludePoemId && poemId === excludePoemId) continue;
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          summaries.push(JSON.parse(raw));
+        }
+      } catch {
+        // skip corrupted
+      }
+    }
+  }
+  return summaries;
 }
 
 // ── API Key storage ──

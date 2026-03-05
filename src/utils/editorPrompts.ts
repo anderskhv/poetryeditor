@@ -33,6 +33,7 @@ export function buildCoachingPrompt(
   poemText: string,
   analysis?: AnalysisContext,
   collection?: CollectionContext,
+  otherDiscussions?: Array<{ poemTitle: string; summary: string }>,
 ): string {
   const profileSection = profile.summary
     ? `\nABOUT THIS POET:\n${profile.summary}\n`
@@ -48,6 +49,11 @@ export function buildCoachingPrompt(
   const collectionSection = buildCollectionSection(collection, poemTitle);
 
   const { directness, tone } = profile.feedbackStyle;
+
+  // Build discussions section if available
+  const discussionsSection = otherDiscussions && otherDiscussions.length > 0
+    ? `\nRECENT DISCUSSIONS ABOUT OTHER POEMS:\n${otherDiscussions.map(d => `- "${d.poemTitle}": ${d.summary}`).join('\n')}\n`
+    : '';
 
   return `You are a Socratic poetry editor — a thoughtful, experienced reader who helps poets discover what they're trying to say. You never impose your voice on the work. You are not an AI assistant giving generic praise. You are a specific, opinionated reader with taste.
 
@@ -67,7 +73,7 @@ CURRENT POEM: "${poemTitle}"
 ---
 ${poemText}
 ---
-${analysisSection}${collectionSection}
+${analysisSection}${collectionSection}${discussionsSection}
 FEEDBACK STYLE: ${directness}, ${tone}
 ${directness === 'gentle' ? 'Be warm and encouraging. Lead with what works. Frame suggestions as questions.' : ''}${directness === 'direct' ? 'Be straightforward and honest. The poet wants real critique, not hand-holding.' : ''}${directness === 'balanced' ? 'Balance honesty with encouragement. Be direct about issues but frame them constructively.' : ''}
 ${tone === 'challenging' ? 'Push the poet. Ask hard questions. Don\'t let them settle for easy answers.' : ''}${tone === 'encouraging' ? 'Be supportive. Celebrate progress. Frame challenges as opportunities.' : ''}
@@ -190,6 +196,122 @@ ${existingSummary || 'No existing knowledge yet.'}
 
 RECENT CONVERSATION:
 ${conversationText}`;
+}
+
+/**
+ * Build the conversation summary extraction prompt (used with Haiku for cheap extraction).
+ */
+export function buildConversationSummaryPrompt(
+  recentMessages: Array<{ role: string; content: string }>,
+  poemTitle: string,
+): string {
+  const conversationText = recentMessages
+    .map(m => `${m.role === 'user' ? 'Poet' : 'Editor'}: ${m.content}`)
+    .join('\n\n');
+
+  return `Summarize the key discussion points about "${poemTitle}" from this conversation in 1-3 sentences. Focus on:
+- What was discussed about the poem
+- Any revision plans mentioned
+- Specific feedback or suggestions given
+
+Return ONLY the summary text, no JSON or markdown.
+
+CONVERSATION:
+${conversationText}`;
+}
+
+/**
+ * Build the collection-level analysis prompt.
+ */
+export function buildCollectionAnalysisPrompt(
+  profile: PoetProfile,
+  collection: CollectionContext,
+  otherDiscussions?: Array<{ poemTitle: string; summary: string }>,
+): string {
+  const profileSection = profile.summary
+    ? `\nABOUT THIS POET:\n${profile.summary}\n`
+    : profile.onboardingCompleted
+      ? buildProfileFromOnboarding(profile)
+      : '\nThis is a new poet — you don\'t know them yet. Be curious, ask questions.\n';
+
+  // Build all poems (no current poem exclusion)
+  const sections = new Map<string, string[]>();
+  for (const p of collection.poems) {
+    const section = p.sectionName != null && p.sectionName !== '' ? p.sectionName : '(no section)';
+    if (!sections.has(section)) sections.set(section, []);
+    sections.get(section)!.push(`  - "${p.title}"`);
+  }
+
+  let titleIndex = '';
+  for (const [section, titles] of sections) {
+    if (section === '(no section)') {
+      titleIndex += titles.join('\n') + '\n';
+    } else {
+      titleIndex += `[${section}]\n${titles.join('\n')}\n`;
+    }
+  }
+
+  // Build full poem texts
+  let totalChars = 0;
+  const includedPoems: string[] = [];
+  const skippedPoems: string[] = [];
+
+  for (const p of collection.poems) {
+    const poemBlock = `=== "${p.title}" ===\n${p.content}\n`;
+    if (totalChars + poemBlock.length <= COLLECTION_CHAR_BUDGET) {
+      includedPoems.push(poemBlock);
+      totalChars += poemBlock.length;
+    } else {
+      skippedPoems.push(p.title);
+    }
+  }
+
+  let collectionSection = `\nCOLLECTION: "${collection.collectionName}" (${collection.poems.length} poems total)
+
+POEM INDEX:
+${titleIndex}`;
+
+  if (includedPoems.length > 0) {
+    collectionSection += `\nALL POEMS IN COLLECTION:\n\n${includedPoems.join('\n')}\n`;
+  }
+
+  if (skippedPoems.length > 0) {
+    collectionSection += `\n(${skippedPoems.length} additional poems not shown due to length: ${skippedPoems.map(t => `"${t}"`).join(', ')})\n`;
+  }
+
+  const discussionsSection = otherDiscussions && otherDiscussions.length > 0
+    ? `\nRECENT DISCUSSIONS:\n${otherDiscussions.map(d => `- "${d.poemTitle}": ${d.summary}`).join('\n')}\n`
+    : '';
+
+  return `You are a collection-level editor reviewing a book or chapbook. You read across the full work, considering arc, progression, thematic coherence, pacing, ordering, gaps, and editorial opportunities.
+
+Your approach:
+- Give specific observations about what's working and what isn't at the collection level
+- When something isn't working, explain what you see and why it matters
+- Only suggest rewrites when explicitly asked — frame as "what if" inspiration, not prescription
+- Reference past conversations naturally when relevant
+- Think about how poems echo, contrast, or build on each other
+- Consider ordering, gaps, and overall shape
+${profileSection}
+${collectionSection}
+${discussionsSection}
+FEEDBACK STYLE: direct, neutral
+Be straightforward and honest. The poet wants real critique about their collection.
+
+RESPONSE FORMAT:
+- Use **bold** for emphasis and *italics* for quoted phrases from poems
+- Keep responses focused — a few key observations, not an essay
+- End with a brief "Potential next steps:" section (2-3 short suggestions) — don't frame as questions
+- Never use phrases like "great collection" without specific justification
+- Use the poet's own words when pointing to specific moments
+- DON'T end by asking the poet a question. Let them come to you.
+
+CRITICAL GROUNDING RULES:
+- You may ONLY reference poems whose full text appears in this prompt. The poems provided above are the COMPLETE set.
+- Use EXACT titles as listed. Do not add numbers, prefixes, or modify titles in any way.
+- When quoting lines from poems, quote ONLY text that literally appears in the poem text provided above.
+- If the poet asks about a poem you don't have text for, say you don't have access to it.
+- NEVER fabricate, paraphrase, or guess poem content. If it's not in this prompt, you don't know it.`;
 }
 
 /**
