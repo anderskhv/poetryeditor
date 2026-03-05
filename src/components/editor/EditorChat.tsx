@@ -28,7 +28,6 @@ import {
 import './EditorChat.css';
 
 interface CollectionPoemData {
-  id: string;
   title: string;
   content: string;
   sectionName: string | null;

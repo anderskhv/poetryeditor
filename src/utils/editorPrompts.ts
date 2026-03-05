@@ -106,7 +106,7 @@ function buildCollectionSection(
   // Build title index (no numbering — just titles grouped by section)
   const sections = new Map<string, string[]>();
   for (const p of collection.poems) {
-    const section = p.sectionName || '(no section)';
+    const section = p.sectionName != null && p.sectionName !== '' ? p.sectionName : '(no section)';
     if (!sections.has(section)) sections.set(section, []);
     const marker = p.title === currentPoemTitle ? ' ← CURRENT' : '';
     sections.get(section)!.push(`  - "${p.title}"${marker}`);
