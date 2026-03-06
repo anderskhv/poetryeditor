@@ -16,6 +16,7 @@ import { useEditorChat } from '../../hooks/useEditorChat';
 import { EditorOnboarding } from './EditorOnboarding';
 import { EditorMessage } from './EditorMessage';
 import { hasApiKey } from '../../utils/editorApi';
+import { UsageCapModal } from './UsageCapModal';
 import { saveLocalApiKey, getLocalApiKey, clearLocalApiKey } from '../../utils/editorStorage';
 import {
   extractLearnings,
@@ -73,6 +74,7 @@ export function EditorChat({
 }: EditorChatProps) {
   const [inputValue, setInputValue] = useState('');
   const [showSettings, setShowSettings] = useState(false);
+  const [showCapModal, setShowCapModal] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -86,6 +88,7 @@ export function EditorChat({
     cancelStreaming,
     clearConversation,
     getMessageCount,
+    budgetStatus,
   } = useEditorChat({
     user,
     profile,
@@ -170,12 +173,16 @@ export function EditorChat({
     }
   }, [profile, messages, onAddLearning, onUpdateSummary, mode, poemId, poemTitle]);
 
-  function handleSubmit(e?: React.FormEvent) {
+  async function handleSubmit(e?: React.FormEvent) {
     e?.preventDefault();
     const trimmed = inputValue.trim();
     if (!trimmed || isLoading) return;
     setInputValue('');
-    sendMessage(trimmed);
+    const result = await sendMessage(trimmed);
+    if (result === 'cap_exceeded') {
+      setInputValue(trimmed); // Restore input so user doesn't lose their message
+      setShowCapModal(true);
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -379,6 +386,14 @@ export function EditorChat({
           </div>
         )}
       </div>
+
+      {showCapModal && budgetStatus && (
+        <UsageCapModal
+          budgetStatus={budgetStatus}
+          isLoggedIn={!!user}
+          onClose={() => setShowCapModal(false)}
+        />
+      )}
     </div>
   );
 }

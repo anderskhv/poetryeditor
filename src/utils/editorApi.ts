@@ -5,7 +5,7 @@
  * Models: Sonnet 4.5 for coaching, Haiku 4.5 for cheap extraction tasks.
  */
 
-import type { StreamCallbacks } from '../types/editor';
+import type { StreamCallbacks, TokenUsage } from '../types/editor';
 import { getLocalApiKey } from './editorStorage';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
@@ -89,6 +89,8 @@ export async function streamCoachingMessage(
     const decoder = new TextDecoder();
     let fullResponse = '';
     let buffer = '';
+    let inputTokens = 0;
+    let outputTokens = 0;
 
     while (true) {
       const { done, value } = await reader.read();
@@ -112,8 +114,17 @@ export async function streamCoachingMessage(
             const token = event.delta.text;
             fullResponse += token;
             callbacks.onToken(token);
+          } else if (event.type === 'message_start' && event.message?.usage) {
+            // Input tokens come in message_start
+            inputTokens = event.message.usage.input_tokens || 0;
+          } else if (event.type === 'message_delta' && event.usage) {
+            // Output tokens come in message_delta at end of stream
+            outputTokens = event.usage.output_tokens || 0;
           } else if (event.type === 'message_stop') {
-            // Stream complete
+            // Stream complete — emit usage
+            if (callbacks.onUsage && (inputTokens > 0 || outputTokens > 0)) {
+              callbacks.onUsage({ model: COACHING_MODEL, inputTokens, outputTokens });
+            }
           } else if (event.type === 'error') {
             callbacks.onError(new Error(event.error?.message || 'Stream error'));
             return;
@@ -137,6 +148,13 @@ export async function streamCoachingMessage(
 /**
  * Non-streaming call for extraction tasks (Haiku — cheap and fast).
  */
+// Global callback for tracking extraction usage (set by useEditorChat)
+let _onExtractionUsage: ((usage: TokenUsage) => void) | null = null;
+
+export function setExtractionUsageCallback(cb: ((usage: TokenUsage) => void) | null): void {
+  _onExtractionUsage = cb;
+}
+
 export async function callExtractionModel(
   systemPrompt: string,
   userMessage: string,
@@ -166,6 +184,16 @@ export async function callExtractionModel(
   }
 
   const result = await response.json();
+
+  // Report usage if callback is set
+  if (_onExtractionUsage && result.usage) {
+    _onExtractionUsage({
+      model: EXTRACTION_MODEL,
+      inputTokens: result.usage.input_tokens || 0,
+      outputTokens: result.usage.output_tokens || 0,
+    });
+  }
+
   return result.content?.[0]?.text || '';
 }
 

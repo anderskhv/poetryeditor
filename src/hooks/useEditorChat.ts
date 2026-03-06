@@ -11,8 +11,9 @@ import type {
   EditorConversation,
   PoetProfile,
   AnalysisContext,
+  TokenUsage,
 } from '../types/editor';
-import { streamCoachingMessage } from '../utils/editorApi';
+import { streamCoachingMessage, setExtractionUsageCallback } from '../utils/editorApi';
 import { buildCoachingPrompt, buildCollectionAnalysisPrompt, type CollectionContext } from '../utils/editorPrompts';
 import {
   getLocalMessages,
@@ -21,6 +22,7 @@ import {
   getLocalConversations,
   appendLocalMessage,
 } from '../utils/editorStorage';
+import { checkBudget, recordUsage, type BudgetStatus } from '../utils/usageTracking';
 
 function generateId(): string {
   return `msg-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -61,6 +63,7 @@ export function useEditorChat({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conversation, setConversation] = useState<EditorConversation | null>(null);
+  const [budgetStatus, setBudgetStatus] = useState<BudgetStatus | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const messageCountRef = useRef(0);
 
@@ -70,6 +73,19 @@ export function useEditorChat({
     setConversation(null);
     messageCountRef.current = 0;
   }, [mode, poemId]);
+
+  // Check budget on mount and after each message
+  useEffect(() => {
+    checkBudget(user, supabase).then(setBudgetStatus).catch(() => {});
+  }, [user, messages.length]);
+
+  // Set up extraction usage callback for tracking Haiku usage
+  useEffect(() => {
+    setExtractionUsageCallback((usage: TokenUsage) => {
+      recordUsage(user, supabase, usage.model, usage.inputTokens, usage.outputTokens);
+    });
+    return () => setExtractionUsageCallback(null);
+  }, [user]);
 
   // Load existing conversation for this poem or collection
   useEffect(() => {
@@ -188,8 +204,15 @@ export function useEditorChat({
   }, [conversation, user, poemId, poemTitle, mode, collectionName]);
 
   // Send a message
-  const sendMessage = useCallback(async (content: string) => {
-    if (!profile || !content.trim()) return;
+  const sendMessage = useCallback(async (content: string): Promise<'sent' | 'cap_exceeded'> => {
+    if (!profile || !content.trim()) return 'sent';
+
+    // Check budget before sending
+    const budget = await checkBudget(user, supabase);
+    setBudgetStatus(budget);
+    if (!budget.canSend) {
+      return 'cap_exceeded';
+    }
 
     setError(null);
     const conv = await ensureConversation();
@@ -301,6 +324,12 @@ export function useEditorChat({
             appendLocalMessage(conv.id, finalAssistant);
           }
         },
+        onUsage: (usage: TokenUsage) => {
+          // Record usage for cap tracking
+          recordUsage(user, supabase, usage.model, usage.inputTokens, usage.outputTokens);
+          // Refresh budget status
+          checkBudget(user, supabase).then(setBudgetStatus).catch(() => {});
+        },
         onError: (err) => {
           setError(err.message);
           setIsLoading(false);
@@ -311,6 +340,8 @@ export function useEditorChat({
       },
       controller.signal,
     );
+
+    return 'sent';
   }, [profile, poemTitle, poemText, analysis, messages, ensureConversation, user, collectionPoems, collectionName, mode, conversationSummaries]);
 
   // Cancel streaming
@@ -337,5 +368,6 @@ export function useEditorChat({
     clearConversation,
     getMessageCount,
     conversation,
+    budgetStatus,
   };
 }

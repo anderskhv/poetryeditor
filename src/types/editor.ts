@@ -134,10 +134,17 @@ export interface EditorApiConfig {
   maxTokens: number;
 }
 
+export interface TokenUsage {
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+}
+
 export interface StreamCallbacks {
   onToken: (token: string) => void;
   onDone: (fullResponse: string) => void;
   onError: (error: Error) => void;
+  onUsage?: (usage: TokenUsage) => void;
 }
 
 // ── Analysis context passed to the editor ──
