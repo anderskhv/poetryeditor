@@ -286,6 +286,21 @@
 }
 
 /* Actions */
+.section-name {
+  cursor: text;
+}
+
+.section-name:hover {
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(0, 0, 0, 0.3);
+}
+
+.collection-panel.dark .section-name:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+}
+
 .tree-node-actions {
   display: none;
   gap: 2px;

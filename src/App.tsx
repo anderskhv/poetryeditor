@@ -1691,6 +1691,8 @@ function App() {
                 onCompleteOnboarding={completeOnboarding}
                 onAddLearning={(insight: string) => addLearning(insight)}
                 onUpdateSummary={updateSummary}
+                onSwitchToCollection={() => setCollectionReviewMode(true)}
+                onSwitchToPoem={() => setCollectionReviewMode(false)}
               />
             ) : activeSideTab === 'analysis' ? (
               <AnalysisPanel

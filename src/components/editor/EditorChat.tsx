@@ -50,6 +50,8 @@ interface EditorChatProps {
   onCompleteOnboarding: (data: import('../../types/editor').OnboardingData, style: import('../../types/editor').FeedbackStyle) => void;
   onAddLearning: (insight: string) => void;
   onUpdateSummary: (summary: string) => void;
+  onSwitchToCollection?: () => void;
+  onSwitchToPoem?: () => void;
 }
 
 export function EditorChat({
@@ -66,6 +68,8 @@ export function EditorChat({
   onCompleteOnboarding,
   onAddLearning,
   onUpdateSummary,
+  onSwitchToCollection,
+  onSwitchToPoem,
 }: EditorChatProps) {
   const [inputValue, setInputValue] = useState('');
   const [showSettings, setShowSettings] = useState(false);
@@ -283,6 +287,13 @@ export function EditorChat({
           {mode === 'collection' ? (collectionName || 'Collection Review') : 'Editor'}
         </span>
         <div className="editor-header-actions">
+          {mode === 'collection' && onSwitchToPoem && (
+            <button className="editor-header-btn" onClick={onSwitchToPoem} title="Back to poem">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
           <button className="editor-header-btn" onClick={clearConversation} title="New conversation">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 5v14M5 12h14" />
@@ -299,11 +310,21 @@ export function EditorChat({
       <div className="editor-messages" ref={scrollRef}>
         {messages.length === 0 && (
           <div className="editor-empty-state">
-            <p>
-              {mode === 'collection'
-                ? `I can see your full collection '${collectionName}' (${collectionPoems?.length || 0} poems). Ask me about the arc, ordering, themes, or request an editorial letter.`
-                : `I can see your poem${collectionPoems && collectionPoems.length > 1 ? ` and your full collection (${collectionPoems.length} poems)` : ''}. Ask me anything — about a specific line, how it connects to other poems, or where to take it next.`}
-            </p>
+            {mode === 'collection' ? (
+              <>
+                <p>I can see your full collection '{collectionName}' ({collectionPoems?.length || 0} poems). Ask me about the arc, ordering, themes, or request an editorial letter.</p>
+                <p className="editor-empty-hint">Try: "Write me an editorial letter about this collection"</p>
+              </>
+            ) : (
+              <>
+                <p>I can see your poem{collectionPoems && collectionPoems.length > 1 ? ` and your full collection (${collectionPoems.length} poems)` : ''}. Ask me anything — about a specific line, how it connects to other poems, or where to take it next.</p>
+                {onSwitchToCollection && collectionPoems && collectionPoems.length > 1 && (
+                  <button className="editor-collection-link" onClick={onSwitchToCollection}>
+                    Review full collection
+                  </button>
+                )}
+              </>
+            )}
           </div>
         )}
         {messages.map(msg => (
