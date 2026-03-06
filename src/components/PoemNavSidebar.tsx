@@ -5,14 +5,14 @@ import type { Poem, Section } from '../types/database';
 import type { PoemStatus } from '../types/collection';
 import './PoemNavSidebar.css';
 
-const STATUS_CYCLE: PoemStatus[] = ['draft', 'edit', 'done'];
-const STATUS_LABELS: Record<PoemStatus, string> = { draft: 'Draft', edit: 'Edit', done: 'Done' };
-const STATUS_COLORS: Record<PoemStatus, string> = { draft: '#999', edit: '#e6a817', done: '#28a745' };
+const STATUS_CYCLE: PoemStatus[] = ['rough', 'draft', 'edit', 'done'];
+const STATUS_LABELS: Record<PoemStatus, string> = { rough: 'Rough', draft: 'Draft', edit: 'Edit', done: 'Done' };
+const STATUS_COLORS: Record<PoemStatus, string> = { rough: '#c62828', draft: '#999', edit: '#e6a817', done: '#28a745' };
 
 function getPoemStatus(poemId: string): PoemStatus {
   try {
     const val = localStorage.getItem(`poem-status:${poemId}`);
-    if (val === 'draft' || val === 'edit' || val === 'done') return val;
+    if (val === 'rough' || val === 'draft' || val === 'edit' || val === 'done') return val;
   } catch {}
   return 'draft';
 }
@@ -544,6 +544,17 @@ export function PoemNavSidebar({
         )}
       </div>
       </DndContext>
+
+      {!loading && (unsectionedPoems.length > 0 || sections.length > 0) && (
+        <div className="poem-nav-status-legend">
+          {STATUS_CYCLE.map(s => (
+            <span key={s} className="legend-item">
+              <span className="legend-dot" style={{ background: STATUS_COLORS[s] }} />
+              {STATUS_LABELS[s]}
+            </span>
+          ))}
+        </div>
+      )}
         </>
       )}
     </div>

@@ -18,9 +18,9 @@ import { CSS } from '@dnd-kit/utilities';
 import { CollectionPoem, CollectionSection, TreeNode, PoemStatus } from '../../types/collection';
 import './CollectionPanel.css';
 
-const STATUS_CYCLE: PoemStatus[] = ['draft', 'edit', 'done'];
-const STATUS_LABELS: Record<PoemStatus, string> = { draft: 'Draft', edit: 'Edit', done: 'Done' };
-const STATUS_COLORS: Record<PoemStatus, string> = { draft: '#999', edit: '#e6a817', done: '#28a745' };
+const STATUS_CYCLE: PoemStatus[] = ['rough', 'draft', 'edit', 'done'];
+const STATUS_LABELS: Record<PoemStatus, string> = { rough: 'Rough', draft: 'Draft', edit: 'Edit', done: 'Done' };
+const STATUS_COLORS: Record<PoemStatus, string> = { rough: '#c62828', draft: '#999', edit: '#e6a817', done: '#28a745' };
 
 interface CollectionPanelProps {
   isOpen: boolean;
@@ -568,6 +568,20 @@ export function CollectionPanel({
           </div>
         )}
       </div>
+
+      {treeNodes.some(n => n.type === 'poem') && (
+        <div className="collection-status-legend">
+          {STATUS_CYCLE.map(status => (
+            <span key={status} className="legend-item">
+              <span
+                className="legend-dot"
+                style={{ background: STATUS_COLORS[status] }}
+              />
+              {STATUS_LABELS[status]}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

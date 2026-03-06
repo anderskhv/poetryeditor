@@ -317,6 +317,32 @@
   font-size: 12px;
 }
 
+/* Status Legend */
+.poem-nav-status-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--color-border);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
+.poem-nav-status-legend .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.poem-nav-status-legend .legend-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 /* Toggle button when sidebar is collapsed */
 .poem-nav-toggle {
   width: 100%;
