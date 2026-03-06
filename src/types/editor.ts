@@ -23,11 +23,26 @@ export interface FeedbackStyle {
   tone: 'encouraging' | 'neutral' | 'challenging';
 }
 
+export type ExperienceLevel =
+  | 'brand_new'      // Just starting to write poetry
+  | 'beginner'       // Writing regularly, learning craft basics
+  | 'intermediate'   // Understands form, voice, imagery; working on consistency
+  | 'experienced'    // Strong craft, working toward publication
+  | 'advanced';      // Published, MFA-level or equivalent
+
+export type PoemStage =
+  | 'first_draft'    // Getting ideas down
+  | 'early_revision' // Shaping structure and voice
+  | 'mid_revision'   // Refining imagery, sound, line breaks
+  | 'late_revision'  // Polishing, cutting, precision work
+  | 'submission';    // Final check before sending out
+
 export interface OnboardingData {
   goals?: string;
   influences?: string;
   favoritPoets?: string;
   workingOn?: string;
+  experienceLevel?: ExperienceLevel;
   additionalContext?: string;
 }
 

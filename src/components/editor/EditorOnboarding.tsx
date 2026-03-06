@@ -25,7 +25,7 @@ interface QueueItem {
 const QUESTIONS: QueueItem[] = [
   {
     id: 'goals',
-    question: "Welcome. I'll be reading your poems with you \u2014 not to tell you what to write, but to help you see what you're already doing. Before we start, I'd like to learn a bit about you. What are you working toward as a poet?",
+    question: "Welcome. I'll be reading your poems with you \u2014 not to tell you what to write, but to help you see what you're already doing. I draw on knowledge of poetic craft, but you are the best custodian of your own work. I sometimes get things wrong, especially around intent and cultural context, so treat my suggestions as a starting point for your own thinking. Before we start, I'd like to learn a bit about where you are. What are you working toward as a poet?",
     field: 'goals',
     type: 'text',
     respond: (answer) => {
@@ -77,6 +77,19 @@ const QUESTIONS: QueueItem[] = [
       if (answer.length < 15) return "Got it. We can dig into that whenever you're ready.";
       return "That's helpful context. I'll be looking at your current poem through that lens.";
     },
+  },
+  {
+    id: 'experienceLevel',
+    question: "How would you describe where you are as a poet?",
+    field: 'experienceLevel',
+    type: 'buttons',
+    options: [
+      { label: 'Just starting', value: 'brand_new' },
+      { label: 'Beginner', value: 'beginner' },
+      { label: 'Intermediate', value: 'intermediate' },
+      { label: 'Experienced', value: 'experienced' },
+      { label: 'Advanced', value: 'advanced' },
+    ],
   },
   {
     id: 'directness',
@@ -147,6 +160,7 @@ export function EditorOnboarding({ onComplete }: OnboardingProps) {
         goals: newAnswers.goals,
         influences: newAnswers.influences,
         workingOn: newAnswers.workingOn,
+        experienceLevel: newAnswers.experienceLevel as OnboardingData['experienceLevel'],
         additionalContext: newAnswers.additionalContext,
       };
       const feedbackStyle: FeedbackStyle = {

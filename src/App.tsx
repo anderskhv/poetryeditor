@@ -1580,7 +1580,7 @@ function App() {
           {showWelcome && !versionPreview && (
             <div className="welcome-card">
               <div className="welcome-card-header">
-                <div className="welcome-card-title">The best place to write, edit, and share your poems</div>
+                <div className="welcome-card-title">Write your poem. See what you're doing. Get better.</div>
                 <button
                   className="welcome-card-dismiss"
                   onClick={() => {
@@ -1594,23 +1594,23 @@ function App() {
               </div>
               <div className="welcome-card-features">
                 <div className="welcome-feature">
+                  <span className="welcome-feature-key">AI Editor</span>
+                  <span className="welcome-feature-desc">get feedback from a coach that reads with you, not for you</span>
+                </div>
+                <div className="welcome-feature">
+                  <span className="welcome-feature-key">Real-time analysis</span>
+                  <span className="welcome-feature-desc">rhythm, rhyme scheme, cliches, imagery, and style — as you type</span>
+                </div>
+                <div className="welcome-feature">
                   <span className="welcome-feature-key">Click any word</span>
                   <span className="welcome-feature-desc">to find rhymes, synonyms, syllables, and definitions</span>
                 </div>
                 <div className="welcome-feature">
-                  <span className="welcome-feature-key">Analysis panel</span>
-                  <span className="welcome-feature-desc">shows rhythm, rhyme scheme, cliches, and style feedback</span>
-                </div>
-                <div className="welcome-feature">
-                  <span className="welcome-feature-key">Tools menu</span>
-                  <span className="welcome-feature-desc">has a rhyme dictionary, syllable counter, and form checkers</span>
-                </div>
-                <div className="welcome-feature">
-                  <span className="welcome-feature-key">Share</span>
-                  <span className="welcome-feature-desc">your poems as beautiful images for social media</span>
+                  <span className="welcome-feature-key">Tools</span>
+                  <span className="welcome-feature-desc">rhyme dictionary, syllable counter, form checkers, and more</span>
                 </div>
               </div>
-              <div className="welcome-card-hint">Start typing to replace the sample poem. Your work saves automatically.</div>
+              <div className="welcome-card-hint">Start typing or open the Editor tab to talk with your AI coach.</div>
             </div>
           )}
           {versionPreview && (

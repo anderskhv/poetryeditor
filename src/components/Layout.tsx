@@ -39,7 +39,7 @@ export function Layout({ children }: LayoutProps) {
         <div className="layout-header-content">
           <Link to="/" className="layout-logo-group">
             <span className="layout-logo">Poetry Editor</span>
-            <span className="layout-subtitle">a toolbox for poets</span>
+            <span className="layout-subtitle">write, analyze, and get coached</span>
           </Link>
           <button
             className="mobile-menu-toggle"
