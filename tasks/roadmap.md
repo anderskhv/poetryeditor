@@ -10,7 +10,7 @@
 - Freemium usage caps ($0.50 guest / $5 registered / unlimited admin+own key)
 
 ### First-Visit Experience — March 2026
-- Philosophy card: "You are the best custodian of your own work"
+- Philosophy card: AI limitations + "your vision comes first"
 - Guest quick onboarding (2 questions, no account required)
 - Skill level + poem stage context for adaptive coaching
 - Updated marketing, SEO, welcome card

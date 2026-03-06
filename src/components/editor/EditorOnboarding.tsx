@@ -25,7 +25,7 @@ interface QueueItem {
 const QUESTIONS: QueueItem[] = [
   {
     id: 'goals',
-    question: "Welcome. I'll be reading your poems with you \u2014 not to tell you what to write, but to help you see what you're already doing. I draw on knowledge of poetic craft, but you are the best custodian of your own work. I sometimes get things wrong, especially around intent and cultural context, so treat my suggestions as a starting point for your own thinking. Before we start, I'd like to learn a bit about where you are. What are you working toward as a poet?",
+    question: "Welcome. I'll be reading your poems with you \u2014 not to tell you what to write, but to help you see what you're already doing. I draw on knowledge of poetic craft, but your vision for the work comes first. I sometimes get things wrong, especially around intent and cultural context, so treat my suggestions as a starting point for your own thinking. Before we start, I'd like to learn a bit about where you are. What are you working toward as a poet?",
     field: 'goals',
     type: 'text',
     respond: (answer) => {

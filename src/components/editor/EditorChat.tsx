@@ -369,7 +369,7 @@ export function EditorChat({
             I'll be reading your poems with you — not to tell you what to write, but to help you see what you're already doing.
           </p>
           <p>
-            I'm an AI, which means I can spot patterns, question choices, and suggest alternatives — but I sometimes miss context, misread intentional rule-breaking, or project confidence where a human editor would hedge. You are the best custodian of your own work.
+            I'm an AI, which means I can spot patterns, question choices, and suggest alternatives — but I sometimes miss context, misread intentional rule-breaking, or project confidence where a human editor would hedge. Your judgment about your own poems comes first.
           </p>
           <p>
             For deeper editorial work — manuscript feedback, publication strategy, the kind of reading that requires a human sensibility — we'll connect you with professional editors in the future.
