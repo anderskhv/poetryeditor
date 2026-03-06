@@ -15,8 +15,12 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { CollectionPoem, CollectionSection, TreeNode } from '../../types/collection';
+import { CollectionPoem, CollectionSection, TreeNode, PoemStatus } from '../../types/collection';
 import './CollectionPanel.css';
+
+const STATUS_CYCLE: PoemStatus[] = ['draft', 'edit', 'done'];
+const STATUS_LABELS: Record<PoemStatus, string> = { draft: 'Draft', edit: 'Edit', done: 'Done' };
+const STATUS_COLORS: Record<PoemStatus, string> = { draft: '#999', edit: '#e6a817', done: '#28a745' };
 
 interface CollectionPanelProps {
   isOpen: boolean;
@@ -31,6 +35,7 @@ interface CollectionPanelProps {
   onDeletePoem: (id: string) => void;
   onReorderPoem?: (poemId: string, newOrder: number, sectionId: string | null) => void;
   onMovePoemToSection?: (poemId: string, sectionId: string | null) => void;
+  onStatusChange?: (poemId: string, status: PoemStatus) => void;
   onExportAll?: () => Promise<void>;
   onClose: () => void;
   isDarkMode: boolean;
@@ -46,6 +51,7 @@ interface SortableNodeProps {
   onSectionToggle: (sectionId: string) => void;
   onDeleteSection: (sectionId: string) => void;
   onDeletePoem: (poemId: string) => void;
+  onStatusChange?: (poemId: string, status: PoemStatus) => void;
   onStartRename: (section: CollectionSection) => void;
   onFinishRename: () => void;
   onEditingNameChange: (name: string) => void;
@@ -61,6 +67,7 @@ function SortableTreeNode({
   onSectionToggle,
   onDeleteSection,
   onDeletePoem,
+  onStatusChange,
   onStartRename,
   onFinishRename,
   onEditingNameChange,
@@ -177,7 +184,19 @@ function SortableTreeNode({
         >
           ⋮⋮
         </span>
-        <span className="tree-poem-icon">📄</span>
+        <span
+          className="poem-status-dot"
+          style={{ background: STATUS_COLORS[poem.status || 'draft'] }}
+          title={STATUS_LABELS[poem.status || 'draft']}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onStatusChange) {
+              const current = poem.status || 'draft';
+              const idx = STATUS_CYCLE.indexOf(current);
+              onStatusChange(poem.id, STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length]);
+            }
+          }}
+        />
         <span className="tree-node-name poem-name">{poem.title}</span>
         <div className="tree-node-actions">
           <button
@@ -209,6 +228,7 @@ export function CollectionPanel({
   onDeletePoem,
   onReorderPoem,
   onMovePoemToSection,
+  onStatusChange,
   onExportAll,
   onClose,
   isDarkMode,
@@ -407,7 +427,19 @@ export function CollectionPanel({
           className="tree-node-content"
           style={{ paddingLeft: `${indent + 24}px` }}
         >
-          <span className="tree-poem-icon">📄</span>
+          <span
+            className="poem-status-dot"
+            style={{ background: STATUS_COLORS[poem.status || 'draft'] }}
+            title={STATUS_LABELS[poem.status || 'draft']}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onStatusChange) {
+                const current = poem.status || 'draft';
+                const idx = STATUS_CYCLE.indexOf(current);
+                onStatusChange(poem.id, STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length]);
+              }
+            }}
+          />
           <span className="tree-node-name poem-name">{poem.title}</span>
           <div className="tree-node-actions">
             <button
@@ -519,6 +551,7 @@ export function CollectionPanel({
                   onSectionToggle={onSectionToggle}
                   onDeleteSection={onDeleteSection}
                   onDeletePoem={onDeletePoem}
+                  onStatusChange={onStatusChange}
                   onStartRename={handleStartRename}
                   onFinishRename={handleFinishRename}
                   onEditingNameChange={setEditingName}

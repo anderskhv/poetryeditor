@@ -1507,6 +1507,7 @@ function App() {
           onDeletePoem={handleCollectionDeletePoem}
           onReorderPoem={reorderPoem}
           onMovePoemToSection={movePoemToSection}
+          onStatusChange={(poemId, status) => updatePoem(poemId, { status })}
           onExportAll={exportCollection}
           onClose={() => setIsCollectionOpen(false)}
           isDarkMode={theme === 'dark'}

@@ -1,5 +1,7 @@
 // Poetry Collection Manager Types
 
+export type PoemStatus = 'draft' | 'edit' | 'done';
+
 export interface CollectionPoem {
   id: string;
   title: string;           // From # heading or filename
@@ -9,6 +11,7 @@ export interface CollectionPoem {
   updatedAt: string;       // ISO timestamp
   sectionId: string | null; // null = root level
   order: number;           // Position for drag-drop sorting
+  status?: PoemStatus;     // draft → edit → done (default: draft)
 }
 
 export interface CollectionSection {

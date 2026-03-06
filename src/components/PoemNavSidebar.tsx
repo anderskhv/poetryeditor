@@ -1,8 +1,27 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { DndContext, DragEndEvent, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core';
 import { supabase } from '../lib/supabase';
 import type { Poem, Section } from '../types/database';
+import type { PoemStatus } from '../types/collection';
 import './PoemNavSidebar.css';
+
+const STATUS_CYCLE: PoemStatus[] = ['draft', 'edit', 'done'];
+const STATUS_LABELS: Record<PoemStatus, string> = { draft: 'Draft', edit: 'Edit', done: 'Done' };
+const STATUS_COLORS: Record<PoemStatus, string> = { draft: '#999', edit: '#e6a817', done: '#28a745' };
+
+function getPoemStatus(poemId: string): PoemStatus {
+  try {
+    const val = localStorage.getItem(`poem-status:${poemId}`);
+    if (val === 'draft' || val === 'edit' || val === 'done') return val;
+  } catch {}
+  return 'draft';
+}
+
+function setPoemStatus(poemId: string, status: PoemStatus) {
+  try {
+    localStorage.setItem(`poem-status:${poemId}`, status);
+  } catch {}
+}
 
 interface PoemNavSidebarProps {
   collectionId: string;
@@ -24,6 +43,8 @@ function PoemNavItem({
   sectionId,
   index,
   onDelete,
+  status,
+  onStatusChange,
 }: {
   poem: Poem;
   isActive: boolean;
@@ -31,6 +52,8 @@ function PoemNavItem({
   sectionId: string | null;
   index: number;
   onDelete?: (poemId: string) => void;
+  status: PoemStatus;
+  onStatusChange: (poemId: string, status: PoemStatus) => void;
 }) {
   const { attributes, listeners, setNodeRef: setDragRef, isDragging } = useDraggable({
     id: poem.id,
@@ -52,6 +75,16 @@ function PoemNavItem({
       className={`poem-nav-draggable ${isDragging ? 'dragging' : ''} ${isOver ? 'drag-over' : ''}`}
     >
       <div className={`poem-nav-item ${isActive ? 'active' : ''}`}>
+        <span
+          className="poem-status-dot"
+          style={{ background: STATUS_COLORS[status] }}
+          title={`${STATUS_LABELS[status]} — click to change`}
+          onClick={(e) => {
+            e.stopPropagation();
+            const idx = STATUS_CYCLE.indexOf(status);
+            onStatusChange(poem.id, STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length]);
+          }}
+        />
         <button className="poem-nav-title" onClick={() => onSelect(poem.id)}>
           {poem.title}
         </button>
@@ -93,9 +126,15 @@ export function PoemNavSidebar({
   const [unsectionedPoems, setUnsectionedPoems] = useState<Poem[]>([]);
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [statusMap, setStatusMap] = useState<Record<string, PoemStatus>>({});
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
   );
+
+  const handleStatusChange = useCallback((poemId: string, status: PoemStatus) => {
+    setPoemStatus(poemId, status);
+    setStatusMap(prev => ({ ...prev, [poemId]: status }));
+  }, []);
 
   const poemLookup = useMemo(() => {
     const map = new Map<string, { poem: Poem; sectionId: string | null }>();
@@ -161,6 +200,15 @@ export function PoemNavSidebar({
 
     loadPoems();
   }, [collectionId]);
+
+  // Load statuses from localStorage when poems change
+  useEffect(() => {
+    const allPoems = [...unsectionedPoems, ...sections.flatMap(s => s.poems)];
+    if (allPoems.length === 0) return;
+    const map: Record<string, PoemStatus> = {};
+    allPoems.forEach(p => { map[p.id] = getPoemStatus(p.id); });
+    setStatusMap(map);
+  }, [unsectionedPoems, sections]);
 
   useEffect(() => {
     if (!currentPoemId || !currentPoemTitle) return;
@@ -443,6 +491,8 @@ export function PoemNavSidebar({
                     sectionId={null}
                     index={idx}
                     onDelete={deletePoem}
+                    status={statusMap[poem.id] || 'draft'}
+                    onStatusChange={handleStatusChange}
                   />
                   <button
                     type="button"
@@ -480,6 +530,8 @@ export function PoemNavSidebar({
                     onPoemSelect={onPoemSelect}
                     onDelete={deletePoem}
                     onInsertAfter={(index) => createPoemAt(section.id, index)}
+                    statusMap={statusMap}
+                    onStatusChange={handleStatusChange}
                   />
                 )}
               </div>
@@ -534,12 +586,16 @@ function SectionPoemList({
   onPoemSelect,
   onDelete,
   onInsertAfter,
+  statusMap,
+  onStatusChange,
 }: {
   section: SectionWithPoems;
   currentPoemId: string;
   onPoemSelect: (poemId: string) => void;
   onDelete: (poemId: string) => void;
   onInsertAfter: (index: number) => void;
+  statusMap: Record<string, PoemStatus>;
+  onStatusChange: (poemId: string, status: PoemStatus) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `section-list-${section.id}`,
@@ -557,6 +613,8 @@ function SectionPoemList({
             sectionId={section.id}
             index={idx}
             onDelete={onDelete}
+            status={statusMap[poem.id] || 'draft'}
+            onStatusChange={onStatusChange}
           />
           <button
             type="button"

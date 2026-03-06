@@ -120,6 +120,26 @@
   font-weight: 500;
 }
 
+/* Poem Status Dot */
+.poem-nav-item .poem-status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.poem-nav-item .poem-status-dot:hover {
+  transform: scale(1.5);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+:root.dark-mode .poem-nav-item .poem-status-dot:hover {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+}
+
 .poem-nav-title {
   flex: 1;
   background: transparent;

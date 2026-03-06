@@ -426,6 +426,27 @@
   color: #666;
 }
 
+/* Poem Status Dot */
+.poem-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  margin-right: 4px;
+}
+
+.poem-status-dot:hover {
+  transform: scale(1.4);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.collection-panel.dark .poem-status-dot:hover {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+}
+
 /* Drop Overlay */
 .drop-overlay {
   position: absolute;
