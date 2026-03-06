@@ -106,6 +106,8 @@ function App() {
   // Cloud poem state
   const [cloudPoemTitle, setCloudPoemTitle] = useState<string | null>(null);
   const [cloudPoemCollectionId, setCloudPoemCollectionId] = useState<string | null>(null);
+  const [cloudCollectionName, setCloudCollectionName] = useState<string | null>(null);
+  const [cloudCollectionPoems, setCloudCollectionPoems] = useState<Array<{ title: string; content: string; sectionName: string | null }>>([]);
   const [isLoadingCloudPoem, setIsLoadingCloudPoem] = useState<boolean>(false);
   const [cloudPoemError, setCloudPoemError] = useState<string | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -291,6 +293,54 @@ function App() {
 
     loadCloudPoem();
   }, [cloudPoemId, user, setText]);
+
+  // Fetch all poems in the cloud collection for editor context
+  useEffect(() => {
+    if (!cloudPoemCollectionId || !supabase) {
+      setCloudCollectionPoems([]);
+      setCloudCollectionName(null);
+      return;
+    }
+
+    async function loadCloudCollection() {
+      if (!supabase || !cloudPoemCollectionId) return;
+      try {
+        // Fetch collection name
+        const { data: collData } = await supabase
+          .from('collections')
+          .select('name')
+          .eq('id', cloudPoemCollectionId)
+          .single();
+        if (collData) setCloudCollectionName(collData.name);
+
+        // Fetch sections for name lookup
+        const { data: sectionsData } = await supabase
+          .from('sections')
+          .select('id, name')
+          .eq('collection_id', cloudPoemCollectionId);
+        const sectionMap = new Map((sectionsData || []).map((s: { id: string; name: string }) => [s.id, s.name]));
+
+        // Fetch all poems
+        const { data: poemsData } = await supabase
+          .from('poems')
+          .select('title, content, section_id')
+          .eq('collection_id', cloudPoemCollectionId)
+          .order('sort_order');
+
+        setCloudCollectionPoems(
+          (poemsData || []).map((p: { title: string; content: string; section_id: string | null }) => ({
+            title: p.title,
+            content: p.content,
+            sectionName: p.section_id ? sectionMap.get(p.section_id) ?? null : null,
+          }))
+        );
+      } catch (err) {
+        console.error('Failed to load cloud collection poems:', err);
+      }
+    }
+
+    loadCloudCollection();
+  }, [cloudPoemCollectionId]);
 
   useEffect(() => {
     trackPageview(`${location.pathname}${location.search || ''}`, user?.id);
@@ -1663,7 +1713,7 @@ function App() {
                   <span className="side-panel-tab-badge">{poemComments.length}</span>
                 )}
               </button>
-              {activeSideTab === 'editor' && collection.poems.length > 0 && (
+              {activeSideTab === 'editor' && (collection.poems.length > 0 || cloudPoemCollectionId) && (
                 <button
                   className={`side-panel-tab ${collectionReviewMode ? 'active' : ''}`}
                   onClick={() => setCollectionReviewMode(!collectionReviewMode)}
@@ -1680,13 +1730,16 @@ function App() {
                 poemId={activePoemId}
                 poemTitle={poemTitle}
                 poemText={text}
-                collectionPoems={collection.poems.map(p => ({
-                  ...p,
-                  sectionName: p.sectionId
-                    ? collection.sections.find(s => s.id === p.sectionId)?.name ?? null
-                    : null,
-                }))}
-                collectionName={collection.name}
+                collectionPoems={cloudPoemCollectionId
+                  ? cloudCollectionPoems
+                  : collection.poems.map(p => ({
+                      ...p,
+                      sectionName: p.sectionId
+                        ? collection.sections.find(s => s.id === p.sectionId)?.name ?? null
+                        : null,
+                    }))
+                }
+                collectionName={cloudPoemCollectionId ? (cloudCollectionName || 'Collection') : collection.name}
                 mode={collectionReviewMode ? 'collection' : 'per_poem'}
                 conversationSummaries={conversationSummaries}
                 onCompleteOnboarding={completeOnboarding}
