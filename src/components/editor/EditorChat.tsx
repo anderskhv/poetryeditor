@@ -13,6 +13,7 @@
  */
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User } from '@supabase/supabase-js';
 import type { PoetProfile, AnalysisContext, FeedbackStyle } from '../../types/editor';
 import { useEditorChat } from '../../hooks/useEditorChat';
@@ -78,6 +79,7 @@ export function EditorChat({
   onSwitchToCollection,
   onSwitchToPoem,
 }: EditorChatProps) {
+  const navigate = useNavigate();
   const [inputValue, setInputValue] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [showCapModal, setShowCapModal] = useState(false);
@@ -456,8 +458,18 @@ export function EditorChat({
           <div className="editor-empty-state">
             {mode === 'collection' ? (
               <>
-                <p>I can see your full collection '{collectionName}' ({collectionPoems?.length || 0} poems). Ask me about the arc, ordering, themes, or request an editorial letter.</p>
-                <p className="editor-empty-hint">Try: "Write me an editorial letter about this collection"</p>
+                <p>I can see your full collection '{collectionName}' ({collectionPoems?.length || 0} poems). Ask me about the arc, ordering, themes, or generate a full editorial letter.</p>
+                <button
+                  className="editor-option-btn editor-generate-report-btn"
+                  onClick={() => {
+                    setInputValue('');
+                    sendMessage('Write me a full editorial letter about this collection.');
+                  }}
+                  disabled={isLoading}
+                >
+                  Generate Editorial Letter
+                </button>
+                <p className="editor-empty-hint">Or ask a question about your collection</p>
               </>
             ) : (
               <>
@@ -474,6 +486,28 @@ export function EditorChat({
         {messages.map(msg => (
           <EditorMessage key={msg.id} message={msg} />
         ))}
+        {mode === 'collection' && messages.length > 0 && !isLoading && (() => {
+          const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant' && !m.isStreaming);
+          if (lastAssistant && lastAssistant.content.length > 500) {
+            return (
+              <div className="editor-report-link">
+                <button
+                  className="editor-option-btn"
+                  onClick={() => navigate('/editorial-report', {
+                    state: {
+                      markdown: lastAssistant.content,
+                      collectionName: collectionName || 'Collection',
+                      generatedAt: new Date().toISOString(),
+                    },
+                  })}
+                >
+                  View as full report &rarr;
+                </button>
+              </div>
+            );
+          }
+          return null;
+        })()}
         {error && (
           <div className="editor-error">
             {error}

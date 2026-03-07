@@ -313,25 +313,41 @@ function App() {
           .single();
         if (collData) setCloudCollectionName(collData.name);
 
-        // Fetch sections for name lookup
+        // Fetch sections with sort_order for correct ordering
         const { data: sectionsData } = await supabase
           .from('sections')
-          .select('id, name')
-          .eq('collection_id', cloudPoemCollectionId);
-        const sectionMap = new Map((sectionsData || []).map((s: { id: string; name: string }) => [s.id, s.name]));
+          .select('id, name, sort_order')
+          .eq('collection_id', cloudPoemCollectionId)
+          .order('sort_order');
+        const sectionMap = new Map((sectionsData || []).map((s: { id: string; name: string; sort_order: number }) => [s.id, { name: s.name, sortOrder: s.sort_order }]));
 
-        // Fetch all poems
+        // Fetch all poems with sort_order
         const { data: poemsData } = await supabase
           .from('poems')
-          .select('title, content, section_id')
+          .select('title, content, section_id, sort_order')
           .eq('collection_id', cloudPoemCollectionId)
           .order('sort_order');
 
-        setCloudCollectionPoems(
-          (poemsData || []).map((p: { title: string; content: string; section_id: string | null }) => ({
+        // Sort poems by (section_sort_order, poem_sort_order) so sections appear in correct order
+        const sortedPoems = (poemsData || [])
+          .map((p: { title: string; content: string; section_id: string | null; sort_order: number }) => ({
             title: p.title,
             content: p.content,
-            sectionName: p.section_id ? sectionMap.get(p.section_id) ?? null : null,
+            sectionName: p.section_id ? sectionMap.get(p.section_id)?.name ?? null : null,
+            _sectionOrder: p.section_id ? sectionMap.get(p.section_id)?.sortOrder ?? 999 : -1,
+            _poemOrder: p.sort_order,
+          }))
+          .sort((a: { _sectionOrder: number; _poemOrder: number }, b: { _sectionOrder: number; _poemOrder: number }) =>
+            a._sectionOrder !== b._sectionOrder
+              ? a._sectionOrder - b._sectionOrder
+              : a._poemOrder - b._poemOrder
+          );
+
+        setCloudCollectionPoems(
+          sortedPoems.map((p: { title: string; content: string; sectionName: string | null }) => ({
+            title: p.title,
+            content: p.content,
+            sectionName: p.sectionName,
           }))
         );
       } catch (err) {
@@ -1732,12 +1748,20 @@ function App() {
                 poemText={text}
                 collectionPoems={cloudPoemCollectionId
                   ? cloudCollectionPoems
-                  : collection.poems.map(p => ({
+                  : [...collection.poems]
+                    .map(p => ({
                       ...p,
                       sectionName: p.sectionId
                         ? collection.sections.find(s => s.id === p.sectionId)?.name ?? null
                         : null,
+                      _sectionOrder: p.sectionId
+                        ? collection.sections.findIndex(s => s.id === p.sectionId)
+                        : -1,
                     }))
+                    .sort((a, b) => a._sectionOrder !== b._sectionOrder
+                      ? a._sectionOrder - b._sectionOrder
+                      : a.order - b.order)
+                    .map(({ _sectionOrder, ...p }) => p)
                 }
                 collectionName={cloudPoemCollectionId ? (cloudCollectionName || 'Collection') : collection.name}
                 mode={collectionReviewMode ? 'collection' : 'per_poem'}

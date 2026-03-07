@@ -277,6 +277,9 @@ export function useEditorChat({
     const controller = new AbortController();
     abortRef.current = controller;
 
+    // Collection mode needs much higher token limit for full editorial letters
+    const maxTokens = mode === 'collection' ? 16384 : 4096;
+
     await streamCoachingMessage(
       systemPrompt,
       apiMessages,
@@ -339,6 +342,7 @@ export function useEditorChat({
         },
       },
       controller.signal,
+      maxTokens,
     );
 
     return 'sent';

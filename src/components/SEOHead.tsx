@@ -7,6 +7,7 @@ interface SEOHeadProps {
   keywords?: string;
   ogImage?: string;
   jsonLd?: object;
+  noindex?: boolean;
 }
 
 const DEFAULT_OG_IMAGE = 'https://poetryeditor.com/og-image.png';
@@ -18,7 +19,8 @@ export function SEOHead({
   canonicalPath,
   keywords,
   ogImage = DEFAULT_OG_IMAGE,
-  jsonLd
+  jsonLd,
+  noindex
 }: SEOHeadProps) {
   const fullTitle = title.includes('Poetry Editor') ? title : `${title} | Poetry Editor`;
   const canonicalUrl = canonicalPath ? `https://poetryeditor.com${canonicalPath}` : 'https://poetryeditor.com';
@@ -42,6 +44,7 @@ export function SEOHead({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
+      {noindex && <meta name="robots" content="noindex" />}
 
       {/* Open Graph */}
       <meta property="og:title" content={fullTitle} />

@@ -32,6 +32,7 @@ export async function streamCoachingMessage(
   messages: Array<{ role: 'user' | 'assistant'; content: string }>,
   callbacks: StreamCallbacks,
   signal?: AbortSignal,
+  maxTokens?: number,
 ): Promise<void> {
   const apiKey = resolveApiKey();
   if (!apiKey) {
@@ -50,7 +51,7 @@ export async function streamCoachingMessage(
       },
       body: JSON.stringify({
         model: COACHING_MODEL,
-        max_tokens: 1024,
+        max_tokens: maxTokens || 4096,
         stream: true,
         system: [
           {
@@ -73,6 +74,8 @@ export async function streamCoachingMessage(
         callbacks.onError(new Error('Invalid API key. Check your Anthropic API key in Editor settings.'));
       } else if (response.status === 429) {
         callbacks.onError(new Error('Rate limited. Please wait a moment and try again.'));
+      } else if (response.status === 400 && errorBody.includes('content filtering')) {
+        callbacks.onError(new Error('The response was blocked by a content filter. This can happen with poems that touch on intense themes. Try asking about specific poems or aspects of the collection instead of generating a full report at once.'));
       } else {
         callbacks.onError(new Error(`API error (${response.status}): ${errorBody.slice(0, 200)}`));
       }
@@ -138,7 +141,7 @@ export async function streamCoachingMessage(
     callbacks.onDone(fullResponse);
   } catch (err) {
     if (err instanceof DOMException && err.name === 'AbortError') {
-      callbacks.onDone(callbacks.toString()); // Aborted — not an error
+      callbacks.onDone(fullResponse); // Aborted — deliver partial response
       return;
     }
     callbacks.onError(err instanceof Error ? err : new Error(String(err)));

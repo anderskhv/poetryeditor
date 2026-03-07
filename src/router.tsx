@@ -31,6 +31,7 @@ import { ResetPassword } from './pages/ResetPassword';
 import { SharedCollection } from './pages/SharedCollection';
 import { Analytics } from './pages/Analytics';
 import { Analytics2 } from './pages/Analytics2';
+import { EditorialReport } from './pages/EditorialReport';
 import { RouteError } from './components/RouteError';
 
 export const router = createBrowserRouter([
@@ -211,6 +212,10 @@ export const router = createBrowserRouter([
   {
     path: '/share/:token',
     element: <SharedCollection />,
+  },
+  {
+    path: '/editorial-report',
+    element: <EditorialReport />,
   },
   {
     path: '/analytics',
