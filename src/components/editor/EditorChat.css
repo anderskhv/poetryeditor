@@ -442,6 +442,88 @@
   border-radius: 3px;
 }
 
+/* ── Message headings (from multi-agent synthesis) ── */
+
+.editor-msg-h2 {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 12px 0 4px;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.editor-msg-h3 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 8px 0 4px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+}
+
+/* ── Collapsible sections (Craft Notes, Questions, Perspective) ── */
+
+.editor-msg-section {
+  margin-top: 8px;
+  border-top: 1px solid var(--color-border, #e0e0e0);
+}
+
+.editor-msg-section-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary, #888);
+  text-align: left;
+}
+
+.editor-msg-section-toggle:hover {
+  color: var(--color-text-primary, #333);
+}
+
+.editor-msg-section-chevron {
+  transition: transform 0.15s;
+  flex-shrink: 0;
+}
+
+.editor-msg-section-chevron.open {
+  transform: rotate(90deg);
+}
+
+.editor-msg-section-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.editor-msg-section-content {
+  padding: 4px 12px 8px;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.editor-msg-section-content strong {
+  font-weight: 700;
+}
+
+.editor-msg-section-content em {
+  font-style: italic;
+}
+
 /* Usage Cap Modal */
 .usage-cap-overlay {
   position: absolute;
@@ -591,4 +673,20 @@
 .editor-report-link .editor-option-btn {
   font-size: 0.85rem;
   padding: 0.5rem 1rem;
+}
+
+/* ── Synthesis indicator ── */
+
+.editor-synthesis-indicator {
+  font-size: 0.7rem;
+  color: var(--text-tertiary, #999);
+  padding: 0.25rem 0;
+  text-align: center;
+  font-style: italic;
+  animation: editor-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes editor-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }

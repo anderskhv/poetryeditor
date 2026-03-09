@@ -172,3 +172,101 @@ export interface AnalysisContext {
   abstractConcreteRatio: string;
   summaryItems: string[];
 }
+
+// ── Multi-Agent Architecture ──
+
+export type AgentRole =
+  | 'reader'        // Primary responder (Sonnet) — emotional response, what moved me
+  | 'craftsperson'  // Specialist (Haiku) — prosody, line breaks, sound, meter, form
+  | 'questioner'    // Specialist (Haiku) — generative questions, alternative possibilities
+  | 'perspective'   // Specialist (Haiku) — reads through a chosen editorial lens
+  | 'learning'      // Background (Haiku) — extracts learnings, tracks growth
+  | 'synthesizer';  // Final pass (Sonnet) — weaves outputs into one coherent response
+
+export type AgentModel = 'sonnet' | 'haiku';
+
+export interface AgentConfig {
+  role: AgentRole;
+  model: AgentModel;
+  enabled: boolean;
+}
+
+/** Result from a single agent run */
+export interface AgentResult {
+  role: AgentRole;
+  content: string;
+  model: AgentModel;
+  durationMs: number;
+}
+
+/** Structured multi-agent response sections */
+export interface MultiAgentResponse {
+  /** Main feedback from Reader (always present) */
+  mainFeedback: string;
+  /** Craft-level observations from Craftsperson (optional) */
+  craftNotes?: string;
+  /** Generative questions from Questioner (optional) */
+  questions?: string;
+  /** Perspective-specific reading (optional) */
+  perspectiveNotes?: string;
+  /** The perspective name used, if any */
+  perspectiveName?: string;
+}
+
+// ── Editorial Perspectives ──
+
+export type EditorialPerspective =
+  | 'none'           // No perspective agent (balanced default)
+  | 'formalist'      // Structure, meter, rhyme scheme, form constraints
+  | 'imagist'        // Precision of image, compression, sensory detail
+  | 'lyricist'       // Musicality, sound patterns, vowel play, rhythm
+  | 'narrativist'    // Story, persona, dramatic arc, voice consistency
+  | 'experimentalist' // Pushing boundaries, fragmentation, white space
+  | 'intimate';      // Emotional truth, vulnerability, specificity of feeling
+
+export type HarshnessLevel = 'encouraging' | 'balanced' | 'direct';
+
+export interface EditorSettings {
+  perspective: EditorialPerspective;
+  harshness: HarshnessLevel;
+}
+
+// ── Memory System ──
+
+/** A single learning extracted from a conversation */
+export interface EditorLearningRecord {
+  id: string;
+  userId: string;
+  insight: string;
+  source: 'conversation' | 'onboarding' | 'manual';
+  poemId?: string;
+  conversationId?: string;
+  createdAt: string;
+  active: boolean; // false = compacted into summary
+}
+
+/** Summary of a single editor session */
+export interface EditorSessionRecord {
+  id: string;
+  userId: string;
+  conversationId: string;
+  poemId?: string;
+  poemTitle?: string;
+  mode: ConversationMode;
+  summary: string;
+  feedbackGiven: string[]; // key topics covered
+  poetEngagement: string[]; // what the poet responded to
+  draftStage?: PoemStage;
+  createdAt: string;
+}
+
+/** Cross-poem patterns detected over time */
+export interface EditorPatternRecord {
+  id: string;
+  userId: string;
+  category: 'strength' | 'habit' | 'theme' | 'growth_area';
+  description: string;
+  examples: string[]; // poem titles / specific lines
+  confidence: number; // 0-1, increases with repeated observation
+  updatedAt: string;
+}

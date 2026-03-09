@@ -40,6 +40,8 @@ export async function streamCoachingMessage(
     return;
   }
 
+  let fullResponse = '';
+
   try {
     const response = await fetch(ANTHROPIC_API_URL, {
       method: 'POST',
@@ -90,7 +92,6 @@ export async function streamCoachingMessage(
     }
 
     const decoder = new TextDecoder();
-    let fullResponse = '';
     let buffer = '';
     let inputTokens = 0;
     let outputTokens = 0;

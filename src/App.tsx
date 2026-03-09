@@ -28,6 +28,7 @@ import { FONT_OPTIONS } from './utils/fontOptions';
 import { exportPoemAsPdf } from './utils/pdfExport';
 import { EditorChat } from './components/editor/EditorChat';
 import { usePoetProfile } from './hooks/usePoetProfile';
+import { useEditorMemory } from './hooks/useEditorMemory';
 import type { AnalysisContext } from './types/editor';
 import type { PoemFormatting } from './types/database';
 import { getAllConversationSummaries } from './utils/editorStorage';
@@ -88,6 +89,12 @@ function App() {
   const versionId = searchParams.get('version');
   const { user } = useAuth();
   const { profile: poetProfile, completeOnboarding, addLearning, updateSummary } = usePoetProfile(user);
+  const {
+    settings: editorSettings,
+    updateSettings: updateEditorSettings,
+    getMemoryContext,
+    extractAndSaveLearnings,
+  } = useEditorMemory(user);
 
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
   const [localTitle, setLocalTitle] = useDebouncedLocalStorage('poetryTitle', 'Untitled', 800);
@@ -1771,6 +1778,10 @@ function App() {
                 onUpdateSummary={updateSummary}
                 onSwitchToCollection={() => setCollectionReviewMode(true)}
                 onSwitchToPoem={() => setCollectionReviewMode(false)}
+                editorSettings={editorSettings}
+                onUpdateEditorSettings={updateEditorSettings}
+                memoryContext={getMemoryContext()}
+                onExtractLearnings={(msgs) => extractAndSaveLearnings(msgs)}
               />
             ) : activeSideTab === 'analysis' ? (
               <AnalysisPanel

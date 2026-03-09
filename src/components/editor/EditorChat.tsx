@@ -15,10 +15,11 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '@supabase/supabase-js';
-import type { PoetProfile, AnalysisContext, FeedbackStyle } from '../../types/editor';
+import type { PoetProfile, AnalysisContext, FeedbackStyle, EditorSettings as EditorSettingsType } from '../../types/editor';
 import { useEditorChat } from '../../hooks/useEditorChat';
 import { EditorOnboarding } from './EditorOnboarding';
 import { EditorMessage } from './EditorMessage';
+import { EditorSettings } from './EditorSettings';
 import { hasApiKey } from '../../utils/editorApi';
 import { UsageCapModal } from './UsageCapModal';
 import { saveLocalApiKey, getLocalApiKey, clearLocalApiKey } from '../../utils/editorStorage';
@@ -57,6 +58,14 @@ interface EditorChatProps {
   onUpdateSummary: (summary: string) => void;
   onSwitchToCollection?: () => void;
   onSwitchToPoem?: () => void;
+  /** Multi-agent settings (perspective, harshness) */
+  editorSettings?: EditorSettingsType;
+  /** Callback to update editor settings */
+  onUpdateEditorSettings?: (updates: Partial<EditorSettingsType>) => void;
+  /** Memory context string for system prompt injection */
+  memoryContext?: string;
+  /** Callback to extract learnings after assistant response */
+  onExtractLearnings?: (messages: Array<{ role: string; content: string }>) => void;
 }
 
 // Guest quick setup states
@@ -78,6 +87,10 @@ export function EditorChat({
   onUpdateSummary,
   onSwitchToCollection,
   onSwitchToPoem,
+  editorSettings,
+  onUpdateEditorSettings,
+  memoryContext,
+  onExtractLearnings,
 }: EditorChatProps) {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState('');
@@ -133,6 +146,7 @@ export function EditorChat({
     clearConversation,
     getMessageCount,
     budgetStatus,
+    isSynthesizing,
   } = useEditorChat({
     user,
     profile: effectiveProfile,
@@ -144,6 +158,9 @@ export function EditorChat({
     collectionName,
     mode,
     conversationSummaries,
+    editorSettings,
+    memoryContext,
+    onAssistantResponse: onExtractLearnings,
   });
 
   // Auto-scroll on new messages
@@ -516,6 +533,14 @@ export function EditorChat({
       </div>
 
       <div className="editor-input-area">
+        {editorSettings && onUpdateEditorSettings && mode === 'per_poem' && (
+          <EditorSettings settings={editorSettings} onUpdate={onUpdateEditorSettings} />
+        )}
+        {isSynthesizing && (
+          <div className="editor-synthesis-indicator">
+            Refining with craft analysis...
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="editor-input-form">
           <textarea
             ref={inputRef}
@@ -523,7 +548,7 @@ export function EditorChat({
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isLoading ? 'Thinking...' : (mode === 'collection' ? 'Ask about your collection...' : 'Ask about your poem...')}
+            placeholder={isLoading ? (isSynthesizing ? 'Adding craft notes...' : 'Thinking...') : (mode === 'collection' ? 'Ask about your collection...' : 'Ask about your poem...')}
             rows={2}
             disabled={isLoading}
           />

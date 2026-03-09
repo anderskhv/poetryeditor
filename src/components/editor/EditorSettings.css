@@ -1,0 +1,167 @@
+/* EditorSettings — compact settings panel */
+
+.editor-settings {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.editor-settings-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: 1px solid var(--border-light, #e0e0e0);
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary, #888);
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.editor-settings-toggle:hover {
+  color: var(--text-primary, #333);
+  border-color: var(--border-medium, #ccc);
+}
+
+.editor-settings-label {
+  font-size: 0.75rem;
+}
+
+.editor-settings-chevron {
+  transition: transform 0.2s;
+}
+
+.editor-settings-chevron.open {
+  transform: rotate(180deg);
+}
+
+.editor-settings-panel {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-primary, #fff);
+  border: 1px solid var(--border-light, #e0e0e0);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.4rem;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+  max-width: 380px;
+}
+
+.editor-settings-section {
+  margin-bottom: 0.75rem;
+}
+
+.editor-settings-section:last-child {
+  margin-bottom: 0;
+}
+
+.editor-settings-section-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary, #999);
+  margin-bottom: 0.4rem;
+}
+
+/* Perspectives grid */
+.editor-settings-perspectives {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.editor-settings-perspective {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.35rem 0.5rem;
+  background: none;
+  border: 1px solid var(--border-light, #e0e0e0);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  min-width: 90px;
+}
+
+.editor-settings-perspective:hover {
+  border-color: var(--accent-color, #4a6741);
+  background: var(--bg-hover, #f5f5f5);
+}
+
+.editor-settings-perspective.active {
+  border-color: var(--accent-color, #4a6741);
+  background: var(--accent-bg, #e8ede7);
+  color: var(--accent-color, #4a6741);
+}
+
+.perspective-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: inherit;
+}
+
+.perspective-desc {
+  font-size: 0.65rem;
+  color: var(--text-tertiary, #999);
+  margin-top: 0.1rem;
+}
+
+.editor-settings-perspective.active .perspective-desc {
+  color: var(--accent-color, #4a6741);
+  opacity: 0.8;
+}
+
+/* Harshness buttons */
+.editor-settings-harshness {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.editor-settings-harshness-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.4rem 0.3rem;
+  background: none;
+  border: 1px solid var(--border-light, #e0e0e0);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.editor-settings-harshness-btn:hover {
+  border-color: var(--accent-color, #4a6741);
+  background: var(--bg-hover, #f5f5f5);
+}
+
+.editor-settings-harshness-btn.active {
+  border-color: var(--accent-color, #4a6741);
+  background: var(--accent-bg, #e8ede7);
+}
+
+.harshness-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-primary, #333);
+}
+
+.harshness-desc {
+  font-size: 0.6rem;
+  color: var(--text-tertiary, #999);
+  margin-top: 0.15rem;
+  text-align: center;
+}
+
+.editor-settings-harshness-btn.active .harshness-label,
+.editor-settings-harshness-btn.active .harshness-desc {
+  color: var(--accent-color, #4a6741);
+}

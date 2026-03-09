@@ -6,7 +6,7 @@
  * 2. Learning extraction prompt: cheap Haiku call to extract insights
  */
 
-import type { PoetProfile, AnalysisContext } from '../types/editor';
+import type { PoetProfile, AnalysisContext, HarshnessLevel } from '../types/editor';
 
 export interface CollectionPoemForPrompt {
   title: string;
@@ -34,6 +34,8 @@ export function buildCoachingPrompt(
   analysis?: AnalysisContext,
   collection?: CollectionContext,
   otherDiscussions?: Array<{ poemTitle: string; summary: string }>,
+  harshness?: HarshnessLevel,
+  memoryContext?: string,
 ): string {
   const profileSection = profile.summary
     ? `\nABOUT THIS POET:\n${profile.summary}\n`
@@ -48,7 +50,12 @@ export function buildCoachingPrompt(
   // Build collection context
   const collectionSection = buildCollectionSection(collection, poemTitle);
 
-  const { directness, tone } = profile.feedbackStyle;
+  // Use harshness from settings if provided, otherwise fall back to profile
+  const effectiveHarshness = harshness || profile.feedbackStyle.directness;
+  const { tone } = profile.feedbackStyle;
+
+  // Memory context from multi-session learnings
+  const memorySection = memoryContext || '';
 
   // Build discussions section if available
   const discussionsSection = otherDiscussions && otherDiscussions.length > 0
@@ -86,9 +93,9 @@ CURRENT POEM: "${poemTitle}"
 ---
 ${poemText}
 ---
-${analysisSection}${collectionSection}${discussionsSection}
-FEEDBACK STYLE: ${directness}, ${tone}
-${directness === 'gentle' ? 'Be warm and encouraging. Lead with what works. Frame suggestions as questions.' : ''}${directness === 'direct' ? 'Be straightforward and honest. The poet wants real critique, not hand-holding.' : ''}${directness === 'balanced' ? 'Balance honesty with encouragement. Be direct about issues but frame them constructively.' : ''}
+${analysisSection}${collectionSection}${discussionsSection}${memorySection}
+FEEDBACK STYLE: ${effectiveHarshness}, ${tone}
+${effectiveHarshness === 'gentle' || effectiveHarshness === 'encouraging' ? 'Be warm and encouraging. Lead with what works. Frame suggestions as questions. Aim for at least 3:1 positive-to-constructive ratio.' : ''}${effectiveHarshness === 'direct' ? 'Be straightforward and honest. The poet wants real critique, not hand-holding. Still respectful — direct is not harsh.' : ''}${effectiveHarshness === 'balanced' ? 'Balance honesty with encouragement. Be direct about issues but frame them constructively. 2:1 positive-to-constructive ratio.' : ''}
 ${tone === 'challenging' ? 'Push the poet. Ask hard questions. Don\'t let them settle for easy answers.' : ''}${tone === 'encouraging' ? 'Be supportive. Celebrate progress. Frame challenges as opportunities.' : ''}
 
 RESPONSE FORMAT:

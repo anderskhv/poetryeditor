@@ -1,6 +1,6 @@
 /**
  * useEditorChat — manages chat state, message send/receive, streaming,
- * and conversation persistence.
+ * conversation persistence, and multi-agent orchestration.
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
@@ -12,12 +12,14 @@ import type {
   PoetProfile,
   AnalysisContext,
   TokenUsage,
+  MultiAgentResponse,
+  EditorSettings,
 } from '../types/editor';
 import { streamCoachingMessage, setExtractionUsageCallback } from '../utils/editorApi';
+import { runPerPoemAgents } from '../utils/editorAgents';
 import { buildCoachingPrompt, buildCollectionAnalysisPrompt, type CollectionContext } from '../utils/editorPrompts';
 import {
   getLocalMessages,
-  saveLocalMessages,
   createLocalConversation,
   getLocalConversations,
   appendLocalMessage,
@@ -45,6 +47,12 @@ interface UseEditorChatOptions {
   collectionName?: string;
   mode?: 'per_poem' | 'collection';
   conversationSummaries?: Array<{ poemTitle: string; summary: string }>;
+  /** Multi-agent settings (perspective, harshness) */
+  editorSettings?: EditorSettings;
+  /** Memory context to inject into system prompt */
+  memoryContext?: string;
+  /** Callback to trigger learning extraction after assistant response */
+  onAssistantResponse?: (messages: Array<{ role: string; content: string }>) => void;
 }
 
 export function useEditorChat({
@@ -58,12 +66,18 @@ export function useEditorChat({
   collectionName,
   mode = 'per_poem',
   conversationSummaries,
+  editorSettings,
+  memoryContext,
+  onAssistantResponse,
 }: UseEditorChatOptions) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conversation, setConversation] = useState<EditorConversation | null>(null);
   const [budgetStatus, setBudgetStatus] = useState<BudgetStatus | null>(null);
+  /** Synthesis sections from multi-agent flow (set after Reader finishes) */
+  const [synthesisSections, setSynthesisSections] = useState<MultiAgentResponse | null>(null);
+  const [isSynthesizing, setIsSynthesizing] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const messageCountRef = useRef(0);
 
@@ -71,6 +85,7 @@ export function useEditorChat({
   useEffect(() => {
     setMessages([]);
     setConversation(null);
+    setSynthesisSections(null);
     messageCountRef.current = 0;
   }, [mode, poemId]);
 
@@ -203,6 +218,30 @@ export function useEditorChat({
     }
   }, [conversation, user, poemId, poemTitle, mode, collectionName]);
 
+  // Persist assistant message helper
+  const persistAssistantMessage = useCallback((conv: EditorConversation, assistantId: string, fullResponse: string) => {
+    if (user && supabase) {
+      supabase
+        .from('editor_messages')
+        .insert({
+          conversation_id: conv.id,
+          role: 'assistant',
+          content: fullResponse,
+        })
+        .then(({ error }) => {
+          if (error) console.error('Failed to save assistant message:', error);
+        });
+    } else {
+      const finalAssistant: ChatMessage = {
+        id: assistantId,
+        role: 'assistant',
+        content: fullResponse,
+        createdAt: new Date().toISOString(),
+      };
+      appendLocalMessage(conv.id, finalAssistant);
+    }
+  }, [user]);
+
   // Send a message
   const sendMessage = useCallback(async (content: string): Promise<'sent' | 'cap_exceeded'> => {
     if (!profile || !content.trim()) return 'sent';
@@ -215,6 +254,7 @@ export function useEditorChat({
     }
 
     setError(null);
+    setSynthesisSections(null);
     const conv = await ensureConversation();
 
     // Add user message
@@ -262,11 +302,6 @@ export function useEditorChat({
         ? { poems: collectionPoems, collectionName: collectionName || 'Untitled Collection' }
         : undefined;
 
-    // Build the system prompt based on mode
-    const systemPrompt = mode === 'collection'
-      ? buildCollectionAnalysisPrompt(profile, collectionCtx || { poems: [], collectionName: 'Untitled Collection' }, conversationSummaries)
-      : buildCoachingPrompt(profile, poemTitle, poemText, analysis, collectionCtx, conversationSummaries);
-
     // Build message history for API (excluding the streaming placeholder)
     const apiMessages = [...messages, userMsg].map(m => ({
       role: m.role as 'user' | 'assistant',
@@ -277,76 +312,164 @@ export function useEditorChat({
     const controller = new AbortController();
     abortRef.current = controller;
 
-    // Collection mode needs much higher token limit for full editorial letters
-    const maxTokens = mode === 'collection' ? 16384 : 4096;
+    const harshness = editorSettings?.harshness;
+    const perspective = editorSettings?.perspective || 'none';
 
-    await streamCoachingMessage(
-      systemPrompt,
-      apiMessages,
-      {
-        onToken: (token) => {
-          setMessages(prev =>
-            prev.map(m =>
-              m.id === assistantId
-                ? { ...m, content: m.content + token }
-                : m,
-            ),
-          );
-        },
-        onDone: (fullResponse) => {
-          setMessages(prev =>
-            prev.map(m =>
-              m.id === assistantId
-                ? { ...m, content: fullResponse, isStreaming: false }
-                : m,
-            ),
-          );
-          setIsLoading(false);
-          abortRef.current = null;
-          messageCountRef.current += 2;
+    // Usage tracking helper
+    const trackUsage = (usage: TokenUsage) => {
+      recordUsage(user, supabase, usage.model, usage.inputTokens, usage.outputTokens);
+      checkBudget(user, supabase).then(setBudgetStatus).catch(() => {});
+    };
 
-          // Persist assistant message
-          if (user && supabase) {
-            supabase
-              .from('editor_messages')
-              .insert({
-                conversation_id: conv.id,
-                role: 'assistant',
-                content: fullResponse,
-              })
-              .then(({ error }) => {
-                if (error) console.error('Failed to save assistant message:', error);
-              });
-          } else {
-            const finalAssistant: ChatMessage = {
-              id: assistantId,
-              role: 'assistant',
-              content: fullResponse,
-              createdAt: new Date().toISOString(),
-            };
-            appendLocalMessage(conv.id, finalAssistant);
-          }
+    if (mode === 'collection') {
+      // Collection mode: single Sonnet call (no multi-agent for editorial letters yet)
+      const systemPrompt = buildCollectionAnalysisPrompt(
+        profile,
+        collectionCtx || { poems: [], collectionName: 'Untitled Collection' },
+        conversationSummaries,
+      );
+
+      const maxTokens = 16384;
+
+      await streamCoachingMessage(
+        systemPrompt,
+        apiMessages,
+        {
+          onToken: (token) => {
+            setMessages(prev =>
+              prev.map(m =>
+                m.id === assistantId
+                  ? { ...m, content: m.content + token }
+                  : m,
+              ),
+            );
+          },
+          onDone: (fullResponse) => {
+            setMessages(prev =>
+              prev.map(m =>
+                m.id === assistantId
+                  ? { ...m, content: fullResponse, isStreaming: false }
+                  : m,
+              ),
+            );
+            setIsLoading(false);
+            abortRef.current = null;
+            messageCountRef.current += 2;
+            persistAssistantMessage(conv, assistantId, fullResponse);
+
+            // Fire learning extraction in background
+            if (onAssistantResponse) {
+              onAssistantResponse([...apiMessages, { role: 'assistant', content: fullResponse }]);
+            }
+          },
+          onUsage: trackUsage,
+          onError: (err) => {
+            setError(err.message);
+            setIsLoading(false);
+            abortRef.current = null;
+            setMessages(prev => prev.filter(m => m.id !== assistantId));
+          },
         },
-        onUsage: (usage: TokenUsage) => {
-          // Record usage for cap tracking
-          recordUsage(user, supabase, usage.model, usage.inputTokens, usage.outputTokens);
-          // Refresh budget status
-          checkBudget(user, supabase).then(setBudgetStatus).catch(() => {});
+        controller.signal,
+        maxTokens,
+      );
+    } else {
+      // Per-poem mode: multi-agent flow
+      const systemPrompt = buildCoachingPrompt(
+        profile,
+        poemTitle,
+        poemText,
+        analysis,
+        collectionCtx,
+        conversationSummaries,
+        harshness,
+        memoryContext,
+      );
+
+      setIsSynthesizing(false);
+
+      await runPerPoemAgents(
+        {
+          poemText,
+          poemTitle,
+          systemPrompt,
+          messages: apiMessages,
+          perspective,
+          harshness: harshness || 'encouraging',
+          signal: controller.signal,
+          onUsage: trackUsage,
         },
-        onError: (err) => {
-          setError(err.message);
-          setIsLoading(false);
-          abortRef.current = null;
-          // Remove the empty streaming message
-          setMessages(prev => prev.filter(m => m.id !== assistantId));
+        {
+          onReaderToken: (token) => {
+            setMessages(prev =>
+              prev.map(m =>
+                m.id === assistantId
+                  ? { ...m, content: m.content + token }
+                  : m,
+              ),
+            );
+          },
+          onReaderDone: (fullResponse) => {
+            // Reader is done — update message, but keep loading for synthesis
+            setMessages(prev =>
+              prev.map(m =>
+                m.id === assistantId
+                  ? { ...m, content: fullResponse, isStreaming: false }
+                  : m,
+              ),
+            );
+            setIsSynthesizing(true);
+          },
+          onSynthesisReady: (sections: MultiAgentResponse) => {
+            setIsSynthesizing(false);
+            setIsLoading(false);
+            abortRef.current = null;
+            messageCountRef.current += 2;
+
+            // Build the full response: main feedback + synthesis sections
+            let fullContent = sections.mainFeedback;
+
+            if (sections.craftNotes) {
+              fullContent += '\n\n## Craft Notes\n' + sections.craftNotes;
+            }
+            if (sections.questions) {
+              fullContent += '\n\n## Questions to Consider\n' + sections.questions;
+            }
+            if (sections.perspectiveNotes && sections.perspectiveName) {
+              fullContent += `\n\n## From the ${sections.perspectiveName}\n` + sections.perspectiveNotes;
+            }
+
+            // Update the message with complete content
+            setMessages(prev =>
+              prev.map(m =>
+                m.id === assistantId
+                  ? { ...m, content: fullContent, isStreaming: false }
+                  : m,
+              ),
+            );
+
+            setSynthesisSections(sections);
+            persistAssistantMessage(conv, assistantId, fullContent);
+
+            // Fire learning extraction in background
+            if (onAssistantResponse) {
+              onAssistantResponse([...apiMessages, { role: 'assistant', content: fullContent }]);
+            }
+          },
+          onError: (err) => {
+            setError(err.message);
+            setIsLoading(false);
+            setIsSynthesizing(false);
+            abortRef.current = null;
+            setMessages(prev => prev.filter(m => m.id !== assistantId));
+          },
+          onUsage: trackUsage,
         },
-      },
-      controller.signal,
-      maxTokens,
-    );
+      );
+    }
 
     return 'sent';
-  }, [profile, poemTitle, poemText, analysis, messages, ensureConversation, user, collectionPoems, collectionName, mode, conversationSummaries]);
+  }, [profile, poemTitle, poemText, analysis, messages, ensureConversation, user, collectionPoems, collectionName, mode, conversationSummaries, editorSettings, memoryContext, onAssistantResponse, persistAssistantMessage]);
 
   // Cancel streaming
   const cancelStreaming = useCallback(() => {
@@ -357,6 +480,7 @@ export function useEditorChat({
   const clearConversation = useCallback(() => {
     setMessages([]);
     setConversation(null);
+    setSynthesisSections(null);
     messageCountRef.current = 0;
   }, []);
 
@@ -373,5 +497,7 @@ export function useEditorChat({
     getMessageCount,
     conversation,
     budgetStatus,
+    synthesisSections,
+    isSynthesizing,
   };
 }
