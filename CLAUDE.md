@@ -138,6 +138,55 @@ Run this check manually by comparing line counts and searching for quoted phrase
 - `AnalysisPanel`: Technical analysis (rhythm, rhymes, style, originality)
 - `Layout`: Shared header/footer for tool pages
 - `PoemPage`: Individual poem analysis pages at `/poems/:slug`
+- `EditorChat`: AI coaching chat sidebar (right panel in main editor)
+- `PreFlightForm`: Modal questionnaire before editorial report generation
+- `CollectionPanel`: Sidebar for managing poem collections (currently commented out in App.tsx)
+
+### AI Editor Architecture
+
+The AI editor has two systems: per-poem coaching (chat) and collection-level editorial reports.
+
+**Per-Poem Coaching** (`EditorChat` + `useEditorChat`):
+- Rendered in the right sidebar of the main editor
+- Uses Claude Sonnet 4.5 for streaming responses
+- Manages conversations per poem or per collection
+- Budget tracking via `usageTracking.ts`
+- Memory system via `useEditorMemory` (learnings, settings, summaries)
+- Multi-agent orchestrator in `editorAgents.ts` (dispatches to specialist sub-agents)
+
+**Editorial Report System** (`EditorialReport` page + `useEditorialReport` hook):
+- Full pipeline for collection-level editorial assessment
+- Flow: PreFlightForm → Progress → Report Page
+- Pre-flight questionnaire: ambition, section purposes, readiness, report style (qualitative/quantitative+rankings), harshness slider (0-100)
+- Pipeline (all in `editorialAgents.ts`): spine analysis → 3 parallel editors → compare notes → debate → per-poem assessments → Sonnet synthesis
+- 3 generalist editors (NOT specialists) — all know all the craft but have different sensibilities:
+  - Editor A: precision and economy
+  - Editor B: emotional truth and risk-taking
+  - Editor C: architecture and reader experience
+- Debate protocol: identify disagreements → 2-3 rounds → optional poet input → 2 more rounds → genuine disagreement
+- Report page: split view (report left, chat sidebar right — sidebar is placeholder)
+- Per-poem cards with colored status dots (green=done, amber=edit, grey=draft, red=rough)
+- Poet input textareas on every section, debate topic, and poem assessment
+
+**API Configuration:**
+- Uses `anthropic-dangerous-direct-browser-access` header for browser-direct API calls
+- Models: Haiku 4.5 for parallel analysis, Sonnet 4.5 for streaming synthesis
+- API key: stored in localStorage (`editor:apiKey`) or env var (`VITE_ANTHROPIC_API_KEY`)
+- SSE streaming for Sonnet calls
+
+**Database (Supabase):**
+- `editor_preflight_answers`: persists pre-flight answers per user+collection
+- `editor_reports`: stores full report data as JSONB columns
+- `editor_conversations`, `editor_sessions`, `editor_learnings`, `editor_settings`: coaching memory
+- Migration: `supabase/migrations/20260310_editorial_reports.sql`
+- Guest users fall back to localStorage with `editor:` prefix
+
+**Collection Management:**
+- Local collections via `useCollection` hook (localStorage-backed)
+- Cloud collections via `useCollections` + `useSections` + `usePoems` hooks (Supabase-backed)
+- Collection title and section names are editable (double-click to rename)
+- `CollectionPanel` is currently commented out in App.tsx (not ready for release)
+- `CollectionView` page handles cloud collections at `/my-collections/:id`
 
 ## Code Style
 
@@ -255,7 +304,59 @@ Run this check manually by comparing line counts and searching for quoted phrase
 - Uses `supabase.auth.updateUser({ password })` to set new password
 - Shows informational message if accessed without token
 - Redirects to home after successful reset
+
+**[Multi-Agent Editor 2026-03-10]**: Shipped multi-agent AI editor with orchestrator, memory system, perspective controls, and guardrails.
+
+- `editorAgents.ts`: orchestrator dispatches to specialist sub-agents (craft, thematic, structural)
+- `useEditorMemory`: persistent memory across sessions (learnings, settings, conversation summaries)
+- `EditorSettings`: per-poem perspective and harshness controls
+- Usage tracking with tiered caps (guest $0.50, registered $5, admin unlimited)
+
+**[Editorial Report System 2026-03-10]**: Complete overhaul of editorial reports.
+
+Key design decisions made through 3 rounds of HTML mockup iteration with the user:
+
+- **3 generalist editors, NOT specialists**: All editors know all the craft. Debates should be "two great editors with differing perspectives" not "structure says this, meaning says that." Each has a different sensibility (precision vs emotional truth vs architecture).
+- **Black and white design**: Matches poetryeditor.com. Libre Baskerville serif for headings. No colors except status dots on poem cards.
+- **All form fields visually identical**: White textareas, no grey backgrounds anywhere. User was very specific about visual consistency.
+- **No quality matrix**: Was proposed and approved initially, but user killed it: "let's kill the chart. It's too cute."
+- **No tonal arc/spine visualization**: User said "I don't like the tonal arc from warm to cool." Report starts with "What We See" instead.
+- **Harshness slider**: Added at user's request. Scale from supportive (0) to harsh (100), default middle.
+- **Report style option**: "Qualitative" vs "Quantitative + rankings" (not just "Quantitative").
+- **Progress phases**: Must reflect actual pipeline — each editor reads independently → compare to ambitions → compare notes → debate → build assessments → write letter.
+- **Poet input everywhere**: Every section editorial, debate topic, and poem assessment gets a textarea for the poet's own notes.
+- **Chat sidebar**: Pinned to viewport height beside the report, not at the bottom.
+- **Pre-flight answers persist**: Saved per collection so returning users don't re-fill.
+
+Files created:
+- `src/components/editor/PreFlightForm.tsx` + `.css`
+- `src/utils/editorialAgents.ts` (~893 lines)
+- `src/hooks/useEditorialReport.ts`
+- `src/pages/EditorialReport.tsx` + `.css` (complete rewrite)
+- `supabase/migrations/20260310_editorial_reports.sql`
+
+**[Collection Editing 2026-03-10]**: Added inline editing for collection titles and section names.
+
+- Double-click to rename (both CollectionPanel and CollectionView)
+- `useCollection.renameCollection()` for local collections
+- `useSections.renameSection()` for cloud collections
+- Supabase `collections.update()` for cloud collection titles
+- Visual feedback: dashed underline on hover to indicate editability
+
+**[Process Lesson 2026-03-10]**: Always show the plan before building.
+
+- User explicitly said: "I think we agreed you would show me the plan and then you would build it"
+- For any non-trivial feature: create an HTML mockup first, iterate on feedback, THEN build
+- The editorial report went through 3 rounds of mockup iteration before any code was written
+- This saved massive rework — many design decisions changed during mockup review
+
+---
+
 # Collaboration Preferences
 
 - Default to pushing changes to Git unless I explicitly say otherwise.
 - Do thorough planning and testing of changes (UX/UI and backend) before pushing.
+- **Show mockups before building**: For UI-heavy features, create an HTML mockup and iterate on feedback before writing production code. The user wants to see and approve the design first.
+- **Plan before code**: Enter plan mode for non-trivial tasks. Show the plan. Get approval. Then build.
+- **Don't ask unnecessary questions**: Be autonomous on routine decisions. The user prefers momentum over permission-seeking.
+- **The user (Anders) is the product owner**: He has strong opinions about UX, visual consistency, and editorial philosophy. Respect his design instincts — when he says "kill it", kill it immediately.

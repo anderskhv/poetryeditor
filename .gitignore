@@ -30,3 +30,4 @@ playwright-report
 tools/search-console/credentials.json
 tools/search-console/token.json
 .env
+editorial-report-mockup.html

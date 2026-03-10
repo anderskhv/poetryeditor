@@ -35,3 +35,58 @@ useEffect(() => {
 ```
 
 **Rule**: When guarding against duplicate effect executions with async operations, use a ref (synchronous) instead of state (asynchronous). Clear trigger conditions (like navigation state) immediately, not after the async work completes.
+
+## 2026-03-10: Always show the plan before building
+
+**Mistake**: Jumped straight into writing code for the editorial report overhaul without showing the user the plan first. Built PreFlightForm, editorialAgents, and started wiring up App.tsx before the user had approved anything.
+
+**User feedback**: "I think we thought we agreed that you would show me the plan and then you would build it."
+
+**Fix**: For non-trivial features (3+ steps or architectural decisions):
+1. Enter plan mode
+2. For UI features: create an HTML mockup showing the design
+3. Present the plan/mockup to the user
+4. Iterate on feedback (expect 2-3 rounds for UI)
+5. Only after approval: start building
+
+**Rule**: Never build production code for a major feature without plan approval. For UI features, mockups are mandatory. Budget 2-3 mockup iterations before coding.
+
+## 2026-03-10: Generalist editors, not specialists
+
+**Context**: Original editorial report design had 3 specialist editors (craft, thematic, structural). User rejected this.
+
+**User feedback**: "Not sure we should have specialized coaches, actually think they should all know all the craft, so the debates are not 'structure says this' 'meaning says that' — but more two great editors with differing perspectives."
+
+**Rule**: The 3 AI editors must be generalists with different sensibilities/perspectives, NOT domain specialists. Each knows the full craft. Their differences are in temperament (precision vs emotional truth vs architecture), not knowledge.
+
+## 2026-03-10: Visual consistency matters — no mixed styling
+
+**Context**: PreFlightForm had grey backgrounds on some textareas and white on others.
+
+**User feedback**: Called this out specifically across 2 review rounds. "Inconsistent text field styling between sections."
+
+**Rule**: All form fields of the same type must have identical visual treatment. No mixing grey/white backgrounds. When in doubt, make everything white with consistent borders.
+
+## 2026-03-10: Kill features decisively when told to
+
+**Context**: Quality matrix (radar chart showing poem scores) was proposed, iterated on, and then killed.
+
+**User feedback**: "Let's kill the chart. It's too cute."
+
+**Rule**: When the user says to remove something, remove it completely — don't try to save a modified version. "Too cute" means the feature is over-designed for the context.
+
+## 2026-03-10: React hooks must be called before early returns
+
+**Bug**: `useMemo` for `reportHtml` was placed after early returns in `EditorialReport.tsx`, violating React's rules of hooks.
+
+**Fix**: Move all hooks (useState, useMemo, useCallback, useEffect) above any conditional `return` statements. Compute derived values unconditionally, even if they won't be used in every render path.
+
+**Rule**: Always declare all hooks at the top of the component, before any early returns or conditional rendering logic.
+
+## 2026-03-10: Section ordering requires explicit sort
+
+**Context**: `buildCollectionAnalysisPrompt` uses a Map that iterates in insertion order without guaranteeing section `sort_order`.
+
+**Fix**: Pre-sort poems by `sectionOrder → poemOrder` before passing to any analysis function. The `toEditorialPoems()` helper in `useEditorialReport.ts` does this correctly.
+
+**Rule**: Never assume Map/object iteration order matches display order. Always explicitly sort by `sort_order`/`order` fields when building manuscript-order data.
