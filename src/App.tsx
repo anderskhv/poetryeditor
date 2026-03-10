@@ -16,7 +16,7 @@ import { SEOHead } from './components/SEOHead';
 import { useDebouncedLocalStorage } from './hooks/useLocalStorage';
 import { useCollection } from './hooks/useCollection';
 import { WordInfo } from './types';
-import { CollectionPoem } from './types/collection';
+import { CollectionPoem, CollectionSection, PoemStatus } from './types/collection';
 import { type PassiveVoiceInstance } from './utils/passiveVoiceDetector';
 import { type TenseInstance } from './utils/tenseChecker';
 import { type StressedSyllableInstance } from './utils/scansionAnalyzer';
@@ -117,6 +117,8 @@ function App() {
   const [cloudPoemCollectionId, setCloudPoemCollectionId] = useState<string | null>(null);
   const [cloudCollectionName, setCloudCollectionName] = useState<string | null>(null);
   const [cloudCollectionPoems, setCloudCollectionPoems] = useState<Array<{ title: string; content: string; sectionName: string | null }>>([]);
+  const [cloudCollectionFullPoems, setCloudCollectionFullPoems] = useState<CollectionPoem[]>([]);
+  const [cloudCollectionSections, setCloudCollectionSections] = useState<CollectionSection[]>([]);
   const [isLoadingCloudPoem, setIsLoadingCloudPoem] = useState<boolean>(false);
   const [cloudPoemError, setCloudPoemError] = useState<string | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -147,13 +149,14 @@ function App() {
     renameCollection,
   } = useCollection();
 
-  // Editorial report management
+  // Editorial report management — use cloud collection data when editing a cloud poem
+  const isCloudCollection = !!cloudPoemCollectionId;
   const editorialReport = useEditorialReport({
     user,
-    collectionId: collection.id,
-    collectionName: collection.name,
-    poems: collection.poems,
-    sections: collection.sections,
+    collectionId: isCloudCollection ? cloudPoemCollectionId! : collection.id,
+    collectionName: isCloudCollection ? (cloudCollectionName || 'Collection') : collection.name,
+    poems: isCloudCollection ? cloudCollectionFullPoems : collection.poems,
+    sections: isCloudCollection ? cloudCollectionSections : collection.sections,
   });
 
   const [hasEverOpenedPanel, setHasEverOpenedPanel] = useState<boolean>(() => {
@@ -318,6 +321,8 @@ function App() {
   useEffect(() => {
     if (!cloudPoemCollectionId || !supabase) {
       setCloudCollectionPoems([]);
+      setCloudCollectionFullPoems([]);
+      setCloudCollectionSections([]);
       setCloudCollectionName(null);
       return;
     }
@@ -341,12 +346,38 @@ function App() {
           .order('sort_order');
         const sectionMap = new Map((sectionsData || []).map((s: { id: string; name: string; sort_order: number }) => [s.id, { name: s.name, sortOrder: s.sort_order }]));
 
-        // Fetch all poems with sort_order
+        // Store full section data for editorial reports
+        setCloudCollectionSections(
+          (sectionsData || []).map((s: { id: string; name: string; sort_order: number }) => ({
+            id: s.id,
+            name: s.name,
+            parentId: null,
+            order: s.sort_order,
+            isExpanded: true,
+          }))
+        );
+
+        // Fetch all poems with full data
         const { data: poemsData } = await supabase
           .from('poems')
-          .select('title, content, section_id, sort_order')
+          .select('id, title, content, section_id, sort_order, status, created_at, updated_at')
           .eq('collection_id', cloudPoemCollectionId)
           .order('sort_order');
+
+        // Store full poem data for editorial reports
+        const now = new Date().toISOString();
+        setCloudCollectionFullPoems(
+          (poemsData || []).map((p: { id: string; title: string; content: string; section_id: string | null; sort_order: number; status: string | null; created_at: string | null; updated_at: string | null }) => ({
+            id: p.id,
+            title: p.title,
+            content: p.content,
+            sectionId: p.section_id,
+            order: p.sort_order,
+            status: (p.status || 'draft') as PoemStatus,
+            createdAt: p.created_at || now,
+            updatedAt: p.updated_at || now,
+          }))
+        );
 
         // Sort poems by (section_sort_order, poem_sort_order) so sections appear in correct order
         const sortedPoems = (poemsData || [])
@@ -1846,20 +1877,24 @@ function App() {
 
       {editorialReport.showPreFlight && (
         <PreFlightForm
-          sections={collection.sections}
-          collectionName={collection.name}
+          sections={isCloudCollection ? cloudCollectionSections : collection.sections}
+          collectionName={isCloudCollection ? (cloudCollectionName || 'Collection') : collection.name}
           savedAnswers={editorialReport.savedAnswers}
           isGenerating={editorialReport.isGenerating}
           onSubmit={(answers) => {
             editorialReport.setShowPreFlight(false);
+            const reportCollectionId = isCloudCollection ? cloudPoemCollectionId! : collection.id;
+            const reportCollectionName = isCloudCollection ? (cloudCollectionName || 'Collection') : collection.name;
+            const reportPoems = isCloudCollection ? cloudCollectionFullPoems : collection.poems;
+            const reportSections = isCloudCollection ? cloudCollectionSections : collection.sections;
             navigate('/editorial-report', {
               state: {
                 generateNew: true,
-                collectionId: collection.id,
-                collectionName: collection.name,
+                collectionId: reportCollectionId,
+                collectionName: reportCollectionName,
                 preFlightAnswers: answers,
-                poems: collection.poems,
-                sections: collection.sections,
+                poems: reportPoems,
+                sections: reportSections,
               },
             });
           }}
