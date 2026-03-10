@@ -341,7 +341,8 @@ Files created:
 - `useCollection.renameCollection()` for local collections
 - `useSections.renameSection()` for cloud collections
 - Supabase `collections.update()` for cloud collection titles
-- Visual feedback: dashed underline on hover to indicate editability
+- Visual feedback: pencil icon (✎) appears on hover next to editable titles
+- Previous approach (dashed underline on hover) was too subtle — user couldn't tell anything was editable
 
 **[Process Lesson 2026-03-10]**: Always show the plan before building.
 
@@ -349,6 +350,27 @@ Files created:
 - For any non-trivial feature: create an HTML mockup first, iterate on feedback, THEN build
 - The editorial report went through 3 rounds of mockup iteration before any code was written
 - This saved massive rework — many design decisions changed during mockup review
+
+**[UX Discoverability 2026-03-10]**: Edit affordances must be visible, not just functional.
+
+- Double-click-to-rename on collection titles and section headings was invisible to the user
+- A CSS-only `border-bottom-style: dashed` on hover was too subtle — user said "it doesn't look like something I can change"
+- Fixed by adding a pencil icon (✎) that fades in on hover via `.edit-hint` span
+- Pattern: any interactive element that looks like static text needs an obvious hover state (icon, color change, or underline)
+- The `title="Double-click to rename"` tooltip is a fallback, not a primary affordance
+
+**[Pending: Supabase Migration]**: `supabase/migrations/20260310_editorial_reports.sql` still needs to be applied.
+
+- Creates `editor_preflight_answers` and `editor_reports` tables
+- Without this, authenticated users won't get editorial report persistence (falls back to localStorage)
+- Run via Supabase CLI or dashboard
+
+**[Pending: CollectionPanel]**: The local collection sidebar (`CollectionPanel`) is commented out in `App.tsx`.
+
+- All the code is implemented and ready (including section rename, drag/drop, etc.)
+- Commented out with note "not ready for release"
+- When ready to ship: uncomment the block in App.tsx (~line 1585-1617)
+- Props are already wired up including `onRenameCollection` and `onRenameSection`
 
 ---
 

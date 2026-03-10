@@ -15,6 +15,22 @@
 - Skill level + poem stage context for adaptive coaching
 - Updated marketing, SEO, welcome card
 
+### Editorial Report System — March 2026
+- Collection-level editorial assessment with 3 generalist AI editors
+- Pre-flight questionnaire (ambition, section purposes, readiness, harshness, report style)
+- Pipeline: spine analysis → 3 parallel editors → compare notes → debate → per-poem assessments → Sonnet synthesis
+- Debate protocol with optional poet input mid-debate
+- Report page with split view, status dots, poet input on every section
+- Pre-flight answers persist per collection (Supabase for auth users, localStorage for guests)
+- **Note**: Supabase migration still needs to be applied for full persistence
+
+### Cloud Collections — March 2026
+- Supabase-backed collections with sections, poems, versioning
+- Drag-and-drop reordering (poems across sections)
+- Inline editing for collection titles and section names (double-click, pencil icon on hover)
+- ZIP export, share links with optional comments
+- Version history per poem with restore capability
+
 ---
 
 ## Planned

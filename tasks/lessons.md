@@ -90,3 +90,25 @@ useEffect(() => {
 **Fix**: Pre-sort poems by `sectionOrder → poemOrder` before passing to any analysis function. The `toEditorialPoems()` helper in `useEditorialReport.ts` does this correctly.
 
 **Rule**: Never assume Map/object iteration order matches display order. Always explicitly sort by `sort_order`/`order` fields when building manuscript-order data.
+
+## 2026-03-10: Interactive elements must look interactive
+
+**Bug**: User couldn't rename collection titles or section headings despite double-click-to-rename being fully implemented. They said "it doesn't look like something I can change."
+
+**Root Cause**: The only visual affordance was changing `border-bottom-style` from `solid` to `dashed` on hover — a nearly invisible change on a light grey border. The `title="Double-click to rename"` tooltip only appears after hovering for ~1 second, which users don't do on text they think is static.
+
+**Fix**: Added a pencil icon (✎) via `<span className="edit-hint">` that fades in on hover with `color: transparent → #999` transition.
+
+**Rule**: Any element that accepts interaction but looks like static text MUST have an obvious hover affordance. A subtle border change is not enough. Use visible icons, color changes, or underlines that are clearly distinct from the default state. Test by asking: "Would a new user discover this without being told?"
+
+## 2026-03-10: Empty sections are hidden and unreachable
+
+**Issue**: In `CollectionView.tsx`, sections with zero poems are skipped entirely (`if (sectionPoems.length === 0) return null`). This means users can't see, rename, or interact with empty sections.
+
+**Status**: Known limitation, not yet fixed. If section management becomes important, empty sections need to render with at least a heading and an "add poem" affordance.
+
+## 2026-03-10: Sandbox environment blocks npm and git push
+
+**Context**: Cowork mode (Claude desktop app) runs in a sandboxed Linux VM that blocks outbound HTTP to npm registry and GitHub. This means `npm install`, `npx tsc`, `npm run build`, and `git push` all fail with HTTP 403.
+
+**Workaround**: Do manual type verification via code review. Commit locally and tell the user to `git push origin main` from their own terminal. The Cloudflare Pages build will catch any real build errors on push.
