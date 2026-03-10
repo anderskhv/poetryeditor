@@ -112,3 +112,13 @@ useEffect(() => {
 **Context**: Cowork mode (Claude desktop app) runs in a sandboxed Linux VM that blocks outbound HTTP to npm registry and GitHub. This means `npm install`, `npx tsc`, `npm run build`, and `git push` all fail with HTTP 403.
 
 **Workaround**: Do manual type verification via code review. Commit locally and tell the user to `git push origin main` from their own terminal. The Cloudflare Pages build will catch any real build errors on push.
+
+## 2026-03-10: Cloud vs local collection data — always check which is active
+
+**Bug**: "Create Editorial Report" showed "No poems in this collection" even though the user had many poems. The editorial report hook was using `collection.poems` from the local `useCollection()` hook, which is empty when the user is editing a cloud collection.
+
+**Root Cause**: App.tsx has two collection systems: local (localStorage via `useCollection`) and cloud (Supabase via `useCollections/useSections/usePoems`). The editorial report was hardcoded to use local data. When editing a cloud poem (`cloudPoemCollectionId` is set), the local collection is empty.
+
+**Fix**: Check `cloudPoemCollectionId` to determine which system is active. Store full `CollectionPoem[]` and `CollectionSection[]` from the cloud fetch (not just the simplified `{ title, content, sectionName }` array). Pass the correct data to `useEditorialReport` and `PreFlightForm`.
+
+**Rule**: Any feature that operates on "the current collection" must check whether the user is in cloud mode or local mode. Use `cloudPoemCollectionId` as the discriminator. Never assume `collection` from `useCollection()` has the active data.
