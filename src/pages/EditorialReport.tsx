@@ -173,8 +173,9 @@ export function EditorialReport() {
     locationState?.generateNew === true &&
     locationState?.collectionId &&
     locationState?.collectionName &&
-    locationState?.poems &&
-    locationState?.sections;
+    Array.isArray(locationState?.poems) &&
+    locationState.poems.length > 0 &&
+    Array.isArray(locationState?.sections);
 
   // Initialize the hook
   const hook = useEditorialReport({

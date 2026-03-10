@@ -122,3 +122,22 @@ useEffect(() => {
 **Fix**: Check `cloudPoemCollectionId` to determine which system is active. Store full `CollectionPoem[]` and `CollectionSection[]` from the cloud fetch (not just the simplified `{ title, content, sectionName }` array). Pass the correct data to `useEditorialReport` and `PreFlightForm`.
 
 **Rule**: Any feature that operates on "the current collection" must check whether the user is in cloud mode or local mode. Use `cloudPoemCollectionId` as the discriminator. Never assume `collection` from `useCollection()` has the active data.
+
+## 2026-03-10: Navigation state snapshots async data — guard against stale state
+
+**Bug**: Even after fixing cloud vs local detection, "Create Editorial Report" still showed "No poems in this collection." The cloud data was being passed correctly in code, but the `useEffect` that fetches cloud poems hadn't completed when the user clicked the button.
+
+**Root Cause**: React Router's `navigate(path, { state })` snapshots state at call time. If `cloudCollectionFullPoems` is still `[]` because the fetch is in-flight, navigation state permanently contains `poems: []`. The EditorialReport page mounts with empty poems and can never recover.
+
+**Fix**: Three-level guard:
+1. Track `isLoadingCloudCollection` flag — disable button while loading
+2. Check `reportPoems.length === 0` before navigating — abort if data missing
+3. Validate `locationState.poems.length > 0` on the receiving page — don't start generation without poems
+
+**Rule**: Never pass async-fetched state to `navigate()` without verifying it has loaded. Navigation state is a snapshot — there's no way to update it after navigation. Always add a loading flag for async fetches and check it before any action that depends on the data.
+
+## 2026-03-10: Test, test, test — verify fixes by re-tracing the full flow
+
+**Mistake**: First fix for the editorial report bug (using cloud data instead of local) was deployed without verifying it actually worked. The fix was conceptually correct but missed the timing issue because it wasn't tested against the actual user flow.
+
+**Rule**: After fixing a bug, trace the entire flow from trigger to result with the fix applied. Don't just verify the changed lines — verify the data at every handoff point. Use subagents for thorough verification when the flow spans multiple files. Especially critical for async data flows where timing matters.

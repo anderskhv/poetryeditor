@@ -372,6 +372,17 @@ Files created:
 - When ready to ship: uncomment the block in App.tsx (~line 1585-1617)
 - Props are already wired up including `onRenameCollection` and `onRenameSection`
 
+**[Bug Fix: Editorial Report Race Condition 2026-03-10]**: "No poems in this collection" error when creating editorial report from cloud collection.
+
+Root cause: `cloudCollectionFullPoems` is fetched asynchronously in a `useEffect` but user can click "Create Editorial Report" before the fetch completes. The empty array gets baked into React Router navigation state and can never be corrected.
+
+Fix: Three-level guard system:
+1. `isLoadingCloudCollection` flag — button click prevented while loading
+2. `reportPoems.length === 0` check — PreFlightForm submit blocked if poems empty
+3. `locationState.poems.length > 0` check — EditorialReport page won't start generation without poems
+
+Pattern: Any action that depends on async-fetched state must guard against the state being stale/empty. Navigation state snapshots data at navigation time — if the source is still loading, the snapshot will be empty.
+
 ---
 
 # Collaboration Preferences
@@ -382,3 +393,4 @@ Files created:
 - **Plan before code**: Enter plan mode for non-trivial tasks. Show the plan. Get approval. Then build.
 - **Don't ask unnecessary questions**: Be autonomous on routine decisions. The user prefers momentum over permission-seeking.
 - **The user (Anders) is the product owner**: He has strong opinions about UX, visual consistency, and editorial philosophy. Respect his design instincts — when he says "kill it", kill it immediately.
+- **Deep root-cause analysis before fixing**: Don't patch symptoms. Trace the full data flow from trigger to error. Use subagents for thorough investigation. Verify fixes by re-tracing the same flow with the fix applied. The user expects "test, test, test" before committing.

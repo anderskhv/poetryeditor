@@ -119,6 +119,7 @@ function App() {
   const [cloudCollectionPoems, setCloudCollectionPoems] = useState<Array<{ title: string; content: string; sectionName: string | null }>>([]);
   const [cloudCollectionFullPoems, setCloudCollectionFullPoems] = useState<CollectionPoem[]>([]);
   const [cloudCollectionSections, setCloudCollectionSections] = useState<CollectionSection[]>([]);
+  const [isLoadingCloudCollection, setIsLoadingCloudCollection] = useState<boolean>(false);
   const [isLoadingCloudPoem, setIsLoadingCloudPoem] = useState<boolean>(false);
   const [cloudPoemError, setCloudPoemError] = useState<string | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -324,11 +325,13 @@ function App() {
       setCloudCollectionFullPoems([]);
       setCloudCollectionSections([]);
       setCloudCollectionName(null);
+      setIsLoadingCloudCollection(false);
       return;
     }
 
     async function loadCloudCollection() {
       if (!supabase || !cloudPoemCollectionId) return;
+      setIsLoadingCloudCollection(true);
       try {
         // Fetch collection name
         const { data: collData } = await supabase
@@ -403,6 +406,8 @@ function App() {
         );
       } catch (err) {
         console.error('Failed to load cloud collection poems:', err);
+      } finally {
+        setIsLoadingCloudCollection(false);
       }
     }
 
@@ -1828,7 +1833,10 @@ function App() {
                 onUpdateEditorSettings={updateEditorSettings}
                 memoryContext={getMemoryContext()}
                 onExtractLearnings={(msgs) => extractAndSaveLearnings(msgs)}
-                onCreateReport={() => editorialReport.setShowPreFlight(true)}
+                onCreateReport={() => {
+                  if (isCloudCollection && isLoadingCloudCollection) return; // Data not ready yet
+                  editorialReport.setShowPreFlight(true);
+                }}
                 hasExistingReport={editorialReport.reportHistory.length > 0}
               />
             ) : activeSideTab === 'analysis' ? (
@@ -1882,11 +1890,18 @@ function App() {
           savedAnswers={editorialReport.savedAnswers}
           isGenerating={editorialReport.isGenerating}
           onSubmit={(answers) => {
-            editorialReport.setShowPreFlight(false);
             const reportCollectionId = isCloudCollection ? cloudPoemCollectionId! : collection.id;
             const reportCollectionName = isCloudCollection ? (cloudCollectionName || 'Collection') : collection.name;
             const reportPoems = isCloudCollection ? cloudCollectionFullPoems : collection.poems;
             const reportSections = isCloudCollection ? cloudCollectionSections : collection.sections;
+
+            // Guard: don't navigate if poems haven't loaded yet
+            if (reportPoems.length === 0) {
+              console.error('Editorial report: no poems available. Cloud loading:', isLoadingCloudCollection);
+              return;
+            }
+
+            editorialReport.setShowPreFlight(false);
             navigate('/editorial-report', {
               state: {
                 generateNew: true,
