@@ -471,7 +471,7 @@ export function CollectionView() {
               }}
               title="Double-click to rename"
             >
-              {collection.name}
+              {collection.name}<span className="edit-hint">&#9998;</span>
             </h1>
           )}
           <div className="collection-actions">
@@ -568,7 +568,7 @@ export function CollectionView() {
                           }}
                           title="Double-click to rename"
                         >
-                          {section.name}
+                          {section.name}<span className="edit-hint">&#9998;</span>
                         </h2>
                       )}
                       <SortableContext items={sectionPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
