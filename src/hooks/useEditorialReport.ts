@@ -122,7 +122,7 @@ async function loadPreFlightAnswers(
   user: User | null,
   collectionId: string,
 ): Promise<PreFlightAnswers | null> {
-  if (user) {
+  if (user && supabase) {
     try {
       const { data } = await supabase
         .from('editor_preflight_answers')
@@ -152,7 +152,7 @@ async function savePreFlightAnswers(
   collectionId: string,
   answers: PreFlightAnswers,
 ): Promise<void> {
-  if (user) {
+  if (user && supabase) {
     await supabase
       .from('editor_preflight_answers')
       .upsert({
@@ -190,7 +190,7 @@ async function saveReport(
       progress: report.progress,
       created_at: report.createdAt,
     };
-    await supabase.from('editor_reports').upsert(row, { onConflict: 'id' });
+    if (supabase) await supabase.from('editor_reports').upsert(row, { onConflict: 'id' });
     return;
   }
 
@@ -221,7 +221,7 @@ async function loadReport(
   user: User | null,
   reportId: string,
 ): Promise<EditorialReportData | null> {
-  if (user) {
+  if (user && supabase) {
     try {
       const { data } = await supabase
         .from('editor_reports')
@@ -261,7 +261,7 @@ async function listReports(
   user: User | null,
   collectionId: string,
 ): Promise<EditorialReportSummary[]> {
-  if (user) {
+  if (user && supabase) {
     try {
       const { data } = await supabase
         .from('editor_reports')

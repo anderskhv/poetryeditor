@@ -249,7 +249,7 @@ export function CollectionView() {
   };
 
   const handleRenameCollection = async (newName: string) => {
-    if (!collection || !id) return;
+    if (!collection || !id || !supabase) return;
     try {
       const { error } = await supabase
         .from('collections')

@@ -411,7 +411,7 @@ ${poemList}`;
 
   const results = await Promise.allSettled(editorPromises);
   return results
-    .filter((r): r is PromiseSettledResult<EditorReading> => r.status === 'fulfilled')
+    .filter((r): r is PromiseFulfilledResult<EditorReading> => r.status === 'fulfilled')
     .map(r => r.value);
 }
 

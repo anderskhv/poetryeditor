@@ -98,15 +98,6 @@ function App() {
     extractAndSaveLearnings,
   } = useEditorMemory(user);
 
-  // Editorial report management
-  const editorialReport = useEditorialReport({
-    user,
-    collectionId: collection.id,
-    collectionName: collection.name,
-    poems: collection.poems,
-    sections: collection.sections,
-  });
-
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
   const [localTitle, setLocalTitle] = useDebouncedLocalStorage('poetryTitle', 'Untitled', 800);
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
@@ -155,6 +146,16 @@ function App() {
     exportCollection,
     renameCollection,
   } = useCollection();
+
+  // Editorial report management
+  const editorialReport = useEditorialReport({
+    user,
+    collectionId: collection.id,
+    collectionName: collection.name,
+    poems: collection.poems,
+    sections: collection.sections,
+  });
+
   const [hasEverOpenedPanel, setHasEverOpenedPanel] = useState<boolean>(() => {
     return localStorage.getItem('hasOpenedAnalysisPanel') === 'true';
   });
