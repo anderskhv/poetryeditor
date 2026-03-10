@@ -363,20 +363,20 @@ function App() {
         // Fetch all poems with full data
         const { data: poemsData } = await supabase
           .from('poems')
-          .select('id, title, content, section_id, sort_order, status, created_at, updated_at')
+          .select('id, title, content, section_id, sort_order, created_at, updated_at')
           .eq('collection_id', cloudPoemCollectionId)
           .order('sort_order');
 
         // Store full poem data for editorial reports
         const now = new Date().toISOString();
         setCloudCollectionFullPoems(
-          (poemsData || []).map((p: { id: string; title: string; content: string; section_id: string | null; sort_order: number; status: string | null; created_at: string | null; updated_at: string | null }) => ({
+          (poemsData || []).map((p: { id: string; title: string; content: string; section_id: string | null; sort_order: number; created_at: string; updated_at: string }) => ({
             id: p.id,
             title: p.title,
             content: p.content,
             sectionId: p.section_id,
             order: p.sort_order,
-            status: (p.status || 'draft') as PoemStatus,
+            status: 'draft' as PoemStatus,
             createdAt: p.created_at || now,
             updatedAt: p.updated_at || now,
           }))
