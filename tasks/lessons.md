@@ -141,3 +141,13 @@ useEffect(() => {
 **Mistake**: First fix for the editorial report bug (using cloud data instead of local) was deployed without verifying it actually worked. The fix was conceptually correct but missed the timing issue because it wasn't tested against the actual user flow.
 
 **Rule**: After fixing a bug, trace the entire flow from trigger to result with the fix applied. Don't just verify the changed lines — verify the data at every handoff point. Use subagents for thorough verification when the flow spans multiple files. Especially critical for async data flows where timing matters.
+
+## 2026-03-10: Verify Supabase column names against the actual schema
+
+**Bug**: Added a Supabase query selecting `status` from the `poems` table, but the table doesn't have a `status` column. The query failed silently (error caught and logged), leaving `cloudCollectionFullPoems` as `[]`. All downstream guards saw empty data and blocked the action — making the "Create Editorial Report" button appear to do nothing.
+
+**Root Cause**: Assumed the database schema matched the TypeScript type (`CollectionPoem` has a `status` field, but that's a local-only concept from `useCollection` — not a Supabase column). Never checked the actual `Poem` interface in `types/database.ts`.
+
+**Fix**: Removed `status` from the SELECT. Default to `'draft'` in the mapped data.
+
+**Rule**: Before adding columns to a Supabase `.select()`, check `types/database.ts` for the actual table interface. The `Poem` type (database) and `CollectionPoem` type (local) have different fields. Local-only fields like `status` don't exist in the database. Silent failures in Supabase queries (inside try/catch) are especially dangerous — they leave state empty with no user-visible error.
