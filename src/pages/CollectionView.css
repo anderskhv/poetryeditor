@@ -40,6 +40,35 @@
   margin: 0;
 }
 
+.collection-title-editable {
+  cursor: pointer;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.15s;
+}
+
+.collection-title-editable:hover {
+  border-bottom-color: #ccc;
+}
+
+.collection-title-input {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 2rem;
+  font-weight: 400;
+  margin: 0;
+  padding: 0 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  background: #fff;
+  color: inherit;
+  width: 100%;
+  max-width: 500px;
+}
+
+.collection-title-input:focus {
+  border-color: #999;
+}
+
 .collection-actions {
   display: flex;
   gap: 0.75rem;
@@ -229,6 +258,36 @@
   margin: 0 0 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--color-border, #e0e0e0);
+}
+
+.section-title-editable {
+  cursor: pointer;
+}
+
+.section-title-editable:hover {
+  border-bottom-style: dashed;
+}
+
+.section-title-input {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary, #333);
+  margin: 0 0 1rem;
+  padding: 2px 4px;
+  padding-bottom: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  outline: none;
+  background: #fff;
+  width: 100%;
+  max-width: 300px;
+}
+
+.section-title-input:focus {
+  border-color: #999;
 }
 
 .poems-grid {

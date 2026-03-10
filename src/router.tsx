@@ -218,6 +218,10 @@ export const router = createBrowserRouter([
     element: <EditorialReport />,
   },
   {
+    path: '/editorial-report/:reportId',
+    element: <EditorialReport />,
+  },
+  {
     path: '/analytics',
     element: <Analytics />,
     errorElement: <RouteError title="Analytics error" message="There was a problem loading analytics. Please refresh or try again in a moment." />,

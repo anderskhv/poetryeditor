@@ -340,6 +340,14 @@ export function useCollection() {
 
   // ============ UTILITY ============
 
+  const renameCollection = useCallback((name: string) => {
+    setCollection(prev => ({
+      ...prev,
+      name,
+      updatedAt: new Date().toISOString(),
+    }));
+  }, []);
+
   const resetCollection = useCallback(() => {
     const empty = createEmptyCollection();
     setCollection(empty);
@@ -380,6 +388,7 @@ export function useCollection() {
     // Tree
     buildTree,
     // Utility
+    renameCollection,
     resetCollection,
     getPoemCount,
   };

@@ -33,8 +33,12 @@ export function CollectionView() {
   const { isAuthenticated, loading: authLoading, user } = useAuth();
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loadingCollection, setLoadingCollection] = useState(true);
-  const { sections, createManySections } = useSections(id);
+  const { sections, createManySections, renameSection } = useSections(id);
   const { poems, createPoem, createPoemAt, createManyPoems, updatePoem, updatePoemOrders, deletePoem, loading: loadingPoems } = usePoems(id);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleInput, setTitleInput] = useState('');
+  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
+  const [sectionNameInput, setSectionNameInput] = useState('');
   const [processingUpload, setProcessingUpload] = useState(false);
   const processingRef = useRef(false); // Sync flag to prevent duplicate uploads
   const [expandedVersions, setExpandedVersions] = useState<Set<string>>(new Set());
@@ -244,6 +248,21 @@ export function CollectionView() {
     navigate(`/?poem=${poem.id}&version=${version.id}`);
   };
 
+  const handleRenameCollection = async (newName: string) => {
+    if (!collection || !id) return;
+    try {
+      const { error } = await supabase
+        .from('collections')
+        .update({ name: newName, updated_at: new Date().toISOString() })
+        .eq('id', id);
+      if (!error) {
+        setCollection({ ...collection, name: newName });
+      }
+    } catch (err) {
+      console.error('Failed to rename collection:', err);
+    }
+  };
+
   const handleCreatePoem = async () => {
     const created = await createPoem('Untitled', '', null, null);
     if (created) {
@@ -418,7 +437,43 @@ export function CollectionView() {
         </nav>
 
         <div className="collection-header">
-          <h1>{collection.name}</h1>
+          {editingTitle ? (
+            <input
+              className="collection-title-input"
+              value={titleInput}
+              onChange={(e) => setTitleInput(e.target.value)}
+              onBlur={() => {
+                const trimmed = titleInput.trim();
+                if (trimmed && trimmed !== collection.name) {
+                  handleRenameCollection(trimmed);
+                }
+                setEditingTitle(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  const trimmed = titleInput.trim();
+                  if (trimmed && trimmed !== collection.name) {
+                    handleRenameCollection(trimmed);
+                  }
+                  setEditingTitle(false);
+                } else if (e.key === 'Escape') {
+                  setEditingTitle(false);
+                }
+              }}
+              autoFocus
+            />
+          ) : (
+            <h1
+              className="collection-title-editable"
+              onDoubleClick={() => {
+                setTitleInput(collection.name);
+                setEditingTitle(true);
+              }}
+              title="Double-click to rename"
+            >
+              {collection.name}
+            </h1>
+          )}
           <div className="collection-actions">
             <button className="export-button" onClick={handleCreatePoem}>
               New Poem
@@ -479,7 +534,43 @@ export function CollectionView() {
                 return (
                   <SectionDropTarget key={section.id} sectionId={section.id}>
                     <div className="poems-section">
-                      <h2 className="section-title">{section.name}</h2>
+                      {editingSectionId === section.id ? (
+                        <input
+                          className="section-title-input"
+                          value={sectionNameInput}
+                          onChange={(e) => setSectionNameInput(e.target.value)}
+                          onBlur={() => {
+                            const trimmed = sectionNameInput.trim();
+                            if (trimmed && trimmed !== section.name) {
+                              renameSection(section.id, trimmed);
+                            }
+                            setEditingSectionId(null);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              const trimmed = sectionNameInput.trim();
+                              if (trimmed && trimmed !== section.name) {
+                                renameSection(section.id, trimmed);
+                              }
+                              setEditingSectionId(null);
+                            } else if (e.key === 'Escape') {
+                              setEditingSectionId(null);
+                            }
+                          }}
+                          autoFocus
+                        />
+                      ) : (
+                        <h2
+                          className="section-title section-title-editable"
+                          onDoubleClick={() => {
+                            setSectionNameInput(section.name);
+                            setEditingSectionId(section.id);
+                          }}
+                          title="Double-click to rename"
+                        >
+                          {section.name}
+                        </h2>
+                      )}
                       <SortableContext items={sectionPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
                         <div className="poems-grid">
                           {sectionPoems.map((poem, idx) => (

@@ -270,3 +270,124 @@ export interface EditorPatternRecord {
   confidence: number; // 0-1, increases with repeated observation
   updatedAt: string;
 }
+
+// ════════════════════════════════════════════════
+// ── Editorial Report Types ──
+// ════════════════════════════════════════════════
+
+/** Pre-flight questionnaire answers, saved per collection and reusable */
+export interface PreFlightAnswers {
+  collectionAmbition: string;
+  sectionPurposes: Record<string, string>; // keyed by section name
+  readinessSelfAssessment: string;
+  additionalContext?: string;
+  /** 'qualitative' = prose only; 'quantitative' = includes scores + rankings */
+  reportStyle: 'qualitative' | 'quantitative';
+  /** 0-100 harshness slider: 0 = supportive, 50 = balanced, 100 = harsh */
+  harshness: number;
+}
+
+/** Spine analysis: blind reading first, then comparison to poet's ambition */
+export interface SpineAnalysis {
+  blindReading: string;
+  ambitionComparison: string;
+}
+
+/** One of the 3 generalist editors' independent readings */
+export type EditorId = 'editor_a' | 'editor_b' | 'editor_c';
+
+export interface EditorReading {
+  editorId: EditorId;
+  /** Per-section analysis with agreement/disagreement notes */
+  sectionNotes: Record<string, string>; // keyed by section name or '(unsectioned)'
+  /** Per-poem notes keyed by poem ID */
+  perPoemNotes: Record<string, string>;
+  overallAnalysis: string;
+  strongestPoems: string[];  // poem IDs
+  weakestPoems: string[];    // poem IDs
+  recommendations: string[];
+}
+
+/** Status of a debate topic */
+export type DebateStatus = 'consensus' | 'poet_input_needed' | 'genuine_disagreement';
+
+/** A single round of debate on a topic */
+export interface DebateRound {
+  roundNumber: number;
+  topic: string;
+  positions: { editorId: EditorId; position: string }[];
+  resolution?: string;
+  status: DebateStatus;
+  poetInput?: string; // if poet weighed in
+}
+
+/** Unified assessment for a single poem, synthesized from all 3 editors */
+export interface PoemAssessment {
+  poemId: string;
+  poemTitle: string;
+  poemStatus: import('../types/collection').PoemStatus;
+  sectionName: string | null;
+  readinessLevel: string;
+  strengths: string[];
+  weaknesses: string[];
+  collectionRole: string;
+  suggestionsForNextLevel: string[];
+  assessorConsensus: 'strong' | 'mixed' | 'weak';
+  isFlagged: 'strongest' | 'weakest' | null;
+  flagReason?: string;
+}
+
+/** Section-level editorial block: what editors agree/disagree on per section */
+export interface SectionEditorial {
+  sectionName: string;
+  sharedAnalysis: string; // what editors agree on
+  editorNotes: { editorId: EditorId; note: string }[];
+  consensus: string; // summary of agreement/disagreement
+  poetInput?: string;
+}
+
+/** Phases the report generation passes through */
+export type ReportPhase =
+  | 'preflight'
+  | 'editors_reading'
+  | 'ambition_comparison'
+  | 'comparing_notes'
+  | 'debate'
+  | 'poem_assessments'
+  | 'synthesis'
+  | 'complete';
+
+export interface ReportProgress {
+  currentPhase: ReportPhase;
+  phaseProgress: number;   // 0-100 within current phase
+  overallProgress: number;  // 0-100
+  statusMessage: string;
+  startedAt: string;
+  estimatedTotalSeconds?: number;
+}
+
+export type ReportStatus = 'generating' | 'awaiting_poet' | 'complete' | 'error';
+
+/** Full editorial report data */
+export interface EditorialReportData {
+  id: string;
+  userId: string;
+  collectionId: string;
+  preFlightAnswers: PreFlightAnswers;
+  spineAnalysis: SpineAnalysis | null;
+  editorReadings: EditorReading[];
+  sectionEditorials: SectionEditorial[];
+  debateLog: DebateRound[];
+  perPoemAssessments: PoemAssessment[];
+  synthesizedReport: string;
+  status: ReportStatus;
+  progress: ReportProgress;
+  createdAt: string;
+}
+
+/** Summary for report history list */
+export interface EditorialReportSummary {
+  id: string;
+  createdAt: string;
+  status: ReportStatus;
+}

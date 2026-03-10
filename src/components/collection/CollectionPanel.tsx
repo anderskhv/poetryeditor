@@ -24,12 +24,14 @@ const STATUS_COLORS: Record<PoemStatus, string> = { rough: '#c62828', draft: '#9
 
 interface CollectionPanelProps {
   isOpen: boolean;
+  collectionName: string;
   treeNodes: TreeNode[];
   currentPoemId: string | null;
   onPoemSelect: (poem: CollectionPoem) => void;
   onSectionToggle: (sectionId: string) => void;
   onImportFiles: (files: FileList) => Promise<void>;
   onAddSection: (name: string, parentId: string | null) => void;
+  onRenameCollection?: (name: string) => void;
   onRenameSection: (id: string, name: string) => void;
   onDeleteSection: (id: string) => void;
   onDeletePoem: (id: string) => void;
@@ -217,12 +219,14 @@ function SortableTreeNode({
 
 export function CollectionPanel({
   isOpen,
+  collectionName,
   treeNodes,
   currentPoemId,
   onPoemSelect,
   onSectionToggle,
   onImportFiles,
   onAddSection,
+  onRenameCollection,
   onRenameSection,
   onDeleteSection,
   onDeletePoem,
@@ -237,6 +241,8 @@ export function CollectionPanel({
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [editingSection, setEditingSection] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
+  const [editingCollectionName, setEditingCollectionName] = useState(false);
+  const [collectionNameInput, setCollectionNameInput] = useState('');
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
   const [newSectionName, setNewSectionName] = useState('');
 
@@ -463,7 +469,45 @@ export function CollectionPanel({
   return (
     <div className={`collection-panel ${isDarkMode ? 'dark' : ''}`}>
       <div className="collection-header">
-        <h3>Collection</h3>
+        {editingCollectionName ? (
+          <input
+            className="collection-name-input"
+            value={collectionNameInput}
+            onChange={(e) => setCollectionNameInput(e.target.value)}
+            onBlur={() => {
+              const trimmed = collectionNameInput.trim();
+              if (trimmed && trimmed !== collectionName && onRenameCollection) {
+                onRenameCollection(trimmed);
+              }
+              setEditingCollectionName(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                const trimmed = collectionNameInput.trim();
+                if (trimmed && trimmed !== collectionName && onRenameCollection) {
+                  onRenameCollection(trimmed);
+                }
+                setEditingCollectionName(false);
+              } else if (e.key === 'Escape') {
+                setEditingCollectionName(false);
+              }
+            }}
+            autoFocus
+          />
+        ) : (
+          <h3
+            className={onRenameCollection ? 'collection-name-editable' : ''}
+            onDoubleClick={() => {
+              if (onRenameCollection) {
+                setCollectionNameInput(collectionName);
+                setEditingCollectionName(true);
+              }
+            }}
+            title={onRenameCollection ? 'Double-click to rename' : undefined}
+          >
+            {collectionName || 'Collection'}
+          </h3>
+        )}
         <button className="close-btn" onClick={onClose} title="Close panel">
           ×
         </button>

@@ -27,8 +27,10 @@ import { trackPageview } from './utils/analytics';
 import { FONT_OPTIONS } from './utils/fontOptions';
 import { exportPoemAsPdf } from './utils/pdfExport';
 import { EditorChat } from './components/editor/EditorChat';
+import { PreFlightForm } from './components/editor/PreFlightForm';
 import { usePoetProfile } from './hooks/usePoetProfile';
 import { useEditorMemory } from './hooks/useEditorMemory';
+import { useEditorialReport } from './hooks/useEditorialReport';
 import type { AnalysisContext } from './types/editor';
 import type { PoemFormatting } from './types/database';
 import { getAllConversationSummaries } from './utils/editorStorage';
@@ -96,6 +98,15 @@ function App() {
     extractAndSaveLearnings,
   } = useEditorMemory(user);
 
+  // Editorial report management
+  const editorialReport = useEditorialReport({
+    user,
+    collectionId: collection.id,
+    collectionName: collection.name,
+    poems: collection.poems,
+    sections: collection.sections,
+  });
+
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
   const [localTitle, setLocalTitle] = useDebouncedLocalStorage('poetryTitle', 'Untitled', 800);
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
@@ -142,6 +153,7 @@ function App() {
     reorderPoem,
     movePoemToSection,
     exportCollection,
+    renameCollection,
   } = useCollection();
   const [hasEverOpenedPanel, setHasEverOpenedPanel] = useState<boolean>(() => {
     return localStorage.getItem('hasOpenedAnalysisPanel') === 'true';
@@ -1569,12 +1581,14 @@ function App() {
         {/* Collection panel hidden for now - not ready for release
         <CollectionPanel
           isOpen={isCollectionOpen}
+          collectionName={collection.name}
           treeNodes={buildTree()}
           currentPoemId={currentPoemId}
           onPoemSelect={handleCollectionPoemSelect}
           onSectionToggle={toggleSectionExpanded}
           onImportFiles={handleCollectionImport}
           onAddSection={addSection}
+          onRenameCollection={renameCollection}
           onRenameSection={handleRenameSection}
           onDeleteSection={deleteSection}
           onDeletePoem={handleCollectionDeletePoem}
@@ -1782,6 +1796,8 @@ function App() {
                 onUpdateEditorSettings={updateEditorSettings}
                 memoryContext={getMemoryContext()}
                 onExtractLearnings={(msgs) => extractAndSaveLearnings(msgs)}
+                onCreateReport={() => editorialReport.setShowPreFlight(true)}
+                hasExistingReport={editorialReport.reportHistory.length > 0}
               />
             ) : activeSideTab === 'analysis' ? (
               <AnalysisPanel
@@ -1826,6 +1842,29 @@ function App() {
         poemText={text}
         paragraphAlign={paragraphAlign}
       />
+
+      {editorialReport.showPreFlight && (
+        <PreFlightForm
+          sections={collection.sections}
+          collectionName={collection.name}
+          savedAnswers={editorialReport.savedAnswers}
+          isGenerating={editorialReport.isGenerating}
+          onSubmit={(answers) => {
+            editorialReport.setShowPreFlight(false);
+            navigate('/editorial-report', {
+              state: {
+                generateNew: true,
+                collectionId: collection.id,
+                collectionName: collection.name,
+                preFlightAnswers: answers,
+                poems: collection.poems,
+                sections: collection.sections,
+              },
+            });
+          }}
+          onCancel={() => editorialReport.setShowPreFlight(false)}
+        />
+      )}
     </div>
   );
 }

@@ -35,6 +35,45 @@
   font-size: 14px;
   font-weight: 600;
   color: #333;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.collection-header h3.collection-name-editable {
+  cursor: pointer;
+  border-bottom: 1px dashed transparent;
+}
+
+.collection-header h3.collection-name-editable:hover {
+  border-bottom-color: #ccc;
+}
+
+.collection-name-input {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 2px 4px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  outline: none;
+  background: #fff;
+}
+
+.collection-name-input:focus {
+  border-color: #999;
+}
+
+.collection-panel.dark .collection-name-input {
+  background: #1e1e1e;
+  border-color: #555;
+  color: #e0e0e0;
 }
 
 .collection-panel.dark .collection-header h3 {

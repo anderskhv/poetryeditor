@@ -66,6 +66,10 @@ interface EditorChatProps {
   memoryContext?: string;
   /** Callback to extract learnings after assistant response */
   onExtractLearnings?: (messages: Array<{ role: string; content: string }>) => void;
+  /** Callback to start editorial report creation */
+  onCreateReport?: () => void;
+  /** Whether a previous report exists for this collection */
+  hasExistingReport?: boolean;
 }
 
 // Guest quick setup states
@@ -91,6 +95,8 @@ export function EditorChat({
   onUpdateEditorSettings,
   memoryContext,
   onExtractLearnings,
+  onCreateReport,
+  hasExistingReport,
 }: EditorChatProps) {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState('');
@@ -475,17 +481,16 @@ export function EditorChat({
           <div className="editor-empty-state">
             {mode === 'collection' ? (
               <>
-                <p>I can see your full collection '{collectionName}' ({collectionPoems?.length || 0} poems). Ask me about the arc, ordering, themes, or generate a full editorial letter.</p>
-                <button
-                  className="editor-option-btn editor-generate-report-btn"
-                  onClick={() => {
-                    setInputValue('');
-                    sendMessage('Write me a full editorial letter about this collection.');
-                  }}
-                  disabled={isLoading}
-                >
-                  Generate Editorial Letter
-                </button>
+                <p>I can see your full collection '{collectionName}' ({collectionPoems?.length || 0} poems). Ask me about the arc, ordering, themes, or create a full editorial report.</p>
+                {onCreateReport && (
+                  <button
+                    className="editor-option-btn editor-generate-report-btn"
+                    onClick={onCreateReport}
+                    disabled={isLoading}
+                  >
+                    {hasExistingReport ? 'Update Editorial Report' : 'Create Editorial Report'}
+                  </button>
+                )}
                 <p className="editor-empty-hint">Or ask a question about your collection</p>
               </>
             ) : (
@@ -503,28 +508,16 @@ export function EditorChat({
         {messages.map(msg => (
           <EditorMessage key={msg.id} message={msg} />
         ))}
-        {mode === 'collection' && messages.length > 0 && !isLoading && (() => {
-          const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant' && !m.isStreaming);
-          if (lastAssistant && lastAssistant.content.length > 500) {
-            return (
-              <div className="editor-report-link">
-                <button
-                  className="editor-option-btn"
-                  onClick={() => navigate('/editorial-report', {
-                    state: {
-                      markdown: lastAssistant.content,
-                      collectionName: collectionName || 'Collection',
-                      generatedAt: new Date().toISOString(),
-                    },
-                  })}
-                >
-                  View as full report &rarr;
-                </button>
-              </div>
-            );
-          }
-          return null;
-        })()}
+        {mode === 'collection' && messages.length > 0 && !isLoading && onCreateReport && (
+          <div className="editor-report-link">
+            <button
+              className="editor-option-btn"
+              onClick={onCreateReport}
+            >
+              {hasExistingReport ? 'Update Editorial Report' : 'Create Editorial Report'} &rarr;
+            </button>
+          </div>
+        )}
         {error && (
           <div className="editor-error">
             {error}

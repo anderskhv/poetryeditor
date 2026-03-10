@@ -194,12 +194,29 @@ export function useSections(collectionId: string | undefined) {
     }
   };
 
+  const renameSection = async (sectionId: string, name: string): Promise<boolean> => {
+    if (!supabase) return false;
+    try {
+      const { error } = await supabase
+        .from('sections')
+        .update({ name })
+        .eq('id', sectionId);
+      if (error) throw error;
+      setSections(prev => prev.map(s => s.id === sectionId ? { ...s, name } : s));
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to rename section');
+      return false;
+    }
+  };
+
   return {
     sections,
     loading,
     error,
     createSection,
     createManySections,
+    renameSection,
     refetch: fetchSections,
   };
 }
