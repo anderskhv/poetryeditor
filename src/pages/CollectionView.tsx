@@ -420,6 +420,7 @@ export function CollectionView() {
   const sectionMap = new Map(sections.map(s => [s.id, s]));
   const orderedSections = [...sections].sort((a, b) => a.sort_order - b.sort_order);
   const rootPoems = poemsBySection.get('root') || [];
+  const visibleSectionCount = sections.filter(s => (poemsBySection.get(s.id) || []).length > 0).length;
 
   return (
     <Layout>
@@ -678,8 +679,8 @@ export function CollectionView() {
 
         <div className="collection-stats">
           <span>{poems.length} poem{poems.length !== 1 ? 's' : ''}</span>
-          {sections.length > 0 && (
-            <span> in {sections.length} section{sections.length !== 1 ? 's' : ''}</span>
+          {visibleSectionCount > 0 && (
+            <span> in {visibleSectionCount} section{visibleSectionCount !== 1 ? 's' : ''}</span>
           )}
         </div>
       </div>
