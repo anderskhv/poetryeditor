@@ -1883,17 +1883,24 @@ function App() {
         paragraphAlign={paragraphAlign}
       />
 
-      {editorialReport.showPreFlight && (
+      {editorialReport.showPreFlight && (() => {
+        const allSections = isCloudCollection ? cloudCollectionSections : collection.sections;
+        const allPoems = isCloudCollection ? cloudCollectionFullPoems : collection.poems;
+        // Only include sections that have at least one poem
+        const nonEmptySections = allSections.filter(s =>
+          allPoems.some(p => p.sectionId === s.id)
+        );
+        return (
         <PreFlightForm
-          sections={isCloudCollection ? cloudCollectionSections : collection.sections}
+          sections={nonEmptySections}
           collectionName={isCloudCollection ? (cloudCollectionName || 'Collection') : collection.name}
           savedAnswers={editorialReport.savedAnswers}
           isGenerating={editorialReport.isGenerating}
           onSubmit={(answers) => {
             const reportCollectionId = isCloudCollection ? cloudPoemCollectionId! : collection.id;
             const reportCollectionName = isCloudCollection ? (cloudCollectionName || 'Collection') : collection.name;
-            const reportPoems = isCloudCollection ? cloudCollectionFullPoems : collection.poems;
-            const reportSections = isCloudCollection ? cloudCollectionSections : collection.sections;
+            const reportPoems = allPoems;
+            const reportSections = nonEmptySections;
 
             // Guard: don't navigate if poems haven't loaded yet
             if (reportPoems.length === 0) {
@@ -1915,7 +1922,8 @@ function App() {
           }}
           onCancel={() => editorialReport.setShowPreFlight(false)}
         />
-      )}
+        );
+      })()}
     </div>
   );
 }
