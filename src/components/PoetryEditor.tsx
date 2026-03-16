@@ -1815,7 +1815,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
                 className={`poem-title-editor-input ${isDarkMode ? 'dark' : ''}`}
                 value={poemTitle}
                 onChange={(e) => onTitleChange(e.target.value)}
-                placeholder="Untitled"
+                placeholder="Title"
                 aria-label="Poem title"
                 autoComplete="off"
                 autoCorrect="off"

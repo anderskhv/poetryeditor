@@ -96,7 +96,7 @@ function App() {
   } = useEditorMemory(user);
 
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
-  const [localTitle, setLocalTitle] = useDebouncedLocalStorage('poetryTitle', 'Untitled', 800);
+  const [localTitle, setLocalTitle] = useDebouncedLocalStorage('poetryTitle', '', 800);
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(() => {
     // Open panel by default for first-time visitors so they discover the analysis
@@ -196,7 +196,7 @@ function App() {
     return saved ? JSON.parse(saved) : [];
   });
   const [currentPoemId, setCurrentPoemId] = useState<string | null>(null);
-  const [poemTitle, setPoemTitle] = useState<string>('Untitled');
+  const [poemTitle, setPoemTitle] = useState<string>('');
   const [lastSavedContent, setLastSavedContent] = useState<string | null>(null); // Track content at last explicit save
   const activePoemId = cloudPoemId || currentPoemId || null;
   const [versionPreview, setVersionPreview] = useState<PoemVersion | null>(null);
