@@ -161,6 +161,71 @@ begin
         limit 10
       ) t
     ),
+    'top_paths_human', (
+      select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb)
+      from (
+        select path, count(*) as count
+        from public.analytics_events
+        where event_type = 'pageview'
+          and created_at between start_ts and end_ts
+          and coalesce(lower(user_agent), '') !~ bot_regex
+        group by path
+        order by count desc
+        limit 10
+      ) t
+    ),
+    'top_referrers_human', (
+      select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb)
+      from (
+        select coalesce(nullif(referrer, ''), '(direct)') as referrer, count(*) as count
+        from public.analytics_events
+        where event_type = 'pageview'
+          and created_at between start_ts and end_ts
+          and coalesce(lower(user_agent), '') !~ bot_regex
+        group by referrer
+        order by count desc
+        limit 10
+      ) t
+    ),
+    'top_devices_human', (
+      select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb)
+      from (
+        select coalesce(nullif(payload->>'device', ''), 'unknown') as device, count(*) as count
+        from public.analytics_events
+        where event_type = 'pageview'
+          and created_at between start_ts and end_ts
+          and coalesce(lower(user_agent), '') !~ bot_regex
+        group by device
+        order by count desc
+        limit 5
+      ) t
+    ),
+    'top_countries_human', (
+      select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb)
+      from (
+        select coalesce(nullif(payload->>'country', ''), 'unknown') as country, count(*) as count
+        from public.analytics_events
+        where event_type = 'pageview'
+          and created_at between start_ts and end_ts
+          and coalesce(lower(user_agent), '') !~ bot_regex
+        group by country
+        order by count desc
+        limit 10
+      ) t
+    ),
+    'top_bot_user_agents', (
+      select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb)
+      from (
+        select user_agent, count(*) as count
+        from public.analytics_events
+        where event_type = 'pageview'
+          and created_at between start_ts and end_ts
+          and coalesce(lower(user_agent), '') ~ bot_regex
+        group by user_agent
+        order by count desc
+        limit 10
+      ) t
+    ),
     'avg_page_duration_ms', (
       select coalesce(avg(duration_ms), 0)
       from public.analytics_events

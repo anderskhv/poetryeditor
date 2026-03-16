@@ -495,6 +495,31 @@ export function estimateSyllables(word: string): string[] {
   return expanded;
 }
 
+/** CMU phonemes → IPA (approximate) */
+const PHONE_TO_IPA: Record<string, string> = {
+  'AA': 'ɑ', 'AE': 'æ', 'AH': 'ʌ', 'AO': 'ɔ', 'AW': 'aʊ', 'AY': 'aɪ',
+  'B': 'b', 'CH': 'tʃ', 'D': 'd', 'DH': 'ð', 'EH': 'ɛ', 'ER': 'ɝ',
+  'EY': 'eɪ', 'F': 'f', 'G': 'ɡ', 'HH': 'h', 'IH': 'ɪ', 'IY': 'i',
+  'JH': 'dʒ', 'K': 'k', 'L': 'l', 'M': 'm', 'N': 'n', 'NG': 'ŋ',
+  'OW': 'oʊ', 'OY': 'ɔɪ', 'P': 'p', 'R': 'r', 'S': 's', 'SH': 'ʃ',
+  'T': 't', 'TH': 'θ', 'UH': 'ʊ', 'UW': 'u', 'V': 'v', 'W': 'w',
+  'Y': 'j', 'Z': 'z', 'ZH': 'ʒ',
+};
+
+/**
+ * Get IPA pronunciation for a word (e.g., "love" → "/lʌv/")
+ */
+export function getIPAPronunciation(word: string): string | null {
+  const pronunciations = getPronunciations(word);
+  if (pronunciations.length === 0) return null;
+  const best = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length)[0];
+  const ipa = best.phones.map(p => {
+    const base = p.replace(/[012]$/, '');
+    return PHONE_TO_IPA[base] || base.toLowerCase();
+  }).join('');
+  return `/${ipa}/`;
+}
+
 /**
  * Calculate rhyme quality score between two words
  * Returns a number from 0 to 1, where 1 is a perfect rhyme

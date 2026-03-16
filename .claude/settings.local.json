@@ -59,7 +59,17 @@
       "Bash(BASE_URL=http://localhost:3007 npx playwright test:*)",
       "Bash(xxd:*)",
       "Bash(perl:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(npm:*)",
+      "Bash(git:*)",
+      "Bash(./node_modules/.bin/tsc --noEmit 2>&1 | tail -20)",
+      "Bash(./node_modules/.bin/tsc --noEmit 2>&1 | tail -30)",
+      "Bash(chmod:*)",
+      "Bash(./node_modules/.bin/tsc --noEmit 2>&1 | tail -10)",
+      "Bash(./run-qa.sh 2>&1)",
+      "Bash(while:*)",
+      "Bash(head:*)",
+      "Bash(for word:*)"
     ],
     "additionalDirectories": [
       "/tmp",

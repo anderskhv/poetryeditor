@@ -210,6 +210,28 @@ export function useSections(collectionId: string | undefined) {
     }
   };
 
+  const deleteSection = async (sectionId: string): Promise<boolean> => {
+    if (!supabase || !collectionId) return false;
+    try {
+      // Move any poems in this section to root (null section_id)
+      await supabase
+        .from('poems')
+        .update({ section_id: null })
+        .eq('section_id', sectionId);
+
+      const { error } = await supabase
+        .from('sections')
+        .delete()
+        .eq('id', sectionId);
+      if (error) throw error;
+      setSections(prev => prev.filter(s => s.id !== sectionId));
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete section');
+      return false;
+    }
+  };
+
   return {
     sections,
     loading,
@@ -217,6 +239,7 @@ export function useSections(collectionId: string | undefined) {
     createSection,
     createManySections,
     renameSection,
+    deleteSection,
     refetch: fetchSections,
   };
 }

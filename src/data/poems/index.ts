@@ -79,27 +79,42 @@ import { theLamb } from './blake-lamb';
 import { sickRose } from './blake-sick-rose';
 import { london } from './blake-london';
 import { chimneySweeper } from './blake-chimney-sweeper';
+import { poisonTree } from './blake-poison-tree';
+import { gardenOfLove } from './blake-garden-of-love';
+import { infantSorrow } from './blake-infant-sorrow';
 
 // Wordsworth
 import { daffodils } from './wordsworth-daffodils';
 import { westminsterBridge } from './wordsworth-westminster-bridge';
 import { worldTooMuch } from './wordsworth-world-too-much';
 import { solitaryReaper } from './wordsworth-solitary-reaper';
+import { myHeartLeapsUp } from './wordsworth-my-heart-leaps-up';
+import { sheDwelt } from './wordsworth-she-dwelt';
 
 // Shelley
 import { ozymandias } from './shelley-ozymandias';
 import { mutability } from './shelley-mutability';
 
 // Dickinson
+import { dickinson67 } from './dickinson-67';
+import { dickinson214 } from './dickinson-214';
+import { dickinson249 } from './dickinson-249';
 import { dickinson254 } from './dickinson-254';
 import { dickinson258 } from './dickinson-258';
 import { dickinson280 } from './dickinson-280';
 import { dickinson288 } from './dickinson-288';
 import { dickinson303 } from './dickinson-303';
+import { dickinson314 } from './dickinson-314';
 import { dickinson320 } from './dickinson-320';
 import { dickinson341 } from './dickinson-341';
+import { dickinson435 } from './dickinson-435';
+import { dickinson449 } from './dickinson-449';
 import { dickinson465 } from './dickinson-465';
+import { dickinson520 } from './dickinson-520';
+import { dickinson585 } from './dickinson-585';
 import { dickinson712 } from './dickinson-712';
+import { dickinson764 } from './dickinson-764';
+import { dickinson986 } from './dickinson-986';
 import { dickinson1129 } from './dickinson-1129';
 
 // Whitman
@@ -144,6 +159,9 @@ import { barter } from './teasdale-barter';
 // Yeats
 import { innisfree } from './yeats-innisfree';
 import { secondComing } from './yeats-second-coming';
+import { whenYouAreOld } from './yeats-when-you-are-old';
+import { clothsOfHeaven } from './yeats-cloths-of-heaven';
+import { wildSwansAtCoole } from './yeats-wild-swans-at-coole';
 
 // Dunbar
 import { weWearTheMask } from './dunbar-we-wear-the-mask';
@@ -158,6 +176,7 @@ import { nymphReply } from './raleigh-nymph-reply';
 // Keats
 import { toAutumn } from './keats-to-autumn';
 import { grasshopperCricket } from './keats-grasshopper-cricket';
+import { whenIHaveFears } from './keats-when-i-have-fears';
 
 // Rossetti
 import { remember } from './rossetti-remember';
@@ -166,6 +185,37 @@ import { whenIAmDead } from './rossetti-when-i-am-dead';
 // Millay
 import { firstFig } from './millay-first-fig';
 import { whatLipsMyLips } from './millay-what-lips-my-lips';
+
+// Donne
+import { deathBeNotProud } from './donne-death-be-not-proud';
+import { valedictionForbiddingMourning } from './donne-valediction-forbidding-mourning';
+import { sunRising } from './donne-sun-rising';
+
+// Tennyson
+import { eagle } from './tennyson-eagle';
+import { crossingTheBar } from './tennyson-crossing-the-bar';
+import { breakBreakBreak } from './tennyson-break-break-break';
+
+// Hopkins
+import { godsGrandeur } from './hopkins-gods-grandeur';
+import { piedBeauty } from './hopkins-pied-beauty';
+
+// Hardy
+import { darklingThrush } from './hardy-darkling-thrush';
+import { neutralTones } from './hardy-neutral-tones';
+
+// Hughes
+import { negroSpeaksOfRivers } from './hughes-negro-speaks-of-rivers';
+import { motherToSon } from './hughes-mother-to-son';
+import { dreams } from './hughes-dreams';
+import { iToo } from './hughes-i-too';
+
+// cummings
+import { inJust } from './cummings-in-just';
+import { buffalosBill } from './cummings-buffalo-bill';
+
+// Sandburg
+import { fog } from './sandburg-fog';
 
 export const poems: Record<string, PoemAnalysis> = {
   // Gibran
@@ -211,24 +261,39 @@ export const poems: Record<string, PoemAnalysis> = {
   'the-sick-rose': sickRose,
   'london': london,
   'the-chimney-sweeper': chimneySweeper,
+  'a-poison-tree': poisonTree,
+  'the-garden-of-love': gardenOfLove,
+  'infant-sorrow': infantSorrow,
   // Wordsworth
   'daffodils': daffodils,
   'westminster-bridge': westminsterBridge,
   'world-too-much': worldTooMuch,
   'solitary-reaper': solitaryReaper,
+  'my-heart-leaps-up': myHeartLeapsUp,
+  'she-dwelt-among-the-untrodden-ways': sheDwelt,
   // Shelley
   'ozymandias': ozymandias,
   'mutability': mutability,
   // Dickinson
+  'success-is-counted-sweetest': dickinson67,
+  'i-taste-a-liquor-never-brewed': dickinson214,
+  'wild-nights-wild-nights': dickinson249,
   'hope-is-the-thing-with-feathers': dickinson254,
   'theres-a-certain-slant-of-light': dickinson258,
   'i-felt-a-funeral': dickinson280,
   'im-nobody-who-are-you': dickinson288,
   'the-soul-selects-her-own-society': dickinson303,
+  'nature-is-what-we-see': dickinson314,
   'theres-a-solitude-of-space': dickinson320,
   'after-great-pain': dickinson341,
+  'much-madness-is-divinest-sense': dickinson435,
+  'i-died-for-beauty': dickinson449,
   'i-heard-a-fly-buzz': dickinson465,
+  'i-started-early-took-my-dog': dickinson520,
+  'i-like-to-see-it-lap-the-miles': dickinson585,
   'because-i-could-not-stop-for-death': dickinson712,
+  'my-life-had-stood-a-loaded-gun': dickinson764,
+  'a-narrow-fellow-in-the-grass': dickinson986,
   'tell-all-the-truth': dickinson1129,
   // Whitman
   'o-captain': oCaptain,
@@ -263,6 +328,9 @@ export const poems: Record<string, PoemAnalysis> = {
   // Yeats
   'the-lake-isle-of-innisfree': innisfree,
   'the-second-coming': secondComing,
+  'when-you-are-old': whenYouAreOld,
+  'cloths-of-heaven': clothsOfHeaven,
+  'wild-swans-at-coole': wildSwansAtCoole,
   // Dunbar
   'we-wear-the-mask': weWearTheMask,
   // Longfellow
@@ -273,12 +341,37 @@ export const poems: Record<string, PoemAnalysis> = {
   // Keats
   'to-autumn': toAutumn,
   'on-the-grasshopper-and-cricket': grasshopperCricket,
+  'when-i-have-fears': whenIHaveFears,
   // Rossetti
   'remember': remember,
   'when-i-am-dead-my-dearest': whenIAmDead,
   // Millay
   'first-fig': firstFig,
   'what-lips-my-lips-have-kissed': whatLipsMyLips,
+  // Donne
+  'death-be-not-proud': deathBeNotProud,
+  'a-valediction-forbidding-mourning': valedictionForbiddingMourning,
+  'the-sun-rising': sunRising,
+  // Tennyson
+  'the-eagle': eagle,
+  'crossing-the-bar': crossingTheBar,
+  'break-break-break': breakBreakBreak,
+  // Hopkins
+  'gods-grandeur': godsGrandeur,
+  'pied-beauty': piedBeauty,
+  // Hardy
+  'the-darkling-thrush': darklingThrush,
+  'neutral-tones': neutralTones,
+  // Hughes
+  'the-negro-speaks-of-rivers': negroSpeaksOfRivers,
+  'mother-to-son': motherToSon,
+  'dreams': dreams,
+  'i-too': iToo,
+  // cummings
+  'in-just': inJust,
+  'buffalo-bills': buffalosBill,
+  // Sandburg
+  'fog': fog,
 };
 
 export function getPoemBySlug(slug: string): PoemAnalysis | undefined {

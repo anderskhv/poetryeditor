@@ -26,8 +26,9 @@ import type { PoemStatus } from '../types/collection';
 import { getLocalApiKey } from './editorStorage';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-const SONNET_MODEL = 'claude-sonnet-4-5-20250929';
-const HAIKU_MODEL = 'claude-haiku-4-5-20251001';
+const SONNET_MODEL = 'claude-sonnet-4-6-20250514';
+/** Parallel editor calls — upgraded from Haiku to Sonnet 4.6 */
+const EDITOR_MODEL = SONNET_MODEL;
 const ANTHROPIC_VERSION = '2023-06-01';
 
 // ── Data Types ──
@@ -52,7 +53,7 @@ function resolveApiKey(): string | null {
 }
 
 /** Non-streaming call to a model (used for Haiku calls) */
-async function callHaiku(
+async function callEditor(
   systemPrompt: string,
   userMessage: string,
   maxTokens: number = 2048,
@@ -70,7 +71,7 @@ async function callHaiku(
       'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify({
-      model: HAIKU_MODEL,
+      model: EDITOR_MODEL,
       max_tokens: maxTokens,
       system: systemPrompt,
       messages: [{ role: 'user', content: userMessage }],
@@ -94,7 +95,7 @@ async function callHaiku(
 }
 
 /** Streaming call to Sonnet */
-async function streamSonnet(
+export async function streamSonnet(
   systemPrompt: string,
   userMessage: string,
   callbacks: StreamCallbacks,
@@ -203,6 +204,83 @@ async function streamSonnet(
   }
 }
 
+// ── Key remapping helpers ──
+
+/**
+ * Remap editor response keys (poem numbers like "1", "2" or titles) back to real UUIDs.
+ * Editors see poems as [1] "Title" but we need UUID keys for downstream lookups.
+ */
+function remapPoemKeys(
+  obj: Record<string, string>,
+  poems: EditorialPoemData[],
+): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    const resolved = resolvePoemId(key, poems);
+    if (resolved) {
+      result[resolved] = value;
+    }
+  }
+  return result;
+}
+
+/**
+ * Resolve a key that might be a number ("1"), a title ("Descend"), or already a UUID.
+ */
+function resolvePoemId(key: string, poems: EditorialPoemData[]): string | null {
+  // Already a UUID?
+  const directMatch = poems.find(p => p.id === key);
+  if (directMatch) return directMatch.id;
+
+  // Number key? (1-indexed as shown to editors)
+  const num = parseInt(key, 10);
+  if (!isNaN(num) && num >= 1 && num <= poems.length) {
+    return poems[num - 1].id;
+  }
+
+  // Title match (case-insensitive, trimmed)
+  const normalized = key.trim().toLowerCase();
+  const titleMatch = poems.find(p => p.title.trim().toLowerCase() === normalized);
+  if (titleMatch) return titleMatch.id;
+
+  return null;
+}
+
+/**
+ * Remap an array of poem references (numbers/titles) to UUIDs.
+ */
+function remapPoemArray(arr: string[], poems: EditorialPoemData[]): string[] {
+  return arr
+    .map(key => resolvePoemId(key, poems))
+    .filter((id): id is string => id !== null);
+}
+
+/**
+ * Fuzzy match section name from editor output to actual section names.
+ */
+function resolveSectionName(key: string, poems: EditorialPoemData[]): string {
+  const sectionNames = new Set(poems.map(p => p.sectionName).filter(Boolean) as string[]);
+  // Exact match
+  if (sectionNames.has(key)) return key;
+  // Case-insensitive trimmed
+  const normalized = key.trim().toLowerCase();
+  for (const name of sectionNames) {
+    if (name.trim().toLowerCase() === normalized) return name;
+  }
+  return key; // Return as-is if no match
+}
+
+function remapSectionKeys(
+  obj: Record<string, string>,
+  poems: EditorialPoemData[],
+): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    result[resolveSectionName(key, poems)] = value;
+  }
+  return result;
+}
+
 // ── Exported Functions ──
 
 /**
@@ -230,7 +308,7 @@ Write in prose, 400-600 words. Be direct and specific.
 COLLECTION:
 ${poemList}`;
 
-    const blindResult = await callHaiku(
+    const blindResult = await callEditor(
       'You are a sensitive, perceptive poetry reader. You read collections whole, finding the coherence within them.',
       blindPrompt,
       2048,
@@ -238,7 +316,7 @@ ${poemList}`;
     );
 
     if (onUsage) {
-      onUsage({ model: HAIKU_MODEL, inputTokens: blindResult.usage.inputTokens, outputTokens: blindResult.usage.outputTokens });
+      onUsage({ model: EDITOR_MODEL, inputTokens: blindResult.usage.inputTokens, outputTokens: blindResult.usage.outputTokens });
     }
 
     const blindReading = blindResult.text;
@@ -260,7 +338,7 @@ Compare these. Where do your blind reading and the poet's stated ambition align?
 
 Write in prose, 400-600 words. Be warm and direct.`;
 
-    const ambitionResult = await callHaiku(
+    const ambitionResult = await callEditor(
       'You are comparing what a reader sees in a collection with what the poet intended. Be fair and generous but honest.',
       ambitionPrompt,
       2048,
@@ -268,7 +346,7 @@ Write in prose, 400-600 words. Be warm and direct.`;
     );
 
     if (onUsage) {
-      onUsage({ model: HAIKU_MODEL, inputTokens: ambitionResult.usage.inputTokens, outputTokens: ambitionResult.usage.outputTokens });
+      onUsage({ model: EDITOR_MODEL, inputTokens: ambitionResult.usage.inputTokens, outputTokens: ambitionResult.usage.outputTokens });
     }
 
     return {
@@ -324,13 +402,15 @@ You are reading a poetry collection. You know all the craft — rhythm, imagery,
 
 ${harshnessNote}
 
+IMPORTANT: Use poem NUMBERS (1, 2, 3...) as keys in perPoemNotes, strongestPoems, and weakestPoems — matching the [N] numbers in the poem list. Use section names exactly as shown in brackets.
+
 Provide your reading as JSON with this exact structure:
 {
   "overallAnalysis": "string, 200-400 words on the collection as a whole",
-  "sectionNotes": { "sectionName": "string, analysis of this section", ... },
-  "perPoemNotes": { "poemId": "string, brief note on this poem", ... },
-  "strongestPoems": ["poemId", ...],
-  "weakestPoems": ["poemId", ...],
+  "sectionNotes": { "Section Name": "string, analysis of this section", ... },
+  "perPoemNotes": { "1": "string, brief note on poem [1]", "2": "string, note on poem [2]", ... },
+  "strongestPoems": ["1", "3"],
+  "weakestPoems": ["5"],
   "recommendations": ["string, actionable suggestion", ...]
 }
 
@@ -352,10 +432,10 @@ Now here is the full collection. Read it carefully and provide your structured e
 COLLECTION (${poems.length} poems):
 ${poemList}`;
 
-        const result = await callHaiku(systemPrompt, userMessage, 4096, signal);
+        const result = await callEditor(systemPrompt, userMessage, 8192, signal);
 
         if (onUsage) {
-          onUsage({ model: HAIKU_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
+          onUsage({ model: EDITOR_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
         }
 
         // Parse JSON response
@@ -375,13 +455,20 @@ ${poemList}`;
           };
         }
 
+        // Remap numeric/title keys back to real UUIDs
         const reading: EditorReading = {
           editorId,
           overallAnalysis: parsed.overallAnalysis || '',
-          sectionNotes: parsed.sectionNotes || {},
-          perPoemNotes: parsed.perPoemNotes || {},
-          strongestPoems: Array.isArray(parsed.strongestPoems) ? parsed.strongestPoems : [],
-          weakestPoems: Array.isArray(parsed.weakestPoems) ? parsed.weakestPoems : [],
+          sectionNotes: remapSectionKeys(parsed.sectionNotes || {}, poems),
+          perPoemNotes: remapPoemKeys(parsed.perPoemNotes || {}, poems),
+          strongestPoems: remapPoemArray(
+            Array.isArray(parsed.strongestPoems) ? parsed.strongestPoems : [],
+            poems,
+          ),
+          weakestPoems: remapPoemArray(
+            Array.isArray(parsed.weakestPoems) ? parsed.weakestPoems : [],
+            poems,
+          ),
           recommendations: Array.isArray(parsed.recommendations) ? parsed.recommendations : [],
         };
 
@@ -423,9 +510,10 @@ export async function runDebate(
   spineAnalysis: SpineAnalysis,
   onUsage?: (u: TokenUsage) => void,
   signal?: AbortSignal,
+  poems?: EditorialPoemData[],
 ): Promise<DebateRound[]> {
   // Identify disagreement topics
-  const topics = identifyDisagreements(editorReadings);
+  const topics = identifyDisagreements(editorReadings, poems);
   if (topics.length === 0) {
     return [];
   }
@@ -464,10 +552,10 @@ ${positionsContext}
 
 Re-examine this topic. Have any editors shifted? Where is actual agreement? Where is genuine disagreement?`;
 
-        const result = await callHaiku(systemPrompt, userMessage, 2048, signal);
+        const result = await callEditor(systemPrompt, userMessage, 2048, signal);
 
         if (onUsage) {
-          onUsage({ model: HAIKU_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
+          onUsage({ model: EDITOR_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
         }
 
         // Parse positions
@@ -549,10 +637,10 @@ ${previousContext}
 
 In light of the poet's input, what do the editors now think? Return updated positions.`;
 
-      const result = await callHaiku(systemPrompt, userMessage, 2048, signal);
+      const result = await callEditor(systemPrompt, userMessage, 2048, signal);
 
       if (onUsage) {
-        onUsage({ model: HAIKU_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
+        onUsage({ model: EDITOR_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
       }
 
       let positions = [];
@@ -631,10 +719,10 @@ ${allNotes}
 
 Synthesize. What's the shared view? Where do editors differ? What's the consensus direction?`;
 
-      const result = await callHaiku(systemPrompt, userMessage, 2048, signal);
+      const result = await callEditor(systemPrompt, userMessage, 2048, signal);
 
       if (onUsage) {
-        onUsage({ model: HAIKU_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
+        onUsage({ model: EDITOR_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
       }
 
       let parsed = { sharedAnalysis: '', editorNotes: [], consensus: '' };
@@ -678,13 +766,14 @@ export async function buildPerPoemAssessments(
     const batch = poems.slice(i, i + batchSize);
 
     try {
-      // Compile all editors' notes for this batch
+      // Compile all editors' notes for this batch (use poem number + title for LLM, not UUID)
       const batchContext = batch
-        .map(poem => {
+        .map((poem, batchIdx) => {
+          const poemNumber = i + batchIdx + 1;
           const notes = editorReadings
             .map(e => `${e.editorId}: ${e.perPoemNotes[poem.id] || '(no specific note)'}`)
             .join('; ');
-          return `"${poem.title}" (${poem.id}, status=${poem.status}): ${notes}`;
+          return `[${poemNumber}] "${poem.title}" (status=${poem.status}): ${notes}`;
         })
         .join('\n\n');
 
@@ -722,10 +811,10 @@ ${batchContext}
 
 Provide unified assessments for each poem.`;
 
-      const result = await callHaiku(systemPrompt, userMessage, 4096, signal);
+      const result = await callEditor(systemPrompt, userMessage, 4096, signal);
 
       if (onUsage) {
-        onUsage({ model: HAIKU_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
+        onUsage({ model: EDITOR_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
       }
 
       let parsed = [];
@@ -737,13 +826,29 @@ Provide unified assessments for each poem.`;
         parsed = [];
       }
 
-      // Add status from original poem
+      // Add status from original poem — match by ID, number, or title
       for (const item of parsed) {
         if (item && typeof item === 'object') {
-          const poem = batch.find(p => p.id === item.poemId);
+          // Try direct ID match first, then resolve via number/title
+          let poem = batch.find(p => p.id === item.poemId);
+          if (!poem && item.poemId) {
+            const resolved = resolvePoemId(item.poemId, poems);
+            if (resolved) poem = batch.find(p => p.id === resolved);
+          }
+          // Fallback: match by title
+          if (!poem && item.poemTitle) {
+            const titleNorm = item.poemTitle.trim().toLowerCase();
+            poem = batch.find(p => p.title.trim().toLowerCase() === titleNorm);
+          }
+          // Last resort: match by position in batch
+          if (!poem && parsed.length === batch.length) {
+            const idx = parsed.indexOf(item);
+            if (idx >= 0 && idx < batch.length) poem = batch[idx];
+          }
+
           if (poem) {
             assessments.push({
-              poemId: item.poemId || '',
+              poemId: poem.id,
               poemTitle: item.poemTitle || poem.title,
               poemStatus: poem.status,
               sectionName: poem.sectionName,
@@ -850,10 +955,11 @@ Write the editorial letter now. Be warm, direct, specific. Reference actual poem
 /**
  * Identify disagreement topics from editors' readings.
  */
-function identifyDisagreements(editorReadings: EditorReading[]): string[] {
+function identifyDisagreements(editorReadings: EditorReading[], poems?: EditorialPoemData[]): string[] {
   if (editorReadings.length < 2) return [];
 
   const topics: string[] = [];
+  const poemMap = new Map(poems?.map(p => [p.id, p.title]) || []);
 
   // Find poems where editors disagree on strongest/weakest
   const strongestCounts = new Map<string, number>();
@@ -869,9 +975,10 @@ function identifyDisagreements(editorReadings: EditorReading[]): string[] {
   }
 
   // If a poem is flagged as strongest by one editor and weakest by another, that's a topic
-  for (const [poemId, strongCount] of strongestCounts) {
+  for (const [poemId] of strongestCounts) {
     if (weakestCounts.get(poemId)) {
-      topics.push(`Poem "${poemId}" — is it strongest or needs work?`);
+      const title = poemMap.get(poemId) || poemId;
+      topics.push(`"${title}" — is it among the strongest or does it need work?`);
     }
   }
 

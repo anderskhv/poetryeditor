@@ -17,6 +17,8 @@ const TOOLS = [
   { path: '/haiku-checker', label: 'Haiku Checker', isFormTool: true },
   { path: '/sonnet-checker', label: 'Sonnet Checker', isFormTool: true },
   { path: '/poems', label: 'Poem Analyses' },
+  { path: '/reading-paths', label: 'Reading Paths' },
+  { path: '/where-to-share', label: 'Where to Share' },
 ];
 
 export function Layout({ children }: LayoutProps) {

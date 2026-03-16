@@ -7,6 +7,7 @@ import nlp from 'compromise';
 import { getRhymePhonemes, getPerfectRhymesOffline, getNearRhymesOffline, getSpellingRhymesOffline, getSyllableCount, isDictionaryLoaded, loadCMUDictionary } from './cmuDict';
 import offlineSynonyms from '../data/offlineSynonyms.json';
 import { getWordnetSenses, type WordnetSensePayload } from './wordnetSenses';
+import { getFrequencyRank } from '../data/wordFrequency';
 
 const DATAMUSE_ENABLED = true;
 const DATAMUSE_CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7;
@@ -239,12 +240,16 @@ export async function fetchRhymes(word: string): Promise<RhymeWord[]> {
       rhymesWithQuality.push(...merged.values());
     }
 
-    // Sort by rhyme quality (perfect rhymes first), then by original API score
+    // Sort by rhyme quality, then word frequency (common words first), then API score
     rhymesWithQuality.sort((a: RhymeWord, b: RhymeWord) => {
       // Primary sort: rhyme quality (higher is better)
       const qualityDiff = (b.rhymeQuality || 0) - (a.rhymeQuality || 0);
       if (Math.abs(qualityDiff) > 0.1) return qualityDiff;
-      // Secondary sort: original API score (higher is more common)
+      // Secondary sort: word frequency (lower rank = more common = sort first)
+      const freqA = getFrequencyRank(a.word);
+      const freqB = getFrequencyRank(b.word);
+      if (freqA !== freqB) return freqA - freqB;
+      // Tertiary sort: original API score (higher is more common)
       return b.score - a.score;
     });
 
@@ -382,6 +387,9 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
     results.sort((a, b) => {
       const qualityDiff = (b.rhymeQuality || 0) - (a.rhymeQuality || 0);
       if (Math.abs(qualityDiff) > 0.05) return qualityDiff;
+      const freqA = getFrequencyRank(a.word);
+      const freqB = getFrequencyRank(b.word);
+      if (freqA !== freqB) return freqA - freqB;
       return b.score - a.score;
     });
 

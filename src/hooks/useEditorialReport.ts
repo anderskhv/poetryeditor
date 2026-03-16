@@ -463,7 +463,7 @@ export function useEditorialReport({
 
       // ── Phase 5: Debate ──
       setProgress(makeProgress('debate', 0, startedAt));
-      const debateRounds = await runDebate(editorReadings, spineResult, trackUsage, signal);
+      const debateRounds = await runDebate(editorReadings, spineResult, trackUsage, signal, editorialPoems);
       working.debateLog = debateRounds;
       setProgress(makeProgress('debate', 100, startedAt));
 

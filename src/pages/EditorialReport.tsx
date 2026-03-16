@@ -9,12 +9,13 @@
  * - Split-view layout with chat sidebar (future)
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useEditorialReport } from '../hooks/useEditorialReport';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
+import { ReportChat } from '../components/editor/ReportChat';
 import type { PreFlightAnswers } from '../types/editor';
 import type { CollectionPoem, CollectionSection } from '../types/collection';
 import './EditorialReport.css';
@@ -197,12 +198,18 @@ export function EditorialReport() {
     loadReport,
   } = hook;
 
+  // Prevent double-triggering of generation
+  const hasStartedRef = useRef(false);
+
   // Start generation on mount if needed
   useEffect(() => {
-    if (shouldGenerateNew && locationState?.preFlightAnswers) {
+    if (shouldGenerateNew && locationState?.preFlightAnswers && !hasStartedRef.current) {
+      hasStartedRef.current = true;
       startGeneration(locationState.preFlightAnswers);
+      // Clear location state so tab-switching doesn't re-trigger
+      navigate(location.pathname, { replace: true });
     }
-  }, [shouldGenerateNew, locationState?.preFlightAnswers, startGeneration]);
+  }, [shouldGenerateNew, locationState?.preFlightAnswers, startGeneration, navigate, location.pathname]);
 
   // Load existing report if reportId is in URL
   useEffect(() => {
@@ -210,6 +217,13 @@ export function EditorialReport() {
       loadReport(reportId);
     }
   }, [reportId, shouldGenerateNew, report, loadReport]);
+
+  // Update URL once generation completes so report persists on reload
+  useEffect(() => {
+    if (report?.status === 'complete' && !reportId) {
+      navigate(`/editorial-report/${report.id}`, { replace: true });
+    }
+  }, [report?.status, report?.id, reportId, navigate]);
 
   // Poet input state for debate items
   const [debatePoetInputs, setDebatePoetInputs] = useState<Record<string, string>>({});
@@ -238,8 +252,8 @@ export function EditorialReport() {
       })
     : '';
 
-  // Render empty state
-  if (!shouldGenerateNew && !reportId && !report) {
+  // Render empty state (but not if we're already generating)
+  if (!shouldGenerateNew && !reportId && !report && !isGenerating && !hasStartedRef.current) {
     return (
       <Layout>
         <SEOHead
@@ -708,11 +722,9 @@ export function EditorialReport() {
           </div>
         </div>
 
-        {/* Right: Chat Sidebar (placeholder) */}
+        {/* Right: Chat Sidebar */}
         <div className="editorial-sidebar">
-          <div className="editorial-chat-placeholder">
-            <p>Chat sidebar coming soon</p>
-          </div>
+          <ReportChat report={report} />
         </div>
       </div>
     </Layout>

@@ -1,0 +1,277 @@
+.reading-path-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Header */
+.reading-path-breadcrumb {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 12px;
+  color: var(--color-text-muted, #9a9a9a);
+  margin-bottom: 16px;
+}
+
+.reading-path-breadcrumb a {
+  color: var(--color-text-secondary, #6a6a6a);
+  text-decoration: none;
+}
+
+.reading-path-breadcrumb a:hover {
+  color: var(--color-text-primary, #2a2a2a);
+}
+
+.breadcrumb-sep {
+  margin: 0 6px;
+}
+
+.reading-path-header h1 {
+  font-family: var(--font-serif, 'Libre Baskerville', Georgia, serif);
+  font-size: 28px;
+  font-weight: 400;
+  margin: 0 0 4px;
+  color: var(--color-text-primary, #2a2a2a);
+}
+
+.reading-path-subtitle {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--color-text-secondary, #6a6a6a);
+  margin: 0 0 12px;
+}
+
+.reading-path-description {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-secondary, #6a6a6a);
+  margin: 0 0 20px;
+}
+
+/* Progress bar */
+.reading-path-progress {
+  margin-bottom: 32px;
+}
+
+.progress-bar {
+  height: 4px;
+  background: var(--color-border, rgba(0, 0, 0, 0.06));
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-text-primary, #2a2a2a);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.progress-label {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 12px;
+  color: var(--color-text-muted, #9a9a9a);
+}
+
+/* Steps */
+.reading-path-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.step-card {
+  display: flex;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--color-border, rgba(0, 0, 0, 0.06));
+}
+
+.step-card:last-child {
+  border-bottom: none;
+}
+
+.step-card.complete {
+  opacity: 0.7;
+}
+
+.step-card.complete:hover {
+  opacity: 1;
+}
+
+/* Step number / check */
+.step-number-col {
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.step-check {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.15));
+  background: transparent;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 12px;
+  color: var(--color-text-muted, #9a9a9a);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.step-check:hover {
+  border-color: var(--color-text-primary, #2a2a2a);
+  color: var(--color-text-primary, #2a2a2a);
+}
+
+.step-check.checked {
+  background: var(--color-text-primary, #2a2a2a);
+  border-color: var(--color-text-primary, #2a2a2a);
+  color: var(--color-paper, #fdfcfa);
+  font-size: 14px;
+}
+
+/* Step content */
+.step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.step-poem-header {
+  margin-bottom: 8px;
+}
+
+.step-poem-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.step-poem-title {
+  font-family: var(--font-serif, 'Libre Baskerville', Georgia, serif);
+  font-size: 16px;
+  color: var(--color-text-primary, #2a2a2a);
+}
+
+.step-poem-link:hover .step-poem-title {
+  text-decoration: underline;
+}
+
+.step-poem-poet {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-muted, #9a9a9a);
+}
+
+.step-notice {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-secondary, #6a6a6a);
+  margin: 0 0 8px;
+}
+
+/* Exercise section */
+.step-exercise-section {
+  margin-top: 8px;
+}
+
+.step-exercise-toggle {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-secondary, #6a6a6a);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.step-exercise-toggle:hover {
+  color: var(--color-text-primary, #2a2a2a);
+}
+
+.step-exercise-content {
+  margin-top: 8px;
+  padding: 12px 16px;
+  background: var(--color-paper, #fdfcfa);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.06));
+  border-radius: 4px;
+}
+
+.step-exercise-content p {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-secondary, #6a6a6a);
+  margin: 0 0 8px;
+}
+
+.exercise-open-editor {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 12px;
+  color: var(--color-text-secondary, #6a6a6a);
+  text-decoration: none;
+}
+
+.exercise-open-editor:hover {
+  color: var(--color-text-primary, #2a2a2a);
+}
+
+/* Completion */
+.reading-path-complete {
+  text-align: center;
+  padding: 32px 24px;
+  margin-top: 24px;
+  border-top: 1px solid var(--color-border, rgba(0, 0, 0, 0.06));
+}
+
+.reading-path-complete h3 {
+  font-family: var(--font-serif, 'Libre Baskerville', Georgia, serif);
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0 0 8px;
+  color: var(--color-text-primary, #2a2a2a);
+}
+
+.reading-path-complete p {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-secondary, #6a6a6a);
+  margin: 0 0 16px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.back-to-paths {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-primary, #2a2a2a);
+  text-decoration: none;
+}
+
+.back-to-paths:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .reading-path-page {
+    padding: 16px;
+  }
+
+  .step-card {
+    gap: 12px;
+    padding: 16px 0;
+  }
+
+  .reading-path-header h1 {
+    font-size: 22px;
+  }
+}

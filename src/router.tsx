@@ -19,6 +19,13 @@ import { LearnFreeVerse } from './pages/learn/LearnFreeVerse';
 import { LearnScansion } from './pages/learn/LearnScansion';
 import { LearnRhymeTypes } from './pages/learn/LearnRhymeTypes';
 import { LearnMeter } from './pages/learn/LearnMeter';
+import { LearnVillanelle } from './pages/learn/LearnVillanelle';
+import { LearnPantoum } from './pages/learn/LearnPantoum';
+import { LearnOde } from './pages/learn/LearnOde';
+import { LearnElegy } from './pages/learn/LearnElegy';
+import { LearnBallad } from './pages/learn/LearnBallad';
+import { LearnSlantRhyme } from './pages/learn/LearnSlantRhyme';
+import { LearnAvoidingCliches } from './pages/learn/LearnAvoidingCliches';
 import { PoemPage } from './pages/poems/PoemPage';
 import { PoemsListPage } from './pages/poems/PoemsListPage';
 import { RhymeSchemePage } from './pages/RhymeSchemePage';
@@ -32,6 +39,9 @@ import { SharedCollection } from './pages/SharedCollection';
 import { Analytics } from './pages/Analytics';
 import { Analytics2 } from './pages/Analytics2';
 import { EditorialReport } from './pages/EditorialReport';
+import { ReadingPathsPage } from './pages/ReadingPathsPage';
+import { ReadingPathPage } from './pages/ReadingPathPage';
+import { WhereToSharePage } from './pages/WhereToSharePage';
 import { RouteError } from './components/RouteError';
 
 export const router = createBrowserRouter([
@@ -172,6 +182,34 @@ export const router = createBrowserRouter([
     path: '/learn/meter',
     element: <LearnMeter />,
   },
+  {
+    path: '/learn/villanelle',
+    element: <LearnVillanelle />,
+  },
+  {
+    path: '/learn/pantoum',
+    element: <LearnPantoum />,
+  },
+  {
+    path: '/learn/ode',
+    element: <LearnOde />,
+  },
+  {
+    path: '/learn/elegy',
+    element: <LearnElegy />,
+  },
+  {
+    path: '/learn/ballad',
+    element: <LearnBallad />,
+  },
+  {
+    path: '/learn/slant-rhyme',
+    element: <LearnSlantRhyme />,
+  },
+  {
+    path: '/learn/avoiding-cliches',
+    element: <LearnAvoidingCliches />,
+  },
   // Poem analysis pages
   {
     path: '/poems',
@@ -185,6 +223,20 @@ export const router = createBrowserRouter([
   {
     path: '/rhyme-scheme/:scheme',
     element: <RhymeSchemePage />,
+  },
+  // Reading paths
+  {
+    path: '/reading-paths',
+    element: <ReadingPathsPage />,
+  },
+  {
+    path: '/reading-paths/:slug',
+    element: <ReadingPathPage />,
+  },
+  // Where to share
+  {
+    path: '/where-to-share',
+    element: <WhereToSharePage />,
   },
   // User collections
   {

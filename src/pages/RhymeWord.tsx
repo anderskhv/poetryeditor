@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonyms, fetchAntonyms, getWordVariants, RhymeWord as RhymeWordType, SynonymWord } from '../utils/rhymeApi';
-import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables } from '../utils/cmuDict';
+import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables, getPronunciations, getIPAPronunciation } from '../utils/cmuDict';
 import { getRhymeOriginalityScore } from '../utils/rhymeCliches';
 import { DefinitionTooltip } from '../components/DefinitionTooltip';
 import { getWordEnhancement } from '../data/wordEnhancements';
@@ -63,6 +63,7 @@ export function RhymeWord() {
   const stresses = getStressPattern(decodedWord);
   const syllables = getSyllables(decodedWord);
   const syllableCount = stresses.length || syllables.length;
+  const pronunciation = getIPAPronunciation(decodedWord);
 
   useEffect(() => {
     async function loadData() {
@@ -386,6 +387,11 @@ export function RhymeWord() {
             {syllables.length > 0 && (
               <span className="word-info-item">
                 Breakdown: <strong>{syllables.join('-')}</strong>
+              </span>
+            )}
+            {pronunciation && (
+              <span className="word-info-item word-pronunciation">
+                {pronunciation}
               </span>
             )}
           </div>

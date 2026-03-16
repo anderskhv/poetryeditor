@@ -22,6 +22,139 @@ const SYNONYM_SITEMAP = path.resolve('public/sitemap-synonyms.xml');
 const MAX_RHYME_PAGES = 8000;
 const MAX_SYNONYM_PAGES = 8000;
 
+// ── CMU Dictionary (Node.js compatible) ───────────────────────────────────
+
+const CMU_DICT_PATH = path.resolve('public/cmudict.dict');
+const WORDNET_DIR = path.resolve('public/wordnet-senses');
+const OFFLINE_SYNONYMS_PATH = path.resolve('src/data/offlineSynonyms.json');
+
+/** Parse CMU dict into Map<word, Pronunciation[]> */
+function parseCMUDictNode(text) {
+  const dict = new Map();
+  for (const line of text.split('\n')) {
+    if (line.startsWith(';;;') || !line.trim()) continue;
+    const parts = line.split(/\s+/);
+    if (parts.length < 2) continue;
+    const rawWord = parts[0];
+    const phones = parts.slice(1);
+    const baseWord = rawWord.replace(/\(\d+\)$/, '').toLowerCase();
+    const stresses = phones.filter(p => /[012]$/.test(p)).map(p => parseInt(p.slice(-1)));
+    if (!dict.has(baseWord)) dict.set(baseWord, []);
+    dict.get(baseWord).push({ word: baseWord, phones, stresses });
+  }
+  return dict;
+}
+
+function getRhymeKeyFromPhonesNode(phones) {
+  let idx = -1;
+  for (let i = phones.length - 1; i >= 0; i--) {
+    if (/[12]$/.test(phones[i])) { idx = i; break; }
+  }
+  if (idx === -1) {
+    for (let i = phones.length - 1; i >= 0; i--) {
+      if (/[012]$/.test(phones[i])) { idx = i; break; }
+    }
+  }
+  if (idx === -1) return null;
+  return phones.slice(idx).map(p => p.replace(/[012]$/, '')).join('-');
+}
+
+function buildRhymeIndexNode(dict) {
+  const perfect = new Map();
+  for (const [word, pronunciations] of dict.entries()) {
+    if (!pronunciations || pronunciations.length === 0) continue;
+    const best = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length)[0];
+    const key = getRhymeKeyFromPhonesNode(best.phones);
+    if (key) {
+      const list = perfect.get(key) ?? [];
+      list.push(word);
+      perfect.set(key, list);
+    }
+  }
+  return perfect;
+}
+
+function getPerfectRhymesNode(word, dict, rhymeIndex, limit = 50) {
+  const pronunciations = dict.get(word.toLowerCase());
+  if (!pronunciations || pronunciations.length === 0) return [];
+  const best = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length)[0];
+  const key = getRhymeKeyFromPhonesNode(best.phones);
+  if (!key) return [];
+  return (rhymeIndex.get(key) ?? []).filter(w => w !== word.toLowerCase()).slice(0, limit);
+}
+
+function getSyllableCountNode(word, dict) {
+  const pronunciations = dict.get(word.toLowerCase());
+  if (!pronunciations || pronunciations.length === 0) {
+    // Fallback: estimate from vowel groups
+    const cleaned = word.toLowerCase().replace(/[^a-z]/g, '');
+    if (!cleaned) return 1;
+    let count = 0;
+    let prev = false;
+    for (const ch of cleaned) {
+      const isV = 'aeiouy'.includes(ch);
+      if (isV && !prev) count++;
+      prev = isV;
+    }
+    if (cleaned.endsWith('e') && !cleaned.endsWith('le') && count > 1) count--;
+    return Math.max(1, count);
+  }
+  const best = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length)[0];
+  return best.stresses.length || 1;
+}
+
+/** CMU phonemes → IPA (approximate) */
+const PHONE_TO_IPA = {
+  'AA': 'ɑ', 'AE': 'æ', 'AH': 'ʌ', 'AO': 'ɔ', 'AW': 'aʊ', 'AY': 'aɪ',
+  'B': 'b', 'CH': 'tʃ', 'D': 'd', 'DH': 'ð', 'EH': 'ɛ', 'ER': 'ɝ',
+  'EY': 'eɪ', 'F': 'f', 'G': 'ɡ', 'HH': 'h', 'IH': 'ɪ', 'IY': 'i',
+  'JH': 'dʒ', 'K': 'k', 'L': 'l', 'M': 'm', 'N': 'n', 'NG': 'ŋ',
+  'OW': 'oʊ', 'OY': 'ɔɪ', 'P': 'p', 'R': 'r', 'S': 's', 'SH': 'ʃ',
+  'T': 't', 'TH': 'θ', 'UH': 'ʊ', 'UW': 'u', 'V': 'v', 'W': 'w',
+  'Y': 'j', 'Z': 'z', 'ZH': 'ʒ',
+};
+
+function phonesToIPA(phones) {
+  return '/' + phones.map(p => {
+    const base = p.replace(/[012]$/, '');
+    return PHONE_TO_IPA[base] || base.toLowerCase();
+  }).join('') + '/';
+}
+
+function getPronunciationIPA(word, dict) {
+  const pronunciations = dict.get(word.toLowerCase());
+  if (!pronunciations || pronunciations.length === 0) return null;
+  const best = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length)[0];
+  return phonesToIPA(best.phones);
+}
+
+/** Load WordNet senses for a word */
+const wordnetCache = new Map();
+function loadWordnetSenses(word) {
+  const normalized = word.toLowerCase().replace(/[^a-z]/g, '');
+  if (normalized.length < 2) return [];
+  const prefix = normalized.substring(0, 2);
+  if (!wordnetCache.has(prefix)) {
+    const filePath = path.join(WORDNET_DIR, `${prefix}.json`);
+    if (fs.existsSync(filePath)) {
+      try {
+        wordnetCache.set(prefix, JSON.parse(fs.readFileSync(filePath, 'utf-8')));
+      } catch { wordnetCache.set(prefix, {}); }
+    } else {
+      wordnetCache.set(prefix, {});
+    }
+  }
+  return wordnetCache.get(prefix)[word.toLowerCase()] || [];
+}
+
+/** Load offline synonyms */
+function loadOfflineSynonyms() {
+  if (fs.existsSync(OFFLINE_SYNONYMS_PATH)) {
+    return JSON.parse(fs.readFileSync(OFFLINE_SYNONYMS_PATH, 'utf-8'));
+  }
+  return {};
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function esc(s) {
@@ -234,39 +367,146 @@ ${sections}
 </article>`;
 }
 
-function rhymeWordHtml(word) {
-  return `<article>
-<h1>Rhymes with ${esc(word)}</h1>
-<p>Find perfect rhymes, near rhymes, and syllable breakdowns for <strong>${esc(word)}</strong>. Filter by meter, syllables, and originality to match your line.</p>
-<p><a href="/rhymes">Rhyme Finder</a> | <a href="/synonyms/${encodeURIComponent(word.toLowerCase())}">Synonyms</a> | <a href="/">Poetry Editor</a></p>
-</article>`;
+function rhymeWordHtml(word, cmuDict, rhymeIndex) {
+  const rhymes = getPerfectRhymesNode(word, cmuDict, rhymeIndex, 50);
+  const syllableCount = getSyllableCountNode(word, cmuDict);
+  const ipa = getPronunciationIPA(word, cmuDict);
+
+  let html = `<article>\n<h1>Words That Rhyme with ${esc(word)}</h1>\n`;
+  html += `<p>${syllableCount} syllable${syllableCount !== 1 ? 's' : ''}`;
+  if (ipa) html += ` &middot; Pronunciation: <span>${esc(ipa)}</span>`;
+  html += `</p>\n`;
+
+  if (rhymes.length > 0) {
+    html += `<p>Found <strong>${rhymes.length}</strong> perfect rhyme${rhymes.length !== 1 ? 's' : ''} for &ldquo;${esc(word)}&rdquo;.</p>\n`;
+
+    // Group by syllable count
+    const bySyl = {};
+    for (const r of rhymes) {
+      const s = getSyllableCountNode(r, cmuDict);
+      (bySyl[s] ||= []).push(r);
+    }
+    html += `<section>\n<h2>Perfect Rhymes for ${esc(word)}</h2>\n`;
+    for (const syl of Object.keys(bySyl).sort((a, b) => Number(a) - Number(b))) {
+      const words = bySyl[syl];
+      html += `<h3>${syl}-Syllable Rhyme${words.length !== 1 ? 's' : ''}</h3>\n<ul>`;
+      for (const w of words) {
+        html += `<li><a href="/rhymes/${encodeURIComponent(w)}">${esc(w)}</a></li>`;
+      }
+      html += `</ul>\n`;
+    }
+    html += `</section>\n`;
+  } else {
+    html += `<p>Find perfect rhymes, near rhymes, and syllable breakdowns for <strong>${esc(word)}</strong>. Filter by meter, syllables, and originality to match your line.</p>\n`;
+  }
+
+  // Cross-links
+  html += `<nav>\n<h2>Explore Related Words</h2>\n<ul>`;
+  html += `<li><a href="/synonyms/${encodeURIComponent(word.toLowerCase())}">Synonyms for ${esc(word)}</a></li>`;
+  // Link to top rhymes
+  const crossLinks = rhymes.slice(0, 5);
+  for (const r of crossLinks) {
+    html += `<li><a href="/rhymes/${encodeURIComponent(r)}">Rhymes with ${esc(r)}</a></li>`;
+  }
+  html += `</ul>\n</nav>\n`;
+  html += `<p><a href="/rhymes">Rhyme Finder</a> | <a href="/synonyms">Synonym Finder</a> | <a href="/">Poetry Editor</a></p>\n</article>`;
+  return html;
 }
 
-function synonymWordHtml(word) {
-  return `<article>
-<h1>Synonyms for ${esc(word)}</h1>
-<p>Find synonyms for <strong>${esc(word)}</strong> organized by meaning and strength, with syllable filters to keep your meter consistent.</p>
-<p><a href="/synonyms">Synonym Finder</a> | <a href="/rhymes/${encodeURIComponent(word.toLowerCase())}">Rhymes</a> | <a href="/">Poetry Editor</a></p>
-</article>`;
+function synonymWordHtml(word, offlineSyns) {
+  const entry = offlineSyns[word.toLowerCase()];
+  const senses = loadWordnetSenses(word);
+
+  let html = `<article>\n<h1>Synonyms for ${esc(word)}</h1>\n`;
+
+  // Render WordNet senses if available
+  if (senses.length > 0) {
+    const totalSyns = senses.reduce((sum, s) => sum + (s.synonyms?.length || 0), 0);
+    html += `<p>Found <strong>${totalSyns}</strong> synonym${totalSyns !== 1 ? 's' : ''} across ${senses.length} meaning${senses.length !== 1 ? 's' : ''} for &ldquo;${esc(word)}&rdquo;.</p>\n`;
+
+    for (const sense of senses) {
+      if (!sense.synonyms || sense.synonyms.length === 0) continue;
+      const posLabel = sense.pos ? ` (${esc(sense.pos)})` : '';
+      html += `<section>\n<h2>${esc(sense.gloss)}${posLabel}</h2>\n<ul>`;
+      for (const syn of sense.synonyms.slice(0, 15)) {
+        const synWord = syn.word || syn;
+        if (synWord.includes(' ')) continue; // Skip multi-word
+        html += `<li><a href="/synonyms/${encodeURIComponent(synWord.toLowerCase())}">${esc(synWord)}</a></li>`;
+      }
+      html += `</ul>\n</section>\n`;
+    }
+  } else if (entry?.synonyms?.length > 0) {
+    // Fall back to offline synonyms
+    html += `<p>Found <strong>${entry.synonyms.length}</strong> synonym${entry.synonyms.length !== 1 ? 's' : ''} for &ldquo;${esc(word)}&rdquo;.</p>\n`;
+    html += `<section>\n<h2>Synonyms</h2>\n<ul>`;
+    for (const syn of entry.synonyms) {
+      html += `<li><a href="/synonyms/${encodeURIComponent(syn.toLowerCase())}">${esc(syn)}</a></li>`;
+    }
+    html += `</ul>\n</section>\n`;
+  } else {
+    html += `<p>Find synonyms for <strong>${esc(word)}</strong> organized by meaning and strength, with syllable filters to keep your meter consistent.</p>\n`;
+  }
+
+  // Antonyms
+  if (entry?.antonyms?.length > 0) {
+    html += `<section>\n<h2>Antonyms for ${esc(word)}</h2>\n<ul>`;
+    for (const ant of entry.antonyms) {
+      html += `<li><a href="/synonyms/${encodeURIComponent(ant.toLowerCase())}">${esc(ant)}</a></li>`;
+    }
+    html += `</ul>\n</section>\n`;
+  }
+
+  // Cross-links
+  html += `<nav>\n<h2>Explore Related Words</h2>\n<ul>`;
+  html += `<li><a href="/rhymes/${encodeURIComponent(word.toLowerCase())}">Rhymes with ${esc(word)}</a></li>`;
+  // Link to top synonyms
+  const topSyns = senses.length > 0
+    ? senses.flatMap(s => (s.synonyms || []).map(syn => syn.word || syn)).filter(w => !w.includes(' ')).slice(0, 5)
+    : (entry?.synonyms || []).slice(0, 5);
+  for (const s of topSyns) {
+    html += `<li><a href="/synonyms/${encodeURIComponent(s.toLowerCase())}">Synonyms for ${esc(s)}</a></li>`;
+  }
+  html += `</ul>\n</nav>\n`;
+  html += `<p><a href="/synonyms">Synonym Finder</a> | <a href="/rhymes">Rhyme Finder</a> | <a href="/">Poetry Editor</a></p>\n</article>`;
+  return html;
 }
 
-function makeRhymeJsonLd(word) {
+function makeRhymeJsonLd(word, cmuDict, rhymeIndex) {
+  const rhymes = getPerfectRhymesNode(word, cmuDict, rhymeIndex, 50);
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: `Words That Rhyme with ${word}`,
-    description: `Perfect and near rhymes for "${word}"`,
-    numberOfItems: 0,
+    description: `Perfect and near rhymes for "${word}" — ${rhymes.length} results`,
+    numberOfItems: rhymes.length,
+    itemListElement: rhymes.slice(0, 20).map((r, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: r,
+      url: `${SITE}/rhymes/${encodeURIComponent(r)}`,
+    })),
   };
 }
 
-function makeSynonymJsonLd(word) {
+function makeSynonymJsonLd(word, offlineSyns) {
+  const senses = loadWordnetSenses(word);
+  const entry = offlineSyns[word.toLowerCase()];
+  const synList = senses.length > 0
+    ? senses.flatMap(s => (s.synonyms || []).map(syn => syn.word || syn)).filter(w => !w.includes(' '))
+    : (entry?.synonyms || []);
+  const unique = [...new Set(synList)];
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: `Synonyms for ${word}`,
-    description: `Synonyms and related words for "${word}"`,
-    numberOfItems: 0,
+    description: `Synonyms and related words for "${word}" — ${unique.length} results`,
+    numberOfItems: unique.length,
+    itemListElement: unique.slice(0, 20).map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: s,
+      url: `${SITE}/synonyms/${encodeURIComponent(s.toLowerCase())}`,
+    })),
   };
 }
 
@@ -464,6 +704,62 @@ const LEARN_PAGES = [
     bodyHtml: `<article><h1>Understanding Meter &amp; Scansion</h1><p>Learn to read the rhythm of poetry. Scansion is the art of marking stressed and unstressed syllables to reveal a poem&rsquo;s meter&mdash;iambic, trochaic, anapestic, or dactylic.</p><p><a href="/syllables">Syllable counter</a> | <a href="/learn/sonnet">Learn about sonnets</a></p></article>`,
     jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: 'Understanding Meter & Scansion', description: 'Master scansion and poetic meter.', author: { '@type': 'Organization', name: 'Poetry Editor' }, publisher: { '@type': 'Organization', name: 'Poetry Editor', url: SITE } },
   },
+  {
+    route: '/learn/villanelle',
+    title: 'How to Write a Villanelle - Complete Guide with Examples | Poetry Editor',
+    description: 'Learn how to write a villanelle: the 19-line form with two refrains and an ABA rhyme scheme. Examples from Dylan Thomas, Elizabeth Bishop, and Sylvia Plath.',
+    keywords: 'villanelle, how to write a villanelle, villanelle form, ABA rhyme scheme, refrain poetry, Dylan Thomas Do Not Go Gentle',
+    bodyHtml: `<article><h1>How to Write a Villanelle</h1><p>The villanelle is a 19-line poem built on two refrains and an ABA rhyme scheme. Five tercets followed by a closing quatrain, with the first and third lines recurring throughout as refrains.</p><section><h2>Structure</h2><p>5 tercets (3-line stanzas) + 1 quatrain (4-line stanza) = 19 lines total. Only two rhyme sounds throughout. The first line (A1) and third line (A2) alternate as the final line of each tercet, then appear together to close the quatrain.</p></section><section><h2>Famous Villanelles</h2><ul><li>&ldquo;Do Not Go Gentle into That Good Night&rdquo; by Dylan Thomas</li><li>&ldquo;One Art&rdquo; by Elizabeth Bishop</li><li>&ldquo;Mad Girl&rsquo;s Love Song&rdquo; by Sylvia Plath</li></ul></section><p><a href="/rhymes">Rhyme finder</a> | <a href="/learn/sonnet">How to write a sonnet</a> | <a href="/learn/free-verse">Free verse guide</a></p></article>`,
+    jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: 'How to Write a Villanelle', description: 'Complete guide to the villanelle form.', author: { '@type': 'Organization', name: 'Poetry Editor' }, publisher: { '@type': 'Organization', name: 'Poetry Editor', url: SITE } },
+  },
+  {
+    route: '/learn/pantoum',
+    title: 'How to Write a Pantoum - Guide to the Repeating Form | Poetry Editor',
+    description: 'Learn how to write a pantoum: the interlocking form where lines repeat across stanzas. A Malay-origin form with hypnotic, circular structure.',
+    keywords: 'pantoum, how to write a pantoum, pantoum form, repeating lines poetry, Malay poetry form, interlocking stanzas',
+    bodyHtml: `<article><h1>How to Write a Pantoum</h1><p>The pantoum is a form of interlocking quatrains where the second and fourth lines of each stanza become the first and third lines of the next. This creates a hypnotic, spiraling effect.</p><section><h2>Structure</h2><p>Quatrains (4-line stanzas) of any number. Lines 2 and 4 of each stanza reappear as lines 1 and 3 of the following stanza. The final stanza often loops back to the poem&rsquo;s opening lines.</p></section><section><h2>Origins</h2><p>The pantoum originated as the <em>pantun</em> in Malay literature and was adapted into Western poetry by French poets in the 19th century, notably Victor Hugo and Charles Baudelaire.</p></section><p><a href="/rhymes">Rhyme finder</a> | <a href="/learn/villanelle">Villanelle guide</a> | <a href="/learn/sonnet">Sonnet guide</a></p></article>`,
+    jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: 'How to Write a Pantoum', description: 'Guide to the pantoum form.', author: { '@type': 'Organization', name: 'Poetry Editor' }, publisher: { '@type': 'Organization', name: 'Poetry Editor', url: SITE } },
+  },
+  {
+    route: '/learn/ode',
+    title: 'How to Write an Ode - Forms, Examples & Guide | Poetry Editor',
+    description: 'Learn how to write an ode: a lyric poem of praise and celebration. Covers Pindaric, Horatian, and irregular odes with examples from Keats, Shelley, and Neruda.',
+    keywords: 'ode, how to write an ode, Pindaric ode, Horatian ode, irregular ode, ode to, Keats odes',
+    bodyHtml: `<article><h1>How to Write an Ode</h1><p>An ode is a lyric poem that addresses a subject with elevated language, deep feeling, and often elaborate structure. It&rsquo;s a poem of praise, celebration, or meditation.</p><section><h2>Three Types of Ode</h2><ul><li><strong>Pindaric Ode</strong> &mdash; Strophe, antistrophe, and epode. Grand and ceremonial.</li><li><strong>Horatian Ode</strong> &mdash; Consistent stanza form, more meditative and personal.</li><li><strong>Irregular Ode</strong> &mdash; Free in form but elevated in tone. Most modern odes.</li></ul></section><section><h2>Famous Odes</h2><ul><li>&ldquo;Ode to a Nightingale&rdquo; by John Keats</li><li>&ldquo;Ode to the West Wind&rdquo; by Percy Bysshe Shelley</li><li>&ldquo;Ode to My Socks&rdquo; by Pablo Neruda</li></ul></section><p><a href="/rhymes">Rhyme finder</a> | <a href="/learn/sonnet">Sonnet guide</a> | <a href="/learn/free-verse">Free verse guide</a></p></article>`,
+    jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: 'How to Write an Ode', description: 'Complete guide to writing odes.', author: { '@type': 'Organization', name: 'Poetry Editor' }, publisher: { '@type': 'Organization', name: 'Poetry Editor', url: SITE } },
+  },
+  {
+    route: '/learn/elegy',
+    title: 'How to Write an Elegy - Guide to Poems of Loss | Poetry Editor',
+    description: 'Learn how to write an elegy: a poem of mourning, loss, and remembrance. Structure, tone, and examples from Milton, Tennyson, and Auden.',
+    keywords: 'elegy, how to write an elegy, elegy poem, poem of mourning, elegiac verse, memorial poem',
+    bodyHtml: `<article><h1>How to Write an Elegy</h1><p>An elegy is a poem of mourning, loss, and remembrance. It moves through grief toward consolation or acceptance, honoring the dead while meditating on mortality itself.</p><section><h2>Traditional Structure</h2><p>Classical elegies follow three movements: <strong>lament</strong> (expressing grief), <strong>praise</strong> (celebrating the deceased), and <strong>consolation</strong> (finding meaning or acceptance). Modern elegies may compress, rearrange, or subvert these stages.</p></section><section><h2>Famous Elegies</h2><ul><li>&ldquo;Lycidas&rdquo; by John Milton</li><li>&ldquo;In Memoriam A.H.H.&rdquo; by Alfred, Lord Tennyson</li><li>&ldquo;Funeral Blues&rdquo; by W. H. Auden</li></ul></section><p><a href="/rhymes">Rhyme finder</a> | <a href="/learn/ode">Ode guide</a> | <a href="/learn/free-verse">Free verse guide</a></p></article>`,
+    jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: 'How to Write an Elegy', description: 'Guide to writing elegies.', author: { '@type': 'Organization', name: 'Poetry Editor' }, publisher: { '@type': 'Organization', name: 'Poetry Editor', url: SITE } },
+  },
+  {
+    route: '/learn/ballad',
+    title: 'How to Write a Ballad - Narrative Poetry Guide | Poetry Editor',
+    description: 'Learn how to write a ballad: a narrative poem with a songlike quality. Covers ballad meter, ABAB or ABCB rhyme schemes, and the tradition from folk ballads to literary ballads.',
+    keywords: 'ballad, how to write a ballad, ballad meter, ballad stanza, narrative poetry, folk ballad, literary ballad',
+    bodyHtml: `<article><h1>How to Write a Ballad</h1><p>A ballad is a narrative poem that tells a story with a songlike quality. Traditionally oral, ballads use simple language, repetition, and strong rhythms to carry dramatic tales of love, death, and adventure.</p><section><h2>Ballad Meter</h2><p>The classic ballad stanza alternates lines of iambic tetrameter (4 beats) and iambic trimeter (3 beats), rhyming ABAB or ABCB. This &ldquo;common meter&rdquo; gives ballads their characteristic swing.</p></section><section><h2>Famous Ballads</h2><ul><li>&ldquo;The Rime of the Ancient Mariner&rdquo; by Samuel Taylor Coleridge</li><li>&ldquo;La Belle Dame sans Merci&rdquo; by John Keats</li><li>&ldquo;Annabel Lee&rdquo; by Edgar Allan Poe</li></ul></section><p><a href="/rhymes">Rhyme finder</a> | <a href="/rhyme-scheme/abab">ABAB rhyme scheme</a> | <a href="/learn/scansion">Meter guide</a></p></article>`,
+    jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: 'How to Write a Ballad', description: 'Guide to writing ballads.', author: { '@type': 'Organization', name: 'Poetry Editor' }, publisher: { '@type': 'Organization', name: 'Poetry Editor', url: SITE } },
+  },
+  {
+    route: '/learn/slant-rhyme',
+    title: 'Guide to Slant Rhyme & Near Rhyme in Poetry | Poetry Editor',
+    description: 'Master slant rhyme (half rhyme, near rhyme) in poetry. Learn the difference between perfect and imperfect rhymes, with examples and techniques for using them effectively.',
+    keywords: 'slant rhyme, near rhyme, half rhyme, imperfect rhyme, off rhyme, Emily Dickinson slant rhyme, poetry rhyme types',
+    bodyHtml: `<article><h1>Guide to Slant Rhyme &amp; Near Rhyme</h1><p>Slant rhyme (also called near rhyme, half rhyme, or off rhyme) is a rhyme where the sounds are similar but not identical. It&rsquo;s one of the most powerful tools in a poet&rsquo;s kit for creating subtlety and surprise.</p><section><h2>Types of Imperfect Rhyme</h2><ul><li><strong>Consonance rhyme</strong> &mdash; matching final consonants but different vowels: <em>hold/bald</em>, <em>bent/want</em></li><li><strong>Assonance rhyme</strong> &mdash; matching vowel sounds but different consonants: <em>lake/fate</em>, <em>beam/green</em></li><li><strong>Eye rhyme</strong> &mdash; words that look alike but sound different: <em>love/move</em>, <em>cough/through</em></li></ul></section><section><h2>Why Use Slant Rhyme?</h2><p>Emily Dickinson pioneered extensive slant rhyme to create a sense of unease and incompleteness. Modern poets use it to avoid the sing-song quality of perfect rhyme while maintaining sonic connection between lines.</p></section><p><a href="/rhymes">Try the rhyme finder</a> | <a href="/learn/free-verse">Free verse guide</a> | <a href="/learn/sonnet">Sonnet guide</a></p></article>`,
+    jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: 'Guide to Slant Rhyme & Near Rhyme', description: 'Master slant and near rhyme in poetry.', author: { '@type': 'Organization', name: 'Poetry Editor' }, publisher: { '@type': 'Organization', name: 'Poetry Editor', url: SITE } },
+  },
+  {
+    route: '/learn/avoiding-cliches',
+    title: 'How to Avoid Cliche Rhymes in Poetry | Poetry Editor',
+    description: 'Stop using overused rhyme pairs like love/above, heart/apart, fire/desire. Our database of 500+ cliche pairs helps you find fresh alternatives.',
+    keywords: 'cliche rhymes, overused rhymes, love above, heart apart, avoid cliches poetry, fresh rhymes, original rhyming',
+    bodyHtml: `<article><h1>How to Avoid Clich&eacute; Rhymes in Poetry</h1><p>Every poet has reached for &ldquo;love/above&rdquo; or &ldquo;heart/apart&rdquo; at some point. These pairings have been used so often that they no longer surprise the reader. Here&rsquo;s how to break free.</p><section><h2>The Most Overused Rhyme Pairs</h2><ul><li>love / above / dove</li><li>heart / apart / start</li><li>fire / desire / higher</li><li>night / light / sight</li><li>time / rhyme / climb</li><li>eyes / skies / lies</li><li>tears / fears / years</li></ul></section><section><h2>Strategies for Fresh Rhyming</h2><ul><li><strong>Use slant rhyme</strong> &mdash; Near rhymes offer sonic connection without predictability</li><li><strong>Rhyme on unexpected words</strong> &mdash; Rhyme on verbs or adjectives instead of nouns</li><li><strong>Try multi-syllable rhymes</strong> &mdash; &ldquo;remember/September&rdquo; feels fresher than &ldquo;day/way&rdquo;</li><li><strong>Use our clich&eacute; filter</strong> &mdash; Our <a href="/rhymes">rhyme finder</a> flags overused pairs so you can avoid them</li></ul></section><p><a href="/rhymes">Try the rhyme finder with clich&eacute; detection</a> | <a href="/learn/slant-rhyme">Slant rhyme guide</a></p></article>`,
+    jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: 'How to Avoid Cliche Rhymes in Poetry', description: 'Break free from overused rhyme pairs.', author: { '@type': 'Organization', name: 'Poetry Editor' }, publisher: { '@type': 'Organization', name: 'Poetry Editor', url: SITE } },
+  },
 ];
 
 function homepageHtml() {
@@ -487,6 +783,13 @@ function homepageHtml() {
 <li><a href="/learn/sonnet">How to Write a Sonnet</a></li>
 <li><a href="/learn/free-verse">How to Write Free Verse</a></li>
 <li><a href="/learn/scansion">Understanding Meter &amp; Scansion</a></li>
+<li><a href="/learn/villanelle">How to Write a Villanelle</a></li>
+<li><a href="/learn/pantoum">How to Write a Pantoum</a></li>
+<li><a href="/learn/ode">How to Write an Ode</a></li>
+<li><a href="/learn/elegy">How to Write an Elegy</a></li>
+<li><a href="/learn/ballad">How to Write a Ballad</a></li>
+<li><a href="/learn/slant-rhyme">Guide to Slant &amp; Near Rhyme</a></li>
+<li><a href="/learn/avoiding-cliches">How to Avoid Clich&eacute; Rhymes</a></li>
 </ul>
 <h2>Rhyme Schemes</h2>
 <ul>
@@ -520,6 +823,20 @@ async function main() {
   const { rhymeSchemes } = await vite.ssrLoadModule('/src/data/rhymeSchemes.ts');
 
   await vite.close();
+
+  // 2b. Load CMU dictionary and build rhyme index for enriched pre-rendering
+  console.log('  Loading CMU dictionary...');
+  const cmuText = fs.readFileSync(CMU_DICT_PATH, 'utf-8');
+  const cmuDict = parseCMUDictNode(cmuText);
+  console.log(`  Loaded ${cmuDict.size} words from CMU dictionary`);
+
+  console.log('  Building rhyme index...');
+  const rhymeIndex = buildRhymeIndexNode(cmuDict);
+  console.log(`  Built rhyme index with ${rhymeIndex.size} rhyme groups`);
+
+  // 2c. Load offline synonyms
+  const offlineSyns = loadOfflineSynonyms();
+  console.log(`  Loaded ${Object.keys(offlineSyns).length} offline synonym entries`);
 
   // 3. Read the built index.html as template
   const template = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
@@ -602,14 +919,15 @@ async function main() {
   for (const route of rhymeRoutes) {
     const slug = route.split('/').pop() || '';
     const word = decodeURIComponent(slug);
-    const title = `Rhymes with ${word} | Poetry Editor`;
-    const description = `Find perfect rhymes, near rhymes, and syllable-friendly options for "${word}". Filter by meter and originality.`;
+    const rhymeCount = getPerfectRhymesNode(word, cmuDict, rhymeIndex, 50).length;
+    const title = `Rhymes with ${word} — ${rhymeCount} Perfect Rhymes | Poetry Editor`;
+    const description = `Find ${rhymeCount} perfect rhymes for "${word}". Browse by syllable count, filter by meter and originality. Free rhyming dictionary for poets.`;
     writePage(route, stampTemplate(template, {
       title,
       description,
       canonical: `${SITE}${route}`,
-      jsonLd: makeRhymeJsonLd(word),
-      bodyHtml: rhymeWordHtml(word),
+      jsonLd: makeRhymeJsonLd(word, cmuDict, rhymeIndex),
+      bodyHtml: rhymeWordHtml(word, cmuDict, rhymeIndex),
     }));
     count++;
   }
@@ -618,14 +936,23 @@ async function main() {
   for (const route of synonymRoutes) {
     const slug = route.split('/').pop() || '';
     const word = decodeURIComponent(slug);
-    const title = `Synonyms for ${word} | Poetry Editor`;
-    const description = `Discover synonyms for "${word}" organized by meaning and strength, with syllable filters for poets.`;
+    const senses = loadWordnetSenses(word);
+    const synEntry = offlineSyns[word.toLowerCase()];
+    const synCount = senses.length > 0
+      ? senses.reduce((sum, s) => sum + (s.synonyms?.length || 0), 0)
+      : (synEntry?.synonyms?.length || 0);
+    const title = synCount > 0
+      ? `Synonyms for ${word} — ${synCount} Synonyms by Meaning | Poetry Editor`
+      : `Synonyms for ${word} | Poetry Editor`;
+    const description = synCount > 0
+      ? `Discover ${synCount} synonyms for "${word}" organized by meaning, with syllable filters for poets and songwriters.`
+      : `Discover synonyms for "${word}" organized by meaning and strength, with syllable filters for poets.`;
     writePage(route, stampTemplate(template, {
       title,
       description,
       canonical: `${SITE}${route}`,
-      jsonLd: makeSynonymJsonLd(word),
-      bodyHtml: synonymWordHtml(word),
+      jsonLd: makeSynonymJsonLd(word, offlineSyns),
+      bodyHtml: synonymWordHtml(word, offlineSyns),
     }));
     count++;
   }

@@ -33,12 +33,13 @@ export function CollectionView() {
   const { isAuthenticated, loading: authLoading, user } = useAuth();
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loadingCollection, setLoadingCollection] = useState(true);
-  const { sections, createManySections, renameSection } = useSections(id);
-  const { poems, createPoem, createPoemAt, createManyPoems, updatePoem, updatePoemOrders, deletePoem, loading: loadingPoems } = usePoems(id);
+  const { sections, createSection, createManySections, renameSection, deleteSection } = useSections(id);
+  const { poems, createPoem, createPoemAt, createManyPoems, updatePoem, updatePoemOrders, deletePoem, loading: loadingPoems, refetch: refetchPoems } = usePoems(id);
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleInput, setTitleInput] = useState('');
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [sectionNameInput, setSectionNameInput] = useState('');
+  const [addingSectionName, setAddingSectionName] = useState<string | null>(null);
   const [processingUpload, setProcessingUpload] = useState(false);
   const processingRef = useRef(false); // Sync flag to prevent duplicate uploads
   const [expandedVersions, setExpandedVersions] = useState<Set<string>>(new Set());
@@ -277,6 +278,33 @@ export function CollectionView() {
     }
   };
 
+  const handleAddSection = async () => {
+    setAddingSectionName('');
+  };
+
+  const handleConfirmAddSection = async () => {
+    if (addingSectionName === null) return;
+    const name = addingSectionName.trim();
+    if (!name) {
+      setAddingSectionName(null);
+      return;
+    }
+    await createSection(name);
+    setAddingSectionName(null);
+  };
+
+  const handleDeleteSection = async (sectionId: string) => {
+    const section = sections.find(s => s.id === sectionId);
+    const sectionPoems = poemsBySection.get(sectionId) || [];
+    const msg = sectionPoems.length > 0
+      ? `Delete section "${section?.name}"? Its ${sectionPoems.length} poem(s) will be moved to the root level.`
+      : `Delete section "${section?.name}"?`;
+    if (!confirm(msg)) return;
+    await deleteSection(sectionId);
+    // Refetch poems since they've been moved to root
+    await refetchPoems();
+  };
+
   const getSectionKey = (sectionId: string | null) => sectionId ?? 'root';
 
   const poemsBySection = useMemo(() => {
@@ -420,7 +448,7 @@ export function CollectionView() {
   const sectionMap = new Map(sections.map(s => [s.id, s]));
   const orderedSections = [...sections].sort((a, b) => a.sort_order - b.sort_order);
   const rootPoems = poemsBySection.get('root') || [];
-  const visibleSectionCount = sections.filter(s => (poemsBySection.get(s.id) || []).length > 0).length;
+  const visibleSectionCount = sections.length;
 
   return (
     <Layout>
@@ -479,6 +507,9 @@ export function CollectionView() {
             <button className="export-button" onClick={handleCreatePoem}>
               New Poem
             </button>
+            <button className="export-button" onClick={handleAddSection}>
+              New Section
+            </button>
             <button className="export-button" onClick={handleExport} disabled={poems.length === 0}>
               Export as ZIP
             </button>
@@ -531,68 +562,98 @@ export function CollectionView() {
               {/* Sectioned poems */}
               {orderedSections.map((section) => {
                 const sectionPoems = poemsBySection.get(section.id) || [];
-                if (sectionPoems.length === 0) return null;
                 return (
                   <SectionDropTarget key={section.id} sectionId={section.id}>
                     <div className="poems-section">
-                      {editingSectionId === section.id ? (
-                        <input
-                          className="section-title-input"
-                          value={sectionNameInput}
-                          onChange={(e) => setSectionNameInput(e.target.value)}
-                          onBlur={() => {
-                            const trimmed = sectionNameInput.trim();
-                            if (trimmed && trimmed !== section.name) {
-                              renameSection(section.id, trimmed);
-                            }
-                            setEditingSectionId(null);
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
+                      <div className="section-header-row">
+                        {editingSectionId === section.id ? (
+                          <input
+                            className="section-title-input"
+                            value={sectionNameInput}
+                            onChange={(e) => setSectionNameInput(e.target.value)}
+                            onBlur={() => {
                               const trimmed = sectionNameInput.trim();
                               if (trimmed && trimmed !== section.name) {
                                 renameSection(section.id, trimmed);
                               }
                               setEditingSectionId(null);
-                            } else if (e.key === 'Escape') {
-                              setEditingSectionId(null);
-                            }
-                          }}
-                          autoFocus
-                        />
-                      ) : (
-                        <h2
-                          className="section-title section-title-editable"
-                          onDoubleClick={() => {
-                            setSectionNameInput(section.name);
-                            setEditingSectionId(section.id);
-                          }}
-                          title="Double-click to rename"
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                const trimmed = sectionNameInput.trim();
+                                if (trimmed && trimmed !== section.name) {
+                                  renameSection(section.id, trimmed);
+                                }
+                                setEditingSectionId(null);
+                              } else if (e.key === 'Escape') {
+                                setEditingSectionId(null);
+                              }
+                            }}
+                            autoFocus
+                          />
+                        ) : (
+                          <h2
+                            className="section-title section-title-editable"
+                            onDoubleClick={() => {
+                              setSectionNameInput(section.name);
+                              setEditingSectionId(section.id);
+                            }}
+                            title="Double-click to rename"
+                          >
+                            {section.name}<span className="edit-hint">&#9998;</span>
+                          </h2>
+                        )}
+                        <button
+                          className="section-delete-btn"
+                          onClick={() => handleDeleteSection(section.id)}
+                          title="Delete section"
                         >
-                          {section.name}<span className="edit-hint">&#9998;</span>
-                        </h2>
+                          &times;
+                        </button>
+                      </div>
+                      {sectionPoems.length > 0 ? (
+                        <SortableContext items={sectionPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
+                          <div className="poems-grid">
+                            {sectionPoems.map((poem, idx) => (
+                              <SortablePoemCard
+                                key={poem.id}
+                                poem={poem}
+                                onDelete={handleDeletePoem}
+                                onToggleVersions={toggleVersions}
+                                expanded={expandedVersions.has(poem.id)}
+                                versions={versionsByPoem[poem.id] || []}
+                                onRestoreVersion={handleRestoreVersion}
+                                onInsertAfter={() => handleInsertPoemAfter(poem.section_id, idx)}
+                                onPreviewVersion={handlePreviewVersion}
+                              />
+                            ))}
+                          </div>
+                        </SortableContext>
+                      ) : (
+                        <p className="section-empty-note">No poems in this section. Drag poems here or delete the section.</p>
                       )}
-                      <SortableContext items={sectionPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
-                        <div className="poems-grid">
-                          {sectionPoems.map((poem, idx) => (
-                            <SortablePoemCard
-                              key={poem.id}
-                              poem={poem}
-                              onDelete={handleDeletePoem}
-                              onToggleVersions={toggleVersions}
-                              expanded={expandedVersions.has(poem.id)}
-                              versions={versionsByPoem[poem.id] || []}
-                              onRestoreVersion={handleRestoreVersion}
-                              onInsertAfter={() => handleInsertPoemAfter(poem.section_id, idx)}
-                              onPreviewVersion={handlePreviewVersion}
-                            />
-                          ))}
-                        </div>
-                      </SortableContext>
                     </div>
                   </SectionDropTarget>
                 );
               })}
+
+              {/* Add section input */}
+              {addingSectionName !== null && (
+                <div className="poems-section add-section-row">
+                  <input
+                    className="section-title-input"
+                    value={addingSectionName}
+                    onChange={(e) => setAddingSectionName(e.target.value)}
+                    onBlur={handleConfirmAddSection}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleConfirmAddSection();
+                      else if (e.key === 'Escape') setAddingSectionName(null);
+                    }}
+                    placeholder="Section name..."
+                    autoFocus
+                  />
+                </div>
+              )}
             </div>
           </DndContext>
         )}

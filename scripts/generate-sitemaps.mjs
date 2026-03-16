@@ -5,8 +5,11 @@ const ROOT_URL = 'https://poetryeditor.com';
 const OUTPUT_DIR = path.resolve('public');
 const CMU_PATH = path.resolve('public', 'cmudict.dict');
 const POEM_INDEX_PATH = path.resolve('src', 'data', 'poems', 'index.ts');
-const RHYME_LIMIT = 25000;
-const SYN_LIMIT = 25000;
+const SYNONYMS_PATH = path.resolve('src', 'data', 'offlineSynonyms.json');
+// Match the pre-render limit: only include words that will have enriched HTML pages
+// Cloudflare Pages hard limit: 20,000 files; we reserve headroom for other pages/assets
+const RHYME_LIMIT = 8000;
+const SYN_LIMIT = 8000;
 
 const today = () => {
   const now = new Date();
@@ -63,7 +66,23 @@ const loadWordList = () => {
     if (base.length < 2 || base.length > 18) continue;
     words.add(base);
   }
-  return Array.from(words).sort();
+  // Priority: words we have synonym data for first (they'll have richest pages),
+  // then by length (shorter = more commonly searched)
+  let synonymWords;
+  try {
+    synonymWords = new Set(Object.keys(JSON.parse(fs.readFileSync(SYNONYMS_PATH, 'utf8'))));
+  } catch { synonymWords = new Set(); }
+
+  return Array.from(words).sort((a, b) => {
+    const aHasSyns = synonymWords.has(a) ? 0 : 1;
+    const bHasSyns = synonymWords.has(b) ? 0 : 1;
+    if (aHasSyns !== bHasSyns) return aHasSyns - bHasSyns;
+    const aSimple = /^[a-z]+$/.test(a);
+    const bSimple = /^[a-z]+$/.test(b);
+    if (aSimple !== bSimple) return aSimple ? -1 : 1;
+    if (a.length !== b.length) return a.length - b.length;
+    return a.localeCompare(b);
+  });
 };
 
 const loadPoemSlugs = () => {
@@ -89,6 +108,19 @@ const mainEntries = [
   { loc: `${ROOT_URL}/rhyme-scheme-analyzer`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
   { loc: `${ROOT_URL}/haiku-checker`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
   { loc: `${ROOT_URL}/sonnet-checker`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/poetry-statistics`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  // Learn pages
+  { loc: `${ROOT_URL}/learn/haiku`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/learn/sonnet`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/learn/free-verse`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/learn/scansion`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/learn/villanelle`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/learn/pantoum`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/learn/ode`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/learn/elegy`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/learn/ballad`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/learn/slant-rhyme`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
+  { loc: `${ROOT_URL}/learn/avoiding-cliches`, lastmod: today(), changefreq: 'monthly', priority: '0.7' },
 ];
 
 const slugs = loadPoemSlugs();

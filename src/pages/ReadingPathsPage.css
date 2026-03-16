@@ -1,0 +1,124 @@
+.reading-paths-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.reading-paths-header h1 {
+  font-family: var(--font-serif, 'Libre Baskerville', Georgia, serif);
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0 0 8px;
+  color: var(--color-text-primary, #2a2a2a);
+}
+
+.reading-paths-intro {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  color: var(--color-text-secondary, #6a6a6a);
+  margin: 0 0 32px;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 640px;
+}
+
+.reading-paths-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 16px;
+}
+
+.path-card {
+  display: block;
+  background: var(--color-paper, #fdfcfa);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.08));
+  border-radius: 6px;
+  padding: 20px 24px;
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.path-card:hover {
+  border-color: var(--color-border-hover, rgba(0, 0, 0, 0.2));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.path-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.path-card-title {
+  font-family: var(--font-serif, 'Libre Baskerville', Georgia, serif);
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+  color: var(--color-text-primary, #2a2a2a);
+}
+
+.path-difficulty {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.path-difficulty.beginner {
+  color: #2d6a4f;
+  background: rgba(45, 106, 79, 0.08);
+}
+
+.path-difficulty.intermediate {
+  color: #6b5b3e;
+  background: rgba(107, 91, 62, 0.08);
+}
+
+.path-difficulty.advanced {
+  color: #7a3b2e;
+  background: rgba(122, 59, 46, 0.08);
+}
+
+.path-card-subtitle {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--color-text-secondary, #6a6a6a);
+  margin: 0 0 12px;
+}
+
+.path-card-description {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-secondary, #6a6a6a);
+  margin: 0 0 16px;
+}
+
+.path-card-meta {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 12px;
+  color: var(--color-text-muted, #9a9a9a);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.meta-dot {
+  font-size: 10px;
+}
+
+@media (max-width: 600px) {
+  .reading-paths-page {
+    padding: 16px;
+  }
+
+  .reading-paths-grid {
+    grid-template-columns: 1fr;
+  }
+}

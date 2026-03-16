@@ -30,12 +30,20 @@ export function PreFlightForm({
   // Get top-level sections only (parentId === null)
   const topLevelSections = sections.filter(s => s.parentId === null).sort((a, b) => a.order - b.order);
 
+  // Filter saved section purposes to only include current section names
+  const currentSectionNames = new Set(topLevelSections.map(s => s.name));
+  const filteredSavedPurposes = savedAnswers?.sectionPurposes
+    ? Object.fromEntries(
+        Object.entries(savedAnswers.sectionPurposes).filter(([key]) => currentSectionNames.has(key))
+      )
+    : {};
+
   // Form state
   const [collectionAmbition, setCollectionAmbition] = useState(
     savedAnswers?.collectionAmbition || ''
   );
   const [sectionPurposes, setSectionPurposes] = useState<Record<string, string>>(
-    savedAnswers?.sectionPurposes || {}
+    filteredSavedPurposes
   );
   const [readinessSelfAssessment, setReadinessSelfAssessment] = useState(
     savedAnswers?.readinessSelfAssessment || ''
@@ -47,6 +55,17 @@ export function PreFlightForm({
     savedAnswers?.reportStyle || 'qualitative'
   );
   const [harshness, setHarshness] = useState(savedAnswers?.harshness ?? 50);
+
+  // Re-filter when sections prop changes (e.g. section renamed or deleted)
+  useEffect(() => {
+    const names = new Set(sections.filter(s => s.parentId === null).map(s => s.name));
+    setSectionPurposes(prev => {
+      const filtered = Object.fromEntries(
+        Object.entries(prev).filter(([key]) => names.has(key))
+      );
+      return Object.keys(filtered).length !== Object.keys(prev).length ? filtered : prev;
+    });
+  }, [sections]);
 
   // Handle section purpose change
   const handleSectionPurposeChange = (sectionName: string, value: string) => {
@@ -64,9 +83,14 @@ export function PreFlightForm({
     e.preventDefault();
     if (!isValid) return;
 
+    // Only include purposes for sections that currently exist
+    const validPurposes = Object.fromEntries(
+      Object.entries(sectionPurposes).filter(([key]) => currentSectionNames.has(key))
+    );
+
     const answers: PreFlightAnswers = {
       collectionAmbition: collectionAmbition.trim(),
-      sectionPurposes,
+      sectionPurposes: validPurposes,
       readinessSelfAssessment: readinessSelfAssessment.trim(),
       additionalContext: additionalContext.trim() || undefined,
       reportStyle,
