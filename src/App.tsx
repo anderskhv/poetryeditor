@@ -36,10 +36,7 @@ import type { PoemFormatting } from './types/database';
 import { getAllConversationSummaries } from './utils/editorStorage';
 import './App.css';
 
-const SAMPLE_POEM = `Shall I compare thee to a summer's day?
-Thou art more lovely and more temperate.
-Rough winds do shake the darling buds of May,
-And summer's lease hath all too short a date.`;
+const SAMPLE_POEM = ``;
 
 const hashString = (value: string) => {
   let hash = 2166136261;
@@ -162,9 +159,6 @@ function App() {
 
   const [hasEverOpenedPanel, setHasEverOpenedPanel] = useState<boolean>(() => {
     return localStorage.getItem('hasOpenedAnalysisPanel') === 'true';
-  });
-  const [showWelcome, setShowWelcome] = useState<boolean>(() => {
-    return localStorage.getItem('hasSeenWelcome') !== 'true';
   });
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [theme, setTheme] = useState<'light' | 'dark' | 'yellow'>(() => {
@@ -1651,42 +1645,6 @@ function App() {
         )}
 
         <div className="editor-pane">
-          {showWelcome && !versionPreview && (
-            <div className="welcome-card">
-              <div className="welcome-card-header">
-                <div className="welcome-card-title">Write your poem. See what you're doing. Get better.</div>
-                <button
-                  className="welcome-card-dismiss"
-                  onClick={() => {
-                    setShowWelcome(false);
-                    localStorage.setItem('hasSeenWelcome', 'true');
-                  }}
-                  title="Dismiss"
-                >
-                  &times;
-                </button>
-              </div>
-              <div className="welcome-card-features">
-                <div className="welcome-feature">
-                  <span className="welcome-feature-key">AI Editor</span>
-                  <span className="welcome-feature-desc">get feedback from a coach that reads with you, not for you</span>
-                </div>
-                <div className="welcome-feature">
-                  <span className="welcome-feature-key">Real-time analysis</span>
-                  <span className="welcome-feature-desc">rhythm, rhyme scheme, cliches, imagery, and style — as you type</span>
-                </div>
-                <div className="welcome-feature">
-                  <span className="welcome-feature-key">Click any word</span>
-                  <span className="welcome-feature-desc">to find rhymes, synonyms, syllables, and definitions</span>
-                </div>
-                <div className="welcome-feature">
-                  <span className="welcome-feature-key">Tools</span>
-                  <span className="welcome-feature-desc">rhyme dictionary, syllable counter, form checkers, and more</span>
-                </div>
-              </div>
-              <div className="welcome-card-hint">Start typing or open the Editor tab to talk with your AI coach.</div>
-            </div>
-          )}
           {versionPreview && (
             <div className="version-preview-banner">
               <div className="version-preview-info">

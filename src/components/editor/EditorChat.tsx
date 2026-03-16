@@ -72,8 +72,7 @@ interface EditorChatProps {
   hasExistingReport?: boolean;
 }
 
-// Guest quick setup states
-type GuestSetupStep = 'philosophy' | 'directness' | 'tone' | 'done';
+type GuestSetupStep = 'done';
 
 export function EditorChat({
   user,
@@ -107,18 +106,9 @@ export function EditorChat({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const lastExtractionCount = useRef(0);
 
-  // Guest quick setup state
-  const [guestSetupStep, setGuestSetupStep] = useState<GuestSetupStep>(() => {
-    if (sessionStorage.getItem('editor:guest-setup-done') === 'true') return 'done';
-    return 'philosophy';
-  });
-  const [guestFeedbackStyle, setGuestFeedbackStyle] = useState<FeedbackStyle>(() => {
-    try {
-      const stored = sessionStorage.getItem('editor:guest-feedback-style');
-      if (stored) return JSON.parse(stored);
-    } catch { /* ignore */ }
-    return { directness: 'balanced', tone: 'encouraging' };
-  });
+  // Guest setup — skip multi-step flow, default to balanced/encouraging
+  const [guestSetupStep] = useState<GuestSetupStep>('done');
+  const [guestFeedbackStyle] = useState<FeedbackStyle>({ directness: 'balanced', tone: 'encouraging' });
 
   // Determine the effective profile for guests
   // Guests get a minimal "profile" so useEditorChat can work
@@ -273,19 +263,6 @@ export function EditorChat({
     setApiKeyInput('');
   }
 
-  // Guest quick setup handlers
-  function handleGuestDirectness(value: FeedbackStyle['directness']) {
-    setGuestFeedbackStyle(prev => ({ ...prev, directness: value }));
-    setGuestSetupStep('tone');
-  }
-
-  function handleGuestTone(value: FeedbackStyle['tone']) {
-    const finalStyle = { ...guestFeedbackStyle, tone: value };
-    setGuestFeedbackStyle(finalStyle);
-    setGuestSetupStep('done');
-    sessionStorage.setItem('editor:guest-setup-done', 'true');
-    sessionStorage.setItem('editor:guest-feedback-style', JSON.stringify(finalStyle));
-  }
 
   const hasKey = useMemo(() => hasApiKey(), [showSettings, apiKeyInput]);
 
@@ -382,71 +359,7 @@ export function EditorChat({
     );
   }
 
-  // Guest quick setup: philosophy card
-  if (!user && guestSetupStep === 'philosophy') {
-    return (
-      <div className="editor-chat">
-        <div className="editor-chat-header">
-          <span className="editor-chat-title">Before we begin</span>
-        </div>
-        <div className="editor-philosophy-card">
-          <p>
-            I'll be reading your poems with you — not to tell you what to write, but to help you see what you're already doing.
-          </p>
-          <p>
-            I'm an AI, which means I can spot patterns, question choices, and suggest alternatives — but I sometimes miss context, misread intentional rule-breaking, or project confidence where a human editor would hedge. Your judgment about your own poems comes first.
-          </p>
-          <p>
-            For deeper editorial work — manuscript feedback, publication strategy, the kind of reading that requires a human sensibility — we'll connect you with professional editors in the future.
-          </p>
-          <button
-            className="editor-option-btn editor-philosophy-btn"
-            onClick={() => setGuestSetupStep('directness')}
-          >
-            Got it — let's go
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Guest quick setup: directness
-  if (!user && guestSetupStep === 'directness') {
-    return (
-      <div className="editor-chat">
-        <div className="editor-chat-header">
-          <span className="editor-chat-title">Quick setup</span>
-        </div>
-        <div className="editor-guest-setup">
-          <p className="editor-guest-setup-question">How direct should I be with feedback?</p>
-          <div className="editor-button-group">
-            <button className="editor-option-btn" onClick={() => handleGuestDirectness('gentle')}>Gentle</button>
-            <button className="editor-option-btn" onClick={() => handleGuestDirectness('balanced')}>Balanced</button>
-            <button className="editor-option-btn" onClick={() => handleGuestDirectness('direct')}>Direct</button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Guest quick setup: tone
-  if (!user && guestSetupStep === 'tone') {
-    return (
-      <div className="editor-chat">
-        <div className="editor-chat-header">
-          <span className="editor-chat-title">Quick setup</span>
-        </div>
-        <div className="editor-guest-setup">
-          <p className="editor-guest-setup-question">What tone works best for you?</p>
-          <div className="editor-button-group">
-            <button className="editor-option-btn" onClick={() => handleGuestTone('encouraging')}>Encouraging</button>
-            <button className="editor-option-btn" onClick={() => handleGuestTone('neutral')}>Neutral</button>
-            <button className="editor-option-btn" onClick={() => handleGuestTone('challenging')}>Challenging</button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Guest setup steps removed — guests go straight to chat with sensible defaults
 
   // Main chat
   return (
@@ -495,11 +408,21 @@ export function EditorChat({
               </>
             ) : (
               <>
-                <p>I can see your poem{collectionPoems && collectionPoems.length > 1 ? ` and your full collection (${collectionPoems.length} poems)` : ''}. Ask me anything — about a specific line, how it connects to other poems, or where to take it next.</p>
-                {onSwitchToCollection && collectionPoems && collectionPoems.length > 1 && (
-                  <button className="editor-collection-link" onClick={onSwitchToCollection}>
-                    Review full collection
-                  </button>
+                {poemText.trim() ? (
+                  <>
+                    <p>Ask anything — about a specific line, what's working, or where to take it next.</p>
+                    {onSwitchToCollection && collectionPoems && collectionPoems.length > 1 && (
+                      <button className="editor-collection-link" onClick={onSwitchToCollection}>
+                        Review full collection
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <div className="editor-welcome">
+                    <p className="editor-welcome-headline">This is your page.</p>
+                    <p>Write whatever comes — a first line, a fragment, a whole poem you've been carrying around. There's no wrong way to start.</p>
+                    <p>When you're ready, ask anything here — what's working, what isn't, where a poem wants to go.</p>
+                  </div>
                 )}
               </>
             )}
