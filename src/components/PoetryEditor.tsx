@@ -471,15 +471,19 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         };
       });
 
-      // Convert offset-based selection to Monaco Selection
-      const newSelStartPos = model.getPositionAt(result.newSelectionStart);
-      const newSelEndPos = model.getPositionAt(result.newSelectionEnd);
-      const newSelection = new monaco.Selection(
-        newSelStartPos.lineNumber, newSelStartPos.column,
-        newSelEndPos.lineNumber, newSelEndPos.column,
-      );
+      // Apply edits first, then set selection on the updated model
+      editorInstance.executeEdits('formatting', monacoEdits);
 
-      editorInstance.executeEdits('formatting', monacoEdits, [newSelection]);
+      // Now the model has the new text — convert offsets to positions
+      const updatedModel = editorInstance.getModel();
+      if (updatedModel) {
+        const newSelStartPos = updatedModel.getPositionAt(result.newSelectionStart);
+        const newSelEndPos = updatedModel.getPositionAt(result.newSelectionEnd);
+        editorInstance.setSelection(new monaco.Selection(
+          newSelStartPos.lineNumber, newSelStartPos.column,
+          newSelEndPos.lineNumber, newSelEndPos.column,
+        ));
+      }
       updateDecorations();
     };
 
@@ -1335,13 +1339,18 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         }
 
         /* Markdown formatting styles */
-        /* Markers (**, *, __) are hidden via color:transparent only.
-           Do NOT use font-size:0 or opacity:0 — these collapse the
-           selection overlay, breaking text highlighting on formatted lines. */
+        /* Markers (**, *, __) must be visually hidden without breaking
+           Monaco's selection overlay. font-size:0 collapses selection;
+           color:transparent alone leaves visible indent. Solution:
+           font-size:1px keeps selection geometry alive, negative
+           letter-spacing collapses visual width, color hides the text. */
         .md-bold-marker,
         .md-italic-marker,
         .md-underline-marker {
           color: transparent !important;
+          font-size: 1px !important;
+          letter-spacing: -1em !important;
+          overflow: hidden !important;
         }
 
         .md-bold-content {
@@ -1360,6 +1369,8 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         :root.dark-mode .md-italic-marker,
         :root.dark-mode .md-underline-marker {
           color: transparent !important;
+          font-size: 1px !important;
+          letter-spacing: -1em !important;
         }
 
         /* Remove all boxes, borders, and decorations from Monaco editor */
