@@ -83,6 +83,9 @@ import { london } from './blake-london';
 import { chimneySweeper } from './blake-chimney-sweeper';
 import { poisonTree } from './blake-poison-tree';
 import { gardenOfLove } from './blake-garden-of-love';
+import { ahSunflower } from './blake-ah-sunflower';
+import { theFly } from './blake-the-fly';
+import { theLittleBlackBoy } from './blake-the-little-black-boy';
 import { infantSorrow } from './blake-infant-sorrow';
 
 // Wordsworth
@@ -100,6 +103,7 @@ import { mutability } from './shelley-mutability';
 import { odeToTheWestWind } from './shelley-ode-west-wind';
 import { toASkylark } from './shelley-skylark';
 import { montBlanc } from './shelley-mont-blanc';
+import { shelleyRemembrance } from './shelley-remembrance';
 
 // Dickinson
 import { dickinson67 } from './dickinson-67';
@@ -127,6 +131,9 @@ import { dickinson1129 } from './dickinson-1129';
 import { oCaptain } from './whitman-o-captain';
 import { noiselessSpider } from './whitman-noiseless-spider';
 import { americaSinging } from './whitman-america-singing';
+import { iSingTheBodyElectric } from './whitman-i-sing-the-body-electric';
+import { oMeOLife } from './whitman-o-me-o-life';
+import { passageToIndia } from './whitman-passage-to-india';
 
 // Poe
 import { annabelLee } from './poe-annabel-lee';
@@ -149,6 +156,14 @@ import { inFlandersFields } from './mccrae-in-flanders-fields';
 
 // Byron
 import { sheWalksInBeauty } from './byron-she-walks-in-beauty';
+import { donJuanCanto1Opening } from './byron-don-juan-canto1';
+import { darkness } from './byron-darkness';
+
+// Dunbar (Sympathy)
+import { sympathy } from './dunbar-sympathy';
+
+// Herbert
+import { prayer } from './herbert-prayer';
 
 // Arnold
 import { doverBeach } from './arnold-dover-beach';
@@ -175,6 +190,8 @@ import { weWearTheMask } from './dunbar-we-wear-the-mask';
 
 // Longfellow
 import { arrowAndSong } from './longfellow-arrow-and-song';
+import { paulReveresRide } from './longfellow-paul-reveres-ride';
+import { psalmOfLife } from './longfellow-psalm-of-life';
 
 // Marlowe & Raleigh
 import { passionateShepherd } from './marlowe-passionate-shepherd';
@@ -225,6 +242,44 @@ import { buffalosBill } from './cummings-buffalo-bill';
 
 // Sandburg
 import { fog } from './sandburg-fog';
+
+// Bronte
+import { death } from './bronte-death';
+import { nightIsDarkening } from './bronte-night-is-darkening';
+
+// Brooke
+import { peace } from './brooke-peace';
+import { theSoldier } from './brooke-the-soldier';
+
+// Browning (Elizabeth Barrett)
+import { auroraLeigh } from './browning-eb-aurora-leigh';
+import { musicalInstrument } from './browning-eb-musical-instrument';
+
+// Browning (Robert)
+import { myLastDuchess } from './browning-rb-my-last-duchess';
+
+// Emerson
+import { odeToBeauty } from './emerson-ode-to-beauty';
+
+// Herbert
+import { easterWings } from './herbert-easter-wings';
+import { theFlower } from './herbert-the-flower';
+
+// Herrick
+import { toTheVirgins } from './herrick-to-the-virgins';
+
+// Jonson
+import { itIsNotGrowingLikeATree } from './jonson-it-is-not-growing-like-a-tree';
+import { songToCelia } from './jonson-song-to-celia';
+
+// Milton
+import { howSoonHathTime } from './milton-how-soon-hath-time';
+import { paradiseLostOpening } from './milton-paradise-lost-book1-opening';
+
+// Pope
+import { essayOnCriticism } from './pope-essay-on-criticism-excerpts';
+import { essayOnManEpistle1 } from './pope-essay-on-man-epistle1';
+import { rapeOfTheLockCanto1 } from './pope-rape-of-the-lock-canto1';
 
 // Eliot
 import { loveSongOfPrufrock } from './eliot-prufrock';
@@ -287,6 +342,9 @@ export const poems: Record<string, PoemAnalysis> = {
   'a-poison-tree': poisonTree,
   'the-garden-of-love': gardenOfLove,
   'infant-sorrow': infantSorrow,
+  'ah-sunflower': ahSunflower,
+  'the-fly': theFly,
+  'the-little-black-boy': theLittleBlackBoy,
   // Wordsworth
   'tintern-abbey': tinternAbbey,
   'daffodils': daffodils,
@@ -298,6 +356,7 @@ export const poems: Record<string, PoemAnalysis> = {
   // Shelley
   'ozymandias': ozymandias,
   'mutability': mutability,
+  'remembrance-shelley': shelleyRemembrance,
   'ode-to-the-west-wind': odeToTheWestWind,
   'to-a-skylark': toASkylark,
   'mont-blanc': montBlanc,
@@ -326,6 +385,9 @@ export const poems: Record<string, PoemAnalysis> = {
   'o-captain': oCaptain,
   'noiseless-spider': noiselessSpider,
   'i-hear-america-singing': americaSinging,
+  'i-sing-the-body-electric': iSingTheBodyElectric,
+  'o-me-o-life': oMeOLife,
+  'passage-to-india': passageToIndia,
   // Poe
   'annabel-lee': annabelLee,
   'alone': alone,
@@ -343,6 +405,12 @@ export const poems: Record<string, PoemAnalysis> = {
   'in-flanders-fields': inFlandersFields,
   // Byron
   'she-walks-in-beauty': sheWalksInBeauty,
+  'don-juan-canto-1': donJuanCanto1Opening,
+  'darkness': darkness,
+  // Dunbar (Sympathy)
+  'dunbar-sympathy': sympathy,
+  // Herbert
+  'herbert-prayer': prayer,
   // Arnold
   'dover-beach': doverBeach,
   // Crapsey
@@ -363,6 +431,8 @@ export const poems: Record<string, PoemAnalysis> = {
   'we-wear-the-mask': weWearTheMask,
   // Longfellow
   'the-arrow-and-the-song': arrowAndSong,
+  'paul-reveres-ride': paulReveresRide,
+  'a-psalm-of-life': psalmOfLife,
   // Marlowe & Raleigh
   'the-passionate-shepherd-to-his-love': passionateShepherd,
   'the-nymphs-reply-to-the-shepherd': nymphReply,
@@ -402,6 +472,34 @@ export const poems: Record<string, PoemAnalysis> = {
   'buffalo-bills': buffalosBill,
   // Sandburg
   'fog': fog,
+  // Bronte
+  'death': death,
+  'the-night-is-darkening': nightIsDarkening,
+  // Brooke
+  'peace': peace,
+  'the-soldier': theSoldier,
+  // Browning (Elizabeth Barrett)
+  'aurora-leigh': auroraLeigh,
+  'a-musical-instrument': musicalInstrument,
+  // Browning (Robert)
+  'my-last-duchess': myLastDuchess,
+  // Emerson
+  'ode-to-beauty': odeToBeauty,
+  // Herbert
+  'easter-wings': easterWings,
+  'the-flower': theFlower,
+  // Herrick
+  'to-the-virgins': toTheVirgins,
+  // Jonson
+  'it-is-not-growing-like-a-tree': itIsNotGrowingLikeATree,
+  'song-to-celia': songToCelia,
+  // Milton
+  'how-soon-hath-time': howSoonHathTime,
+  'paradise-lost-opening': paradiseLostOpening,
+  // Pope
+  'essay-on-criticism': essayOnCriticism,
+  'essay-on-man': essayOnManEpistle1,
+  'the-rape-of-the-lock': rapeOfTheLockCanto1,
   // Eliot
   'the-love-song-of-j-alfred-prufrock': loveSongOfPrufrock,
   // Coleridge
