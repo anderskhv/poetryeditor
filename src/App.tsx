@@ -433,7 +433,7 @@ function App() {
       console.warn('Failed to read last cloud poem id:', error);
     }
     setText('');
-    setPoemTitle('Untitled');
+    setPoemTitle('');
     setCurrentPoemId(null);
     setLastSavedContent(null);
   }, [user, cloudPoemId, versionId, navigate, setText]);
@@ -724,7 +724,7 @@ function App() {
     setText('');
     setAnalyzedWords([]);
     setCurrentPoemId(null);
-    setPoemTitle('Untitled');
+    setPoemTitle('');
     setLastSavedContent(null);
   };
 
@@ -1037,7 +1037,7 @@ function App() {
     if (currentPoemId === poemId) {
       setCurrentPoemId(null);
       setText('');
-      setPoemTitle('Untitled');
+      setPoemTitle('');
       setLastSavedContent(null);
     }
   }, [getPoemById, deletePoem, currentPoemId, setText]);
@@ -1666,6 +1666,12 @@ function App() {
                   Exit preview
                 </button>
               </div>
+            </div>
+          )}
+          {cloudPoemError && (
+            <div className="cloud-poem-error" role="alert">
+              <span>{cloudPoemError}</span>
+              <button onClick={() => setCloudPoemError(null)} aria-label="Dismiss error">&times;</button>
             </div>
           )}
           <PoetryEditor

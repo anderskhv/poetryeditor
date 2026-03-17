@@ -1450,6 +1450,33 @@
   color: #444;
 }
 
+/* Cloud poem error banner */
+.cloud-poem-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--color-warning-bg, rgba(204, 136, 102, 0.08));
+  border-bottom: 1px solid var(--color-warning-border, rgba(204, 136, 102, 0.3));
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-family: var(--font-body, -apple-system, BlinkMacSystemFont, sans-serif);
+}
+
+.cloud-poem-error button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.cloud-poem-error button:hover {
+  color: var(--color-text-primary);
+}
+
 /* ============================================
    RESPONSIVE DESIGN
    ============================================ */
@@ -1460,7 +1487,7 @@
   }
 
   .panel-toggle.open {
-    right: 300px;
+    right: 0;
   }
 }
 

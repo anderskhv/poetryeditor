@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Layout } from '../components/Layout';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
-import { fetchAnalyticsDataDirect, type AnalyticsSummary, type AnalyticsTimeseriesPoint } from '../utils/analyticsApi';
+import { fetchAnalyticsData, type AnalyticsSummary, type AnalyticsTimeseriesPoint } from '../utils/analyticsApi';
 import './Analytics.css';
 
 const RANGE_OPTIONS = [
@@ -62,7 +62,7 @@ export function Analytics() {
     setLoading(true);
     setError(null);
 
-    fetchAnalyticsDataDirect(range.start, range.end)
+    fetchAnalyticsData(range.start, range.end)
       .then(({ summary: summaryResult, timeseries: timeseriesResult, fallbackUsed, errorMessage }) => {
         if (!summaryResult) {
           setError(errorMessage || 'Analytics data not available.');

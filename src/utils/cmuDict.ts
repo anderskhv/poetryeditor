@@ -16,6 +16,7 @@ let rhymeIndexCache: {
   perfect: Map<string, string[]>;
   near: Map<string, string[]>;
   spelling: Map<string, string[]>;
+  consonance: Map<string, string[]>;
 } | null = null;
 
 /**
@@ -322,6 +323,28 @@ function getNearKeyFromPhones(phones: string[]): string | null {
   return null;
 }
 
+/**
+ * Get the consonance key from phonemes: the trailing consonant(s) after the last vowel.
+ * For example, "bat" (B AE1 T) → "T", "think" (TH IH1 NG K) → "NG-K"
+ * Returns null if the word ends on a vowel (no trailing consonants).
+ */
+function getConsonanceKeyFromPhones(phones: string[]): string | null {
+  // Find the last vowel phoneme (vowels have stress markers 0/1/2)
+  let lastVowelIdx = -1;
+  for (let i = phones.length - 1; i >= 0; i--) {
+    if (/[012]$/.test(phones[i])) {
+      lastVowelIdx = i;
+      break;
+    }
+  }
+  // No vowel or word ends on a vowel — no consonance key
+  if (lastVowelIdx === -1 || lastVowelIdx === phones.length - 1) return null;
+  // Trailing consonants after last vowel, stripped of any stress markers
+  const trailingConsonants = phones.slice(lastVowelIdx + 1).map(p => p.replace(/[012]$/, ''));
+  if (trailingConsonants.length === 0) return null;
+  return trailingConsonants.join('-');
+}
+
 function getSpellingRhymeKey(word: string): string | null {
   const cleaned = word.toLowerCase().replace(/[^a-z]/g, '');
   if (cleaned.length < 3) return null;
@@ -336,12 +359,14 @@ function buildRhymeIndex() {
       perfect: new Map<string, string[]>(),
       near: new Map<string, string[]>(),
       spelling: new Map<string, string[]>(),
+      consonance: new Map<string, string[]>(),
     };
   }
 
   const perfect = new Map<string, string[]>();
   const near = new Map<string, string[]>();
   const spelling = new Map<string, string[]>();
+  const consonance = new Map<string, string[]>();
 
   for (const [word, pronunciations] of dictionaryCache.entries()) {
     if (!pronunciations || pronunciations.length === 0) continue;
@@ -349,6 +374,7 @@ function buildRhymeIndex() {
     const perfectKey = getRhymeKeyFromPhones(best.phones);
     const nearKey = getNearKeyFromPhones(best.phones);
     const spellingKey = getSpellingRhymeKey(word);
+    const consonanceKey = getConsonanceKeyFromPhones(best.phones);
 
     if (perfectKey) {
       const list = perfect.get(perfectKey) ?? [];
@@ -367,9 +393,15 @@ function buildRhymeIndex() {
       list.push(word);
       spelling.set(spellingKey, list);
     }
+
+    if (consonanceKey) {
+      const list = consonance.get(consonanceKey) ?? [];
+      list.push(word);
+      consonance.set(consonanceKey, list);
+    }
   }
 
-  return { perfect, near, spelling };
+  return { perfect, near, spelling, consonance };
 }
 
 function ensureRhymeIndex() {
@@ -407,6 +439,31 @@ export function getSpellingRhymesOffline(word: string, limit = 200): string[] {
   const { spelling } = ensureRhymeIndex();
   const results = spelling.get(key) ?? [];
   return results.filter(w => w !== word).slice(0, limit);
+}
+
+/**
+ * Get consonance matches: words sharing the same trailing consonant sounds
+ * but with different vowel sounds. Excludes perfect rhymes.
+ */
+export function getConsonanceRhymesOffline(word: string, limit = 200): string[] {
+  const pronunciations = getPronunciations(word);
+  if (pronunciations.length === 0) return [];
+  const best = [...pronunciations].sort((a, b) => b.stresses.length - a.stresses.length)[0];
+  const consonanceKey = getConsonanceKeyFromPhones(best.phones);
+  if (!consonanceKey) return [];
+
+  // Also get the perfect rhyme key so we can exclude perfect rhymes
+  const perfectKey = getRhymeKeyFromPhones(best.phones);
+
+  const { consonance, perfect } = ensureRhymeIndex();
+  const candidates = consonance.get(consonanceKey) ?? [];
+
+  // Exclude the word itself and any perfect rhymes
+  const perfectRhymeSet = new Set(perfectKey ? (perfect.get(perfectKey) ?? []) : []);
+
+  return candidates
+    .filter(w => w !== word && !perfectRhymeSet.has(w))
+    .slice(0, limit);
 }
 
 export function estimateSyllableCount(word: string): number {

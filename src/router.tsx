@@ -283,4 +283,8 @@ export const router = createBrowserRouter([
     element: <Analytics2 />,
     errorElement: <RouteError title="Analytics error" message="There was a problem loading analytics. Please refresh or try again in a moment." />,
   },
+  {
+    path: '*',
+    element: <RouteError title="Page not found" message="The page you're looking for doesn't exist." showHomeLink />,
+  },
 ]);

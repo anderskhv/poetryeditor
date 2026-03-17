@@ -293,6 +293,50 @@
   border-color: var(--color-text-muted);
 }
 
+/* Word list with inline definitions */
+.thesaurus-word-list--definitions {
+  flex-direction: column;
+  gap: 0;
+}
+
+.thesaurus-word-item--with-def {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--color-border, rgba(0, 0, 0, 0.06));
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.thesaurus-word-item--with-def:last-child {
+  border-bottom: none;
+}
+
+.thesaurus-word-item-word {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary, #2a2a2a);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.thesaurus-word-item-gloss {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-muted, #999);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* CTA */
 .thesaurus-cta {
   margin-top: 32px;
@@ -520,6 +564,16 @@
   .thesaurus-word-item {
     padding: 5px 10px;
     font-size: 14px;
+  }
+
+  .thesaurus-word-item--with-def {
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+  }
+
+  .thesaurus-word-item-gloss {
+    white-space: normal;
   }
 
   .thesaurus-results-meta {

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
-import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonyms, fetchAntonyms, getWordVariants, RhymeWord as RhymeWordType, SynonymWord } from '../utils/rhymeApi';
+import { fetchRhymes, fetchNearAndSlantRhymes, fetchConsonanceRhymes, fetchSynonyms, fetchAntonyms, getWordVariants, RhymeWord as RhymeWordType, SynonymWord } from '../utils/rhymeApi';
 import { loadCMUDictionary, isDictionaryLoaded, getStressPattern, getSyllables, getPronunciations, getIPAPronunciation } from '../utils/cmuDict';
 import { getRhymeOriginalityScore } from '../utils/rhymeCliches';
 import { DefinitionTooltip } from '../components/DefinitionTooltip';
@@ -47,11 +47,12 @@ export function RhymeWord() {
   const [topicWord, setTopicWord] = useState('');
   const [perfectRhymes, setPerfectRhymes] = useState<RhymeWordType[]>([]);
   const [nearRhymes, setNearRhymes] = useState<RhymeWordType[]>([]);
+  const [consonanceRhymes, setConsonanceRhymes] = useState<RhymeWordType[]>([]);
   const [synonyms, setSynonyms] = useState<SynonymWord[]>([]);
   const [antonyms, setAntonyms] = useState<SynonymWord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'perfect' | 'near'>('perfect');
+  const [activeTab, setActiveTab] = useState<'perfect' | 'near' | 'consonance'>('perfect');
   const [meterFilter, setMeterFilter] = useState<MeterFilter>('all');
   const [originalityFilter, setOriginalityFilter] = useState<OriginalityFilter>('all');
   const [wordTypeFilter, setWordTypeFilter] = useState<WordTypeFilter>('all');
@@ -76,15 +77,16 @@ export function RhymeWord() {
 
         if (decodedWord) {
           setLoading(true);
-          const [perfect, near, syns, ants] = await Promise.all([
+          const [perfect, near, consonance, syns, ants] = await Promise.all([
             fetchRhymes(decodedWord),
             fetchNearAndSlantRhymes(decodedWord),
+            fetchConsonanceRhymes(decodedWord),
             fetchSynonyms(decodedWord),
             fetchAntonyms(decodedWord)
           ]);
 
           // Check if all results are empty (potential API failure)
-          if (perfect.length === 0 && near.length === 0 && syns.length === 0 && ants.length === 0) {
+          if (perfect.length === 0 && near.length === 0 && consonance.length === 0 && syns.length === 0 && ants.length === 0) {
             // Could be a word with no rhymes, or API failure
             // Only show error if we expected results
             console.warn(`No results found for "${decodedWord}" - this may be expected for unusual words`);
@@ -92,6 +94,7 @@ export function RhymeWord() {
 
           setPerfectRhymes(perfect);
           setNearRhymes(near);
+          setConsonanceRhymes(consonance);
           setSynonyms(syns);
           setAntonyms(ants);
           setLoading(false);
@@ -232,6 +235,7 @@ export function RhymeWord() {
 
   const filteredPerfect = applyTopicFilter(applyAllFilters(perfectRhymes));
   const filteredNear = applyTopicFilter(applyAllFilters(nearRhymes));
+  const filteredConsonance = applyTopicFilter(applyAllFilters(consonanceRhymes));
 
   const withVariants = (rhymes: RhymeWordType[]) =>
     rhymes.map(rhyme => ({
@@ -241,11 +245,14 @@ export function RhymeWord() {
 
   const perfectWithVariants = withVariants(filteredPerfect);
   const nearWithVariants = withVariants(filteredNear);
+  const consonanceWithVariants = withVariants(filteredConsonance);
 
   const groupedPerfect = groupBySyllables(perfectWithVariants);
   const groupedNear = groupBySyllables(nearWithVariants);
+  const groupedConsonance = groupBySyllables(consonanceWithVariants);
   const groupedPerfectByTopic = groupByTopic(perfectWithVariants);
   const groupedNearByTopic = groupByTopic(nearWithVariants);
+  const groupedConsonanceByTopic = groupByTopic(consonanceWithVariants);
 
   const mergeBySyllables = (
     primary: Record<number, RhymeWordType[]>,
@@ -304,9 +311,13 @@ export function RhymeWord() {
 
   const activeResults = activeTab === 'perfect'
     ? (rhymeStrength === 'strict' ? groupedPerfect : mergedPerfect)
+    : activeTab === 'consonance'
+    ? groupedConsonance
     : groupedNear;
   const activeTopicGroups = activeTab === 'perfect'
     ? (rhymeStrength === 'strict' ? groupedPerfectByTopic : mergedPerfectTopics)
+    : activeTab === 'consonance'
+    ? groupedConsonanceByTopic
     : groupedNearByTopic;
 
   // Get related words for internal linking - more varied selection
@@ -332,8 +343,8 @@ export function RhymeWord() {
   return (
     <Layout>
       <SEOHead
-        title={`Rhymes with ${displayWord} (${perfectRhymes.length + nearRhymes.length}+) | Perfect & Near Rhymes`}
-        description={`Rhymes with ${displayWord}: ${perfectRhymes.length}+ perfect rhymes and ${nearRhymes.length}+ near rhymes, grouped by syllables and filtered by meter.`}
+        title={`Rhymes with ${displayWord} (${perfectRhymes.length + nearRhymes.length + consonanceRhymes.length}+) | Perfect, Near & Consonance Rhymes`}
+        description={`Rhymes with ${displayWord}: ${perfectRhymes.length}+ perfect rhymes, ${nearRhymes.length}+ near rhymes, and ${consonanceRhymes.length}+ consonance matches, grouped by syllables and filtered by meter.`}
         canonicalPath={`/rhymes/${encodeURIComponent(decodedWord)}`}
         keywords={`rhymes with ${decodedWord}, ${decodedWord} rhymes, words that rhyme with ${decodedWord}`}
         jsonLd={{
@@ -341,7 +352,7 @@ export function RhymeWord() {
           "@type": "ItemList",
           "name": `Words That Rhyme with ${displayWord}`,
           "description": `Perfect and near rhymes for "${decodedWord}" organized by syllable count`,
-          "numberOfItems": perfectRhymes.length + nearRhymes.length,
+          "numberOfItems": perfectRhymes.length + nearRhymes.length + consonanceRhymes.length,
           "itemListElement": perfectRhymes
             .filter(r => !r.word.includes(' ') && r.score > 1000)
             .slice(0, 10)
@@ -421,6 +432,12 @@ export function RhymeWord() {
                 onClick={() => setActiveTab('near')}
               >
                 Near Rhymes ({filteredNear.length})
+              </button>
+              <button
+                className={`rhyme-tab ${activeTab === 'consonance' ? 'active' : ''}`}
+                onClick={() => setActiveTab('consonance')}
+              >
+                Consonance ({filteredConsonance.length})
               </button>
             </div>
 
@@ -520,16 +537,22 @@ export function RhymeWord() {
 
             {sortMode === 'syllables' && Object.keys(activeResults).length === 0 ? (
               <div className="rhyme-no-results">
-                No {activeTab === 'perfect' ? 'perfect' : 'near'} rhymes found for "{decodedWord}".
+                No {activeTab === 'perfect' ? 'perfect' : activeTab === 'consonance' ? 'consonance' : 'near'} rhymes found for "{decodedWord}".
                 {activeTab === 'perfect' && nearRhymes.length > 0 && (
                   <> Try <button onClick={() => setActiveTab('near')} className="link-button">near rhymes</button> instead.</>
+                )}
+                {activeTab !== 'consonance' && consonanceRhymes.length > 0 && (
+                  <> Try <button onClick={() => setActiveTab('consonance')} className="link-button">consonance</button> instead.</>
                 )}
               </div>
             ) : sortMode === 'topic' && activeTopicGroups.length === 0 ? (
               <div className="rhyme-no-results">
-                No {activeTab === 'perfect' ? 'perfect' : 'near'} rhymes found for "{decodedWord}".
+                No {activeTab === 'perfect' ? 'perfect' : activeTab === 'consonance' ? 'consonance' : 'near'} rhymes found for "{decodedWord}".
                 {activeTab === 'perfect' && nearRhymes.length > 0 && (
                   <> Try <button onClick={() => setActiveTab('near')} className="link-button">near rhymes</button> instead.</>
+                )}
+                {activeTab !== 'consonance' && consonanceRhymes.length > 0 && (
+                  <> Try <button onClick={() => setActiveTab('consonance')} className="link-button">consonance</button> instead.</>
                 )}
               </div>
             ) : sortMode === 'syllables' ? (
@@ -565,6 +588,10 @@ export function RhymeWord() {
                                     title={`Syllables: ${rhyme.numSyllables || 0}`}
                                   >
                                     {rhyme.word}
+                                    {(() => {
+                                      const ipa = getIPAPronunciation(rhyme.word);
+                                      return ipa ? <span className="rhyme-result-ipa">{ipa}</span> : null;
+                                    })()}
                                     {sourceLabel === 'near' && <span className="rhyme-source-tag">near</span>}
                                   </Link>
                                 </DefinitionTooltip>
@@ -610,6 +637,10 @@ export function RhymeWord() {
                                   title={`Syllables: ${rhyme.numSyllables || 0}`}
                                 >
                                   {rhyme.word}
+                                  {(() => {
+                                    const ipa = getIPAPronunciation(rhyme.word);
+                                    return ipa ? <span className="rhyme-result-ipa">{ipa}</span> : null;
+                                  })()}
                                   {sourceLabel === 'near' && <span className="rhyme-source-tag">near</span>}
                                 </Link>
                               </DefinitionTooltip>
@@ -806,6 +837,10 @@ export function RhymeWord() {
             <div className="faq-item">
               <strong>What are near rhymes?</strong>
               <p>Near rhymes (slant rhymes) share similar vowel sounds or endings but aren’t exact matches.</p>
+            </div>
+            <div className="faq-item">
+              <strong>What is consonance?</strong>
+              <p>Consonance is when words share the same ending consonant sounds but have different vowel sounds. For example, "bat" and "bit" both end in a T sound but have different vowels. Consonance creates a subtle sonic link that works well in poetry without the full echo of a perfect rhyme.</p>
             </div>
             <div className="faq-item">
               <strong>How do I pick the best rhyme?</strong>

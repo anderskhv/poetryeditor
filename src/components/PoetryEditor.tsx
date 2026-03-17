@@ -1740,9 +1740,9 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
                 placeholder="Title"
                 aria-label="Poem title"
                 autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                spellCheck="false"
+                autoCorrect="on"
+                autoCapitalize="sentences"
+                spellCheck={true}
                 data-1p-ignore
                 data-lpignore="true"
                 data-form-type="other"

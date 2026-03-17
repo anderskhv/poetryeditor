@@ -38,6 +38,9 @@ create table if not exists public.analytics_events (
   created_at timestamptz default now()
 );
 
+-- Ensure duration_ms column exists (may be missing from older deployments)
+alter table public.analytics_events add column if not exists duration_ms int;
+
 alter table public.analytics_events enable row level security;
 
 do $$
@@ -231,12 +234,14 @@ begin
       from public.analytics_events
       where event_type = 'page_duration'
         and created_at between start_ts and end_ts
+        and duration_ms >= 1000
     ),
     'avg_page_duration_human_ms', (
       select coalesce(avg(duration_ms), 0)
       from public.analytics_events
       where event_type = 'page_duration'
         and created_at between start_ts and end_ts
+        and duration_ms >= 1000
         and coalesce(lower(user_agent), '') !~ bot_regex
     ),
     'avg_session_duration_ms', (
@@ -246,6 +251,7 @@ begin
         from public.analytics_events
         where event_type = 'page_duration'
           and created_at between start_ts and end_ts
+          and duration_ms >= 1000
         group by session_id
       ) s
     ),
@@ -256,6 +262,7 @@ begin
         from public.analytics_events
         where event_type = 'page_duration'
           and created_at between start_ts and end_ts
+          and duration_ms >= 1000
           and coalesce(lower(user_agent), '') !~ bot_regex
         group by session_id
       ) s

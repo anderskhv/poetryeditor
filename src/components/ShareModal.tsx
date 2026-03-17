@@ -143,7 +143,7 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText, paragraphAlig
 
     // Calculate lines per page
     const poemLineHeight = poemFontSize * lineHeight;
-    const titleHeight = poemTitle && poemTitle.trim() !== 'Untitled' ? titleFontSize + 30 : 0;
+    const titleHeight = poemTitle && poemTitle.trim() && poemTitle.trim() !== 'Untitled' ? titleFontSize + 30 : 0;
     const firstPageLines = Math.floor((availableHeight - titleHeight) / poemLineHeight);
     const subsequentPageLines = Math.floor(availableHeight / poemLineHeight);
 
@@ -211,7 +211,7 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText, paragraphAlig
       let y = padding;
 
       // Draw title only on first page
-      if (pageIndex === 0 && poemTitle && poemTitle.trim() !== 'Untitled') {
+      if (pageIndex === 0 && poemTitle && poemTitle.trim() && poemTitle.trim() !== 'Untitled') {
         ctx.font = `italic ${titleFontSize}px ${FONT_FAMILY}`;
         ctx.fillText(poemTitle, textX, y + titleFontSize);
         y += titleFontSize + 30 * scale;
@@ -285,7 +285,7 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText, paragraphAlig
         }
 
         const link = document.createElement('a');
-        const baseName = poemTitle && poemTitle !== 'Untitled'
+        const baseName = poemTitle && poemTitle.trim() && poemTitle.trim() !== 'Untitled'
           ? poemTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()
           : 'poem';
 

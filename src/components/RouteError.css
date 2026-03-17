@@ -18,3 +18,13 @@
   font-family: var(--font-sans, system-ui, sans-serif);
   color: var(--color-text-muted, #666);
 }
+
+.route-error-link {
+  color: var(--color-text-primary, #2a2a2a);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.route-error-link:hover {
+  color: var(--color-text-secondary, #6a6a6a);
+}

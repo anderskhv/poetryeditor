@@ -4,8 +4,31 @@ import { Layout } from '../components/Layout';
 import { SEOHead } from '../components/SEOHead';
 import { fetchSynonymSenses, fetchAntonyms, fetchHyponyms, SynonymWord, ImageryWord, SynonymSense } from '../utils/rhymeApi';
 import { getSyllables } from '../utils/cmuDict';
-import { DefinitionTooltip } from '../components/DefinitionTooltip';
+import { getWordnetSenses } from '../utils/wordnetSenses';
 import './Thesaurus.css';
+
+/** Inline word item that loads and displays a WordNet definition beneath the word */
+function InlineDefinitionWord({ word, onClick }: { word: string; onClick: () => void }) {
+  const [gloss, setGloss] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getWordnetSenses(word).then((senses) => {
+      if (cancelled) return;
+      if (senses && senses.length > 0) {
+        setGloss(senses[0].gloss);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [word]);
+
+  return (
+    <button onClick={onClick} className="thesaurus-word-item thesaurus-word-item--with-def">
+      <span className="thesaurus-word-item-word">{word}</span>
+      {gloss && <span className="thesaurus-word-item-gloss">{gloss}</span>}
+    </button>
+  );
+}
 
 const POPULAR_WORDS = [
   'happy', 'sad', 'beautiful', 'love', 'hate', 'big', 'small', 'good',
@@ -294,19 +317,16 @@ export function Thesaurus() {
                           {sense.pos && <span className="thesaurus-sense-pos">{sense.pos}</span>}
                         </div>
                         <div className="thesaurus-sense-gloss">{sense.gloss}</div>
-                        <div className="thesaurus-word-list">
+                        <div className="thesaurus-word-list thesaurus-word-list--definitions">
                           {sense.synonyms
                             .filter((syn) => !syn.word.includes(' '))
                             .sort((a, b) => b.score - a.score)
                             .map((syn, idx) => (
-                              <DefinitionTooltip key={`${syn.word}-${idx}`} word={syn.word}>
-                                <button
-                                  onClick={() => handleQuickSearch(syn.word)}
-                                  className="thesaurus-word-item"
-                                >
-                                  {syn.word}
-                                </button>
-                              </DefinitionTooltip>
+                              <InlineDefinitionWord
+                                key={`${syn.word}-${idx}`}
+                                word={syn.word}
+                                onClick={() => handleQuickSearch(syn.word)}
+                              />
                             ))}
                         </div>
                       </div>
@@ -314,18 +334,15 @@ export function Thesaurus() {
                   </div>
                 ) : (
                   <div className="thesaurus-sense-list">
-                    <div className="thesaurus-word-list">
+                    <div className="thesaurus-word-list thesaurus-word-list--definitions">
                       {currentWords
                         .filter(w => !w.word.includes(' '))
                         .map((word, idx) => (
-                          <DefinitionTooltip key={idx} word={word.word}>
-                            <button
-                              onClick={() => handleQuickSearch(word.word)}
-                              className="thesaurus-word-item"
-                            >
-                              {word.word}
-                            </button>
-                          </DefinitionTooltip>
+                          <InlineDefinitionWord
+                            key={idx}
+                            word={word.word}
+                            onClick={() => handleQuickSearch(word.word)}
+                          />
                         ))}
                     </div>
                   </div>

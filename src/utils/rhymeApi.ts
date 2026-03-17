@@ -4,7 +4,7 @@
  */
 
 import nlp from 'compromise';
-import { getRhymePhonemes, getPerfectRhymesOffline, getNearRhymesOffline, getSpellingRhymesOffline, getSyllableCount, isDictionaryLoaded, loadCMUDictionary } from './cmuDict';
+import { getRhymePhonemes, getPerfectRhymesOffline, getNearRhymesOffline, getSpellingRhymesOffline, getConsonanceRhymesOffline, getSyllableCount, isDictionaryLoaded, loadCMUDictionary } from './cmuDict';
 import offlineSynonyms from '../data/offlineSynonyms.json';
 import { getWordnetSenses, type WordnetSensePayload } from './wordnetSenses';
 import { getFrequencyRank } from '../data/wordFrequency';
@@ -128,7 +128,7 @@ export interface RhymeWord {
   numSyllables?: number;
   rhymeQuality?: number; // 0-1, calculated from phonetic comparison
   partsOfSpeech?: string[]; // e.g., ['n', 'v'] for noun/verb
-  rhymeType?: 'perfect' | 'near' | 'slant' | 'spelling';
+  rhymeType?: 'perfect' | 'near' | 'slant' | 'spelling' | 'consonance';
 }
 
 export interface SynonymWord {
@@ -396,6 +396,70 @@ export async function fetchNearAndSlantRhymes(word: string): Promise<RhymeWord[]
     return results;
   } catch (error) {
     console.error('Error fetching near/slant rhymes:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch consonance matches: words sharing ending consonant sounds but with different vowels.
+ * For example, "bat" → "bit", "bet", "but", "bot" (all end in T but different vowels).
+ * Excludes perfect rhymes to avoid overlap.
+ */
+export async function fetchConsonanceRhymes(word: string): Promise<RhymeWord[]> {
+  try {
+    if (!isDictionaryLoaded()) {
+      await loadCMUDictionary();
+    }
+
+    const sourcePhonemes = getRhymePhonemes(word);
+    const consonanceMatches = getConsonanceRhymesOffline(word, 200);
+
+    const stopwords = new Set([
+      'a', 'an', 'the', 'and', 'or', 'to', 'of', 'in', 'on', 'for', 'at', 'by', 'from',
+      'is', 'am', 'are', 'be', 'was', 'were', 'been', 'being', 'i', 'me', 'my', 'you',
+      'your', 'yours', 'we', 'us', 'our', 'he', 'him', 'his', 'she', 'her', 'it', 'its',
+      'they', 'them', 'their', 'this', 'that', 'these', 'those',
+    ]);
+
+    const isValid = (candidate: string) => {
+      const trimmed = candidate.trim();
+      if (!trimmed || trimmed.length < 3) return false;
+      if (trimmed.startsWith("'")) return false;
+      if (stopwords.has(trimmed.toLowerCase())) return false;
+      if (!/^[a-zA-Z-]+$/.test(trimmed)) return false;
+      if (!/[aeiouy]/i.test(trimmed)) return false;
+      return true;
+    };
+
+    const targetSyllables = getSyllableCount(word);
+
+    const results: RhymeWord[] = consonanceMatches
+      .filter(isValid)
+      .filter(w => Math.abs(getSyllableCount(w) - targetSyllables) <= 1)
+      .map((rhymeWord) => {
+        const score = Math.max(100, 4000 - rhymeWord.length * 80);
+        const rhymeQuality = sourcePhonemes ? calculateRhymeQualityFast(sourcePhonemes, rhymeWord) : 0;
+        return {
+          word: rhymeWord,
+          score,
+          numSyllables: getSyllableCount(rhymeWord),
+          rhymeQuality,
+          rhymeType: 'consonance' as const,
+          partsOfSpeech: [],
+        };
+      });
+
+    // Sort by word frequency (common words first), then score
+    results.sort((a, b) => {
+      const freqA = getFrequencyRank(a.word);
+      const freqB = getFrequencyRank(b.word);
+      if (freqA !== freqB) return freqA - freqB;
+      return b.score - a.score;
+    });
+
+    return results;
+  } catch (error) {
+    console.error('Error fetching consonance rhymes:', error);
     return [];
   }
 }
