@@ -421,6 +421,7 @@ export function EditorChat({
                     <p className="editor-welcome-headline">This is your page.</p>
                     <p>Write whatever comes — a first line, a fragment, a whole poem you've been carrying around. There's no wrong way to start.</p>
                     <p>When you're ready, ask anything here — what's working, what isn't, where a poem wants to go.</p>
+                    <p className="editor-welcome-hint">Looking for inspiration? Browse <a href="/poems">68+ analyzed poems</a> in the Inspiration menu above.</p>
                   </div>
                 )}
               </>
