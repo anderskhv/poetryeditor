@@ -1,0 +1,11 @@
+Paste the full text of these 3 poems below their headers, then run:
+  node scripts/create-from-text.mjs
+
+Each poem section starts with === and ends at the next === or end of file.
+Get the texts from Project Gutenberg, Wikisource, or any public domain source.
+
+=== tennyson-charge-light-brigade ===
+
+=== kipling-if ===
+
+=== thayer-casey-at-the-bat ===

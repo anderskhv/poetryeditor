@@ -72,6 +72,8 @@ import { sonnet154 } from './shakespeare-sonnet-154';
 
 // Keats
 import { brightStar } from './keats-bright-star';
+import { odeToNightingale } from './keats-ode-nightingale';
+import { odeOnGrecianUrn } from './keats-ode-grecian-urn';
 
 // Blake
 import { theTyger } from './blake-tyger';
@@ -84,6 +86,7 @@ import { gardenOfLove } from './blake-garden-of-love';
 import { infantSorrow } from './blake-infant-sorrow';
 
 // Wordsworth
+import { tinternAbbey } from './wordsworth-tintern-abbey';
 import { daffodils } from './wordsworth-daffodils';
 import { westminsterBridge } from './wordsworth-westminster-bridge';
 import { worldTooMuch } from './wordsworth-world-too-much';
@@ -94,6 +97,9 @@ import { sheDwelt } from './wordsworth-she-dwelt';
 // Shelley
 import { ozymandias } from './shelley-ozymandias';
 import { mutability } from './shelley-mutability';
+import { odeToTheWestWind } from './shelley-ode-west-wind';
+import { toASkylark } from './shelley-skylark';
+import { montBlanc } from './shelley-mont-blanc';
 
 // Dickinson
 import { dickinson67 } from './dickinson-67';
@@ -126,6 +132,7 @@ import { americaSinging } from './whitman-america-singing';
 import { annabelLee } from './poe-annabel-lee';
 import { alone } from './poe-alone';
 import { dreamWithinADream } from './poe-dream-within-a-dream';
+import { theRaven } from './poe-raven';
 
 // Frost
 import { roadNotTaken } from './frost-road-not-taken';
@@ -190,11 +197,13 @@ import { whatLipsMyLips } from './millay-what-lips-my-lips';
 import { deathBeNotProud } from './donne-death-be-not-proud';
 import { valedictionForbiddingMourning } from './donne-valediction-forbidding-mourning';
 import { sunRising } from './donne-sun-rising';
+import { noManIsAnIsland } from './donne-no-man-is-an-island';
 
 // Tennyson
 import { eagle } from './tennyson-eagle';
 import { crossingTheBar } from './tennyson-crossing-the-bar';
 import { breakBreakBreak } from './tennyson-break-break-break';
+import { chargeOfTheLightBrigade } from './tennyson-charge-light-brigade';
 
 // Hopkins
 import { godsGrandeur } from './hopkins-gods-grandeur';
@@ -216,6 +225,18 @@ import { buffalosBill } from './cummings-buffalo-bill';
 
 // Sandburg
 import { fog } from './sandburg-fog';
+
+// Eliot
+import { loveSongOfPrufrock } from './eliot-prufrock';
+
+// Coleridge
+import { kublaKhan } from './coleridge-kubla-khan';
+
+// Kipling
+import { ifPoem } from './kipling-if';
+
+// Thayer
+import { caseyAtTheBat } from './thayer-casey-at-the-bat';
 
 export const poems: Record<string, PoemAnalysis> = {
   // Gibran
@@ -255,6 +276,8 @@ export const poems: Record<string, PoemAnalysis> = {
   'sonnet-154': sonnet154,
   // Keats
   'bright-star': brightStar,
+  'ode-to-a-nightingale': odeToNightingale,
+  'ode-on-a-grecian-urn': odeOnGrecianUrn,
   // Blake
   'the-tyger': theTyger,
   'the-lamb': theLamb,
@@ -265,6 +288,7 @@ export const poems: Record<string, PoemAnalysis> = {
   'the-garden-of-love': gardenOfLove,
   'infant-sorrow': infantSorrow,
   // Wordsworth
+  'tintern-abbey': tinternAbbey,
   'daffodils': daffodils,
   'westminster-bridge': westminsterBridge,
   'world-too-much': worldTooMuch,
@@ -274,6 +298,9 @@ export const poems: Record<string, PoemAnalysis> = {
   // Shelley
   'ozymandias': ozymandias,
   'mutability': mutability,
+  'ode-to-the-west-wind': odeToTheWestWind,
+  'to-a-skylark': toASkylark,
+  'mont-blanc': montBlanc,
   // Dickinson
   'success-is-counted-sweetest': dickinson67,
   'i-taste-a-liquor-never-brewed': dickinson214,
@@ -303,6 +330,7 @@ export const poems: Record<string, PoemAnalysis> = {
   'annabel-lee': annabelLee,
   'alone': alone,
   'a-dream-within-a-dream': dreamWithinADream,
+  'the-raven': theRaven,
   // Frost
   'the-road-not-taken': roadNotTaken,
   'nothing-gold-can-stay': nothingGoldCanStay,
@@ -352,10 +380,12 @@ export const poems: Record<string, PoemAnalysis> = {
   'death-be-not-proud': deathBeNotProud,
   'a-valediction-forbidding-mourning': valedictionForbiddingMourning,
   'the-sun-rising': sunRising,
+  'no-man-is-an-island': noManIsAnIsland,
   // Tennyson
   'the-eagle': eagle,
   'crossing-the-bar': crossingTheBar,
   'break-break-break': breakBreakBreak,
+  'the-charge-of-the-light-brigade': chargeOfTheLightBrigade,
   // Hopkins
   'gods-grandeur': godsGrandeur,
   'pied-beauty': piedBeauty,
@@ -372,6 +402,14 @@ export const poems: Record<string, PoemAnalysis> = {
   'buffalo-bills': buffalosBill,
   // Sandburg
   'fog': fog,
+  // Eliot
+  'the-love-song-of-j-alfred-prufrock': loveSongOfPrufrock,
+  // Coleridge
+  'kubla-khan': kublaKhan,
+  // Kipling
+  'if': ifPoem,
+  // Thayer
+  'casey-at-the-bat': caseyAtTheBat,
 };
 
 export function getPoemBySlug(slug: string): PoemAnalysis | undefined {
