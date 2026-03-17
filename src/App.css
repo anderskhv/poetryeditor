@@ -1564,7 +1564,8 @@
 
   .header-actions .font-dropdown,
   .header-actions .theme-dropdown,
-  .header-actions .export-dropdown {
+  .header-actions .export-dropdown,
+  .header-actions .paragraph-dropdown {
     display: none;
   }
 
@@ -1661,9 +1662,10 @@
   background: var(--color-paper);
   border-radius: 4px;
   box-shadow: 0 4px 20px var(--color-shadow), 0 0 0 1px var(--color-border);
-  min-width: 160px;
+  min-width: 180px;
   z-index: var(--z-index-dropdown);
-  overflow: hidden;
+  overflow-y: auto;
+  max-height: calc(100vh - 80px);
 }
 
 .mobile-overflow-item {
@@ -1698,6 +1700,49 @@
 
 .mobile-overflow-item.submenu-label:hover {
   background: none;
+}
+
+/* Mobile formatting row — inline B/I/U buttons */
+.mobile-formatting-row {
+  display: flex;
+  gap: 8px;
+  padding: 6px 16px 8px;
+}
+
+.mobile-format-btn {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 4px;
+  background: none;
+  font-size: 15px;
+  cursor: pointer;
+  color: var(--color-text-primary, #333);
+}
+
+.mobile-format-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+:root.dark-mode .mobile-format-btn {
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+:root.dark-mode .mobile-format-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+:root.yellow-mode .mobile-format-btn {
+  color: #5a4a30;
+  border-color: rgba(60, 50, 30, 0.2);
+}
+
+:root.yellow-mode .mobile-format-btn:hover {
+  background: #e5d6a0;
 }
 
 :root.dark-mode .mobile-overflow-menu {

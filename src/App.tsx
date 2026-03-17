@@ -731,6 +731,7 @@ function App() {
   const [showExportMenu, setShowExportMenu] = useState<boolean>(false);
   const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
+  const [showMobileFormatting, setShowMobileFormatting] = useState<boolean>(false);
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
 
   // Apply markdown formatting by triggering the Monaco editor actions
@@ -1537,6 +1538,37 @@ function App() {
               </button>
               {showMobileMenu && (
                 <div className="mobile-overflow-menu">
+                  {/* File actions */}
+                  <div className="mobile-overflow-item submenu-label">File</div>
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      handleNewPoem();
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    New Poem
+                  </button>
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      handleSavePoem();
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => {
+                      setShowShareModal(true);
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    Share Image
+                  </button>
+                  {/* Export */}
+                  <div className="mobile-overflow-item submenu-label">Export</div>
                   <button
                     className="mobile-overflow-item"
                     onClick={() => {
@@ -1579,6 +1611,86 @@ function App() {
                   >
                     Export as PDF
                   </button>
+                  {/* Formatting */}
+                  <div className="mobile-overflow-item submenu-label">Formatting</div>
+                  <div className="mobile-formatting-row">
+                    <button
+                      className="mobile-format-btn"
+                      onClick={() => applyFormatting('bold')}
+                      title="Bold"
+                    >
+                      <strong>B</strong>
+                    </button>
+                    <button
+                      className="mobile-format-btn"
+                      onClick={() => applyFormatting('italic')}
+                      title="Italic"
+                    >
+                      <em>I</em>
+                    </button>
+                    <button
+                      className="mobile-format-btn"
+                      onClick={() => applyFormatting('underline')}
+                      title="Underline"
+                    >
+                      <span style={{ textDecoration: 'underline' }}>U</span>
+                    </button>
+                  </div>
+                  <button
+                    className="mobile-overflow-item"
+                    onClick={() => setShowMobileFormatting(!showMobileFormatting)}
+                  >
+                    More Formatting {showMobileFormatting ? '▾' : '▸'}
+                  </button>
+                  {showMobileFormatting && (
+                    <>
+                      <div className="mobile-overflow-item submenu-label" style={{ paddingLeft: 20 }}>Line Spacing</div>
+                      <button
+                        className="mobile-overflow-item"
+                        style={{ paddingLeft: 20 }}
+                        onClick={() => setLineSpacing('normal')}
+                      >
+                        {lineSpacing === 'normal' ? '✓ ' : ''}Normal
+                      </button>
+                      <button
+                        className="mobile-overflow-item"
+                        style={{ paddingLeft: 20 }}
+                        onClick={() => setLineSpacing('relaxed')}
+                      >
+                        {lineSpacing === 'relaxed' ? '✓ ' : ''}Relaxed
+                      </button>
+                      <button
+                        className="mobile-overflow-item"
+                        style={{ paddingLeft: 20 }}
+                        onClick={() => setLineSpacing('spacious')}
+                      >
+                        {lineSpacing === 'spacious' ? '✓ ' : ''}Spacious
+                      </button>
+                      <div className="mobile-overflow-item submenu-label" style={{ paddingLeft: 20 }}>Alignment</div>
+                      <button
+                        className="mobile-overflow-item"
+                        style={{ paddingLeft: 20 }}
+                        onClick={() => setParagraphAlign('left')}
+                      >
+                        {paragraphAlign === 'left' ? '✓ ' : ''}Left
+                      </button>
+                      <button
+                        className="mobile-overflow-item"
+                        style={{ paddingLeft: 20 }}
+                        onClick={() => setParagraphAlign('center')}
+                      >
+                        {paragraphAlign === 'center' ? '✓ ' : ''}Center
+                      </button>
+                      <button
+                        className="mobile-overflow-item"
+                        style={{ paddingLeft: 20 }}
+                        onClick={() => setParagraphAlign('right')}
+                      >
+                        {paragraphAlign === 'right' ? '✓ ' : ''}Right
+                      </button>
+                    </>
+                  )}
+                  {/* Theme */}
                   <div className="mobile-overflow-item submenu-label">Theme</div>
                   <button
                     className="mobile-overflow-item"

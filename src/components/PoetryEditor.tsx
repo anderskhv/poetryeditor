@@ -1395,7 +1395,6 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         .monaco-editor .bracket-highlighting-3,
         .monaco-editor .bracket-highlighting-4,
         .monaco-editor .bracket-highlighting-5,
-        .monaco-editor .inline-selected-text,
         .monaco-editor .wordHighlight,
         .monaco-editor .wordHighlightStrong,
         .monaco-editor .selectionHighlight,
