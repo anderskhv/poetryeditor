@@ -19,7 +19,6 @@ import type { PoetProfile, AnalysisContext, FeedbackStyle, EditorSettings as Edi
 import { useEditorChat } from '../../hooks/useEditorChat';
 import { EditorOnboarding } from './EditorOnboarding';
 import { EditorMessage } from './EditorMessage';
-import { EditorSettings } from './EditorSettings';
 import { hasApiKey } from '../../utils/editorApi';
 import { UsageCapModal } from './UsageCapModal';
 import { saveLocalApiKey, getLocalApiKey, clearLocalApiKey } from '../../utils/editorStorage';
@@ -449,9 +448,6 @@ export function EditorChat({
       </div>
 
       <div className="editor-input-area">
-        {editorSettings && onUpdateEditorSettings && mode === 'per_poem' && (
-          <EditorSettings settings={editorSettings} onUpdate={onUpdateEditorSettings} />
-        )}
         {isSynthesizing && (
           <div className="editor-synthesis-indicator">
             Refining with craft analysis...
