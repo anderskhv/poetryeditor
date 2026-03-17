@@ -391,3 +391,33 @@ export interface EditorialReportSummary {
   createdAt: string;
   status: ReportStatus;
 }
+
+// ════════════════════════════════════════════════
+// ── LLM-Enhanced Analysis Types ──
+// ════════════════════════════════════════════════
+
+export interface LLMAnalysisResult {
+  enhancedSummary: string[];  // richer craft observations (3-5 items)
+  clicheVerdicts: Record<string, {
+    verdict: 'intentional' | 'likely_cliche' | 'ambiguous';
+    reasoning: string;
+  }>;
+  additionalFigurative: Array<{
+    type: string;
+    text: string;
+    lineNumber: number;
+    explanation: string;
+  }>;
+  meterVerdicts: Record<number, {
+    verdict: 'intentional_break' | 'accidental' | 'ambiguous';
+    reasoning: string;
+  }>;
+  craftObservations: string[];
+}
+
+export interface LLMAnalysisState {
+  result: LLMAnalysisResult | null;
+  isLoading: boolean;
+  error: string | null;
+  poemHash: string | null;
+}

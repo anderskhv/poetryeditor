@@ -32,6 +32,8 @@ import { usePoetProfile } from './hooks/usePoetProfile';
 import { useEditorMemory } from './hooks/useEditorMemory';
 import { useEditorialReport } from './hooks/useEditorialReport';
 import type { AnalysisContext } from './types/editor';
+import type { ClientAnalysisSummary } from './utils/llmAnalysis';
+import { useLLMAnalysis } from './hooks/useLLMAnalysis';
 import type { PoemFormatting } from './types/database';
 import { getAllConversationSummaries } from './utils/editorStorage';
 import './App.css';
@@ -95,9 +97,23 @@ function App() {
     extractAndSaveLearnings,
   } = useEditorMemory(user);
 
+  // LLM-enhanced analysis: client analysis data callback + hook
+  const [clientAnalysisData, setClientAnalysisData] = useState<ClientAnalysisSummary | null>(null);
+  const handleAnalysisData = useCallback((data: ClientAnalysisSummary) => {
+    setClientAnalysisData(data);
+  }, []);
+
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
   const [localTitle, setLocalTitle] = useDebouncedLocalStorage('poetryTitle', '', 800);
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
+
+  const llmAnalysis = useLLMAnalysis({
+    user,
+    supabase,
+    poemText: text,
+    clientAnalysis: clientAnalysisData,
+  });
+
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(() => {
     // Open panel by default for first-time visitors so they discover the analysis
     return localStorage.getItem('hasOpenedAnalysisPanel') !== 'true'
@@ -1947,6 +1963,8 @@ function App() {
                 onHighlightLines={setHighlightedLines}
                 onHighlightWords={setHighlightedWords}
                 editorHoveredLine={editorHoveredLine}
+                llmAnalysis={llmAnalysis}
+                onAnalysisData={handleAnalysisData}
               />
             ) : (
               <CommentsPanel

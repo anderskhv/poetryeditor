@@ -24,6 +24,8 @@ import { detectDeadMetaphors, getCategoryDisplayName } from '../utils/deadMetaph
 import { generateAnalysisSummary, type SummaryItem } from '../utils/analysisSummary';
 import { HelpTooltip, HELP_CONTENT } from './HelpTooltip';
 import { SynonymMiniPopup } from './SynonymMiniPopup';
+import type { LLMAnalysisState } from '../types/editor';
+import type { ClientAnalysisSummary } from '../utils/llmAnalysis';
 import './AnalysisPanel.css';
 
 interface AnalysisPanelProps {
@@ -65,12 +67,14 @@ interface AnalysisPanelProps {
     syllableInstances: StressedSyllableInstance[];
   } | null) => void;
   editorHoveredLine?: number | null;
+  llmAnalysis?: LLMAnalysisState;
+  onAnalysisData?: (data: ClientAnalysisSummary) => void;
 }
 
 type CategoryTab = 'rhythm' | 'rhymes' | 'style' | 'originality';
 type ExpandedSection = 'syllables' | 'repetition' | 'pos' | 'adverbs' | 'passiveVoice' | 'rhythmVariation' | 'stanzaStructure' | 'lineLength' | 'punctuation' | 'rhymeScheme' | 'rhymeAnalysis' | 'poeticForm' | 'soundPatterns' | 'tenseConsistency' | 'scansion' | 'figurativeLanguage' | 'cliches' | 'abstractConcrete' | 'firstDraftPhrases' | null;
 
-export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS, onSyllableExpand, onRhythmVariationExpand, onLineLengthExpand, onPunctuationExpand, onSectionCollapse, onHighlightLines, onHighlightWords, onPassiveVoiceExpand, onTenseExpand, onScansionExpand, editorHoveredLine }: AnalysisPanelProps) {
+export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS, onSyllableExpand, onRhythmVariationExpand, onLineLengthExpand, onPunctuationExpand, onSectionCollapse, onHighlightLines, onHighlightWords, onPassiveVoiceExpand, onTenseExpand, onScansionExpand, editorHoveredLine, llmAnalysis, onAnalysisData }: AnalysisPanelProps) {
   const [activeCategory, setActiveCategory] = useState<CategoryTab>('rhythm');
   const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
   const [selectedForm, setSelectedForm] = useState<string | null>(null); // User-selected form (null = Auto-detect)
@@ -345,6 +349,41 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
       rhythmVariation: analysis.rhythmVariation,
     });
   }, [analysis]);
+
+  // Forward compact analysis data to parent for LLM enrichment
+  useEffect(() => {
+    if (!onAnalysisData) return;
+    if (analysis.totalWords < 3) return;
+
+    const allCliches = [
+      ...analysis.clicheAnalysis.strongCliches,
+      ...analysis.clicheAnalysis.moderateCliches,
+      ...analysis.clicheAnalysis.mildCliches,
+    ];
+
+    const data: ClientAnalysisSummary = {
+      detectedCliches: allCliches.map(c => ({
+        phrase: c.phrase,
+        lineNumber: c.lineNumber,
+        severity: c.severity,
+      })),
+      figurativeInstances: analysis.metaphorAnalysis.instances.map(f => ({
+        type: f.type,
+        text: f.text,
+        lineIndex: f.lineIndex,
+      })),
+      meterViolations: analysis.violatingLines.map(lineNum => ({
+        lineNumber: lineNum,
+        expected: analysis.medianSyllableCount,
+        actual: analysis.syllableCounts[lineNum - 1] || 0,
+      })),
+      rhymeScheme: (analysis.rhymeScheme.schemePattern || []).join(''),
+      detectedMeter: analysis.detectedMeter,
+      detectedForm: analysis.activeForm,
+    };
+
+    onAnalysisData(data);
+  }, [analysis, onAnalysisData]);
 
   const formatTimeSince = (date: Date) => {
     const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
@@ -1098,8 +1137,48 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                     <div className="figurative-explanation">{instance.explanation}</div>
                   </div>
                 ))}
+                {/* LLM-detected additional figurative language */}
+                {llmAnalysis?.result && llmAnalysis.result.additionalFigurative.length > 0 && (
+                  llmAnalysis.result.additionalFigurative.map((instance, idx) => (
+                    <div
+                      key={`llm-${idx}`}
+                      className="figurative-item llm-figurative-item"
+                      onMouseEnter={() => onHighlightWords?.(instance.text.split(/\s+/).map(word => ({ word: word.replace(/[^a-zA-Z]/g, ''), lineNumber: instance.lineNumber })))}
+                      onMouseLeave={() => onHighlightWords?.(null)}
+                    >
+                      <div className="figurative-header">
+                        <span className={`figurative-type`}>{instance.type}</span>
+                        <span className="figurative-line">Line {instance.lineNumber}</span>
+                        <span className="llm-badge-small" title="Detected by AI">AI</span>
+                      </div>
+                      <div className="figurative-text">"{instance.text}"</div>
+                      <div className="figurative-explanation">{instance.explanation}</div>
+                    </div>
+                  ))
+                )}
               </div>
             </>
+          )}
+          {/* LLM-detected figurative language when heuristics found none */}
+          {analysis.metaphorAnalysis.instances.length === 0 && llmAnalysis?.result && llmAnalysis.result.additionalFigurative.length > 0 && (
+            <div className="figurative-list">
+              {llmAnalysis.result.additionalFigurative.map((instance, idx) => (
+                <div
+                  key={`llm-empty-${idx}`}
+                  className="figurative-item llm-figurative-item"
+                  onMouseEnter={() => onHighlightWords?.(instance.text.split(/\s+/).map(word => ({ word: word.replace(/[^a-zA-Z]/g, ''), lineNumber: instance.lineNumber })))}
+                  onMouseLeave={() => onHighlightWords?.(null)}
+                >
+                  <div className="figurative-header">
+                    <span className={`figurative-type`}>{instance.type}</span>
+                    <span className="figurative-line">Line {instance.lineNumber}</span>
+                    <span className="llm-badge-small" title="Detected by AI">AI</span>
+                  </div>
+                  <div className="figurative-text">"{instance.text}"</div>
+                  <div className="figurative-explanation">{instance.explanation}</div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       )}
@@ -1112,6 +1191,23 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
       word: word.replace(/[^a-zA-Z']/g, ''),
       lineNumber
     })).filter(w => w.word.length > 0);
+  };
+
+  // LLM cliche verdict renderer
+  const renderClicheVerdict = (phrase: string) => {
+    const verdict = llmAnalysis?.result?.clicheVerdicts?.[phrase];
+    if (!verdict) return null;
+    const label = verdict.verdict === 'intentional' ? 'Intentional'
+      : verdict.verdict === 'likely_cliche' ? 'Likely cliche'
+      : 'Ambiguous';
+    const className = `llm-cliche-verdict llm-verdict-${verdict.verdict.replace('_', '-')}`;
+    return (
+      <div className={className}>
+        <span className="llm-badge-small" title="AI assessment">AI</span>
+        <span className="llm-verdict-label">{label}</span>
+        <span className="llm-verdict-reasoning">{verdict.reasoning}</span>
+      </div>
+    );
   };
 
   // Combined count for cliches and dead metaphors
@@ -1157,6 +1253,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                       <span className="cliche-category">{cliche.category}</span>
                       <span className="cliche-line">Line {cliche.lineNumber}</span>
                     </div>
+                    {renderClicheVerdict(cliche.phrase)}
                   </div>
                 ))}
                 {/* Then moderate cliches */}
@@ -1172,6 +1269,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                       <span className="cliche-category">{cliche.category}</span>
                       <span className="cliche-line">Line {cliche.lineNumber}</span>
                     </div>
+                    {renderClicheVerdict(cliche.phrase)}
                   </div>
                 ))}
                 {/* Finally mild cliches */}
@@ -1187,6 +1285,7 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
                       <span className="cliche-category">{cliche.category}</span>
                       <span className="cliche-line">Line {cliche.lineNumber}</span>
                     </div>
+                    {renderClicheVerdict(cliche.phrase)}
                   </div>
                 ))}
                 {/* Dead metaphors section */}
@@ -1379,16 +1478,31 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
             <div className="violating-lines">
               <div className="violation-header">Lines with significant variation:</div>
               <div className="violation-list">
-                {analysis.rhythmVariation.outlierLines.map((outlier) => (
-                  <span
-                    key={outlier.lineNumber}
-                    className="violation-badge"
-                    onMouseEnter={() => onHighlightLines?.([outlier.lineNumber])}
-                    onMouseLeave={() => onHighlightLines?.(null)}
-                  >
-                    Line {outlier.lineNumber} ({outlier.syllableCount} syl.)
-                  </span>
-                ))}
+                {analysis.rhythmVariation.outlierLines.map((outlier) => {
+                  const meterVerdict = llmAnalysis?.result?.meterVerdicts?.[outlier.lineNumber];
+                  return (
+                    <div key={outlier.lineNumber} className="violation-item-with-verdict">
+                      <span
+                        className="violation-badge"
+                        onMouseEnter={() => onHighlightLines?.([outlier.lineNumber])}
+                        onMouseLeave={() => onHighlightLines?.(null)}
+                      >
+                        Line {outlier.lineNumber} ({outlier.syllableCount} syl.)
+                      </span>
+                      {meterVerdict && (
+                        <div className={`llm-meter-verdict llm-meter-${meterVerdict.verdict.replace('_', '-')}`}>
+                          <span className="llm-badge-small" title="AI assessment">AI</span>
+                          <span className="llm-verdict-label">
+                            {meterVerdict.verdict === 'intentional_break' ? 'Intentional'
+                              : meterVerdict.verdict === 'accidental' ? 'Accidental'
+                              : 'Ambiguous'}
+                          </span>
+                          <span className="llm-verdict-reasoning">{meterVerdict.reasoning}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -2124,6 +2238,37 @@ export function AnalysisPanel({ text, words, lastSaved, onClose, onHighlightPOS,
               </div>
             ))}
           </div>
+
+          {/* LLM loading indicator */}
+          {llmAnalysis?.isLoading && (
+            <div className="llm-loading-indicator">
+              Enhancing with AI...
+            </div>
+          )}
+
+          {/* LLM enhanced summary */}
+          {llmAnalysis?.result && llmAnalysis.result.enhancedSummary.length > 0 && (
+            <div className="llm-enhanced-summary">
+              {llmAnalysis.result.enhancedSummary.map((item, idx) => (
+                <div key={idx} className="summary-item summary-observation">
+                  <span className="summary-indicator llm-badge" title="AI-enhanced observation">AI</span>
+                  <span className="summary-text">{item}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* LLM craft observations */}
+          {llmAnalysis?.result && llmAnalysis.result.craftObservations.length > 0 && (
+            <div className="llm-craft-observations">
+              {llmAnalysis.result.craftObservations.map((obs, idx) => (
+                <div key={idx} className="summary-item summary-observation">
+                  <span className="summary-indicator llm-badge" title="AI craft observation">AI</span>
+                  <span className="summary-text">{obs}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
