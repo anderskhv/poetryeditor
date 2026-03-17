@@ -1335,39 +1335,21 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         }
 
         /* Markdown formatting styles */
-        .md-bold-marker {
+        /* Markers (**, *, __) are hidden via color:transparent only.
+           Do NOT use font-size:0 or opacity:0 — these collapse the
+           selection overlay, breaking text highlighting on formatted lines. */
+        .md-bold-marker,
+        .md-italic-marker,
+        .md-underline-marker {
           color: transparent !important;
-          font-size: 0 !important;
-          opacity: 0 !important;
-          letter-spacing: -0.5ch !important;
-          padding: 0 !important;
-          margin: 0 !important;
         }
 
         .md-bold-content {
           font-weight: 700 !important;
         }
 
-        .md-italic-marker {
-          color: transparent !important;
-          font-size: 0 !important;
-          opacity: 0 !important;
-          letter-spacing: -0.5ch !important;
-          padding: 0 !important;
-          margin: 0 !important;
-        }
-
         .md-italic-content {
           font-style: italic !important;
-        }
-
-        .md-underline-marker {
-          color: transparent !important;
-          font-size: 0 !important;
-          opacity: 0 !important;
-          letter-spacing: -0.5ch !important;
-          padding: 0 !important;
-          margin: 0 !important;
         }
 
         .md-underline-content {
@@ -1378,7 +1360,6 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         :root.dark-mode .md-italic-marker,
         :root.dark-mode .md-underline-marker {
           color: transparent !important;
-          opacity: 0 !important;
         }
 
         /* Remove all boxes, borders, and decorations from Monaco editor */
