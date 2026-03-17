@@ -422,6 +422,30 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 
 ---
 
+## Autonomy Framework
+
+**Pre-authorized (just do it):**
+- Git commits — if build passes and tests pass, commit
+- Git push — if commit is clean, push to remote
+- Bug fixes and code corrections — just fix them
+- Running and acting on test results — fix what fails
+- Content updates within established patterns (poem analysis files, UI copy)
+- Prioritization between backlog items
+- Routine refactoring that doesn't change behavior
+
+**Still escalate:**
+- Deleting features or components (reducing scope)
+- Changing the editorial debate protocol or AI agent architecture
+- Supabase schema changes or migrations
+- Spending money (API calls beyond normal dev/test, services)
+- New external dependencies
+- Changes to the freemium pricing model or usage caps
+- Show mockups before building UI-heavy features (this IS the escalation)
+
+**The rule:** If the backlog says do it, the tests pass, and the pattern is established — execute and report results. Don't ask.
+
+---
+
 # Collaboration Preferences
 
 - Default to pushing changes to Git unless I explicitly say otherwise.

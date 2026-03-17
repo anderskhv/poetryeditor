@@ -4,6 +4,7 @@
  * Supported formats:
  * - Bold: **text**
  * - Italic: *text* (but not **)
+ * - Bold+Italic: ***text*** (emits both a bold and an italic range)
  * - Underline: __text__
  */
 
@@ -21,14 +22,43 @@ export interface MarkdownRange {
  */
 export function parseMarkdownFormatting(text: string): MarkdownRange[] {
   const ranges: MarkdownRange[] = [];
+  // Track offsets claimed by bold+italic to avoid double-matching
+  const claimedOffsets = new Set<number>();
+  let match;
+
+  // Bold+Italic first: ***text*** — emit BOTH a bold and an italic range
+  const boldItalicRegex = /\*\*\*(\S(?:[^*]*\S)?)\*\*\*/g;
+  while ((match = boldItalicRegex.exec(text)) !== null) {
+    if (match[1].includes('\n')) continue;
+    const start = match.index;
+    const end = start + match[0].length;
+    // Bold range: covers the full ***...*** (content inside the outer ** pair)
+    ranges.push({
+      type: 'bold',
+      startOffset: start,
+      endOffset: end,
+      contentStartOffset: start + 2,
+      contentEndOffset: end - 2,
+    });
+    // Italic range: covers *content* inside the bold
+    ranges.push({
+      type: 'italic',
+      startOffset: start + 2,
+      endOffset: end - 2,
+      contentStartOffset: start + 3,
+      contentEndOffset: end - 3,
+    });
+    // Mark these offsets as claimed
+    for (let i = start; i < end; i++) claimedOffsets.add(i);
+  }
 
   // Bold: **text** - requires at least one character between markers, non-greedy
   // Content must not start or end with whitespace for proper formatting
   const boldRegex = /\*\*(\S(?:[^*]*\S)?)\*\*/g;
-  let match;
   while ((match = boldRegex.exec(text)) !== null) {
-    // Skip if content contains newlines (multi-line not supported)
     if (match[1].includes('\n')) continue;
+    // Skip if already claimed by bold+italic
+    if (claimedOffsets.has(match.index)) continue;
     ranges.push({
       type: 'bold',
       startOffset: match.index,
@@ -42,6 +72,8 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
   // Requires: not preceded by *, not followed by *, content has at least one non-space char
   const italicRegex = /(?<!\*)\*(\S(?:[^*\n]*\S)?)\*(?!\*)/g;
   while ((match = italicRegex.exec(text)) !== null) {
+    // Skip if already claimed by bold+italic
+    if (claimedOffsets.has(match.index)) continue;
     // Make sure this isn't inside a bold section
     const isInsideBold = ranges.some(
       r => r.type === 'bold' && match!.index >= r.startOffset && match!.index < r.endOffset
@@ -81,6 +113,7 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
  */
 export function stripMarkdownFormatting(text: string): string {
   return text
+    .replace(/\*\*\*(\S(?:[^*]*\S)?)\*\*\*/g, '$1')  // Bold+Italic first
     .replace(/\*\*(\S(?:[^*]*\S)?)\*\*/g, '$1')  // Bold
     .replace(/(?<!\*)\*(\S(?:[^*\n]*\S)?)\*(?!\*)/g, '$1')  // Italic
     .replace(/__(\S(?:[^_\n]*\S)?)__/g, '$1');  // Underline

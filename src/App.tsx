@@ -767,7 +767,12 @@ function App() {
       editorInstance.focus();
     } catch (err) {
       console.error('Clipboard paste failed:', err);
-      alert('Paste is not available on this device. Try long-press > Paste or use the share menu.');
+      // Show inline toast instead of alert
+      const toast = document.createElement('div');
+      toast.className = 'paste-toast';
+      toast.textContent = 'Tap the editor and use long-press > Paste';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
   }, []);
 
@@ -1508,6 +1513,18 @@ function App() {
                 </div>
               )}
             </div>
+            {/* Mobile paste button — direct click for iOS clipboard permission */}
+            <button
+              className="mobile-paste-btn"
+              onClick={handlePasteFromClipboard}
+              aria-label="Paste from clipboard"
+              title="Paste from clipboard"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+              </svg>
+            </button>
             {/* Mobile overflow menu - visible only on small screens */}
             <div className="mobile-overflow-dropdown">
               <button
@@ -1520,15 +1537,6 @@ function App() {
               </button>
               {showMobileMenu && (
                 <div className="mobile-overflow-menu">
-                  <button
-                    className="mobile-overflow-item"
-                    onClick={() => {
-                      handlePasteFromClipboard();
-                      setShowMobileMenu(false);
-                    }}
-                  >
-                    Paste from Clipboard
-                  </button>
                   <button
                     className="mobile-overflow-item"
                     onClick={() => {
@@ -1690,7 +1698,13 @@ function App() {
             paragraphAlign={paragraphAlign}
             firstLineIndent={firstLineIndent}
             lineSpacing={lineSpacing}
-            onEditorMount={(editor) => { editorRef.current = editor; }}
+            onEditorMount={(editor) => {
+              editorRef.current = editor;
+              // Expose editor instance in dev mode for e2e testing
+              if (import.meta.env.DEV) {
+                (window as any).__monacoEditor = editor;
+              }
+            }}
             comments={showCommentHighlights ? poemComments : []}
             onAddComment={handleAddComment}
             showCommentHighlights={showCommentHighlights}

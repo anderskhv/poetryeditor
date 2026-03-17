@@ -1560,6 +1560,52 @@
   }
 }
 
+/* Mobile paste button — hidden on desktop, shown on mobile */
+.mobile-paste-btn {
+  display: none;
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: inherit;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-paste-btn:active {
+  background: #eee;
+}
+
+@media (max-width: 768px) {
+  .mobile-paste-btn {
+    display: inline-flex;
+  }
+}
+
+/* Paste error toast */
+.paste-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 10000;
+  animation: paste-toast-fade 3s ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes paste-toast-fade {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 /* Mobile overflow menu - hidden on desktop */
 .mobile-overflow-dropdown {
   display: none;
@@ -1638,6 +1684,14 @@
 
 :root.dark-mode .mobile-overflow-item:hover {
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+:root.dark-mode .mobile-paste-btn {
+  border-color: #555;
+}
+
+:root.dark-mode .mobile-paste-btn:active {
+  background: #333;
 }
 
 /* ============================================
