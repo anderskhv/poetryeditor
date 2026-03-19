@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Link, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
-import { editor, Range } from 'monaco-editor';
 import { supabase } from './lib/supabase';
 import { useAuth } from './hooks/useAuth';
 import { AuthButton } from './components/AuthButton';
 import { PoemNavSidebar } from './components/PoemNavSidebar';
 import type { Poem } from './types/database';
-import { PoetryEditor } from './components/PoetryEditor';
+import { EditorSwitch } from './components/EditorSwitch';
+import type { EditorHandle } from './types/editorHandle';
 import { addPoemVersion, ensureInitialPoemVersion, fetchPoemVersionById, migrateLocalPoemVersions, type PoemVersion } from './utils/poemVersions';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CommentsPanel } from './components/CommentsPanel';
@@ -204,7 +204,7 @@ function App() {
   const [firstLineIndent, setFirstLineIndent] = useState<boolean>(() => {
     return localStorage.getItem('firstLineIndent') === 'true';
   });
-  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const editorRef = useRef<EditorHandle | null>(null);
   const [showToolsMenu, setShowToolsMenu] = useState<boolean>(false);
   const [showInspirationMenu, setShowInspirationMenu] = useState<boolean>(false);
   const [savedPoems, setSavedPoems] = useState<SavedPoem[]>(() => {
@@ -750,41 +750,21 @@ function App() {
   const [showMobileFormatting, setShowMobileFormatting] = useState<boolean>(false);
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
 
-  // Apply markdown formatting by triggering the Monaco editor actions
-  // (the actual logic lives in wrapSelection inside PoetryEditor)
+  // Apply markdown formatting via the unified EditorHandle interface
   const applyFormatting = useCallback((type: 'bold' | 'italic' | 'underline') => {
-    const editorInstance = editorRef.current;
-    if (!editorInstance) return;
-
-    const actionIds: Record<string, string> = {
-      bold: 'bold-text',
-      italic: 'italic-text',
-      underline: 'underline-text',
-    };
-
-    const action = editorInstance.getAction(actionIds[type]);
-    if (action) {
-      action.run();
-    }
-    editorInstance.focus();
+    const handle = editorRef.current;
+    if (!handle) return;
+    handle.applyFormatting(type);
+    handle.focus();
   }, []);
 
   const handlePasteFromClipboard = useCallback(async () => {
-    const editorInstance = editorRef.current;
-    if (!editorInstance) return;
+    const handle = editorRef.current;
+    if (!handle) return;
     try {
-      const textToPaste = await navigator.clipboard.readText();
-      if (!textToPaste) return;
-      const model = editorInstance.getModel();
-      if (!model) return;
-      const selection = editorInstance.getSelection();
-      const position = editorInstance.getPosition() || model.getPositionAt(model.getValueLength());
-      const range = selection || new Range(position.lineNumber, position.column, position.lineNumber, position.column);
-      editorInstance.executeEdits('clipboard-paste', [{ range, text: textToPaste }]);
-      editorInstance.focus();
+      await handle.pasteFromClipboard();
     } catch (err) {
       console.error('Clipboard paste failed:', err);
-      // Show inline toast instead of alert
       const toast = document.createElement('div');
       toast.className = 'paste-toast';
       toast.textContent = 'Tap the editor and use long-press > Paste';
@@ -942,22 +922,12 @@ function App() {
   }, [activePoemId]);
 
   const handleJumpToComment = useCallback((comment: PoemComment) => {
-    const editorInstance = editorRef.current;
-    if (!editorInstance) return;
-    const selection = {
-      startLineNumber: comment.range.startLineNumber,
-      startColumn: comment.range.startColumn,
-      endLineNumber: comment.range.endLineNumber,
-      endColumn: comment.range.endColumn,
-    };
-    editorInstance.setSelection(selection);
-    editorInstance.revealRangeInCenterIfOutsideViewport(new Range(
-      comment.range.startLineNumber,
-      comment.range.startColumn,
-      comment.range.endLineNumber,
-      comment.range.endColumn
-    ));
-    editorInstance.focus();
+    const handle = editorRef.current;
+    if (!handle) return;
+    if (handle.jumpToRange) {
+      handle.jumpToRange(comment.range);
+    }
+    handle.focus();
   }, []);
 
   const exitVersionPreview = useCallback(() => {
@@ -1802,7 +1772,7 @@ function App() {
               <button onClick={() => setCloudPoemError(null)} aria-label="Dismiss error">&times;</button>
             </div>
           )}
-          <PoetryEditor
+          <EditorSwitch
             value={text}
             onChange={handleTextChange}
             poemId={cloudPoemId || currentPoemId || 'local'}
@@ -1832,12 +1802,8 @@ function App() {
             paragraphAlign={paragraphAlign}
             firstLineIndent={firstLineIndent}
             lineSpacing={lineSpacing}
-            onEditorMount={(editor) => {
-              editorRef.current = editor;
-              // Expose editor instance in dev mode for e2e testing
-              if (import.meta.env.DEV) {
-                (window as any).__monacoEditor = editor;
-              }
+            onEditorMount={(handle) => {
+              editorRef.current = handle as any;
             }}
             comments={showCommentHighlights ? poemComments : []}
             onAddComment={handleAddComment}

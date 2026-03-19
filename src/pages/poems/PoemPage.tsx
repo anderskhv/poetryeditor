@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { editor } from 'monaco-editor';
 import { getPoemBySlug, PoemAnalysis } from '../../data/poems';
 import { Layout } from '../../components/Layout';
-import { PoetryEditor } from '../../components/PoetryEditor';
+import { EditorSwitch } from '../../components/EditorSwitch';
+import type { EditorHandle } from '../../types/editorHandle';
 import { AnalysisPanel } from '../../components/AnalysisPanel';
 import { SEOHead } from '../../components/SEOHead';
 import { ShareModal } from '../../components/ShareModal';
@@ -23,7 +23,7 @@ export function PoemPage() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
-  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const editorRef = useRef<EditorHandle | null>(null);
 
   // Analysis tabs
   const [activeTab, setActiveTab] = useState<'overview' | 'line-by-line' | 'devices' | 'technical'>('overview');
@@ -230,7 +230,7 @@ export function PoemPage() {
 
       <div className="poem-page-content">
         <div className="editor-pane">
-          <PoetryEditor
+          <EditorSwitch
             value={text}
             onChange={() => {}}
             poemId={poem.slug}
@@ -255,7 +255,7 @@ export function PoemPage() {
             paragraphAlign={paragraphAlign}
             firstLineIndent={firstLineIndent}
             lineSpacing={lineSpacing}
-            onEditorMount={(ed) => { editorRef.current = ed; }}
+            onEditorMount={(handle) => { editorRef.current = handle as any; }}
             readOnly={true}
             hideTitle={false}
             poemMetadata={{

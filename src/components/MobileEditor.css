@@ -1,0 +1,95 @@
+/* Mobile Editor — CodeMirror 6 styling */
+
+.mobile-editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+/* Title bar */
+.mobile-editor-title-bar {
+  padding: 16px 16px 8px;
+  flex-shrink: 0;
+}
+
+.mobile-editor-title {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: inherit;
+  margin: 0;
+  cursor: text;
+}
+
+.mobile-editor-title-input {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  outline: none;
+}
+
+/* CodeMirror container */
+.mobile-editor-cm-container {
+  flex: 1;
+  overflow: hidden;
+}
+
+.mobile-editor-cm-container .cm-editor {
+  height: 100%;
+}
+
+.mobile-editor-cm-container .cm-scroller {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Markdown formatting — markers */
+.cm-md-marker {
+  color: transparent !important;
+  font-size: 1px;
+  letter-spacing: -1em;
+}
+
+/* Markdown formatting — styled content */
+.cm-md-bold {
+  font-weight: 700;
+}
+
+.cm-md-italic {
+  font-style: italic;
+}
+
+.cm-md-underline {
+  text-decoration: underline;
+}
+
+/* Theme backgrounds (applied via wrapper class) */
+.mobile-editor-light {
+  background-color: #fdfcfa;
+  color: #2c2c2c;
+}
+
+.mobile-editor-dark {
+  background-color: #242428;
+  color: #e0e0e0;
+}
+
+.mobile-editor-yellow {
+  background-color: #f5e6b8;
+  color: #3a3020;
+}
+
+/* Title theming */
+.mobile-editor-dark .mobile-editor-title-input {
+  border-bottom-color: #505050;
+}
+
+.mobile-editor-yellow .mobile-editor-title-input {
+  border-bottom-color: #b0a080;
+}
