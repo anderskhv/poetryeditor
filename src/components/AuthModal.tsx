@@ -16,6 +16,8 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [acceptPrivacy, setAcceptPrivacy] = useState(false);
+  const [allowContact, setAllowContact] = useState(false);
 
   if (!isOpen) return null;
 
@@ -61,6 +63,13 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          privacy_accepted: true,
+          privacy_accepted_at: new Date().toISOString(),
+          allow_contact: allowContact,
+        },
+      },
     });
 
     setLoading(false);
@@ -200,7 +209,26 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 placeholder="At least 6 characters"
               />
             </label>
-            <button type="submit" className="auth-button" disabled={loading}>
+            <label className="auth-checkbox-label">
+              <input
+                type="checkbox"
+                checked={acceptPrivacy}
+                onChange={(e) => setAcceptPrivacy(e.target.checked)}
+                required
+                className="auth-checkbox"
+              />
+              <span>I agree to the <a href="/privacy-policy.html" target="_blank" rel="noopener noreferrer" className="auth-privacy-link">Privacy Policy</a></span>
+            </label>
+            <label className="auth-checkbox-label">
+              <input
+                type="checkbox"
+                checked={allowContact}
+                onChange={(e) => setAllowContact(e.target.checked)}
+                className="auth-checkbox"
+              />
+              <span>The founder can reach out to me occasionally by email</span>
+            </label>
+            <button type="submit" className="auth-button" disabled={loading || !acceptPrivacy}>
               {loading ? 'Creating account...' : 'Sign Up'}
             </button>
             <div className="auth-links">

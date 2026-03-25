@@ -158,3 +158,25 @@
   font-size: 13px;
   margin-bottom: 8px;
 }
+
+.auth-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-secondary, #6a6a6a);
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.auth-checkbox {
+  margin-top: 2px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.auth-privacy-link {
+  color: var(--color-text-primary, #2a2a2a);
+  text-decoration: underline;
+}
