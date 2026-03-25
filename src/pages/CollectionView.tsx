@@ -529,7 +529,16 @@ export function CollectionView() {
           <div className="loading">Loading poems...</div>
         ) : poems.length === 0 ? (
           <div className="no-poems">
-            <p>This collection is empty.</p>
+            <p>This collection is empty. You can start by adding sections to organize your poems, or jump straight in with a new poem.</p>
+            <p className="no-poems-hint">It's perfectly fine to have just one poem in a collection — you can always add more later.</p>
+            <div className="no-poems-actions">
+              <button className="export-button" onClick={handleAddSection}>
+                Add a Section
+              </button>
+              <button className="export-button" onClick={handleCreatePoem}>
+                Write a Poem
+              </button>
+            </div>
           </div>
         ) : (
           <DndContext sensors={sensors} onDragEnd={handleDragEnd}>

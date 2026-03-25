@@ -238,6 +238,19 @@
   font-family: var(--font-sans, system-ui, sans-serif);
   color: var(--color-text-muted, #666);
   margin: 0 0 1rem;
+  line-height: 1.6;
+}
+
+.no-poems-hint {
+  font-size: 13px;
+  font-style: italic;
+}
+
+.no-poems-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 0.5rem;
 }
 
 .not-authenticated a,

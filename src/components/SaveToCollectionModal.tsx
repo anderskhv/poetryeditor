@@ -74,62 +74,86 @@ export function SaveToCollectionModal({
     }
   };
 
-  const handleSubmit = () => {
-    if (showNewInput) {
-      handleCreateAndSave();
-    } else if (selectedId) {
-      handleSave(selectedId);
-    }
-  };
-
   // Auto-select first collection if none remembered
   const effectiveSelected = selectedId && collections.some(c => c.id === selectedId)
     ? selectedId
     : collections[0]?.id || null;
 
+  const handleSubmit = () => {
+    if (collections.length === 0 || showNewInput) {
+      handleCreateAndSave();
+    } else if (effectiveSelected) {
+      handleSave(effectiveSelected);
+    }
+  };
+
   return (
     <div className="save-modal-overlay" onClick={onClose}>
       <div className="save-modal" onClick={e => e.stopPropagation()}>
-        <h2>Save to Collection</h2>
-        <p className="save-modal-subtitle">
-          Choose where to save "{poemTitle.trim() || 'Untitled'}"
-        </p>
-
-        {loading ? (
-          <div className="save-modal-loading">Loading collections...</div>
-        ) : (
-          <div className="save-modal-list">
-            {collections.map(c => (
-              <button
-                key={c.id}
-                className={`save-modal-item ${effectiveSelected === c.id && !showNewInput ? 'selected' : ''}`}
-                onClick={() => { setSelectedId(c.id); setShowNewInput(false); }}
-              >
-                {c.name}
-              </button>
-            ))}
-            {showNewInput ? (
+        {collections.length === 0 ? (
+          <>
+            <h2>Create a Collection</h2>
+            <p className="save-modal-subtitle">
+              Give your collection a name to save "{poemTitle.trim() || 'Untitled'}". You can always rename it or add more poems later.
+            </p>
+            <div className="save-modal-list">
               <div className="save-modal-new-input">
                 <input
                   type="text"
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
-                  placeholder="Collection name"
+                  placeholder="e.g. My Poems, First Drafts, Spring Collection"
                   autoFocus
                   onKeyDown={e => {
                     if (e.key === 'Enter' && newName.trim()) handleCreateAndSave();
                   }}
                 />
               </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <h2>Save to Collection</h2>
+            <p className="save-modal-subtitle">
+              Choose where to save "{poemTitle.trim() || 'Untitled'}"
+            </p>
+            {loading ? (
+              <div className="save-modal-loading">Loading collections...</div>
             ) : (
-              <button
-                className="save-modal-item save-modal-new"
-                onClick={() => { setShowNewInput(true); setNewName(''); }}
-              >
-                + New Collection
-              </button>
+              <div className="save-modal-list">
+                {collections.map(c => (
+                  <button
+                    key={c.id}
+                    className={`save-modal-item ${effectiveSelected === c.id && !showNewInput ? 'selected' : ''}`}
+                    onClick={() => { setSelectedId(c.id); setShowNewInput(false); }}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+                {showNewInput ? (
+                  <div className="save-modal-new-input">
+                    <input
+                      type="text"
+                      value={newName}
+                      onChange={e => setNewName(e.target.value)}
+                      placeholder="Collection name"
+                      autoFocus
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && newName.trim()) handleCreateAndSave();
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <button
+                    className="save-modal-item save-modal-new"
+                    onClick={() => { setShowNewInput(true); setNewName(''); }}
+                  >
+                    + New Collection
+                  </button>
+                )}
+              </div>
             )}
-          </div>
+          </>
         )}
 
         <div className="save-modal-actions">
@@ -139,9 +163,9 @@ export function SaveToCollectionModal({
           <button
             className="save-modal-save"
             onClick={handleSubmit}
-            disabled={saving || (!showNewInput && !effectiveSelected) || (showNewInput && !newName.trim())}
+            disabled={saving || (collections.length === 0 ? !newName.trim() : (!showNewInput && !effectiveSelected) || (showNewInput && !newName.trim()))}
           >
-            {saving ? 'Saving...' : 'Save'}
+            {saving ? 'Saving...' : (collections.length === 0 ? 'Create & Save' : 'Save')}
           </button>
         </div>
       </div>

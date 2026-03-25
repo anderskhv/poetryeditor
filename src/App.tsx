@@ -226,6 +226,7 @@ function App() {
   const isPreviewing = Boolean(versionPreview);
   const [showSaveToCollectionModal, setShowSaveToCollectionModal] = useState(false);
   const [showSaveAuthModal, setShowSaveAuthModal] = useState(false);
+  const pendingSaveRef = useRef(false);
   const [migrationPoems, setMigrationPoems] = useState<Array<{ title: string; content: string }>>([]);
   const [showMigrationPrompt, setShowMigrationPrompt] = useState(false);
   const [highlightedPOS, setHighlightedPOS] = useState<string | null>(null);
@@ -299,6 +300,15 @@ function App() {
       setMigrationPoems(poems);
       setShowMigrationPrompt(true);
     }
+  }, [user]);
+
+  // After auth completes with a pending save, continue the save flow
+  useEffect(() => {
+    if (!user || !pendingSaveRef.current) return;
+    pendingSaveRef.current = false;
+    setShowSaveAuthModal(false);
+    // Show the collection modal — it handles both "create new" and "pick existing"
+    setShowSaveToCollectionModal(true);
   }, [user]);
 
   // Load cloud poem if ?poem= is in URL
@@ -1038,19 +1048,17 @@ function App() {
       return;
     }
 
-    // Guest user: prompt to create an account
+    // Guest user: prompt to create an account, then resume save
     if (!user) {
+      pendingSaveRef.current = true;
       setShowSaveAuthModal(true);
       return;
     }
 
     // Authenticated user: save to a collection
     if (userCollections.length === 0) {
-      // Auto-create "My Poems" and save there
-      const collection = await createUserCollection('My Poems');
-      if (collection) {
-        await saveToCollection(collection.id);
-      }
+      // No collections yet — show modal so user can name their first collection
+      setShowSaveToCollectionModal(true);
     } else if (userCollections.length === 1) {
       await saveToCollection(userCollections[0].id);
     } else {
