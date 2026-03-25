@@ -136,7 +136,7 @@
   border-bottom-left-radius: 4px;
 }
 
-/* Streaming cursor */
+/* Streaming cursor — inline with text */
 .editor-cursor {
   display: inline-block;
   width: 2px;
@@ -150,6 +150,24 @@
 @keyframes editor-blink {
   0%, 50% { opacity: 1; }
   51%, 100% { opacity: 0; }
+}
+
+/* Thinking state — shown before any content streams */
+.editor-thinking {
+  color: var(--color-text-muted, #888);
+  font-style: italic;
+}
+
+.editor-thinking-dots::after {
+  content: '';
+  animation: editor-dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes editor-dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
 }
 
 /* Error */

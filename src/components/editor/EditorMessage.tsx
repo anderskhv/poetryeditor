@@ -151,10 +151,14 @@ export function EditorMessage({ message }: EditorMessageProps) {
 
   return (
     <div className={`editor-msg editor-msg-${message.role}`}>
-      <div
-        className="editor-msg-content"
-        dangerouslySetInnerHTML={{ __html: mainHtml }}
-      />
+      <div className="editor-msg-content">
+        {message.isStreaming && !message.content ? (
+          <span className="editor-thinking">Thinking<span className="editor-thinking-dots" /></span>
+        ) : (
+          <span dangerouslySetInnerHTML={{ __html: mainHtml }} />
+        )}
+        {message.isStreaming && message.content && <span className="editor-cursor" />}
+      </div>
       {sections && sections.filter(s => !s.isMain).map((section, i) => (
         <CollapsibleSection key={i} section={section} />
       ))}
@@ -177,7 +181,6 @@ export function EditorMessage({ message }: EditorMessageProps) {
           )}
         </button>
       )}
-      {message.isStreaming && <span className="editor-cursor" />}
     </div>
   );
 }
