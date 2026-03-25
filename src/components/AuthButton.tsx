@@ -57,6 +57,13 @@ export function AuthButton() {
             >
               My Collections
             </Link>
+            <Link
+              to="/my-account"
+              className="auth-dropdown-item"
+              onClick={() => setShowDropdown(false)}
+            >
+              My Account
+            </Link>
             <button
               className="auth-dropdown-item"
               onClick={() => {

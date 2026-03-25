@@ -36,6 +36,7 @@ import { Widget } from './pages/Widget';
 import { EmbedPage } from './pages/EmbedPage';
 import { ResetPassword } from './pages/ResetPassword';
 import { SharedCollection } from './pages/SharedCollection';
+import { MyAccount } from './pages/MyAccount';
 import { Analytics } from './pages/Analytics';
 import { Analytics2 } from './pages/Analytics2';
 import { EditorialReport } from './pages/EditorialReport';
@@ -246,6 +247,10 @@ export const router = createBrowserRouter([
   {
     path: '/my-collections/:id',
     element: <CollectionView />,
+  },
+  {
+    path: '/my-account',
+    element: <MyAccount />,
   },
   // Widget pages
   {

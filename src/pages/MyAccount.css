@@ -1,0 +1,230 @@
+.my-account-page {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.my-account-container {
+  width: 100%;
+  max-width: 480px;
+}
+
+.my-account-container h1 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 32px;
+  font-weight: 400;
+  margin: 0 0 40px;
+  color: var(--color-text-primary, #000);
+}
+
+.my-account-loading {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-muted, #666);
+}
+
+/* Sections */
+
+.my-account-section {
+  margin-bottom: 36px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
+}
+
+.my-account-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.my-account-section h2 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0 0 16px;
+  color: var(--color-text-primary, #000);
+}
+
+.my-account-hint {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-muted, #666);
+  margin: 0 0 12px;
+}
+
+/* Account info fields */
+
+.my-account-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.my-account-label {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-muted, #666);
+}
+
+.my-account-value {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-primary, #000);
+}
+
+/* Writing stats */
+
+.my-account-stats {
+  display: flex;
+  gap: 32px;
+}
+
+.my-account-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.my-account-stat-value {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--color-text-primary, #000);
+  line-height: 1.2;
+}
+
+.my-account-stat-label {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-muted, #666);
+}
+
+/* Usage bar */
+
+.my-account-usage {
+  margin-top: 4px;
+}
+
+.my-account-usage-bar {
+  height: 6px;
+  background: var(--color-border, #e0e0e0);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.my-account-usage-fill {
+  height: 100%;
+  background: var(--color-text-primary, #1a1a1a);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.my-account-usage-text {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-muted, #666);
+  margin-top: 8px;
+}
+
+/* Forms */
+
+.my-account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.my-account-form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-primary, #000);
+}
+
+.my-account-input {
+  padding: 10px 12px;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 6px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-primary, #000);
+  background: var(--color-paper, #fff);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.my-account-input:focus {
+  outline: none;
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 2px rgba(26, 26, 26, 0.1);
+}
+
+.my-account-input::placeholder {
+  color: var(--color-text-muted, #999);
+}
+
+.my-account-button {
+  padding: 10px 16px;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.my-account-button:hover:not(:disabled) {
+  background: #333;
+}
+
+.my-account-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Messages */
+
+.my-account-message {
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.my-account-message--error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.my-account-message--success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+}
+
+@media (max-width: 600px) {
+  .my-account-page {
+    padding: 40px 16px;
+  }
+
+  .my-account-container h1 {
+    font-size: 26px;
+    margin-bottom: 32px;
+  }
+
+  .my-account-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}
