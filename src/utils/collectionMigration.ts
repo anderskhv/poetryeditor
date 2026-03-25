@@ -1,3 +1,4 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { PoetryCollection, CollectionPoem } from '../types/collection';
 import { generateId } from './markdownUtils';
 
@@ -5,6 +6,7 @@ import { generateId } from './markdownUtils';
 export const COLLECTION_KEY = 'poetryCollection';
 export const MIGRATION_FLAG = 'collectionMigrated';
 const SAVED_POEMS_KEY = 'savedPoems';
+const CLOUD_MIGRATION_FLAG = 'cloudMigrationDone';
 
 // Existing SavedPoem interface from App.tsx
 interface LegacySavedPoem {
@@ -126,4 +128,78 @@ export function saveCollection(collection: PoetryCollection): void {
     updatedAt: new Date().toISOString(),
   };
   localStorage.setItem(COLLECTION_KEY, JSON.stringify(updated));
+}
+
+/**
+ * Check if there are local poems that could be migrated to cloud
+ */
+export function getLocalPoemsForCloudMigration(): LegacySavedPoem[] {
+  if (localStorage.getItem(CLOUD_MIGRATION_FLAG) === 'true') return [];
+  try {
+    const raw = localStorage.getItem(SAVED_POEMS_KEY);
+    if (!raw) return [];
+    const poems: LegacySavedPoem[] = JSON.parse(raw);
+    return Array.isArray(poems) ? poems.filter(p => p.content?.trim()) : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Migrate localStorage poems to a Supabase cloud collection.
+ * Creates a "My Poems" collection (or uses targetCollectionId) and bulk-inserts.
+ * Returns the collection ID on success, null on failure.
+ */
+export async function migrateLocalPoemsToCloud(
+  userId: string,
+  supabase: SupabaseClient,
+  targetCollectionId?: string,
+): Promise<string | null> {
+  const poems = getLocalPoemsForCloudMigration();
+  if (poems.length === 0) return null;
+
+  try {
+    let collectionId = targetCollectionId;
+
+    // Create a new collection if none specified
+    if (!collectionId) {
+      const { data, error } = await supabase
+        .from('collections')
+        .insert({ user_id: userId, name: 'My Poems' })
+        .select('id')
+        .single();
+      if (error) throw error;
+      collectionId = data.id;
+    }
+
+    // Bulk insert poems
+    const inserts = poems.map((poem, index) => ({
+      collection_id: collectionId,
+      title: poem.title || 'Untitled',
+      content: poem.content,
+      sort_order: index,
+    }));
+
+    const { error: insertError } = await supabase
+      .from('poems')
+      .insert(inserts);
+
+    if (insertError) throw insertError;
+
+    // Mark migration as done and clean up
+    localStorage.setItem(CLOUD_MIGRATION_FLAG, 'true');
+    localStorage.removeItem(SAVED_POEMS_KEY);
+
+    return collectionId!;
+  } catch (err) {
+    console.error('Cloud migration failed:', err);
+    return null;
+  }
+}
+
+/**
+ * Mark cloud migration as done (e.g., if user dismisses the prompt)
+ */
+export function dismissCloudMigration(): void {
+  localStorage.setItem(CLOUD_MIGRATION_FLAG, 'true');
 }

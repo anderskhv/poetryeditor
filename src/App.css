@@ -2105,3 +2105,50 @@
 :root.yellow-mode .mobile-overflow-item:hover {
   background: #e5d6a0;
 }
+
+/* Signup nudge banner */
+.signup-nudge {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--color-text-primary, #1a1a1a);
+  color: var(--color-paper, #fff);
+  border-radius: 8px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: nudge-in 0.3s ease;
+}
+
+@keyframes nudge-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.signup-nudge-link {
+  background: none;
+  border: none;
+  color: var(--color-paper, #fff);
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  padding: 0;
+}
+
+.signup-nudge-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 0 0 4px;
+  line-height: 1;
+}

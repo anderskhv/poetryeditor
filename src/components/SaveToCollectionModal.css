@@ -1,0 +1,145 @@
+.save-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.save-modal {
+  background: var(--color-paper, #fff);
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.save-modal h2 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 0 4px;
+  color: var(--color-text-primary, #000);
+}
+
+.save-modal-subtitle {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-muted, #666);
+  margin: 0 0 1.25rem;
+}
+
+.save-modal-loading {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-muted, #666);
+  padding: 1rem 0;
+}
+
+.save-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.save-modal-item {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-primary, #000);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.save-modal-item:hover {
+  background: var(--color-background, #f5f5f5);
+}
+
+.save-modal-item.selected {
+  border-color: var(--color-text-primary, #1a1a1a);
+  background: var(--color-background, #f5f5f5);
+}
+
+.save-modal-new {
+  color: var(--color-text-muted, #666);
+}
+
+.save-modal-new-input {
+  padding: 2px;
+}
+
+.save-modal-new-input input {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: var(--color-text-primary, #000);
+  background: var(--color-paper, #fff);
+}
+
+.save-modal-new-input input:focus {
+  outline: none;
+  border-color: var(--color-text-primary, #1a1a1a);
+}
+
+.save-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.save-modal-cancel {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  padding: 10px 20px;
+  background: none;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: var(--color-text-primary, #000);
+}
+
+.save-modal-cancel:hover {
+  border-color: var(--color-text-muted, #666);
+}
+
+.save-modal-save {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+  background: var(--color-text-primary, #1a1a1a);
+  color: var(--color-paper, #fff);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.save-modal-save:hover:not(:disabled) {
+  background: var(--color-text-secondary, #333);
+}
+
+.save-modal-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

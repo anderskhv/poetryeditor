@@ -26,6 +26,10 @@ import { addPoemComment, deletePoemComment, fetchPoemComments, updatePoemComment
 import { trackPageview } from './utils/analytics';
 import { FONT_OPTIONS } from './utils/fontOptions';
 import { exportPoemAsPdf } from './utils/pdfExport';
+import { SaveToCollectionModal } from './components/SaveToCollectionModal';
+import { AuthModal } from './components/AuthModal';
+import { getLocalPoemsForCloudMigration, migrateLocalPoemsToCloud, dismissCloudMigration } from './utils/collectionMigration';
+import { useCollections } from './hooks/useCollections';
 import { EditorChat } from './components/editor/EditorChat';
 import { PreFlightForm } from './components/editor/PreFlightForm';
 import { usePoetProfile } from './hooks/usePoetProfile';
@@ -89,6 +93,7 @@ function App() {
   const cloudPoemId = searchParams.get('poem');
   const versionId = searchParams.get('version');
   const { user } = useAuth();
+  const { collections: userCollections, createCollection: createUserCollection } = useCollections();
   const { profile: poetProfile, completeOnboarding, addLearning, updateSummary } = usePoetProfile(user);
   const {
     settings: editorSettings,
@@ -219,6 +224,10 @@ function App() {
   const previewTextRef = useRef<string | null>(null);
   const previewTitleRef = useRef<string | null>(null);
   const isPreviewing = Boolean(versionPreview);
+  const [showSaveToCollectionModal, setShowSaveToCollectionModal] = useState(false);
+  const [showSaveAuthModal, setShowSaveAuthModal] = useState(false);
+  const [migrationPoems, setMigrationPoems] = useState<Array<{ title: string; content: string }>>([]);
+  const [showMigrationPrompt, setShowMigrationPrompt] = useState(false);
   const [highlightedPOS, setHighlightedPOS] = useState<string | null>(null);
   const [meterColoringData, setMeterColoringData] = useState<{
     syllableCounts: number[];
@@ -281,6 +290,16 @@ function App() {
     }
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  // Check for local poems to migrate to cloud when user authenticates
+  useEffect(() => {
+    if (!user) return;
+    const poems = getLocalPoemsForCloudMigration();
+    if (poems.length > 0) {
+      setMigrationPoems(poems);
+      setShowMigrationPrompt(true);
+    }
+  }, [user]);
 
   // Load cloud poem if ?poem= is in URL
   useEffect(() => {
@@ -966,28 +985,77 @@ function App() {
     }
   }, [versionPreview, cloudPoemId, user, supabase, exitVersionPreview, setText]);
 
-  const handleSavePoem = () => {
-    // Use current title from header input (no prompt needed)
+  const saveToCollection = async (collectionId: string) => {
+    if (!supabase || !user) return;
     const title = poemTitle.trim() || 'Untitled';
-
-    const newPoem: SavedPoem = {
-      id: currentPoemId || `poem-${Date.now()}`,
-      title,
-      content: text,
-      updatedAt: new Date().toISOString(),
+    const formatting: PoemFormatting = {
+      align: paragraphAlign,
+      font: selectedFont,
+      lineSpacing,
+      firstLineIndent,
     };
+    try {
+      const { data, error } = await supabase
+        .from('poems')
+        .insert({
+          collection_id: collectionId,
+          title,
+          content: text,
+          formatting,
+          sort_order: 0,
+        })
+        .select('id')
+        .single();
+      if (error) throw error;
+      localStorage.setItem('lastUsedCollectionId', collectionId);
+      setLastSavedContent(text);
+      navigate(`/?poem=${data.id}`, { replace: true });
+    } catch (err) {
+      console.error('Failed to save to collection:', err);
+    }
+  };
 
-    const updatedPoems = currentPoemId
-      ? savedPoems.map(p => p.id === currentPoemId ? newPoem : p)
-      : [...savedPoems, newPoem];
+  const handleSavePoem = async () => {
+    // If already editing a cloud poem, force an immediate save (bypass debounce)
+    if (cloudPoemId && supabase) {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      const formatting: PoemFormatting = {
+        align: paragraphAlign,
+        font: selectedFont,
+        lineSpacing,
+        firstLineIndent,
+      };
+      await supabase
+        .from('poems')
+        .update({
+          content: text,
+          title: poemTitle,
+          formatting,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', cloudPoemId);
+      setLastSavedContent(text);
+      return;
+    }
 
-    setSavedPoems(updatedPoems);
-    setCurrentPoemId(newPoem.id);
-    setPoemTitle(title); // Ensure title state is synced
-    setLastSavedContent(text); // Track the saved content
-    localStorage.setItem('savedPoems', JSON.stringify(updatedPoems));
-    if (user) {
-      addPoemVersion(newPoem.id, title, text, user.id);
+    // Guest user: prompt to create an account
+    if (!user) {
+      setShowSaveAuthModal(true);
+      return;
+    }
+
+    // Authenticated user: save to a collection
+    if (userCollections.length === 0) {
+      // Auto-create "My Poems" and save there
+      const collection = await createUserCollection('My Poems');
+      if (collection) {
+        await saveToCollection(collection.id);
+      }
+    } else if (userCollections.length === 1) {
+      await saveToCollection(userCollections[0].id);
+    } else {
+      // Multiple collections — show picker
+      setShowSaveToCollectionModal(true);
     }
   };
 
@@ -1998,6 +2066,50 @@ function App() {
         />
         );
       })()}
+
+      {/* Save to Collection Modal */}
+      <SaveToCollectionModal
+        isOpen={showSaveToCollectionModal}
+        onClose={() => setShowSaveToCollectionModal(false)}
+        poemTitle={poemTitle.trim() || 'Untitled'}
+        poemContent={text}
+        formatting={{ align: paragraphAlign, font: selectedFont, lineSpacing, firstLineIndent }}
+        onSaved={(collectionId, poemId) => {
+          setShowSaveToCollectionModal(false);
+          setLastSavedContent(text);
+          localStorage.setItem('lastUsedCollectionId', collectionId);
+          navigate(`/?poem=${poemId}`, { replace: true });
+        }}
+      />
+
+      {/* Auth modal for guest save */}
+      <AuthModal isOpen={showSaveAuthModal} onClose={() => setShowSaveAuthModal(false)} />
+
+      {/* Migration prompt for authenticated users with local poems */}
+      {showMigrationPrompt && user && supabase && (
+        <div className="signup-nudge">
+          <span>We found {migrationPoems.length} {migrationPoems.length === 1 ? 'poem' : 'poems'} saved locally. Import to your collection?</span>
+          <button
+            className="signup-nudge-link"
+            onClick={async () => {
+              const targetId = userCollections.length === 1 ? userCollections[0].id : undefined;
+              const collectionId = await migrateLocalPoemsToCloud(user.id, supabase!, targetId);
+              setShowMigrationPrompt(false);
+              if (collectionId) {
+                navigate(`/my-collections/${collectionId}`);
+              }
+            }}
+          >
+            Import
+          </button>
+          <button
+            className="signup-nudge-close"
+            onClick={() => { dismissCloudMigration(); setShowMigrationPrompt(false); }}
+          >
+            &times;
+          </button>
+        </div>
+      )}
     </div>
   );
 }

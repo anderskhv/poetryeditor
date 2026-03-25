@@ -45,6 +45,9 @@ export function MyCollections() {
   const { collections, loading, createCollection, deleteCollection } = useCollections();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showUploader, setShowUploader] = useState(false);
+  const [showNewCollection, setShowNewCollection] = useState(false);
+  const [newCollectionName, setNewCollectionName] = useState('');
+  const [creatingNew, setCreatingNew] = useState(false);
   const [parsedFolder, setParsedFolder] = useState<ParsedFolder | null>(null);
   const [uploading, setUploading] = useState(false);
   const [collectionName, setCollectionName] = useState('');
@@ -137,6 +140,21 @@ export function MyCollections() {
     }
   };
 
+  const handleCreateNewCollection = async () => {
+    if (!newCollectionName.trim()) return;
+    setCreatingNew(true);
+    try {
+      const collection = await createCollection(newCollectionName.trim());
+      if (collection) {
+        navigate(`/my-collections/${collection.id}`);
+      }
+    } catch (err) {
+      console.error('Failed to create collection:', err);
+    } finally {
+      setCreatingNew(false);
+    }
+  };
+
   const handleDeleteCollection = async (id: string, name: string) => {
     if (window.confirm(`Delete "${name}" and all its poems? This cannot be undone.`)) {
       await deleteCollection(id);
@@ -196,6 +214,12 @@ export function MyCollections() {
               style={{ display: 'none' }}
             />
             <button
+              className="new-collection-button"
+              onClick={() => { setNewCollectionName(''); setShowNewCollection(true); }}
+            >
+              New Collection
+            </button>
+            <button
               className="upload-button"
               onClick={() => fileInputRef.current?.click()}
             >
@@ -208,14 +232,22 @@ export function MyCollections() {
           <div className="loading">Loading collections...</div>
         ) : collections.length === 0 ? (
           <div className="no-collections">
-            <p>You don't have any collections yet.</p>
-            <p>Upload a folder of markdown (.md) files to create your first collection.</p>
-            <button
-              className="upload-button large"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              Upload Your First Collection
-            </button>
+            <h2>No collections yet</h2>
+            <p>Create a collection to organize and save your poems.</p>
+            <div className="no-collections-actions">
+              <button
+                className="upload-button large"
+                onClick={() => { setNewCollectionName(''); setShowNewCollection(true); }}
+              >
+                Create Your First Collection
+              </button>
+              <button
+                className="upload-folder-link"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Or upload a folder of markdown files
+              </button>
+            </div>
           </div>
         ) : (
           <div className="collections-grid">
@@ -236,6 +268,47 @@ export function MyCollections() {
                 </button>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* New Collection Modal */}
+        {showNewCollection && (
+          <div className="upload-modal-overlay" onClick={() => setShowNewCollection(false)}>
+            <div className="upload-modal" onClick={e => e.stopPropagation()}>
+              <h2>New Collection</h2>
+              <div className="upload-form">
+                <label>
+                  Collection Name
+                  <input
+                    type="text"
+                    value={newCollectionName}
+                    onChange={e => setNewCollectionName(e.target.value)}
+                    placeholder="My Poetry Collection"
+                    autoFocus
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && newCollectionName.trim()) {
+                        handleCreateNewCollection();
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+              <div className="upload-actions">
+                <button
+                  className="cancel-button"
+                  onClick={() => setShowNewCollection(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="confirm-upload-button"
+                  onClick={handleCreateNewCollection}
+                  disabled={creatingNew || !newCollectionName.trim()}
+                >
+                  {creatingNew ? 'Creating...' : 'Create'}
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
