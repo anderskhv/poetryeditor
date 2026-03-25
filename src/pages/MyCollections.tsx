@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Layout } from '../components/Layout';
+import { EditorLayout } from '../components/EditorLayout';
 import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
 import { useCollections } from '../hooks/useCollections';
@@ -163,17 +163,17 @@ export function MyCollections() {
 
   if (authLoading) {
     return (
-      <Layout>
+      <EditorLayout>
         <div className="my-collections-page">
           <div className="loading">Loading...</div>
         </div>
-      </Layout>
+      </EditorLayout>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <Layout>
+      <EditorLayout>
         <SEOHead
           title="My Collections - Poetry Editor"
           description="Sign in to save and organize your poetry collections."
@@ -189,12 +189,12 @@ export function MyCollections() {
           </div>
         </div>
         <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
-      </Layout>
+      </EditorLayout>
     );
   }
 
   return (
-    <Layout>
+    <EditorLayout>
       <SEOHead
         title="My Collections - Poetry Editor"
         description="Manage your poetry collections."
@@ -380,6 +380,6 @@ export function MyCollections() {
           </div>
         )}
       </div>
-    </Layout>
+    </EditorLayout>
   );
 }

@@ -3,7 +3,7 @@ import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors, useDroppable } from '@dnd-kit/core';
 import { SortableContext, useSortable, rectSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Layout } from '../components/Layout';
+import { EditorLayout } from '../components/EditorLayout';
 import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
 import { useSections } from '../hooks/useCollections';
@@ -411,37 +411,37 @@ export function CollectionView() {
 
   if (authLoading || loadingCollection) {
     return (
-      <Layout>
+      <EditorLayout>
         <div className="collection-view-page">
           <div className="loading">Loading...</div>
         </div>
-      </Layout>
+      </EditorLayout>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <Layout>
+      <EditorLayout>
         <div className="collection-view-page">
           <div className="not-authenticated">
             <p>Please sign in to view your collections.</p>
             <Link to="/my-collections">Go to Collections</Link>
           </div>
         </div>
-      </Layout>
+      </EditorLayout>
     );
   }
 
   if (!collection) {
     return (
-      <Layout>
+      <EditorLayout>
         <div className="collection-view-page">
           <div className="not-found">
             <h1>Collection Not Found</h1>
             <Link to="/my-collections">Back to Collections</Link>
           </div>
         </div>
-      </Layout>
+      </EditorLayout>
     );
   }
 
@@ -451,7 +451,7 @@ export function CollectionView() {
   const visibleSectionCount = sections.length;
 
   return (
-    <Layout>
+    <EditorLayout>
       <SEOHead
         title={`${collection.name} - Poetry Editor`}
         description={`Your poetry collection: ${collection.name}`}
@@ -754,7 +754,7 @@ export function CollectionView() {
           )}
         </div>
       </div>
-    </Layout>
+    </EditorLayout>
   );
 }
 

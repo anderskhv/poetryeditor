@@ -1,0 +1,10 @@
+.editor-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background, #fafafa);
+}
+
+.editor-layout-main {
+  flex: 1;
+}

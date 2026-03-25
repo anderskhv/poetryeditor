@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout } from '../components/Layout';
+import { EditorLayout } from '../components/EditorLayout';
 import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
@@ -129,13 +129,13 @@ export function MyAccount() {
 
   if (authLoading) {
     return (
-      <Layout>
+      <EditorLayout>
         <div className="my-account-page">
           <div className="my-account-container">
             <p className="my-account-loading">Loading...</p>
           </div>
         </div>
-      </Layout>
+      </EditorLayout>
     );
   }
 
@@ -151,7 +151,7 @@ export function MyAccount() {
   const usagePercent = usedCents !== null ? Math.min(100, (usedCents / capCents) * 100) : 0;
 
   return (
-    <Layout>
+    <EditorLayout>
       <SEOHead
         title="My Account — Poetry Editor"
         description="Manage your Poetry Editor account settings."
@@ -296,6 +296,6 @@ export function MyAccount() {
           </section>
         </div>
       </div>
-    </Layout>
+    </EditorLayout>
   );
 }
