@@ -133,13 +133,23 @@
         min-height: 100vh;
         background-color: #f4f2ef;
       }
-      /* Hide content until React hydrates — prevents raw HTML flash */
-      #root:empty {
+      /* Hide prerendered SEO content from users (crawlers still see it) */
+      #root > article {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+      }
+      /* Show spinner while React loads (works for both empty and prerendered root) */
+      #root:not(.hydrated) {
         display: flex;
         align-items: center;
         justify-content: center;
+        min-height: 100vh;
       }
-      #root:empty::after {
+      #root:not(.hydrated)::after {
         content: '';
         display: block;
         width: 24px;
@@ -148,6 +158,10 @@
         border-top-color: #888;
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
+      }
+      /* Once React renders, remove spinner */
+      #root.hydrated::after {
+        display: none;
       }
       @keyframes spin {
         to { transform: rotate(360deg); }

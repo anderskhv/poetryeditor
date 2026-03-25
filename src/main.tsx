@@ -9,7 +9,10 @@ import './index.css'
 // Start loading dictionary immediately (overlaps with React initialization)
 loadCMUDictionary().catch(console.error);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const rootEl = document.getElementById('root')!;
+rootEl.classList.add('hydrated');
+
+ReactDOM.createRoot(rootEl).render(
   <React.StrictMode>
     <HelmetProvider>
       <RouterProvider router={router} />
