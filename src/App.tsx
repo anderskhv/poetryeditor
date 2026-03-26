@@ -1935,7 +1935,7 @@ function App() {
                   onClick={() => setCollectionReviewMode(!collectionReviewMode)}
                   title={collectionReviewMode ? 'Back to poem editing' : 'Review full collection'}
                 >
-                  {collectionReviewMode ? 'Back to Poem' : 'Review Collection'}
+                  {collectionReviewMode ? 'Poem' : 'Collection'}
                 </button>
               )}
             </div>

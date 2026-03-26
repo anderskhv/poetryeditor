@@ -26,8 +26,8 @@ import type { PoemStatus } from '../types/collection';
 import { getLocalApiKey } from './editorStorage';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-const SONNET_MODEL = 'claude-sonnet-4-6-20250514';
-/** Parallel editor calls — upgraded from Haiku to Sonnet 4.6 */
+const SONNET_MODEL = 'claude-sonnet-4-5-20250929';
+/** Parallel editor calls */
 const EDITOR_MODEL = SONNET_MODEL;
 const ANTHROPIC_VERSION = '2023-06-01';
 
