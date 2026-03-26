@@ -21,6 +21,7 @@ import { type PassiveVoiceInstance } from './utils/passiveVoiceDetector';
 import { type TenseInstance } from './utils/tenseChecker';
 import { type StressedSyllableInstance } from './utils/scansionAnalyzer';
 import { stripMarkdownFormatting } from './utils/markdownFormatter';
+import { escapeHtml } from './utils/escapeHtml';
 import { getAllPoems } from './data/poems';
 import { addPoemComment, deletePoemComment, fetchPoemComments, updatePoemComment, type PoemComment, type CommentRange } from './utils/poemComments';
 import { trackPageview } from './utils/analytics';
@@ -847,13 +848,6 @@ function App() {
     const title = poemTitle.trim() || 'Untitled';
     const safeTitle = title.replace(/[^a-zA-Z0-9-_ ]/g, '').replace(/\s+/g, '-');
     const alignment = paragraphAlign;
-    const escapeHtml = (value: string) =>
-      value
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
 
     let content: string;
     let filename: string;

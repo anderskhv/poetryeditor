@@ -7,8 +7,8 @@
 - [x] CLAUDE.md + lessons.md comprehensive update for Claude Code transition
 
 ## Pending (needs manual action)
-- [ ] **Git push**: 3 local commits ahead of remote. Run `git push origin main` from terminal.
-- [ ] **Supabase migration**: Run `supabase/migrations/20260310_editorial_reports.sql` to create `editor_preflight_answers` and `editor_reports` tables. Without this, authenticated users fall back to localStorage for report persistence.
+- [x] **Git push**: pushed to remote.
+- [x] **Supabase migration**: `editor_preflight_answers` and `editor_reports` tables confirmed live.
 - [ ] **Test editorial report pipeline end-to-end**: The full pipeline (preflight → editors → debate → synthesis) has been built but not tested with real API calls. Need to verify with a collection that has poems.
 
 ## Known Issues
@@ -23,7 +23,7 @@
 - [ ] **Rotate Supabase service role key** — sitting in `.env` alongside client vars. Bypasses ALL RLS.
 
 **High:**
-- [ ] **Sanitize dangerouslySetInnerHTML** — 15+ instances rendering AI content without HTML sanitization (XSS risk). `SharedCollection.tsx` has the correct `escapeHtml()` pattern — apply it everywhere.
+- [x] **Sanitize dangerouslySetInnerHTML** — extracted `escapeHtml` to shared utility, applied to EditorMessage, EditorialReport, ReportChat. Deduplicated copies in SharedCollection and App.
 - [ ] **Server-side usage caps** — current $0.50/$5 caps are client-side localStorage only, trivially bypassable. Move to Supabase.
 - [ ] **Encrypt stored API keys** — user-provided API keys in plain text localStorage, exfiltrable via XSS.
 

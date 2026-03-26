@@ -5,15 +5,8 @@ import { SEOHead } from '../components/SEOHead';
 import { fetchSharedCollection, type SharedCollectionPayload } from '../utils/sharedCollections';
 import { getFontFamily, getFontOption } from '../utils/fontOptions';
 import type { PoemFormatting } from '../types/database';
+import { escapeHtml } from '../utils/escapeHtml';
 import './SharedCollection.css';
-
-const escapeHtml = (value: string) =>
-  value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
 
 const LINE_SPACING_MAP: Record<string, string> = {
   normal: '1.8',

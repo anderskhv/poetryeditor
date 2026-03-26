@@ -18,6 +18,7 @@ import { SEOHead } from '../components/SEOHead';
 import { ReportChat } from '../components/editor/ReportChat';
 import type { PreFlightAnswers } from '../types/editor';
 import type { CollectionPoem, CollectionSection } from '../types/collection';
+import { escapeHtml } from '../utils/escapeHtml';
 import './EditorialReport.css';
 
 /**
@@ -48,7 +49,7 @@ function renderEditorialMarkdown(text: string): string {
   }
 
   function formatInline(s: string): string {
-    return s
+    return escapeHtml(s)
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/__(.+?)__/g, '<strong>$1</strong>')
       .replace(/(?<!\w)\*([^*]+?)\*(?!\w)/g, '<em>$1</em>')

@@ -7,6 +7,7 @@
 
 import { useMemo, useState, useCallback } from 'react';
 import type { ChatMessage } from '../../types/editor';
+import { escapeHtml } from '../../utils/escapeHtml';
 
 interface EditorMessageProps {
   message: ChatMessage;
@@ -17,7 +18,7 @@ interface EditorMessageProps {
  * No heavy dependencies.
  */
 function renderMarkdown(text: string): string {
-  return text
+  return escapeHtml(text)
     // Headings: ## and ###
     .replace(/^### (.+)$/gm, '<h4 class="editor-msg-h3">$1</h4>')
     .replace(/^## (.+)$/gm, '<h3 class="editor-msg-h2">$1</h3>')

@@ -7,6 +7,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { streamSonnet } from '../../utils/editorialAgents';
+import { escapeHtml } from '../../utils/escapeHtml';
 import type { EditorialReportData, StreamCallbacks } from '../../types/editor';
 import './ReportChat.css';
 
@@ -172,7 +173,7 @@ export function ReportChat({ report }: ReportChatProps) {
             >
               {msg.role === 'assistant' ? (
                 <div dangerouslySetInnerHTML={{
-                  __html: msg.content
+                  __html: escapeHtml(msg.content)
                     .split('\n\n')
                     .map(p => `<p>${p.replace(/\n/g, '<br />')}</p>`)
                     .join(''),
