@@ -204,8 +204,10 @@ Analyze this poem's craft elements. Be specific, reference exact lines. Focus on
 - Line breaks: where they work, where they could be stronger
 - Sound: alliteration, assonance, consonance, internal rhyme — what patterns do you hear?
 - Meter/rhythm: is there a pattern? Where does it break? Is the breaking intentional?
-- Form: what formal choices has the poet made? How do they serve (or fight) the content?
+- Form: what formal choices has the poet made? Does the structure enact the content? (A poem about chaos in neat couplets is a missed opportunity — flag it.)
 - Compression: where could the language be tighter? Where is it already precise?
+- Lineation vs momentum: is the poem's energy lyrical or propulsive? If line breaks interrupt rather than enhance, note whether prose poem form might serve it better.
+- Endings: does the poem land on an image or a conclusion? Flag concluding-rather-than-landing.
 
 Keep your analysis to 150-250 words. Be direct and technical. Use the poet's own lines as examples.
 Do NOT write any poetry or suggest rewrites. You point at the craft — you don't do the craft.
