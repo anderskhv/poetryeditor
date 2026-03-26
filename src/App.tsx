@@ -1931,11 +1931,14 @@ function App() {
               </button>
               {activeSideTab === 'editor' && (collection.poems.length > 0 || cloudPoemCollectionId) && (
                 <button
-                  className={`side-panel-tab ${collectionReviewMode ? 'active' : ''}`}
-                  onClick={() => setCollectionReviewMode(!collectionReviewMode)}
-                  title={collectionReviewMode ? 'Back to poem editing' : 'Review full collection'}
+                  className="side-panel-tab"
+                  onClick={() => {
+                    if (isCloudCollection && isLoadingCloudCollection) return;
+                    editorialReport.setShowPreFlight(true);
+                  }}
+                  title="Generate a full editorial report for your collection"
                 >
-                  {collectionReviewMode ? 'Poem' : 'Collection'}
+                  Editorial Report
                 </button>
               )}
             </div>
@@ -1964,13 +1967,11 @@ function App() {
                     .map(({ _sectionOrder, ...p }) => p)
                 }
                 collectionName={cloudPoemCollectionId ? (cloudCollectionName || 'Collection') : collection.name}
-                mode={collectionReviewMode ? 'collection' : 'per_poem'}
+                mode="per_poem"
                 conversationSummaries={conversationSummaries}
                 onCompleteOnboarding={completeOnboarding}
                 onAddLearning={(insight: string) => addLearning(insight)}
                 onUpdateSummary={updateSummary}
-                onSwitchToCollection={() => setCollectionReviewMode(true)}
-                onSwitchToPoem={() => setCollectionReviewMode(false)}
                 editorSettings={editorSettings}
                 onUpdateEditorSettings={updateEditorSettings}
                 memoryContext={getMemoryContext()}
