@@ -17,6 +17,20 @@ When Anders says "consult the design lead" or "what would marketing say?", load 
 
 ---
 
+## API Cost Rule — HARD BAN
+
+**ZERO Anthropic API spend during development. No exceptions.**
+
+All content generation — poem analyses, editorial content, synonym enrichment, any text produced by Claude — must happen through the CLI conversation and be written to files. **Never** run scripts or code that calls `api.anthropic.com` during development.
+
+The API key (`VITE_ANTHROPIC_API_KEY`) exists **ONLY** for production user-facing features: the AI poetry coach and editorial reports triggered by real users after deployment. Development-time content generation through API calls burns budget that funds the entire operation.
+
+**If you need Claude to generate content:** do it in the CLI conversation, then write the result to a file. This is how Sojourners generated 21 event summaries, 33 character bios, and 12 era rewrites — all through CLI, zero API cost.
+
+**Violating this rule is a firing offense for the CEO.**
+
+---
+
 ## Auto-Documentation Rule
 
 **Automatically update this file** when making decisions during conversations. When we settle on a UI pattern, architecture choice, formatting convention, or project standard, append it to the Decisions Log at the bottom. Use judgment - log things useful for future sessions, skip trivial one-off choices.

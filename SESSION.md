@@ -1,6 +1,53 @@
 # Poetry Editor — Session State
 
-## Last session: 2026-03-16 (Sunday, afternoon)
+## Last session: 2026-03-25 (Wednesday)
+
+### What happened — Privacy, Email, Security, First Users
+
+**First real users discovered!** Two poets signed up organically:
+- `jempoetry@icloud.com` (Mar 11) — advanced, Dunbar-influenced, 10 conversations, 148 messages, 8 poems. Found via DuckDuckGo. Inactive since Mar 13.
+- `nemorian@live.com` (Mar 24) — intermediate, Tolkien/Chesterton-influenced, 16 conversations, 61 messages. Found via Bing. Active overnight.
+
+**Infrastructure completed (from Group CEO window):**
+1. **Supabase RLS audit** — all tables confirmed secure. `_migrations` table had RLS disabled, now fixed.
+2. **Resend email setup** — domain verified, DNS records added in Cloudflare (MX + TXT on `send` subdomain, DKIM). Supabase SMTP configured to send from `noreply@poetryeditor.com` via Resend.
+3. **Email templates** — 6 branded HTML templates created in `supabase/email-templates/`, matching Poetry Editor's warm paper aesthetic. Pasted into Supabase dashboard.
+4. **Privacy policy** — `/privacy-policy.html` deployed. Plain English, GDPR-compliant. Covers data storage, Anthropic processing, user rights.
+5. **Signup consent flow** — AuthModal now has two checkboxes: required privacy policy agreement + optional founder email contact. Consent stored in Supabase user metadata.
+6. **GDPR user management script** — `monitoring/gdpr-user-manage.js` handles export and delete for any user.
+7. **User activity monitoring** — `monitoring/user-activity.js` added to morning routine. Shows signups, activity levels, onboarding profiles.
+8. **Anthropic API credits** — topped up + auto-reload enabled.
+
+**Still needs doing (CEO tasks):**
+- [ ] Set up `contact@poetryeditor.com` forwarding in Cloudflare Email Routing
+- [ ] Set up Fastmail identity for reply-as `contact@poetryeditor.com`
+- [ ] Email jempoetry — personal founder outreach (after contact email is set up)
+- [ ] Verify signup flow works end-to-end with new checkboxes (test with a fresh account)
+
+---
+
+## Previous session: 2026-03-20 (Friday, afternoon)
+
+### What happened — GSC Review & Next Week Planning
+
+Reviewed Google Search Console 3-month performance screenshot:
+- 14 clicks / 4.27k impressions / 0.3% CTR / 51.9 avg position
+- Impressions trending up, average position improving — SEO groundwork from Mar 16 is paying off
+- CTR will unlock once pages break into top 20
+
+SEO-ACTION-PLAN.md, LAUNCH-PLAN.md, and OUTREACH.md were created on Mar 19 (previous session).
+
+**Next week goal:** Get ALL sites live. Build a launch plan for each. Focus on Tinct.
+
+### Immediate next steps (Monday)
+1. [ ] GSC deep dive — run the analysis outlined in SEO-ACTION-PLAN.md
+2. [ ] Deploy latest changes (push to main)
+3. [ ] Start executing launch plan (was scheduled for Mar 20-24, push to next week)
+4. [ ] Build launch plans for Sojourners and Tinct
+
+---
+
+## Previous session: 2026-03-16 (Sunday, afternoon)
 
 ### What happened — Rhyme & Synonym Quality + SEO Overhaul
 

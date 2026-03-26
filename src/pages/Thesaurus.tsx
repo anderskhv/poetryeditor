@@ -152,7 +152,7 @@ export function Thesaurus() {
           : 'Synonym Finder - Word Alternatives for Poetry'}
         description={urlWord && results
           ? `Synonyms for ${urlWord}: ${synonymCount}+ options with meanings, plus ${results.hyponyms.length}+ specific examples and ${results.antonyms.length}+ opposites.`
-          : 'Free synonym finder for poets. Find synonyms, specific examples (hyponyms), and antonyms organized by meaning and strength. Discover the perfect word for your poem or song.'
+          : 'Free synonym finder for poets. Find synonyms, hyponyms, and antonyms organized by meaning and strength. Discover the perfect word for your poem.'
         }
         canonicalPath={urlWord ? `/synonyms/${urlWord}` : '/synonyms'}
         keywords="synonyms, hyponyms, antonyms, poetry words, word alternatives, similar words, specific words, opposite words, thesaurus for poets, concrete imagery"

@@ -259,4 +259,75 @@ describe('computeFormatting — edge cases', () => {
     const newText = applyResult(text, result!);
     expect(newText).toBe('**a**');
   });
+
+  it('selection including markers toggles cleanly', () => {
+    // Select the full "**hello**" including markers, then toggle bold
+    const text = '**hello**';
+    const result = computeFormatting(text, 0, 9, 'bold');
+    expect(result).not.toBeNull();
+    const newText = applyResult(text, result!);
+    expect(newText).toBe('hello');
+    expect(result!.newSelectionStart).toBe(0);
+    expect(result!.newSelectionEnd).toBe(5);
+  });
+});
+
+describe('computeFormatting — multi-line toggle roundtrip', () => {
+  it('multi-line bold toggles cleanly 4 times', () => {
+    let text = 'line one\nline two';
+    let selStart = 0;
+    let selEnd = text.length;
+
+    for (let i = 0; i < 4; i++) {
+      const result = computeFormatting(text, selStart, selEnd, 'bold');
+      expect(result).not.toBeNull();
+      text = applyResult(text, result!);
+      selStart = result!.newSelectionStart;
+      selEnd = result!.newSelectionEnd;
+
+      if (i % 2 === 0) {
+        expect(text).toBe('**line one**\n**line two**');
+      } else {
+        expect(text).toBe('line one\nline two');
+      }
+    }
+  });
+
+  it('multi-line with empty line toggles cleanly', () => {
+    let text = 'hello\n\nworld';
+    let selStart = 0;
+    let selEnd = text.length;
+
+    // Wrap
+    let result = computeFormatting(text, selStart, selEnd, 'bold');
+    expect(result).not.toBeNull();
+    text = applyResult(text, result!);
+    selStart = result!.newSelectionStart;
+    selEnd = result!.newSelectionEnd;
+    expect(text).toBe('**hello**\n\n**world**');
+
+    // Unwrap
+    result = computeFormatting(text, selStart, selEnd, 'bold');
+    expect(result).not.toBeNull();
+    text = applyResult(text, result!);
+    expect(text).toBe('hello\n\nworld');
+  });
+});
+
+describe('computeFormatting — nested formatting', () => {
+  it('bold then italic wraps, then italic unwrap leaves bold', () => {
+    // Start: **hello**, apply italic to content → ***hello***
+    let text = '**hello**';
+    let result = computeFormatting(text, 2, 7, 'italic');
+    expect(result).not.toBeNull();
+    text = applyResult(text, result!);
+    expect(text).toBe('***hello***');
+
+    // Now unwrap italic from the content (select inner content)
+    // In ***hello***, bold range is [0,11] content [2,9], italic is [2,9] content [3,8]
+    result = computeFormatting(text, 3, 8, 'italic');
+    expect(result).not.toBeNull();
+    text = applyResult(text, result!);
+    expect(text).toBe('**hello**');
+  });
 });

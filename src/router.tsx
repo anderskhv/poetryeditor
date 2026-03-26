@@ -26,6 +26,7 @@ import { LearnElegy } from './pages/learn/LearnElegy';
 import { LearnBallad } from './pages/learn/LearnBallad';
 import { LearnSlantRhyme } from './pages/learn/LearnSlantRhyme';
 import { LearnAvoidingCliches } from './pages/learn/LearnAvoidingCliches';
+import { AIPoetryCoach } from './pages/learn/AIPoetryCoach';
 import { PoemPage } from './pages/poems/PoemPage';
 import { PoemsListPage } from './pages/poems/PoemsListPage';
 import { RhymeSchemePage } from './pages/RhymeSchemePage';
@@ -210,6 +211,10 @@ export const router = createBrowserRouter([
   {
     path: '/learn/avoiding-cliches',
     element: <LearnAvoidingCliches />,
+  },
+  {
+    path: '/ai-poetry-coach',
+    element: <AIPoetryCoach />,
   },
   // Poem analysis pages
   {

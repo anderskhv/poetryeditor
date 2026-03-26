@@ -1138,10 +1138,10 @@ function App() {
   return (
     <div className="app">
       <SEOHead
-        title="Poetry Editor - Write, Rhyme, and Count Syllables"
-        description="Write and analyze poems with a full-featured poetry editor, rhyme finder, synonym tools, and syllable counter. Built for poets, songwriters, and teachers."
+        title="Poetry Editor — AI Poetry Coach & Writing Tools"
+        description="Write poetry with an AI coach that gives feedback on craft, rhythm, and voice. Plus rhyme finder, syllable counter, and synonym tools. Free to use."
         canonicalPath="/"
-        keywords="poetry editor, rhyme finder, synonym finder, syllable counter, poetry tools, write poetry"
+        keywords="poetry editor, AI poetry coach, AI poetry editor, poetry coaching, poetry feedback, rhyme finder, syllable counter, synonym finder, poetry writing tool"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebApplication",
