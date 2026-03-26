@@ -303,7 +303,7 @@ export async function runSpineAnalysis(
 
 Read these poems in order and describe what spine holds them together. What is the collection about? What's the emotional throughline? What voice emerges?
 
-Write in prose, 400-600 words. Be direct and specific.
+Write in prose, 400-600 words. Be direct and specific. When referring to poems, use their EXACT titles in quotes — do not paraphrase or rename them.
 
 COLLECTION:
 ${poemList}`;
@@ -386,7 +386,7 @@ export async function runEditors(
       editorId: 'editor_b' as EditorId,
     },
     editor_c: {
-      persona: 'You are a reader who values architecture and the reader\'s experience. You notice when a collection\'s pacing falters, when a poem is in the wrong place, when a section doesn\'t earn its position. You believe a collection is more than the sum of its poems.',
+      persona: 'You are a reader who values architecture and the reader\'s experience. You notice when a collection\'s pacing falters, when a poem is in the wrong place, when a section doesn\'t earn its position. You believe a collection is more than the sum of its poems. You evaluate each poem\'s function in the sequence, not just its standalone quality — a weaker poem doing essential transitional or thematic work between its neighbors is not a cut candidate.',
       editorId: 'editor_c' as EditorId,
     },
   };
@@ -402,13 +402,25 @@ You are reading a poetry collection. You know all the craft — rhythm, imagery,
 
 ${harshnessNote}
 
-IMPORTANT: Use poem NUMBERS (1, 2, 3...) as keys in perPoemNotes, strongestPoems, and weakestPoems — matching the [N] numbers in the poem list. Use section names exactly as shown in brackets.
+READING PRINCIPLES:
+1. Register shifts may be intentional. Before flagging voice inconsistency, ask whether the shift serves a structural or argumentative function in the collection. A poem that risks a different register on purpose isn't losing control of its tone.
+2. Recognize formal repetition devices (anaphora, refrain, litany) as intentional. Evaluate whether each iteration earns its place — does it add or shift something? — rather than counting and saying "too many."
+3. A collection needs range. Distinguish "this poem fails at what it attempts" from "this poem attempts something different from the dominant mode." The second isn't a flaw. Help the poet succeed in the register they chose, don't redirect them to a different one.
+4. Before recommending a cut, model the gap: what does this poem do between the poems surrounding it? What would the reader lose in the arc? Default to "revise" over "cut" unless the poem is genuinely redundant. "Rough but essential" is a valid category.
+5. When a poem draws on references, frameworks, or allusions you can't fully parse, say so explicitly. Flag that your feedback may not apply if you're missing context. Epistemic humility over false confidence.
+6. Check whether poems end on images or conclusions. When a final line tells the reader what to think rather than showing them something to see, it almost always weakens the landing. Flag concluding-rather-than-landing as a pattern risk.
+7. Evaluate whether formal choices enact the poem's content. Does the structure perform what the poem is about? A poem about drowning in tidy stanzas is a missed opportunity. Punctuation, whitespace, lineation, and typography are meaning-carrying choices — evaluate them as such.
+8. Evaluate titles as part of collection architecture, not just labels. Does the title orient the reader in the arc? Does it do work the first line doesn't already do?
+9. When a poem's lineation fights its momentum — when energy is propulsive and narrative rather than lyrical and imagistic — suggest prose poem as an alternative form.
+10. When a poem argues a thesis, check whether it holds genuine tension or merely illustrates a conclusion. Does the poem give the opposing force its due? Poems that hold genuine tension resist neat endings. A poem about rigidity that only shows rigidity as bad isn't holding tension — it's illustrating.
+
+IMPORTANT: Use poem NUMBERS (1, 2, 3...) as keys in perPoemNotes, strongestPoems, and weakestPoems — matching the [N] numbers in the poem list. Use section names exactly as shown in brackets. When referring to poems in your overallAnalysis text, use their EXACT titles in quotes — do not paraphrase or rename them.
 
 Provide your reading as JSON with this exact structure:
 {
   "overallAnalysis": "string, 200-400 words on the collection as a whole",
   "sectionNotes": { "Section Name": "string, analysis of this section", ... },
-  "perPoemNotes": { "1": "string, brief note on poem [1]", "2": "string, note on poem [2]", ... },
+  "perPoemNotes": { "1": "string, 100-200 words: your take on this poem — strengths, weaknesses, its role in the collection, and specific lines that need editing with what you'd change", "2": "...", ... },
   "strongestPoems": ["1", "3"],
   "weakestPoems": ["5"],
   "recommendations": ["string, actionable suggestion", ...]
@@ -777,14 +789,20 @@ export async function buildPerPoemAssessments(
         })
         .join('\n\n');
 
-      const systemPrompt = `You are synthesizing three editors' assessments of poems in a collection. For each poem, produce a unified assessment capturing:
+      const systemPrompt = `You are synthesizing three editors' assessments of poems in a collection. For each poem, produce a unified assessment that PRESERVES each editor's individual perspective alongside the consensus.
+
+For each poem, capture:
 - Readiness level (rough/draft/edit/done/ready_for_submission)
 - Strengths (array of specific strengths)
 - Weaknesses (array of specific areas needing work)
+- Line edits: specific lines that need work, with the original text and a suggested revision or note on what to fix
+- Each editor's individual take (preserved verbatim or close to it — the poet wants to see where editors differ, not just the averaged view)
 - Collection role (how this poem serves the collection)
 - Suggestions for next level (actionable next steps)
 - Assessor consensus (strong/mixed/weak based on editor agreement)
 - Is flagged (strongest/weakest/null based on multi-editor consensus)
+
+IMPORTANT: A line should NOT appear in both strengths and weaknesses. If editors disagree on a line, put it in the editor notes, not in both lists.
 
 Return JSON array:
 [
@@ -794,6 +812,15 @@ Return JSON array:
     "readinessLevel": "string",
     "strengths": ["string", ...],
     "weaknesses": ["string", ...],
+    "lineEdits": [
+      { "line": "original line text", "suggestion": "what to change and why" },
+      ...
+    ],
+    "editorNotes": {
+      "editor_a": "string — this editor's individual take",
+      "editor_b": "string — this editor's individual take",
+      "editor_c": "string — this editor's individual take"
+    },
     "collectionRole": "string",
     "suggestionsForNextLevel": ["string", ...],
     "assessorConsensus": "strong|mixed|weak",
@@ -811,7 +838,7 @@ ${batchContext}
 
 Provide unified assessments for each poem.`;
 
-      const result = await callEditor(systemPrompt, userMessage, 4096, signal);
+      const result = await callEditor(systemPrompt, userMessage, 8192, signal);
 
       if (onUsage) {
         onUsage({ model: EDITOR_MODEL, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens });
@@ -855,6 +882,8 @@ Provide unified assessments for each poem.`;
               readinessLevel: item.readinessLevel || '',
               strengths: Array.isArray(item.strengths) ? item.strengths : [],
               weaknesses: Array.isArray(item.weaknesses) ? item.weaknesses : [],
+              lineEdits: Array.isArray(item.lineEdits) ? item.lineEdits : [],
+              editorNotes: item.editorNotes && typeof item.editorNotes === 'object' ? item.editorNotes : undefined,
               collectionRole: item.collectionRole || '',
               suggestionsForNextLevel: Array.isArray(item.suggestionsForNextLevel) ? item.suggestionsForNextLevel : [],
               assessorConsensus: (item.assessorConsensus || 'weak') as 'strong' | 'mixed' | 'weak',
@@ -900,8 +929,12 @@ export async function synthesizeReport(
     : '(no major disagreements)';
 
   const assessmentSummary = poemAssessments
-    .slice(0, 10) // Limit to first 10 for context
     .map(a => `"${a.poemTitle}" (${a.readinessLevel}): ${a.assessorConsensus} consensus`)
+    .join('\n');
+
+  // Provide exact poem titles so the LLM never invents or paraphrases them
+  const exactPoemList = poems
+    .map((p, i) => `${i + 1}. "${p.title}"`)
     .join('\n');
 
   const systemPrompt = `You are writing an editorial letter for a poetry collection. You have access to:
@@ -913,15 +946,22 @@ export async function synthesizeReport(
 
 Write warm, direct prose. This is a letter, not a checklist. Use paragraphs. Address the poet directly. The tone should be encouraging but honest, calibrated to their feedback preferences.
 
+CRITICAL: When referring to poems, use their EXACT titles from the list below. Do NOT paraphrase, abbreviate, or invent poem titles. Always put poem titles in quotes.
+
 Structure:
 1. **What We See** (2-3 paragraphs) — the collection's voice, what's strong, what it's trying to do
 2. **Section by Section** (1-2 paragraphs per section) — prose analysis without structured lists
 3. **The Arc** (2-3 paragraphs) — how the collection moves, pacing, transitions
 4. **Address any specific questions** the poet asked in additionalContext
 
-Do NOT repeat the editor disagreements as lists. Those will be rendered separately as interactive UI. Instead, synthesize them into prose insight.`;
+Do NOT repeat the editor disagreements as lists. Those will be rendered separately as interactive UI. Instead, synthesize them into prose insight.
 
-  const userMessage = `SPINE ANALYSIS:
+Do NOT invent words, metaphors, or imagery that do not appear in the poems. Stay grounded in what was actually written.`;
+
+  const userMessage = `EXACT POEM TITLES (use these verbatim — do not rename or paraphrase):
+${exactPoemList}
+
+SPINE ANALYSIS:
 ${spineAnalysis.blindReading}
 
 POET'S AMBITION:
@@ -942,10 +982,10 @@ ${sectionSummaries}
 DEBATE SUMMARY:
 ${debateSummary}
 
-POEM ASSESSMENTS (sample):
+POEM ASSESSMENTS:
 ${assessmentSummary}
 
-Write the editorial letter now. Be warm, direct, specific. Reference actual poems and sections. Help the poet see their collection clearly.`;
+Write the editorial letter now. Be warm, direct, specific. Reference actual poems by their exact titles in quotes. Help the poet see their collection clearly.`;
 
   await streamSonnet(systemPrompt, userMessage, callbacks, 16384, signal);
 }

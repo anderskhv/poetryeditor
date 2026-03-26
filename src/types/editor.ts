@@ -322,6 +322,11 @@ export interface DebateRound {
 }
 
 /** Unified assessment for a single poem, synthesized from all 3 editors */
+export interface LineEdit {
+  line: string;
+  suggestion: string;
+}
+
 export interface PoemAssessment {
   poemId: string;
   poemTitle: string;
@@ -330,6 +335,8 @@ export interface PoemAssessment {
   readinessLevel: string;
   strengths: string[];
   weaknesses: string[];
+  lineEdits?: LineEdit[];
+  editorNotes?: Record<EditorId, string>;
   collectionRole: string;
   suggestionsForNextLevel: string[];
   assessorConsensus: 'strong' | 'mixed' | 'weak';

@@ -11,6 +11,21 @@ import { escapeHtml } from '../../utils/escapeHtml';
 import type { EditorialReportData, StreamCallbacks } from '../../types/editor';
 import './ReportChat.css';
 
+/** Render markdown to HTML: escape first, then apply formatting. */
+function renderChatMarkdown(text: string): string {
+  return escapeHtml(text)
+    // Bold: **text**
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    // Italic: *text*
+    .replace(/(?<!\w)\*([^*]+?)\*(?!\w)/g, '<em>$1</em>')
+    // Inline code: `text`
+    .replace(/`([^`]+?)`/g, '<code>$1</code>')
+    // Paragraphs
+    .split('\n\n')
+    .map(p => `<p>${p.replace(/\n/g, '<br />')}</p>`)
+    .join('');
+}
+
 interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
@@ -173,10 +188,7 @@ export function ReportChat({ report }: ReportChatProps) {
             >
               {msg.role === 'assistant' ? (
                 <div dangerouslySetInnerHTML={{
-                  __html: escapeHtml(msg.content)
-                    .split('\n\n')
-                    .map(p => `<p>${p.replace(/\n/g, '<br />')}</p>`)
-                    .join(''),
+                  __html: renderChatMarkdown(msg.content),
                 }} />
               ) : (
                 msg.content

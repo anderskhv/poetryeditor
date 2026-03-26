@@ -332,6 +332,13 @@
 /* DEBATE TOPICS */
 /* ─────────────────────────────────────────────────────────────────── */
 
+.editorial-debate-hint {
+  color: #666;
+  font-style: italic;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
 .editorial-debate-topics {
   margin-top: 16px;
 }
@@ -527,6 +534,64 @@
   font-size: 14px;
   color: #333;
   line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────────────────────────── */
+/* LINE EDITS */
+/* ─────────────────────────────────────────────────────────────────── */
+
+.editorial-line-edits {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.editorial-line-edit {
+  border-left: 3px solid #d4a017;
+  padding-left: 12px;
+}
+
+.editorial-line-original {
+  font-family: var(--font-serif, Georgia, serif);
+  font-style: italic;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.editorial-line-suggestion {
+  font-size: 13px;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────────────────────────── */
+/* EDITOR PERSPECTIVES */
+/* ─────────────────────────────────────────────────────────────────── */
+
+.editorial-editor-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.editorial-editor-note {
+  border-left: 2px solid #ccc;
+  padding-left: 12px;
+  font-size: 14px;
+}
+
+.editorial-editor-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #666;
+}
+
+.editorial-editor-note .editorial-markdown {
+  margin-top: 4px;
 }
 
 /* ─────────────────────────────────────────────────────────────────── */

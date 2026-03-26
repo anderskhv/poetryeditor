@@ -13,7 +13,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useEditorialReport } from '../hooks/useEditorialReport';
-import { Layout } from '../components/Layout';
+import { EditorLayout } from '../components/EditorLayout';
 import { SEOHead } from '../components/SEOHead';
 import { ReportChat } from '../components/editor/ReportChat';
 import type { PreFlightAnswers } from '../types/editor';
@@ -256,7 +256,7 @@ export function EditorialReport() {
   // Render empty state (but not if we're already generating)
   if (!shouldGenerateNew && !reportId && !report && !isGenerating && !hasStartedRef.current) {
     return (
-      <Layout>
+      <EditorLayout>
         <SEOHead
           title="Editorial Report — Poetry Editor"
           description="AI-generated editorial report for your poetry collection."
@@ -269,14 +269,14 @@ export function EditorialReport() {
             Back to editor
           </button>
         </div>
-      </Layout>
+      </EditorLayout>
     );
   }
 
   // Render generating state
   if (isGenerating && progress) {
     return (
-      <Layout>
+      <EditorLayout>
         <SEOHead
           title="Generating Editorial Report — Poetry Editor"
           description="Your editorial report is being generated."
@@ -323,14 +323,14 @@ export function EditorialReport() {
             </div>
           </div>
         </div>
-      </Layout>
+      </EditorLayout>
     );
   }
 
   // Render error state
   if (error) {
     return (
-      <Layout>
+      <EditorLayout>
         <SEOHead
           title="Error — Editorial Report — Poetry Editor"
           description="An error occurred while generating your editorial report."
@@ -343,14 +343,14 @@ export function EditorialReport() {
             Back to editor
           </button>
         </div>
-      </Layout>
+      </EditorLayout>
     );
   }
 
   // No report yet
   if (!report) {
     return (
-      <Layout>
+      <EditorLayout>
         <SEOHead
           title="Editorial Report — Poetry Editor"
           description="AI-generated editorial report for your poetry collection."
@@ -362,13 +362,13 @@ export function EditorialReport() {
             Back to editor
           </button>
         </div>
-      </Layout>
+      </EditorLayout>
     );
   }
 
   // Render complete report
   return (
-    <Layout>
+    <EditorLayout>
       <SEOHead
         title={`Editorial Report — Poetry Editor`}
         description={`Full editorial report for ${report.collectionId}.`}
@@ -527,6 +527,7 @@ export function EditorialReport() {
             {report.debateLog.length > 0 && (
               <section className="editorial-section">
                 <h2>Where Our Editors Agreed / Disagreed</h2>
+                <p className="editorial-debate-hint">Disagree with the editors? Use the chat to make your case — they'll respond.</p>
                 <div className="editorial-debate-topics">
                   {report.debateLog.map((round, idx) => (
                     <div key={idx} className="editorial-debate-topic">
@@ -676,6 +677,20 @@ export function EditorialReport() {
                           </div>
                         )}
 
+                        {poem.lineEdits && poem.lineEdits.length > 0 && (
+                          <div className="editorial-poem-section">
+                            <h4>Lines to Edit</h4>
+                            <div className="editorial-line-edits">
+                              {poem.lineEdits.map((edit, eIdx) => (
+                                <div key={eIdx} className="editorial-line-edit">
+                                  <div className="editorial-line-original">{edit.line}</div>
+                                  <div className="editorial-line-suggestion">{edit.suggestion}</div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
                         {poem.suggestionsForNextLevel.length > 0 && (
                           <div className="editorial-poem-section">
                             <h4>Suggestions for Next Level</h4>
@@ -694,21 +709,28 @@ export function EditorialReport() {
                           </div>
                         )}
 
-                        {/* Poet input textarea */}
-                        <div className="editorial-poet-input-box">
-                          <label>Your notes on this poem:</label>
-                          <textarea
-                            className="editorial-textarea"
-                            placeholder="Jot down your thoughts on this feedback..."
-                            value={poemPoetInputs[poem.poemId] || ''}
-                            onChange={(e) =>
-                              setPoemPoetInputs({
-                                ...poemPoetInputs,
-                                [poem.poemId]: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
+                        {poem.editorNotes && Object.keys(poem.editorNotes).length > 0 && (
+                          <div className="editorial-poem-section">
+                            <h4>Editor Perspectives</h4>
+                            <div className="editorial-editor-notes">
+                              {Object.entries(poem.editorNotes).map(([editorId, note]) => (
+                                <div key={editorId} className="editorial-editor-note">
+                                  <strong className="editorial-editor-label">
+                                    {editorId === 'editor_a' ? 'Editor A (precision & economy)' :
+                                     editorId === 'editor_b' ? 'Editor B (emotional truth)' :
+                                     'Editor C (architecture)'}:
+                                  </strong>
+                                  <div
+                                    className="editorial-markdown"
+                                    dangerouslySetInnerHTML={{
+                                      __html: renderEditorialMarkdown(note as string),
+                                    }}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -728,6 +750,6 @@ export function EditorialReport() {
           <ReportChat report={report} />
         </div>
       </div>
-    </Layout>
+    </EditorLayout>
   );
 }
