@@ -734,6 +734,32 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       }
     });
 
+    // Em-dash: replace -- with — when second hyphen is typed
+    editorInstance.onKeyDown((event) => {
+      if (event.keyCode !== monaco.KeyCode.Minus) return;
+      const selection = editorInstance.getSelection();
+      if (!selection || !selection.isEmpty()) return;
+      const model = editorInstance.getModel();
+      if (!model) return;
+
+      const pos = selection.getPosition();
+      if (pos.column < 2) return;
+      const charBefore = model.getValueInRange({
+        startLineNumber: pos.lineNumber, startColumn: pos.column - 1,
+        endLineNumber: pos.lineNumber, endColumn: pos.column,
+      });
+      if (charBefore !== '-') return;
+
+      event.preventDefault();
+      editorInstance.executeEdits('em-dash', [{
+        range: {
+          startLineNumber: pos.lineNumber, startColumn: pos.column - 1,
+          endLineNumber: pos.lineNumber, endColumn: pos.column,
+        },
+        text: '—',
+      }]);
+    });
+
     // Apply initial decorations
     updateDecorations();
   };
@@ -1541,18 +1567,58 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       });
     };
 
+    // Shift cursor(s) to match the translateX of the line they sit on.
+    // Monaco renders cursors in a separate layer with absolute `top`/`left`,
+    // so without this the blinking caret stays at the un-transformed position.
+    const applyCursorAlignment = () => {
+      const cursorsLayer = editorDom.querySelector('.cursors-layer');
+      if (!cursorsLayer) return;
+      const cursors = cursorsLayer.querySelectorAll<HTMLElement>('.cursor');
+      cursors.forEach((cursor) => {
+        const cursorTop = parseFloat(cursor.style.top);
+        // Find the view-line whose top matches the cursor's top
+        const allViewLines = viewLines.querySelectorAll<HTMLElement>('.view-line');
+        let matchedOffset = 0;
+        for (const vl of allViewLines) {
+          if (Math.abs(parseFloat(vl.style.top) - cursorTop) < 1) {
+            const span = vl.querySelector<HTMLElement>(':scope > span');
+            if (span?.style.transform) {
+              const m = span.style.transform.match(/translateX\((-?[\d.]+)px\)/);
+              if (m) matchedOffset = parseFloat(m[1]);
+            }
+            break;
+          }
+        }
+        cursor.style.transform = matchedOffset > 0 ? `translateX(${matchedOffset}px)` : '';
+      });
+    };
+
+    const applyAll = () => {
+      applyAlignment();
+      applyCursorAlignment();
+    };
+
     // Apply on mount
-    requestAnimationFrame(applyAlignment);
+    requestAnimationFrame(applyAll);
 
     // Apply when Monaco re-renders lines (scroll, text changes)
     const observer = new MutationObserver(() => {
-      requestAnimationFrame(applyAlignment);
+      requestAnimationFrame(applyAll);
     });
     observer.observe(viewLines, { childList: true, subtree: true });
 
+    // Also observe cursors layer so cursor shifts update on blink/move
+    const cursorsLayer = editorDom.querySelector('.cursors-layer');
+    const cursorObserver = cursorsLayer ? new MutationObserver(() => {
+      requestAnimationFrame(applyCursorAlignment);
+    }) : null;
+    if (cursorsLayer && cursorObserver) {
+      cursorObserver.observe(cursorsLayer, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+    }
+
     // Apply on layout change (resize)
     const layoutDisposable = editor.onDidLayoutChange(() => {
-      requestAnimationFrame(applyAlignment);
+      requestAnimationFrame(applyAll);
     });
 
     // Intercept mouse events to adjust for translateX offset.
@@ -1613,10 +1679,14 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
 
     return () => {
       observer.disconnect();
+      cursorObserver?.disconnect();
       layoutDisposable.dispose();
       editorDom.removeEventListener('pointerdown', handler, true);
       editorDom.removeEventListener('dblclick', handler, true);
       clearTransforms();
+      // Clear cursor transforms
+      const cursors = editorDom.querySelectorAll<HTMLElement>('.cursors-layer .cursor');
+      cursors.forEach((c) => { c.style.transform = ''; });
     };
   }, [paragraphAlign, value]);
 
@@ -1822,6 +1892,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
           fontSize: 17,
           lineHeight: LINE_SPACING_VALUES[lineSpacing],
           fontFamily: editorFont || "'Libre Baskerville', Georgia, 'Times New Roman', serif",
+          automaticLayout: true,
           minimap: { enabled: false },
           lineNumbers: 'on',
           readOnly: readOnly,
