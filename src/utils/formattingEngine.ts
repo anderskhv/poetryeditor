@@ -31,10 +31,10 @@ export function computeFormatting(
   fullText: string,
   selStart: number,
   selEnd: number,
-  formatType: 'bold' | 'italic' | 'underline',
+  formatType: 'bold' | 'italic' | 'underline' | 'strikethrough',
   wordAtCursor?: { startOffset: number; endOffset: number; text: string },
 ): FormattingResult | null {
-  const prefix = formatType === 'bold' ? '**' : formatType === 'italic' ? '*' : '__';
+  const prefix = formatType === 'bold' ? '**' : formatType === 'italic' ? '*' : formatType === 'underline' ? '__' : '~~';
   const suffix = prefix;
   const markerLen = prefix.length;
 

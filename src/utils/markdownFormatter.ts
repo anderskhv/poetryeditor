@@ -9,7 +9,7 @@
  */
 
 export interface MarkdownRange {
-  type: 'bold' | 'italic' | 'underline';
+  type: 'bold' | 'italic' | 'underline' | 'strikethrough';
   startOffset: number;
   endOffset: number;
   contentStartOffset: number;
@@ -101,6 +101,18 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
     });
   }
 
+  // Strikethrough: ~~text~~
+  const strikethroughRegex = /~~(\S(?:[^~\n]*\S)?)~~/g;
+  while ((match = strikethroughRegex.exec(text)) !== null) {
+    ranges.push({
+      type: 'strikethrough',
+      startOffset: match.index,
+      endOffset: match.index + match[0].length,
+      contentStartOffset: match.index + 2,
+      contentEndOffset: match.index + match[0].length - 2,
+    });
+  }
+
   // Sort by start offset for consistent processing
   ranges.sort((a, b) => a.startOffset - b.startOffset);
 
@@ -116,5 +128,6 @@ export function stripMarkdownFormatting(text: string): string {
     .replace(/\*\*\*(\S(?:[^*]*\S)?)\*\*\*/g, '$1')  // Bold+Italic first
     .replace(/\*\*(\S(?:[^*]*\S)?)\*\*/g, '$1')  // Bold
     .replace(/(?<!\*)\*(\S(?:[^*\n]*\S)?)\*(?!\*)/g, '$1')  // Italic
-    .replace(/__(\S(?:[^_\n]*\S)?)__/g, '$1');  // Underline
+    .replace(/__(\S(?:[^_\n]*\S)?)__/g, '$1')  // Underline
+    .replace(/~~(\S(?:[^~\n]*\S)?)~~/g, '$1');  // Strikethrough
 }

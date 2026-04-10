@@ -511,6 +511,14 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       run: () => wrapSelection('__', '__'),
     });
 
+    // Strikethrough: Cmd/Ctrl + Shift + S
+    editorInstance.addAction({
+      id: 'strikethrough-text',
+      label: 'Strikethrough',
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
+      run: () => wrapSelection('~~', '~~'),
+    });
+
     editorInstance.onKeyDown((event) => {
       if (event.keyCode !== monaco.KeyCode.Enter) return;
       const selection = editorInstance.getSelection();
@@ -527,7 +535,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       );
       if (!region) return;
 
-      const marker = region.type === 'bold' ? '**' : region.type === 'underline' ? '__' : '*';
+      const marker = region.type === 'bold' ? '**' : region.type === 'underline' ? '__' : region.type === 'strikethrough' ? '~~' : '*';
       event.preventDefault();
 
       if (cursorOffset === region.contentStartOffset) {
@@ -741,22 +749,25 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       if (change.text !== '-') return;
 
       const model = editorInstance.getModel();
-      const selection = editorInstance.getSelection();
-      if (!model || !selection || !selection.isEmpty()) return;
+      if (!model) return;
 
-      const pos = selection.getPosition();
-      if (pos.column < 3) return;
+      // Use rangeOffset (not getSelection) — cursor position may be stale in this callback
+      const insertedOffset = change.rangeOffset; // offset of newly inserted '-' in updated model
+      if (insertedOffset === 0) return;
+
+      const posAt = model.getPositionAt(insertedOffset);
+      if (posAt.column < 2) return; // '-' is first char of line, nothing before it
 
       const charBefore = model.getValueInRange({
-        startLineNumber: pos.lineNumber, startColumn: pos.column - 2,
-        endLineNumber: pos.lineNumber, endColumn: pos.column - 1,
+        startLineNumber: posAt.lineNumber, startColumn: posAt.column - 1,
+        endLineNumber: posAt.lineNumber, endColumn: posAt.column,
       });
       if (charBefore !== '-') return;
 
       editorInstance.executeEdits('em-dash', [{
         range: {
-          startLineNumber: pos.lineNumber, startColumn: pos.column - 2,
-          endLineNumber: pos.lineNumber, endColumn: pos.column,
+          startLineNumber: posAt.lineNumber, startColumn: posAt.column - 1,
+          endLineNumber: posAt.lineNumber, endColumn: posAt.column + 1,
         },
         text: '—',
       }]);
@@ -1374,7 +1385,8 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
            letter-spacing collapses visual width, color hides the text. */
         .md-bold-marker,
         .md-italic-marker,
-        .md-underline-marker {
+        .md-underline-marker,
+        .md-strikethrough-marker {
           color: transparent !important;
           font-size: 1px !important;
           letter-spacing: -1em !important;
@@ -1393,9 +1405,14 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
           text-decoration: underline !important;
         }
 
+        .md-strikethrough-content {
+          text-decoration: line-through !important;
+        }
+
         :root.dark-mode .md-bold-marker,
         :root.dark-mode .md-italic-marker,
-        :root.dark-mode .md-underline-marker {
+        :root.dark-mode .md-underline-marker,
+        :root.dark-mode .md-strikethrough-marker {
           color: transparent !important;
           font-size: 1px !important;
           letter-spacing: -1em !important;
