@@ -734,26 +734,28 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       }
     });
 
-    // Em-dash: replace -- with — when second hyphen is typed
-    editorInstance.onKeyDown((event) => {
-      if (event.keyCode !== monaco.KeyCode.Minus) return;
-      const selection = editorInstance.getSelection();
-      if (!selection || !selection.isEmpty()) return;
+    // Em-dash: replace -- with — after second hyphen is inserted
+    editorInstance.onDidChangeModelContent((e) => {
+      if (e.changes.length !== 1) return;
+      const change = e.changes[0];
+      if (change.text !== '-') return;
+
       const model = editorInstance.getModel();
-      if (!model) return;
+      const selection = editorInstance.getSelection();
+      if (!model || !selection || !selection.isEmpty()) return;
 
       const pos = selection.getPosition();
-      if (pos.column < 2) return;
+      if (pos.column < 3) return;
+
       const charBefore = model.getValueInRange({
-        startLineNumber: pos.lineNumber, startColumn: pos.column - 1,
-        endLineNumber: pos.lineNumber, endColumn: pos.column,
+        startLineNumber: pos.lineNumber, startColumn: pos.column - 2,
+        endLineNumber: pos.lineNumber, endColumn: pos.column - 1,
       });
       if (charBefore !== '-') return;
 
-      event.preventDefault();
       editorInstance.executeEdits('em-dash', [{
         range: {
-          startLineNumber: pos.lineNumber, startColumn: pos.column - 1,
+          startLineNumber: pos.lineNumber, startColumn: pos.column - 2,
           endLineNumber: pos.lineNumber, endColumn: pos.column,
         },
         text: '—',
