@@ -166,13 +166,20 @@ function esc(s) {
     .replace(/'/g, '&apos;');
 }
 
-/** Write an HTML string to dist/<route>/index.html (or dist/index.html for /). */
+/** Write an HTML string to dist/<route>.html (or dist/index.html for /).
+ *  Uses flat .html files instead of directory/index.html so Cloudflare Pages
+ *  serves them at extensionless URLs without a 308 trailing-slash redirect
+ *  (which Google reports as "Redirect error" and refuses to index). */
 function writePage(route, html) {
-  const dir = route === '/'
-    ? DIST
-    : path.join(DIST, ...route.replace(/^\//, '').split('/'));
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'index.html'), html);
+  if (route === '/') {
+    fs.writeFileSync(path.join(DIST, 'index.html'), html);
+  } else {
+    const parts = route.replace(/^\//, '').split('/');
+    const filename = parts.pop() + '.html';
+    const dir = parts.length > 0 ? path.join(DIST, ...parts) : DIST;
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, filename), html);
+  }
 }
 
 function loadSitemapRoutes(filePath, pattern) {
