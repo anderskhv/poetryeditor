@@ -1132,10 +1132,10 @@ function App() {
   return (
     <div className="app">
       <SEOHead
-        title="Poetry Editor — AI Poetry Coach & Writing Tools"
-        description="Write poetry with an AI coach that gives feedback on craft, rhythm, and voice. Plus rhyme finder, syllable counter, and synonym tools. Free to use."
+        title="Poetry Editor — AI Feedback for Serious Poets"
+        description="Get AI feedback on your poetry — craft, rhythm, imagery, and voice. Not a poem generator. A writing tool for poets who want to improve their work."
         canonicalPath="/"
-        keywords="poetry editor, AI poetry coach, AI poetry editor, poetry coaching, poetry feedback, rhyme finder, syllable counter, synonym finder, poetry writing tool"
+        keywords="poetry editor, AI poetry coach, AI poetry feedback, poetry coaching, poetry feedback, rhyme finder, syllable counter, synonym finder, poetry writing tool"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebApplication",
@@ -1143,7 +1143,7 @@ function App() {
           "url": "https://poetryeditor.com",
           "applicationCategory": "WritingApplication",
           "operatingSystem": "Web",
-          "description": "Write and analyze poems with rhyme, synonym, and syllable tools."
+          "description": "Get AI feedback on your poetry — craft, rhythm, imagery, and voice. Not a poem generator. A writing tool for poets who want to improve their work."
         }}
       />
       <header className="app-header">
@@ -1151,7 +1151,7 @@ function App() {
           <div className="header-left">
             <div className="app-title-group">
               <h1 className="app-title">Poetry Editor</h1>
-              <span className="app-subtitle">a toolbox for poets</span>
+              <span className="app-subtitle">AI feedback for serious poets</span>
             </div>
             {isAnalyzing && (
               <span className="analyzing-indicator" title="Analyzing poem...">

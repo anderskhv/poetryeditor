@@ -779,8 +779,8 @@ const LEARN_PAGES = [
 
 function homepageHtml() {
   return `<article>
-<h1>Poetry Editor &mdash; A Toolbox for Poets</h1>
-<p>Write and analyze poems with a full-featured poetry editor, rhyme finder, synonym tools, and syllable counter. Built for poets, songwriters, and teachers.</p>
+<h1>Poetry Editor &mdash; AI Feedback for Serious Poets</h1>
+<p>Get AI feedback on your poetry &mdash; craft, rhythm, imagery, and voice. Not a poem generator. A writing tool for poets who want to improve their work.</p>
 <nav>
 <h2>Poetry Tools</h2>
 <ul>
@@ -864,10 +864,10 @@ async function main() {
 
   // 5. Homepage
   writePage('/', stampTemplate(template, {
-    title: 'Poetry Editor - Write, Rhyme, and Count Syllables | Poetry Editor',
-    description: 'Write and analyze poems with a full-featured poetry editor, rhyme finder, synonym tools, and syllable counter. Built for poets, songwriters, and teachers.',
+    title: 'Poetry Editor — AI Feedback for Serious Poets',
+    description: 'Get AI feedback on your poetry — craft, rhythm, imagery, and voice. Not a poem generator. A writing tool for poets who want to improve their work.',
     canonical: SITE + '/',
-    keywords: 'poetry editor, rhyme finder, synonym finder, syllable counter, poetry tools, write poetry',
+    keywords: 'poetry editor, AI poetry coach, AI poetry feedback, poetry coaching, poetry feedback, rhyme finder, syllable counter, synonym finder, poetry writing tool',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
@@ -875,7 +875,7 @@ async function main() {
       url: SITE,
       applicationCategory: 'WritingApplication',
       operatingSystem: 'Web',
-      description: 'Write and analyze poems with rhyme, synonym, and syllable tools.',
+      description: 'Get AI feedback on your poetry — craft, rhythm, imagery, and voice. Not a poem generator. A writing tool for poets who want to improve their work.',
     },
     bodyHtml: homepageHtml(),
   }));
