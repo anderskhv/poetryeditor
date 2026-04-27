@@ -37,7 +37,24 @@ import {
   synthesizeReport,
   type EditorialPoemData,
 } from '../utils/editorialAgents';
-import { recordUsage } from '../utils/usageTracking';
+import { recordUsage, isUserAdmin } from '../utils/usageTracking';
+import { getLocalApiKey } from '../utils/editorStorage';
+
+const FREE_REPORTS_PER_DAY = 3;
+
+/** Count today's editorial reports for the user (UTC day). */
+async function countTodaysReports(userId: string): Promise<number> {
+  if (!supabase) return 0;
+  const startOfDayUtc = new Date();
+  startOfDayUtc.setUTCHours(0, 0, 0, 0);
+  const { data, error } = await supabase
+    .from('editor_reports')
+    .select('id', { count: 'exact', head: false })
+    .eq('user_id', userId)
+    .gte('created_at', startOfDayUtc.toISOString());
+  if (error || !data) return 0;
+  return data.length;
+}
 
 // ── localStorage keys ──
 
@@ -378,6 +395,21 @@ export function useEditorialReport({
     if (editorialPoems.length === 0) {
       setError('No poems in this collection.');
       return;
+    }
+
+    // Daily cap: 3 free editorial reports per day. Skipped for admins and BYOK users.
+    if (user) {
+      const usingOwnKey = getLocalApiKey() !== null;
+      const admin = await isUserAdmin(user.id, supabase);
+      if (!admin && !usingOwnKey) {
+        const today = await countTodaysReports(user.id);
+        if (today >= FREE_REPORTS_PER_DAY) {
+          setError(
+            `You've used your ${FREE_REPORTS_PER_DAY} free editorial reports for today. Try again tomorrow, or add your own Anthropic API key in Editor settings to keep going.`,
+          );
+          return;
+        }
+      }
     }
 
     setError(null);

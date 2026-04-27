@@ -52,6 +52,7 @@ async function callEditor(
 
   const response = await fetch(ANTHROPIC_PROXY_URL, {
     method: 'POST',
+      credentials: 'include',
     headers,
     body: JSON.stringify({
       model: EDITOR_MODEL,
@@ -93,6 +94,7 @@ export async function streamSonnet(
 
   const response = await fetch(ANTHROPIC_PROXY_URL, {
     method: 'POST',
+      credentials: 'include',
     headers,
     body: JSON.stringify({
       model: SONNET_MODEL,
@@ -114,6 +116,8 @@ export async function streamSonnet(
     const errorBody = await response.text().catch(() => '');
     if (response.status === 401) {
       callbacks.onError(new Error(NO_AUTH_MESSAGE));
+    } else if (response.status === 402) {
+      callbacks.onError(new Error('You\'ve used your free messages. Create a free account to keep using the AI editor.'));
     } else if (response.status === 429) {
       callbacks.onError(new Error(errorBody.includes('cap_exceeded')
         ? 'Monthly cap reached. Add your own Anthropic API key in Editor settings to keep going.'

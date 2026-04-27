@@ -21,7 +21,12 @@ interface Env {
   ANTHROPIC_API_KEY: string;
   SUPABASE_URL: string;
   SUPABASE_SERVICE_ROLE_KEY: string;
+  /** Random 32+ byte string used to HMAC-sign the guest chat counter cookie. */
+  GUEST_COOKIE_SECRET: string;
 }
+
+const GUEST_COOKIE_NAME = 'pe_guest';
+const GUEST_FREE_CHATS = 3;
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
@@ -45,11 +50,50 @@ function monthKey(): string {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
 }
 
-function jsonError(status: number, message: string, code?: string): Response {
+function jsonError(status: number, message: string, code?: string, extraHeaders?: Record<string, string>): Response {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (extraHeaders) Object.assign(headers, extraHeaders);
   return new Response(JSON.stringify({ error: { type: code || 'proxy_error', message } }), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers,
   });
+}
+
+// ── Guest cookie (HMAC-signed counter) ──
+
+async function hmacSign(value: string, secret: string): Promise<string> {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    enc.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(value));
+  return btoa(String.fromCharCode(...new Uint8Array(sig)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+
+async function readGuestCount(req: Request, secret: string): Promise<number> {
+  const cookieHeader = req.headers.get('cookie') || '';
+  const match = cookieHeader.match(new RegExp(`${GUEST_COOKIE_NAME}=([^;]+)`));
+  if (!match) return 0;
+  const [countStr, sig] = decodeURIComponent(match[1]).split('.');
+  if (!countStr || !sig) return 0;
+  const expected = await hmacSign(countStr, secret);
+  if (expected !== sig) return 0;
+  const n = parseInt(countStr, 10);
+  return Number.isFinite(n) && n >= 0 ? n : 0;
+}
+
+async function buildGuestCookie(count: number, secret: string): Promise<string> {
+  const sig = await hmacSign(String(count), secret);
+  const value = encodeURIComponent(`${count}.${sig}`);
+  // 30 days. HttpOnly so JS can't read or trivially overwrite. SameSite=Lax for normal nav.
+  return `${GUEST_COOKIE_NAME}=${value}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax`;
 }
 
 async function getUserId(env: Env, accessToken: string): Promise<string | null> {
@@ -220,6 +264,7 @@ const handler = async (context: PagesContext): Promise<Response> => {
   let apiKey: string;
   let userId: string | null = null;
   let trackPlatformUsage = false;
+  let guestNewCount: number | null = null;
 
   if (byok) {
     apiKey = byok;
@@ -234,49 +279,62 @@ const handler = async (context: PagesContext): Promise<Response> => {
         'misconfigured',
       );
     }
-    if (!auth) {
-      return jsonError(
-        401,
-        'Sign in to use the AI editor, or add your own Anthropic API key in Editor settings.',
-        'auth_required',
-      );
-    }
 
-    try {
-      userId = await getUserId(env, auth);
-    } catch {
-      return jsonError(502, 'Could not reach Supabase to verify your session.', 'auth_upstream');
-    }
-    if (!userId) {
-      return jsonError(401, 'Your session has expired. Please sign in again.', 'invalid_session');
-    }
-
-    let admin = false;
-    try {
-      admin = await isAdmin(env, userId);
-    } catch {
-      // Fail closed: treat as non-admin if we can't check
-      admin = false;
-    }
-    if (!admin) {
-      let used = 0;
+    if (auth) {
+      // ── Signed-in user ──
       try {
-        used = await getMonthlyUsedCents(env, userId);
+        userId = await getUserId(env, auth);
       } catch {
-        // Fail closed: if we can't read usage, assume cap not reached but log
-        used = 0;
+        return jsonError(502, 'Could not reach Supabase to verify your session.', 'auth_upstream');
       }
-      if (used >= REGISTERED_CAP_CENTS) {
+      if (!userId) {
+        return jsonError(401, 'Your session has expired. Please sign in again.', 'invalid_session');
+      }
+
+      let admin = false;
+      try {
+        admin = await isAdmin(env, userId);
+      } catch {
+        admin = false;
+      }
+      if (!admin) {
+        let used = 0;
+        try {
+          used = await getMonthlyUsedCents(env, userId);
+        } catch {
+          used = 0;
+        }
+        if (used >= REGISTERED_CAP_CENTS) {
+          return jsonError(
+            429,
+            'Monthly cap reached. Add your own Anthropic API key in Editor settings to keep going.',
+            'cap_exceeded',
+          );
+        }
+      }
+
+      apiKey = env.ANTHROPIC_API_KEY;
+      trackPlatformUsage = true;
+    } else {
+      // ── Guest: limit to GUEST_FREE_CHATS via HMAC-signed cookie ──
+      if (!env.GUEST_COOKIE_SECRET) {
         return jsonError(
-          429,
-          'Monthly cap reached. Add your own Anthropic API key in Editor settings to keep going.',
-          'cap_exceeded',
+          500,
+          'Server is missing GUEST_COOKIE_SECRET. Sign in to use the AI editor, or add your own Anthropic API key.',
+          'misconfigured',
         );
       }
+      const count = await readGuestCount(request, env.GUEST_COOKIE_SECRET);
+      if (count >= GUEST_FREE_CHATS) {
+        return jsonError(
+          402,
+          `You've used your ${GUEST_FREE_CHATS} free messages. Create a free account to keep going.`,
+          'guest_cap_reached',
+        );
+      }
+      guestNewCount = count + 1;
+      apiKey = env.ANTHROPIC_API_KEY;
     }
-
-    apiKey = env.ANTHROPIC_API_KEY;
-    trackPlatformUsage = true;
   }
 
   // ── Forward to Anthropic ──
@@ -291,11 +349,18 @@ const handler = async (context: PagesContext): Promise<Response> => {
     body: JSON.stringify(body),
   });
 
+  // Build a Set-Cookie header for guest responses if we incremented the counter.
+  const guestCookie = guestNewCount !== null
+    ? await buildGuestCookie(guestNewCount, env.GUEST_COOKIE_SECRET)
+    : null;
+
   if (!upstream.ok) {
     const errBody = await upstream.text().catch(() => '');
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (guestCookie) headers['Set-Cookie'] = guestCookie;
     return new Response(errBody || JSON.stringify({ error: { message: 'Upstream error' } }), {
       status: upstream.status,
-      headers: { 'Content-Type': 'application/json' },
+      headers,
     });
   }
 
@@ -304,27 +369,20 @@ const handler = async (context: PagesContext): Promise<Response> => {
       return jsonError(502, 'No upstream stream');
     }
 
+    const streamHeaders: Record<string, string> = {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    };
+    if (guestCookie) streamHeaders['Set-Cookie'] = guestCookie;
+
     if (trackPlatformUsage && userId) {
       const [a, b] = upstream.body.tee();
       waitUntil(trackStreamingUsage(b, model, userId, env));
-      return new Response(a, {
-        status: 200,
-        headers: {
-          'Content-Type': 'text/event-stream',
-          'Cache-Control': 'no-cache',
-          Connection: 'keep-alive',
-        },
-      });
+      return new Response(a, { status: 200, headers: streamHeaders });
     }
 
-    return new Response(upstream.body, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-      },
-    });
+    return new Response(upstream.body, { status: 200, headers: streamHeaders });
   }
 
   // Non-streaming: parse for usage tracking
@@ -338,10 +396,9 @@ const handler = async (context: PagesContext): Promise<Response> => {
     waitUntil(recordUsage(env, userId, model, it, ot));
   }
 
-  return new Response(JSON.stringify(result), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  const respHeaders: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (guestCookie) respHeaders['Set-Cookie'] = guestCookie;
+  return new Response(JSON.stringify(result), { status: 200, headers: respHeaders });
 };
 
 export const onRequestPost = async (context: PagesContext): Promise<Response> => {

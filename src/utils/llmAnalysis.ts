@@ -86,6 +86,7 @@ export async function callLLMAnalysis(
 
   const response = await fetch(ANTHROPIC_PROXY_URL, {
     method: 'POST',
+      credentials: 'include',
     headers,
     body: JSON.stringify({
       model: ANALYSIS_MODEL,

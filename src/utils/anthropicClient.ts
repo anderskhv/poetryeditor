@@ -14,11 +14,13 @@ import { getLocalApiKey } from './editorStorage';
 export const ANTHROPIC_PROXY_URL = '/api/anthropic';
 
 /**
- * Build headers for the proxy call. Returns null if there is no auth available
- * at all (no BYOK and no signed-in user) — the caller should surface a sign-in
- * prompt rather than make the request.
+ * Build headers for the proxy call.
+ *
+ * Always returns a header set — guests are allowed (the proxy enforces a
+ * small free-message quota via signed cookie). Auth header / BYOK header
+ * are added when available.
  */
-export async function getProxyHeaders(): Promise<Record<string, string> | null> {
+export async function getProxyHeaders(): Promise<Record<string, string>> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 
   const byok = getLocalApiKey();
@@ -27,15 +29,18 @@ export async function getProxyHeaders(): Promise<Record<string, string> | null> 
     return headers;
   }
 
-  if (!supabase) return null;
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  if (!token) return null;
+  if (supabase) {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+  }
 
-  headers['Authorization'] = `Bearer ${token}`;
   return headers;
 }
 
-/** Friendly fallback message when no auth is available. */
+/** Always send the guest cookie back so the server can enforce the free quota. */
+export const PROXY_FETCH_OPTS: RequestInit = { credentials: 'include' };
+
+/** Friendly fallback message — used only if Supabase client is missing entirely. */
 export const NO_AUTH_MESSAGE =
   'Sign in to use the AI editor, or add your own Anthropic API key in Editor settings.';
