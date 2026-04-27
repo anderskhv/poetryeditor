@@ -199,7 +199,7 @@ interface PagesContext {
   waitUntil: (p: Promise<unknown>) => void;
 }
 
-export const onRequestPost = async (context: PagesContext): Promise<Response> => {
+const handler = async (context: PagesContext): Promise<Response> => {
   const { request, env, waitUntil } = context;
 
   let body: Record<string, unknown>;
@@ -227,6 +227,13 @@ export const onRequestPost = async (context: PagesContext): Promise<Response> =>
     if (!env.ANTHROPIC_API_KEY) {
       return jsonError(500, 'Server is not configured with an Anthropic API key.', 'misconfigured');
     }
+    if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+      return jsonError(
+        500,
+        'Server is missing Supabase configuration. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Cloudflare Pages env.',
+        'misconfigured',
+      );
+    }
     if (!auth) {
       return jsonError(
         401,
@@ -235,14 +242,30 @@ export const onRequestPost = async (context: PagesContext): Promise<Response> =>
       );
     }
 
-    userId = await getUserId(env, auth);
+    try {
+      userId = await getUserId(env, auth);
+    } catch {
+      return jsonError(502, 'Could not reach Supabase to verify your session.', 'auth_upstream');
+    }
     if (!userId) {
       return jsonError(401, 'Your session has expired. Please sign in again.', 'invalid_session');
     }
 
-    const admin = await isAdmin(env, userId);
+    let admin = false;
+    try {
+      admin = await isAdmin(env, userId);
+    } catch {
+      // Fail closed: treat as non-admin if we can't check
+      admin = false;
+    }
     if (!admin) {
-      const used = await getMonthlyUsedCents(env, userId);
+      let used = 0;
+      try {
+        used = await getMonthlyUsedCents(env, userId);
+      } catch {
+        // Fail closed: if we can't read usage, assume cap not reached but log
+        used = 0;
+      }
       if (used >= REGISTERED_CAP_CENTS) {
         return jsonError(
           429,
@@ -319,4 +342,13 @@ export const onRequestPost = async (context: PagesContext): Promise<Response> =>
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });
+};
+
+export const onRequestPost = async (context: PagesContext): Promise<Response> => {
+  try {
+    return await handler(context);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return jsonError(500, `Proxy error: ${message}`, 'proxy_exception');
+  }
 };
