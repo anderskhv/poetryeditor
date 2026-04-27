@@ -19,7 +19,7 @@ import type { PoetProfile, AnalysisContext, FeedbackStyle, EditorSettings as Edi
 import { useEditorChat } from '../../hooks/useEditorChat';
 import { EditorOnboarding } from './EditorOnboarding';
 import { EditorMessage } from './EditorMessage';
-import { hasApiKey } from '../../utils/editorApi';
+import { hasByokKey } from '../../utils/editorApi';
 import { UsageCapModal } from './UsageCapModal';
 import { saveLocalApiKey, getLocalApiKey, clearLocalApiKey } from '../../utils/editorStorage';
 import {
@@ -263,7 +263,10 @@ export function EditorChat({
   }
 
 
-  const hasKey = useMemo(() => hasApiKey(), [showSettings, apiKeyInput]);
+  // Chat is available if the user is signed in (uses platform key via /api/anthropic)
+  // OR has a BYOK configured (bypasses caps, billed to them).
+  const hasByok = useMemo(() => hasByokKey(), [showSettings, apiKeyInput]);
+  const canChat = !!user || hasByok;
 
   // ── Render ──
 
@@ -321,9 +324,9 @@ export function EditorChat({
     );
   }
 
-  // No API key at all (neither env var nor user key) — only show for logged-in users
-  // Guests with the shared env key skip this entirely
-  if (!hasKey && user) {
+  // Guest with no BYOK — prompt to sign in (so the platform key + caps apply server-side)
+  // or add their own key.
+  if (!canChat) {
     return (
       <div className="editor-chat">
         <div className="editor-chat-header">
@@ -335,24 +338,10 @@ export function EditorChat({
           </button>
         </div>
         <div className="editor-empty-state">
-          <p>To start using the editor, add your Anthropic API key.</p>
+          <p>Sign in to use the AI editor, or add your own Anthropic API key.</p>
           <button className="editor-option-btn" onClick={() => setShowSettings(true)}>
             Add API Key
           </button>
-        </div>
-      </div>
-    );
-  }
-
-  // No API key and guest — editor unavailable in this environment
-  if (!hasKey && !user) {
-    return (
-      <div className="editor-chat">
-        <div className="editor-chat-header">
-          <span className="editor-chat-title">Editor</span>
-        </div>
-        <div className="editor-empty-state">
-          <p>The AI editor is currently unavailable. Sign in or try again later.</p>
         </div>
       </div>
     );

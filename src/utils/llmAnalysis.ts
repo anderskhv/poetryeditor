@@ -7,11 +7,9 @@
  */
 
 import type { LLMAnalysisResult } from '../types/editor';
-import { getLocalApiKey } from './editorStorage';
+import { ANTHROPIC_PROXY_URL, getProxyHeaders, NO_AUTH_MESSAGE } from './anthropicClient';
 
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const ANALYSIS_MODEL = 'claude-haiku-4-5-20251001';
-const ANTHROPIC_VERSION = '2023-06-01';
 
 /** Compact summary of client-side analysis sent to Haiku */
 export interface ClientAnalysisSummary {
@@ -21,14 +19,6 @@ export interface ClientAnalysisSummary {
   rhymeScheme: string;
   detectedMeter: string;
   detectedForm: string;
-}
-
-function resolveApiKey(): string | null {
-  const userKey = getLocalApiKey();
-  if (userKey) return userKey;
-  const envKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-  if (envKey) return envKey;
-  return null;
 }
 
 /**
@@ -88,21 +78,15 @@ CLIENT-SIDE ANALYSIS:
 export async function callLLMAnalysis(
   poemText: string,
   clientAnalysis: ClientAnalysisSummary,
-  _apiKey?: string,
 ): Promise<{ result: LLMAnalysisResult; usage: { inputTokens: number; outputTokens: number } }> {
-  const apiKey = _apiKey || resolveApiKey();
-  if (!apiKey) throw new Error('No API key configured.');
+  const headers = await getProxyHeaders();
+  if (!headers) throw new Error(NO_AUTH_MESSAGE);
 
   const { system, user } = buildAnalysisPrompt(poemText, clientAnalysis);
 
-  const response = await fetch(ANTHROPIC_API_URL, {
+  const response = await fetch(ANTHROPIC_PROXY_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': ANTHROPIC_VERSION,
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers,
     body: JSON.stringify({
       model: ANALYSIS_MODEL,
       max_tokens: 1024,

@@ -7,22 +7,10 @@
 
 import type { StreamCallbacks, TokenUsage } from '../types/editor';
 import { getLocalApiKey } from './editorStorage';
+import { ANTHROPIC_PROXY_URL, getProxyHeaders, NO_AUTH_MESSAGE } from './anthropicClient';
 
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const COACHING_MODEL = 'claude-sonnet-4-5-20250929';
 const EXTRACTION_MODEL = 'claude-haiku-4-5-20251001';
-const ANTHROPIC_VERSION = '2023-06-01';
-
-/**
- * Resolve the API key: user's stored key → env default.
- */
-function resolveApiKey(): string | null {
-  const userKey = getLocalApiKey();
-  if (userKey) return userKey;
-  const envKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-  if (envKey) return envKey;
-  return null;
-}
 
 /**
  * Send a coaching message with streaming response.
@@ -34,23 +22,18 @@ export async function streamCoachingMessage(
   signal?: AbortSignal,
   maxTokens?: number,
 ): Promise<void> {
-  const apiKey = resolveApiKey();
-  if (!apiKey) {
-    callbacks.onError(new Error('No API key configured. Add your Anthropic API key in Editor settings.'));
+  const headers = await getProxyHeaders();
+  if (!headers) {
+    callbacks.onError(new Error(NO_AUTH_MESSAGE));
     return;
   }
 
   let fullResponse = '';
 
   try {
-    const response = await fetch(ANTHROPIC_API_URL, {
+    const response = await fetch(ANTHROPIC_PROXY_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': ANTHROPIC_VERSION,
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
+      headers,
       body: JSON.stringify({
         model: COACHING_MODEL,
         max_tokens: maxTokens || 4096,
@@ -73,9 +56,11 @@ export async function streamCoachingMessage(
     if (!response.ok) {
       const errorBody = await response.text().catch(() => '');
       if (response.status === 401) {
-        callbacks.onError(new Error('Invalid API key. Check your Anthropic API key in Editor settings.'));
+        callbacks.onError(new Error(NO_AUTH_MESSAGE));
       } else if (response.status === 429) {
-        callbacks.onError(new Error('Rate limited. Please wait a moment and try again.'));
+        callbacks.onError(new Error(errorBody.includes('cap_exceeded')
+          ? 'Monthly cap reached. Add your own Anthropic API key in Editor settings to keep going.'
+          : 'Rate limited. Please wait a moment and try again.'));
       } else if (response.status === 400 && errorBody.includes('content filtering')) {
         callbacks.onError(new Error('The response was blocked by a content filter. This can happen with poems that touch on intense themes. Try asking about specific poems or aspects of the collection instead of generating a full report at once.'));
       } else {
@@ -163,17 +148,12 @@ export async function callExtractionModel(
   systemPrompt: string,
   userMessage: string,
 ): Promise<string> {
-  const apiKey = resolveApiKey();
-  if (!apiKey) throw new Error('No API key configured.');
+  const headers = await getProxyHeaders();
+  if (!headers) throw new Error(NO_AUTH_MESSAGE);
 
-  const response = await fetch(ANTHROPIC_API_URL, {
+  const response = await fetch(ANTHROPIC_PROXY_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': ANTHROPIC_VERSION,
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers,
     body: JSON.stringify({
       model: EXTRACTION_MODEL,
       max_tokens: 512,
@@ -259,8 +239,10 @@ export async function extractConversationSummary(summaryPrompt: string): Promise
 }
 
 /**
- * Check if an API key is available.
+ * Returns true if the user has a BYOK (bring-your-own-key) configured.
+ * The platform Anthropic key now lives server-side and is gated by Supabase
+ * auth — signed-in users can chat without a BYOK.
  */
-export function hasApiKey(): boolean {
-  return resolveApiKey() !== null;
+export function hasByokKey(): boolean {
+  return getLocalApiKey() !== null;
 }

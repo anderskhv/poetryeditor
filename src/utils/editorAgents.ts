@@ -25,22 +25,10 @@ import type {
   TokenUsage,
   StreamCallbacks,
 } from '../types/editor';
-import { getLocalApiKey } from './editorStorage';
+import { ANTHROPIC_PROXY_URL, getProxyHeaders, NO_AUTH_MESSAGE } from './anthropicClient';
 
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const SONNET_MODEL = 'claude-sonnet-4-5-20250929';
 const HAIKU_MODEL = 'claude-haiku-4-5-20251001';
-const ANTHROPIC_VERSION = '2023-06-01';
-
-// ── API helpers ──
-
-function resolveApiKey(): string | null {
-  const userKey = getLocalApiKey();
-  if (userKey) return userKey;
-  const envKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-  if (envKey) return envKey;
-  return null;
-}
 
 /** Non-streaming call to a model (used for Haiku specialists) */
 async function callModel(
@@ -50,17 +38,12 @@ async function callModel(
   maxTokens: number,
   signal?: AbortSignal,
 ): Promise<{ text: string; usage: { inputTokens: number; outputTokens: number } }> {
-  const apiKey = resolveApiKey();
-  if (!apiKey) throw new Error('No API key configured.');
+  const headers = await getProxyHeaders();
+  if (!headers) throw new Error(NO_AUTH_MESSAGE);
 
-  const response = await fetch(ANTHROPIC_API_URL, {
+  const response = await fetch(ANTHROPIC_PROXY_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': ANTHROPIC_VERSION,
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers,
     body: JSON.stringify({
       model,
       max_tokens: maxTokens,
@@ -93,20 +76,15 @@ async function streamModel(
   maxTokens: number,
   signal?: AbortSignal,
 ): Promise<void> {
-  const apiKey = resolveApiKey();
-  if (!apiKey) {
-    callbacks.onError(new Error('No API key configured. Add your Anthropic API key in Editor settings.'));
+  const headers = await getProxyHeaders();
+  if (!headers) {
+    callbacks.onError(new Error(NO_AUTH_MESSAGE));
     return;
   }
 
-  const response = await fetch(ANTHROPIC_API_URL, {
+  const response = await fetch(ANTHROPIC_PROXY_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': ANTHROPIC_VERSION,
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers,
     body: JSON.stringify({
       model: SONNET_MODEL,
       max_tokens: maxTokens,
@@ -126,9 +104,11 @@ async function streamModel(
   if (!response.ok) {
     const errorBody = await response.text().catch(() => '');
     if (response.status === 401) {
-      callbacks.onError(new Error('Invalid API key. Check your Anthropic API key in Editor settings.'));
+      callbacks.onError(new Error(NO_AUTH_MESSAGE));
     } else if (response.status === 429) {
-      callbacks.onError(new Error('Rate limited. Please wait a moment and try again.'));
+      callbacks.onError(new Error(errorBody.includes('cap_exceeded')
+        ? 'Monthly cap reached. Add your own Anthropic API key in Editor settings to keep going.'
+        : 'Rate limited. Please wait a moment and try again.'));
     } else if (response.status === 400 && errorBody.includes('content filtering')) {
       callbacks.onError(new Error('The response was blocked by a content filter. This can happen with poems that touch on intense themes. Try asking about specific poems or aspects instead.'));
     } else {
