@@ -146,7 +146,7 @@ async function loadPreFlightAnswers(
         .select('answers')
         .eq('user_id', user.id)
         .eq('collection_id', collectionId)
-        .single();
+        .maybeSingle();
       if (data?.answers) return data.answers as PreFlightAnswers;
     } catch {
       // Fall through to null

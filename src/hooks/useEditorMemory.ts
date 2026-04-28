@@ -53,7 +53,7 @@ export function useEditorMemory(user: User | null) {
     if (user && supabase) {
       // Load from Supabase
       const [settingsResult, learningsResult, sessionsResult] = await Promise.all([
-        supabase.from('editor_settings').select('*').eq('user_id', user.id).single(),
+        supabase.from('editor_settings').select('*').eq('user_id', user.id).maybeSingle(),
         supabase.from('editor_learnings').select('insight').eq('user_id', user.id).eq('active', true).order('created_at', { ascending: false }).limit(50),
         supabase.from('editor_sessions').select('poem_title, summary, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20),
       ]);
