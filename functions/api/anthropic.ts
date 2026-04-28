@@ -358,6 +358,22 @@ const handler = async (context: PagesContext): Promise<Response> => {
     const errBody = await upstream.text().catch(() => '');
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (guestCookie) headers['Set-Cookie'] = guestCookie;
+
+    // Translate upstream auth failure on a BYOK request into a clear,
+    // typed error so the client can prompt to replace/remove the saved key
+    // instead of showing the generic "please sign in" copy.
+    if (upstream.status === 401 && byok) {
+      return new Response(
+        JSON.stringify({
+          error: {
+            type: 'byok_rejected',
+            message: 'Your saved Anthropic API key was rejected. Open Editor settings to remove or replace it.',
+          },
+        }),
+        { status: 401, headers },
+      );
+    }
+
     return new Response(errBody || JSON.stringify({ error: { message: 'Upstream error' } }), {
       status: upstream.status,
       headers,

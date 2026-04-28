@@ -7,7 +7,7 @@
  */
 
 import type { LLMAnalysisResult } from '../types/editor';
-import { ANTHROPIC_PROXY_URL, getProxyHeaders, NO_AUTH_MESSAGE } from './anthropicClient';
+import { ANTHROPIC_PROXY_URL, getProxyHeaders, describeProxyError } from './anthropicClient';
 
 const ANALYSIS_MODEL = 'claude-haiku-4-5-20251001';
 
@@ -80,13 +80,12 @@ export async function callLLMAnalysis(
   clientAnalysis: ClientAnalysisSummary,
 ): Promise<{ result: LLMAnalysisResult; usage: { inputTokens: number; outputTokens: number } }> {
   const headers = await getProxyHeaders();
-  if (!headers) throw new Error(NO_AUTH_MESSAGE);
 
   const { system, user } = buildAnalysisPrompt(poemText, clientAnalysis);
 
   const response = await fetch(ANTHROPIC_PROXY_URL, {
     method: 'POST',
-      credentials: 'include',
+    credentials: 'include',
     headers,
     body: JSON.stringify({
       model: ANALYSIS_MODEL,
@@ -98,7 +97,7 @@ export async function callLLMAnalysis(
 
   if (!response.ok) {
     const errorBody = await response.text().catch(() => '');
-    throw new Error(`LLM Analysis API error (${response.status}): ${errorBody.slice(0, 200)}`);
+    throw new Error(describeProxyError(response.status, errorBody));
   }
 
   const apiResult = await response.json();

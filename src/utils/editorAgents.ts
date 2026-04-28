@@ -25,7 +25,7 @@ import type {
   TokenUsage,
   StreamCallbacks,
 } from '../types/editor';
-import { ANTHROPIC_PROXY_URL, getProxyHeaders, NO_AUTH_MESSAGE } from './anthropicClient';
+import { ANTHROPIC_PROXY_URL, getProxyHeaders, describeProxyError } from './anthropicClient';
 
 const SONNET_MODEL = 'claude-sonnet-4-5-20250929';
 const HAIKU_MODEL = 'claude-haiku-4-5-20251001';
@@ -39,11 +39,10 @@ async function callModel(
   signal?: AbortSignal,
 ): Promise<{ text: string; usage: { inputTokens: number; outputTokens: number } }> {
   const headers = await getProxyHeaders();
-  if (!headers) throw new Error(NO_AUTH_MESSAGE);
 
   const response = await fetch(ANTHROPIC_PROXY_URL, {
     method: 'POST',
-      credentials: 'include',
+    credentials: 'include',
     headers,
     body: JSON.stringify({
       model,
@@ -56,7 +55,7 @@ async function callModel(
 
   if (!response.ok) {
     const errorBody = await response.text().catch(() => '');
-    throw new Error(`Agent API error (${response.status}): ${errorBody.slice(0, 200)}`);
+    throw new Error(describeProxyError(response.status, errorBody));
   }
 
   const result = await response.json();
@@ -78,14 +77,10 @@ async function streamModel(
   signal?: AbortSignal,
 ): Promise<void> {
   const headers = await getProxyHeaders();
-  if (!headers) {
-    callbacks.onError(new Error(NO_AUTH_MESSAGE));
-    return;
-  }
 
   const response = await fetch(ANTHROPIC_PROXY_URL, {
     method: 'POST',
-      credentials: 'include',
+    credentials: 'include',
     headers,
     body: JSON.stringify({
       model: SONNET_MODEL,
@@ -105,19 +100,7 @@ async function streamModel(
 
   if (!response.ok) {
     const errorBody = await response.text().catch(() => '');
-    if (response.status === 401) {
-      callbacks.onError(new Error(NO_AUTH_MESSAGE));
-    } else if (response.status === 402) {
-      callbacks.onError(new Error('You\'ve used your free messages. Create a free account to keep using the AI editor.'));
-    } else if (response.status === 429) {
-      callbacks.onError(new Error(errorBody.includes('cap_exceeded')
-        ? 'Monthly cap reached. Add your own Anthropic API key in Editor settings to keep going.'
-        : 'Rate limited. Please wait a moment and try again.'));
-    } else if (response.status === 400 && errorBody.includes('content filtering')) {
-      callbacks.onError(new Error('The response was blocked by a content filter. This can happen with poems that touch on intense themes. Try asking about specific poems or aspects instead.'));
-    } else {
-      callbacks.onError(new Error(`API error (${response.status}): ${errorBody.slice(0, 200)}`));
-    }
+    callbacks.onError(new Error(describeProxyError(response.status, errorBody)));
     return;
   }
 
