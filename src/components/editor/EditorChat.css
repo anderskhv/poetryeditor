@@ -173,12 +173,15 @@
 /* Error */
 .editor-error {
   font-family: var(--font-sans);
-  font-size: 12px;
-  color: #c44;
-  background: #c4441a;
-  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #fff;
+  background: #b3261e;
+  padding: 10px 14px;
   border-radius: 8px;
-  align-self: center;
+  align-self: stretch;
+  max-width: 100%;
+  word-wrap: break-word;
 }
 
 /* Empty state */
