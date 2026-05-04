@@ -1,5 +1,9 @@
 import { supabase } from '../lib/supabase';
 
+// Same regex used by analyticsApi.ts and the monitoring dashboard.
+const BOT_REGEX = /(bot|crawler|spider|crawling|slurp|bingpreview|facebookexternalhit|discordbot|twitterbot|linkedinbot|whatsapp|telegrambot|pinterest|embedly|quora link preview|slackbot|applebot|semrush|ahrefs|mj12|dotbot|yandex|baiduspider|duckduckbot)/i;
+const isBotUA = (ua: string) => BOT_REGEX.test(ua || '');
+
 const isDev = import.meta.env.DEV;
 const sessionId = (() => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -13,8 +17,6 @@ let pageStart: number | null = null;
 let currentPath = '';
 let trackingInitialized = false;
 let countryPromise: Promise<string> | null = null;
-let heartbeatTimer: number | null = null;
-let cumulativeDuration = 0;
 
 const getDeviceType = (userAgent: string) => {
   if (!userAgent) return 'unknown';
@@ -45,6 +47,7 @@ const MIN_DURATION_MS = 1000;
 
 const sendDuration = async (path: string, durationMs: number, userId?: string | null) => {
   if (isDev || !supabase || !path || durationMs < MIN_DURATION_MS) return;
+  if (typeof navigator !== 'undefined' && isBotUA(navigator.userAgent)) return;
   const roundedDuration = Math.round(durationMs);
   const baseEvent = {
     event_type: 'page_duration',
@@ -74,13 +77,14 @@ const sendDuration = async (path: string, durationMs: number, userId?: string | 
   }
 };
 
+const MAX_DURATION_MS = 60 * 60 * 1000;
+
 const flushDuration = (userId?: string | null) => {
   if (!currentPath || pageStart === null) return;
   const elapsed = Date.now() - pageStart;
-  const totalDuration = cumulativeDuration + elapsed;
   pageStart = null;
-  cumulativeDuration = 0;
-  sendDuration(currentPath, totalDuration, userId);
+  if (elapsed > MAX_DURATION_MS) return;
+  sendDuration(currentPath, elapsed, userId);
 };
 
 const ensureDurationTracking = (userId?: string | null) => {
@@ -94,36 +98,17 @@ const ensureDurationTracking = (userId?: string | null) => {
   window.addEventListener('pagehide', () => flushDuration(userId));
 };
 
-const startHeartbeat = (userId?: string | null) => {
-  if (typeof window === 'undefined') return;
-  if (heartbeatTimer) {
-    window.clearInterval(heartbeatTimer);
-    heartbeatTimer = null;
-  }
-  heartbeatTimer = window.setInterval(() => {
-    if (!currentPath || pageStart === null) return;
-    const elapsed = Date.now() - pageStart;
-    const totalDuration = cumulativeDuration + elapsed;
-    if (totalDuration < 15000) return;
-    // Send cumulative duration and reset tracking for next interval
-    cumulativeDuration += elapsed;
-    pageStart = Date.now();
-    sendDuration(currentPath, cumulativeDuration, userId);
-  }, 30000);
-};
-
 export async function trackPageview(path: string, userId?: string | null) {
   if (isDev || !supabase) return;
   if (!path || path === lastPath) return;
+  if (typeof navigator !== 'undefined' && isBotUA(navigator.userAgent)) return;
   if (currentPath && pageStart !== null) {
     flushDuration(userId);
   }
   lastPath = path;
   currentPath = path;
   pageStart = Date.now();
-  cumulativeDuration = 0;
   ensureDurationTracking(userId);
-  startHeartbeat(userId);
 
   const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
   const payload = {
