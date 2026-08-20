@@ -16,4 +16,4 @@
 - Click-to-type: ordinary click/tap places caret; lookup is right-click, modifier+click, or 500ms long-press.
 - Mobile first paint: coach panel and poems nav default closed at ≤900px.
 - File → New: Cancel keeps the draft. Cloud poems are never blanked in place.
-- `/my-collections`: `_redirects` + prerender SPA shells serve `200.html`; `/collections` redirects; fetch has timeout + error + retry.
+- `/my-collections`: `_redirects` is `/* /index.html 200` (c4b02ed baseline) plus `/collections` 302. Never rewrite to `/200.html`. Prerender writes `my-collections.html` as the SPA shell.

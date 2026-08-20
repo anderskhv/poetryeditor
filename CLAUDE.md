@@ -441,7 +441,7 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 - Ordinary click/tap places a caret. Word lookup is right-click, modifier+click, or long-press.
 - Narrow viewports default the coach panel and poems sidebar closed so the writing surface is first paint.
 - File → New: Cancel keeps the draft. Never blank a cloud poem in place (autosave would write empty content).
-- `/my-collections` is an SPA route: serve `200.html` (not prerendered `index.html` or `404.html`) on refresh. `/collections` redirects here.
+- `/my-collections` is an SPA route. Pages fallback is `/* /index.html 200` (c4b02ed baseline). Never rewrite to `/200.html` — pretty-URLs 308-loop to `/200`. Prerender writes `my-collections.html` as the SPA shell. `/collections` 302s here.
 
 ---
 
