@@ -42,7 +42,7 @@ function naturalCompare(a: string, b: string): number {
 
 export function MyCollections() {
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const { collections, loading, createCollection, deleteCollection } = useCollections();
+  const { collections, loading, error, refetch, createCollection, deleteCollection } = useCollections();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showUploader, setShowUploader] = useState(false);
   const [showNewCollection, setShowNewCollection] = useState(false);
@@ -230,6 +230,13 @@ export function MyCollections() {
 
         {loading ? (
           <div className="loading">Loading collections...</div>
+        ) : error ? (
+          <div className="collections-error" role="alert">
+            <p>{error}</p>
+            <button className="new-collection-button" onClick={() => refetch()}>
+              Try again
+            </button>
+          </div>
         ) : collections.length === 0 ? (
           <div className="no-collections">
             <h2>No collections yet</h2>

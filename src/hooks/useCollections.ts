@@ -5,32 +5,45 @@ import { useAuth } from './useAuth';
 
 export function useCollections() {
   const { user } = useAuth();
+  const userId = user?.id;
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchCollections = useCallback(async () => {
-    if (!user || !supabase) {
+    if (!userId || !supabase) {
       setCollections([]);
       setLoading(false);
       return;
     }
 
+    let timedOut = false;
+    const timeout = window.setTimeout(() => {
+      timedOut = true;
+      setError('Could not load collections. Check your connection and try again.');
+      setLoading(false);
+    }, 8000);
+
     try {
       setLoading(true);
+      setError(null);
       const { data, error } = await supabase
         .from('collections')
         .select('*')
+        .eq('user_id', userId)
         .order('updated_at', { ascending: false });
 
+      if (timedOut) return;
       if (error) throw error;
       setCollections((data as Collection[]) || []);
     } catch (err) {
+      if (timedOut) return;
       setError(err instanceof Error ? err.message : 'Failed to fetch collections');
     } finally {
-      setLoading(false);
+      window.clearTimeout(timeout);
+      if (!timedOut) setLoading(false);
     }
-  }, [user]);
+  }, [userId]);
 
   useEffect(() => {
     fetchCollections();

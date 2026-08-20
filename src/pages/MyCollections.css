@@ -92,6 +92,18 @@
   font-family: var(--font-sans, system-ui, sans-serif);
 }
 
+.collections-error {
+  text-align: center;
+  padding: 3rem 2rem;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  color: var(--color-text-primary, #1a1a1a);
+}
+
+.collections-error p {
+  margin: 0 0 1.25rem;
+  color: var(--color-text-muted, #666);
+}
+
 .not-authenticated,
 .no-collections {
   text-align: center;

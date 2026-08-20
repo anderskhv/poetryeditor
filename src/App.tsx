@@ -41,6 +41,14 @@ import type { ClientAnalysisSummary } from './utils/llmAnalysis';
 import { useLLMAnalysis } from './hooks/useLLMAnalysis';
 import type { PoemFormatting } from './types/database';
 import { getAllConversationSummaries } from './utils/editorStorage';
+import {
+  isCloudDraftDirty,
+  shouldApplyServerContent,
+  shouldFetchCloudPoem,
+  shouldScheduleCloudSave,
+} from './utils/cloudDraftGuard';
+import { hasDraftToProtect, NEW_POEM_CONFIRM_MESSAGE, planNewPoem } from './utils/newPoemConfirm';
+import { getDefaultNavSidebarOpen, getDefaultSidePanelOpen } from './utils/editorLayoutDefaults';
 import './App.css';
 
 const SAMPLE_POEM = ``;
@@ -96,6 +104,7 @@ function App() {
   const cloudPoemId = searchParams.get('poem');
   const versionId = searchParams.get('version');
   const { user } = useAuth();
+  const userId = user?.id ?? null;
   const { collections: userCollections, createCollection: createUserCollection } = useCollections();
   const { profile: poetProfile, completeOnboarding, addLearning, updateSummary } = usePoetProfile(user);
   const {
@@ -123,9 +132,12 @@ function App() {
   });
 
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(() => {
-    // Open panel by default for first-time visitors so they discover the analysis
-    return localStorage.getItem('hasOpenedAnalysisPanel') !== 'true'
-      || localStorage.getItem('analysisPanelOpen') === 'true';
+    const storedPanel = localStorage.getItem('analysisPanelOpen');
+    return getDefaultSidePanelOpen({
+      viewportWidth: typeof window !== 'undefined' ? window.innerWidth : 1280,
+      hasOpenedAnalysisPanel: localStorage.getItem('hasOpenedAnalysisPanel') === 'true',
+      analysisPanelOpen: storedPanel === null ? null : storedPanel === 'true',
+    });
   });
   const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
   const [poemComments, setPoemComments] = useState<PoemComment[]>([]);
@@ -152,9 +164,16 @@ function App() {
   const activePoemContentRef = useRef<string>('');
   const ensuredPoemIdsRef = useRef<Set<string>>(new Set());
   const migratedPoemIdsRef = useRef<Set<string>>(new Set());
+  const skipCloudSaveRef = useRef(false);
+  const pendingBlankEditorRef = useRef(false);
+  const lastSavedTitleRef = useRef<string | null>(null);
+  const loadedCloudPoemIdRef = useRef<string | null>(null);
+  const lastSavedContentRef = useRef<string | null>(null);
 
-  // Nav sidebar state - only visible when editing cloud poems
-  const [navSidebarOpen, setNavSidebarOpen] = useState<boolean>(true);
+  // Nav sidebar state - collapsed on phones so it does not cover the poem
+  const [navSidebarOpen, setNavSidebarOpen] = useState<boolean>(() => (
+    getDefaultNavSidebarOpen(typeof window !== 'undefined' ? window.innerWidth : 1280)
+  ));
 
   // Collection management
   const {
@@ -225,6 +244,8 @@ function App() {
   const [currentPoemId, setCurrentPoemId] = useState<string | null>(null);
   const [poemTitle, setPoemTitle] = useState<string>('');
   const [lastSavedContent, setLastSavedContent] = useState<string | null>(null); // Track content at last explicit save
+  loadedCloudPoemIdRef.current = loadedCloudPoemId;
+  lastSavedContentRef.current = lastSavedContent;
   const [cloudSaveStatus, setCloudSaveStatus] = useState<CloudSaveStatus>('idle');
   const [cloudSaveError, setCloudSaveError] = useState<string | null>(null);
   const [lastCloudSavedAt, setLastCloudSavedAt] = useState<Date | null>(null);
@@ -321,9 +342,11 @@ function App() {
     setShowSaveToCollectionModal(true);
   }, [user]);
 
-  // Load cloud poem if ?poem= is in URL
+  // Load cloud poem if ?poem= is in URL.
+  // Depend on userId (not the user object) so auth refreshes cannot refetch
+  // and write the last server snapshot over keys the poet just typed.
   useEffect(() => {
-    if (!cloudPoemId || !user || !supabase) {
+    if (!cloudPoemId || !userId || !supabase) {
       setCloudPoemTitle(null);
       setCloudPoemCollectionId(null);
       setLoadedCloudPoemId(null);
@@ -331,10 +354,28 @@ function App() {
         clearTimeout(saveTimeoutRef.current);
         saveTimeoutRef.current = null;
       }
+      if (pendingBlankEditorRef.current) {
+        pendingBlankEditorRef.current = false;
+        skipCloudSaveRef.current = false;
+        setText('');
+        setAnalyzedWords([]);
+        setCurrentPoemId(null);
+        setPoemTitle('');
+        setLastSavedContent(null);
+        lastSavedTitleRef.current = null;
+        setCloudSaveStatus('idle');
+        setCloudSaveError(null);
+      }
+      return;
+    }
+
+    if (!shouldFetchCloudPoem(cloudPoemId, loadedCloudPoemIdRef.current, userId)) {
       return;
     }
 
     const requestedPoemId = cloudPoemId;
+    const previouslyLoadedId = loadedCloudPoemIdRef.current;
+    skipCloudSaveRef.current = false;
     const loadSeq = cloudPoemLoadSeqRef.current + 1;
     cloudPoemLoadSeqRef.current = loadSeq;
     let cancelled = false;
@@ -342,7 +383,6 @@ function App() {
     async function loadCloudPoem() {
       if (!supabase) return;
       setIsLoadingCloudPoem(true);
-      setLoadedCloudPoemId(null);
       setCloudPoemError(null);
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
@@ -360,14 +400,30 @@ function App() {
         if (cancelled || cloudPoemLoadSeqRef.current !== loadSeq) return;
 
         const poemData = data as Poem;
-        setText(poemData.content);
+        const localContent = activePoemContentRef.current;
+        const dirty = isCloudDraftDirty(localContent, lastSavedContentRef.current);
+        const applyServer = shouldApplyServerContent({
+          requestedPoemId,
+          loadedPoemId: previouslyLoadedId,
+          localContent,
+          serverContent: poemData.content,
+          isDirty: dirty,
+        });
+
+        if (applyServer) {
+          setText(poemData.content);
+          setPoemTitle(poemData.title);
+          setLastSavedContent(poemData.content);
+          lastSavedTitleRef.current = poemData.title;
+        } else {
+          lastSavedTitleRef.current = lastSavedTitleRef.current ?? poemData.title;
+        }
+
         setCloudPoemTitle(poemData.title);
         setCloudPoemCollectionId(poemData.collection_id);
-        setPoemTitle(poemData.title);
         setLoadedCloudPoemId(requestedPoemId);
-        setLastSavedContent(poemData.content);
         setLastCloudSavedAt(poemData.updated_at ? new Date(poemData.updated_at) : new Date());
-        setCloudSaveStatus('saved');
+        setCloudSaveStatus(dirty && previouslyLoadedId === requestedPoemId ? 'saving' : 'saved');
         setCloudSaveError(null);
 
         // Restore per-poem formatting (reset to defaults first so
@@ -392,7 +448,7 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, [cloudPoemId, user, setText]);
+  }, [cloudPoemId, userId, setText]);
 
   // Fetch all poems in the cloud collection for editor context
   useEffect(() => {
@@ -593,6 +649,7 @@ function App() {
 
       if (cloudSaveSeqRef.current === saveSeq) {
         setLastSavedContent(nextText);
+        lastSavedTitleRef.current = nextTitle;
         setLastCloudSavedAt(new Date());
         setCloudSaveStatus('saved');
         setCloudSaveError(null);
@@ -608,18 +665,29 @@ function App() {
     }
   }, [supabase]);
 
-  // Auto-save cloud poem changes (debounced)
+  // Auto-save cloud poem changes (debounced).
+  // Do not mark Saving or write to the server unless the loaded draft actually changed.
   useEffect(() => {
-    if (!cloudPoemId || !user || isLoadingCloudPoem || !supabase || isPreviewing) return;
-    if (loadedCloudPoemId !== cloudPoemId) return;
+    if (!shouldScheduleCloudSave({
+      poemId: cloudPoemId,
+      loadedPoemId: loadedCloudPoemId,
+      hasUser: Boolean(userId),
+      isLoading: isLoadingCloudPoem,
+      isPreviewing,
+      skipSave: skipCloudSaveRef.current,
+      currentText: text,
+      currentTitle: poemTitle,
+      lastSavedText: lastSavedContent,
+      lastSavedTitle: lastSavedTitleRef.current,
+    })) {
+      return;
+    }
 
-    // Clear existing timeout
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
       saveTimeoutRef.current = null;
     }
 
-    // Set new timeout to save after 1 second of inactivity
     const poemIdToSave = cloudPoemId;
     const titleToSave = poemTitle;
     const textToSave = text;
@@ -628,6 +696,7 @@ function App() {
     setCloudSaveError(null);
     saveTimeoutRef.current = setTimeout(async () => {
       saveTimeoutRef.current = null;
+      if (skipCloudSaveRef.current || !poemIdToSave) return;
       await saveCloudPoemNow(poemIdToSave, titleToSave, textToSave, formattingToSave);
     }, 1000);
 
@@ -637,7 +706,7 @@ function App() {
         saveTimeoutRef.current = null;
       }
     };
-  }, [text, poemTitle, cloudPoemId, loadedCloudPoemId, user, isLoadingCloudPoem, isPreviewing, buildCurrentFormatting, saveCloudPoemNow]);
+  }, [text, poemTitle, cloudPoemId, loadedCloudPoemId, userId, isLoadingCloudPoem, isPreviewing, lastSavedContent, buildCurrentFormatting, saveCloudPoemNow]);
 
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
@@ -852,10 +921,16 @@ function App() {
         .single();
 
       if (error) throw error;
+      skipCloudSaveRef.current = true;
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = null;
+      }
       setText('');
       setAnalyzedWords([]);
       setPoemTitle('');
       setLastSavedContent('');
+      lastSavedTitleRef.current = 'Untitled';
       setLastCloudSavedAt(new Date());
       setCloudSaveStatus('saved');
       localStorage.setItem('lastCloudPoemId', data.id);
@@ -869,35 +944,57 @@ function App() {
     }
   }, [buildCurrentFormatting, navigate, setText, supabase, user]);
 
-  const handleNewPoem = async () => {
-    if (cloudPoemId && cloudPoemCollectionId && user) {
-      const saved = await handleSavePoem();
-      if (!saved) return;
-      await createCloudPoem(cloudPoemCollectionId);
-      return;
-    }
-
-    if (hasUnsavedChanges) {
-      const choice = window.confirm(
-        'You have unsaved changes. Would you like to save before starting a new poem?\n\nClick OK to save first, or Cancel to discard changes.'
-      );
-      if (choice) {
-        const saved = await handleSavePoem();
-        if (!saved) return;
-      }
-    }
-    try {
-      localStorage.removeItem('lastCloudPoemId');
-    } catch (err) {
-      console.warn('Failed to clear last cloud poem id:', err);
-    }
+  const blankLocalEditor = () => {
     setText('');
     setAnalyzedWords([]);
     setCurrentPoemId(null);
     setPoemTitle('');
     setLastSavedContent(null);
+    lastSavedTitleRef.current = null;
     setCloudSaveStatus('idle');
     setCloudSaveError(null);
+  };
+
+  const handleNewPoem = async () => {
+    const hasDraft = hasDraftToProtect(text, poemTitle);
+    const confirmed = !hasDraft || window.confirm(NEW_POEM_CONFIRM_MESSAGE);
+    const path = planNewPoem({
+      confirmed,
+      hasDraft,
+      cloudPoemId,
+      cloudCollectionId: cloudPoemCollectionId,
+      isAuthenticated: Boolean(user),
+    });
+
+    if (path === 'abort') return;
+
+    if (path === 'create-cloud' && cloudPoemCollectionId) {
+      const saved = await flushCurrentCloudPoem();
+      if (!saved) return;
+      await createCloudPoem(cloudPoemCollectionId);
+      return;
+    }
+
+    try {
+      localStorage.removeItem('lastCloudPoemId');
+    } catch (err) {
+      console.warn('Failed to clear last cloud poem id:', err);
+    }
+
+    if (path === 'blank-local-after-leave') {
+      // Leave the cloud URL first so autosave cannot write an empty buffer
+      // over the poem the poet was just editing.
+      skipCloudSaveRef.current = true;
+      pendingBlankEditorRef.current = true;
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = null;
+      }
+      navigate('/', { replace: true });
+      return;
+    }
+
+    blankLocalEditor();
     navigate('/', { replace: true });
   };
 

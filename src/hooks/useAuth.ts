@@ -20,12 +20,20 @@ export function useAuth() {
       }
     }, 3000);
 
+    const applySession = (session: Session | null) => {
+      setSession(session);
+      setUser(prev => {
+        const next = session?.user ?? null;
+        if (prev?.id === next?.id) return prev;
+        return next;
+      });
+    };
+
     // Get initial session
     supabase.auth.getSession()
       .then(({ data: { session } }) => {
         if (isMounted) {
-          setSession(session);
-          setUser(session?.user ?? null);
+          applySession(session);
         }
       })
       .catch((error) => {
@@ -38,12 +46,12 @@ export function useAuth() {
         }
       });
 
-    // Listen for auth changes
+    // Listen for auth changes. Keep the same user object when only the
+    // session token refreshed so effects keyed on `user` do not reload.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         if (isMounted) {
-          setSession(session);
-          setUser(session?.user ?? null);
+          applySession(session);
           setLoading(false);
         }
       }

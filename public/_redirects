@@ -1,2 +1,13 @@
-/assets/*  /404.html  404
-/*    /index.html   200
+/assets/*            /404.html          404
+/collections         /my-collections    302
+/collections/*       /my-collections    302
+/my-collections      /200.html          200
+/my-collections/*    /200.html          200
+/my-account          /200.html          200
+/reset-password      /200.html          200
+/editorial-report    /200.html          200
+/editorial-report/*  /200.html          200
+/share/*             /200.html          200
+/analytics           /200.html          200
+/analytics2          /200.html          200
+/*                   /200.html          200

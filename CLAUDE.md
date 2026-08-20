@@ -434,6 +434,15 @@ Fix: Three-level guard system:
 
 Pattern: Any action that depends on async-fetched state must guard against the state being stale/empty. Navigation state snapshots data at navigation time — if the source is still loading, the snapshot will be empty.
 
+**[Editor UX 2026-08-20]**: Live walk of signed-in cloud poems after c4b02ed showed five poet-facing failures.
+
+- Cloud load must key on `user.id` + poem id, never the `user` object. Never `setText(server)` over a dirty local draft.
+- Autosave must not enter "Saving…" or write unless title/body actually changed.
+- Ordinary click/tap places a caret. Word lookup is right-click, modifier+click, or long-press.
+- Narrow viewports default the coach panel and poems sidebar closed so the writing surface is first paint.
+- File → New: Cancel keeps the draft. Never blank a cloud poem in place (autosave would write empty content).
+- `/my-collections` is an SPA route: serve `200.html` (not prerendered `index.html` or `404.html`) on refresh. `/collections` redirects here.
+
 ---
 
 ## Autonomy Framework

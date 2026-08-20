@@ -254,6 +254,14 @@ export const router = createBrowserRouter([
     element: <CollectionView />,
   },
   {
+    path: '/collections',
+    element: <Navigate to="/my-collections" replace />,
+  },
+  {
+    path: '/collections/:id',
+    element: <Navigate to="/my-collections" replace />,
+  },
+  {
     path: '/my-account',
     element: <MyAccount />,
   },

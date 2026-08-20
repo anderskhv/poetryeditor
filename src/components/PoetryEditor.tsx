@@ -9,6 +9,7 @@ import { type StressedSyllableInstance } from '../utils/scansionAnalyzer';
 import { getMarkdownMarkerNavigationOffset, parseMarkdownFormatting } from '../utils/markdownFormatter';
 import { computeFormatting } from '../utils/formattingEngine';
 import { WordPopup } from './WordPopup';
+import { shouldOpenWordLookup, WORD_LOOKUP_LONG_PRESS_MS } from '../utils/wordLookupTrigger';
 
 export type WordRange = {
   startLineNumber: number;
@@ -258,13 +259,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       return false;
     };
 
-    // Handle click events to show word popup (desktop only)
-    editorInstance.onMouseDown((e) => {
-      if (isTouchLikeEvent(e)) return;
-      if (e.target.type !== monaco.editor.MouseTargetType.CONTENT_TEXT) return;
-
-      const position = e.target.position;
-      if (!position) return;
+    const openWordPopupAtPosition = (position: { lineNumber: number; column: number }) => {
 
       const model = editorInstance.getModel();
       if (!model) return;
@@ -389,7 +384,55 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
         position: { top, left },
         range: clickedRange,
       });
+    };
+
+    let longPressTimer: number | null = null;
+    const clearLongPress = () => {
+      if (longPressTimer !== null) {
+        window.clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+    };
+
+    // Ordinary click places a caret. Lookup is right-click, modifier+click, or long-press.
+    editorInstance.onMouseDown((e) => {
+      const browserEvent = e.event?.browserEvent as MouseEvent | PointerEvent | undefined;
+      const position = e.target.position;
+      if (e.target.type !== monaco.editor.MouseTargetType.CONTENT_TEXT || !position) {
+        clearLongPress();
+        return;
+      }
+
+      if (isTouchLikeEvent(e)) {
+        clearLongPress();
+        longPressTimer = window.setTimeout(() => {
+          longPressTimer = null;
+          openWordPopupAtPosition(position);
+        }, WORD_LOOKUP_LONG_PRESS_MS);
+        return;
+      }
+
+      if (!shouldOpenWordLookup(browserEvent)) return;
+      if (browserEvent?.button === 2) {
+        e.event?.preventDefault?.();
+      }
+      openWordPopupAtPosition(position);
     });
+
+    editorInstance.onMouseUp(() => {
+      clearLongPress();
+    });
+
+    const editorDom = editorInstance.getDomNode();
+    const onContextMenu = (event: Event) => {
+      event.preventDefault();
+      const mouseEvent = event as MouseEvent;
+      const target = editorInstance.getTargetAtClientPoint(mouseEvent.clientX, mouseEvent.clientY);
+      if (!target?.position) return;
+      if (target.type !== monaco.editor.MouseTargetType.CONTENT_TEXT) return;
+      openWordPopupAtPosition(target.position);
+    };
+    editorDom?.addEventListener('contextmenu', onContextMenu);
 
     // Handle mouse move to track hovered line for rhyme highlighting
     editorInstance.onMouseMove((e) => {

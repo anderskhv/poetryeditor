@@ -860,6 +860,14 @@ async function main() {
   fs.copyFileSync(path.join(DIST, 'index.html'), path.join(DIST, '200.html'));
   console.log('  Created dist/200.html (SPA fallback)');
 
+  // Authenticated app routes are not pre-rendered. Write SPA shells as flat
+  // .html files so Cloudflare pretty-URLs serve them on refresh instead of 404.html.
+  const spaAppRoutes = ['/my-collections', '/my-account', '/reset-password', '/editorial-report'];
+  for (const route of spaAppRoutes) {
+    fs.copyFileSync(path.join(DIST, '200.html'), path.join(DIST, `${route.slice(1)}.html`));
+  }
+  console.log(`  Created SPA shells for ${spaAppRoutes.join(', ')}`);
+
   let count = 0;
 
   // 5. Homepage
