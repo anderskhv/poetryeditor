@@ -1506,12 +1506,6 @@
   line-height: 1;
 }
 
-.footer-privacy {
-  margin-bottom: 5px;
-  color: var(--color-text-secondary);
-  line-height: 1.3;
-}
-
 .footer-line a {
   color: #666;
   text-decoration: none;

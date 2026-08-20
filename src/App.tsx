@@ -2442,7 +2442,6 @@ function App() {
       </div>
 
       <footer className="app-footer">
-        <p className="footer-line footer-privacy">Your poems are private. We do not read drafts, and support should only inspect poem text with your explicit consent.</p>
         <p className="footer-line">Ideas, feedback, or bugs? Write <a href="mailto:contact@poetryeditor.com">contact@poetryeditor.com</a>. We will get back in &lt;48 hours.</p>
       </footer>
 
