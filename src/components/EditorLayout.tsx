@@ -24,7 +24,7 @@ export function EditorLayout({ children }: EditorLayoutProps) {
           <div className="header-left">
             <Link to="/" className="app-title-group" style={{ textDecoration: 'none' }}>
               <h1 className="app-title">Poetry Editor</h1>
-              <span className="app-subtitle">a toolbox for poets</span>
+              <span className="app-subtitle">A writing tool for poets</span>
             </Link>
           </div>
           <div className="header-actions">

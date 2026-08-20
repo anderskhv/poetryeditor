@@ -1,3 +1,19 @@
+# Homepage voice: writing tool, not AI feedback (2026-08-20)
+
+## Plan
+1. [x] Replace homepage/editor chrome title, subtitle, and SEO description
+2. [x] Align tool-page layout subtitle; leave poem/learn/tool H1s, coach, save, `_redirects` alone
+3. [x] Update prerender homepage strings generated from the same copy
+4. [ ] lint / tsc / existing tests
+5. [ ] PR, do not merge
+
+## Copy
+- Title: `Poetry Editor`
+- Subtitle: `A writing tool for poets`
+- Description: `Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.`
+
+---
+
 # Fix live editor UX failures (2026-08-20)
 
 ## Plan
