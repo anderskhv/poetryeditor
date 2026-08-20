@@ -8,8 +8,8 @@
 5. [x] Trace /my-collections: 404.html served on refresh; `_redirects` points unknown routes at prerendered `index.html` not `200.html`; fetch can hang with no timeout/error
 6. [x] Implement guards + wire into App / PoetryEditor / collections / redirects
 7. [x] Add unit tests (no Anthropic, no live network)
-8. [x] lint / tsc / test (build next)
-9. [ ] PR, do not merge
+8. [x] lint / tsc / test / build
+9. [x] PR, do not merge
 
 ## Review
 - Typing revert: cloud load keyed on `user` object and always `setText(server)`. Now keys on `user.id`, refuses dirty overwrite, autosave only when title/body changed.
