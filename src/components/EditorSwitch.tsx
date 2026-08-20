@@ -1,8 +1,16 @@
 import { lazy, Suspense, useCallback } from 'react';
+import type { Ref } from 'react';
 import { editor, Range } from 'monaco-editor';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { PoetryEditor } from './PoetryEditor';
 import type { EditorHandle } from '../types/editorHandle';
+
+function readRefValue(ref?: Ref<HTMLInputElement>): string {
+  if (ref && typeof ref !== 'function' && ref.current) {
+    return ref.current.value;
+  }
+  return '';
+}
 
 const MobileEditor = lazy(() => import('./MobileEditor'));
 
@@ -52,12 +60,14 @@ export function EditorSwitch(props: React.ComponentProps<typeof PoetryEditor>) {
           );
           monacoEditor.focus();
         },
+        getValue: () => monacoEditor.getModel()?.getValue() ?? '',
+        getTitle: () => readRefValue(props.titleInputRef),
       };
 
       // Pass the handle (cast to any since PoetryEditor expects raw Monaco type)
       (props.onEditorMount as any)(handle);
     },
-    [props.onEditorMount]
+    [props.onEditorMount, props.titleInputRef]
   );
 
   if (isMobile) {

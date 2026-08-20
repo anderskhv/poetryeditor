@@ -437,7 +437,7 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 **[Editor UX 2026-08-20]**: Live walk of signed-in cloud poems after c4b02ed showed five poet-facing failures.
 
 - Cloud load must key on `user.id` + poem id, never the `user` object. Never `setText(server)` over a dirty local draft.
-- Autosave is single-flight and always persists the latest draft. A captured prefix must not be able to finish after a later full line and become the cloud copy. Never write an empty title over a known title.
+- Autosave is single-flight and persists the **live editor model** (`Monaco getValue()` + title input) at write time, not a React `text` / `poemTitle` snapshot. After the last keystroke, flush again with that model. "Saved" flips only when the committed row matches the model. Never write title `""` over a known title (omit `title` from the update if it would be empty).
 - Ordinary click/tap places a caret. Word lookup is right-click, modifier+click, or long-press.
 - Narrow viewports default the coach panel and poems sidebar closed so the writing surface is first paint.
 - File → New: Cancel keeps the draft. Never blank a cloud poem in place (autosave would write empty content).

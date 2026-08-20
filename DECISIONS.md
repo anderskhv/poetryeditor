@@ -6,3 +6,4 @@
 | 2026-08-20 | `/my-collections` served from SPA `200.html`; `/collections` redirects | deploy | No | Hard refresh served public/404.html; in-app fetch could hang with no timeout |
 | 2026-08-20 | Revert `_redirects` to `/* /index.html 200`. Never rewrite to `/200.html` | deploy | No | Production outage: Pages pretty-URLs turned `/200.html` into `/200` and 308-looped every URL |
 | 2026-08-20 | Cloud autosave is single-flight and always persists the latest draft | architecture | No | Saved badge after Enter + a new line still left only `the` on the server; a stale in-flight update won |
+| 2026-08-20 | Persist Monaco `getValue()` + title input; Saved only when cloud matches the model; never write title `""` | architecture | No | After 570f875, Saved showed the full line while reload restored a 4-letter prefix and blanked the title |

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback, useState, type MutableRefObject, type Ref } from 'react';
 import { EditorView, ViewPlugin, ViewUpdate, Decoration, DecorationSet, keymap, lineNumbers } from '@codemirror/view';
 import { EditorState, RangeSetBuilder, Transaction } from '@codemirror/state';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
@@ -25,6 +25,7 @@ interface MobileEditorProps {
   readOnly?: boolean;
   hideTitle?: boolean;
   onEditorMount?: (handle: EditorHandle) => void;
+  titleInputRef?: Ref<HTMLInputElement>;
   // These props are accepted for API compatibility but not used on mobile v1
   meterColoringData?: unknown;
   syllableColoringData?: unknown;
@@ -417,12 +418,26 @@ export function MobileEditor({
   readOnly = false,
   hideTitle = false,
   onEditorMount,
+  titleInputRef,
 }: MobileEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const isLocalChangeRef = useRef(false);
   const analyzeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const localTitleInputRef = useRef<HTMLInputElement | null>(null);
+  const poemTitleRef = useRef(poemTitle);
+  poemTitleRef.current = poemTitle;
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+
+  const assignTitleInputRef = useCallback((node: HTMLInputElement | null) => {
+    localTitleInputRef.current = node;
+    if (!titleInputRef) return;
+    if (typeof titleInputRef === 'function') {
+      titleInputRef(node);
+    } else {
+      (titleInputRef as MutableRefObject<HTMLInputElement | null>).current = node;
+    }
+  }, [titleInputRef]);
 
   const fontFamily = editorFont || "'Libre Baskerville', Georgia, 'Times New Roman', serif";
   const lineHeightPx = LINE_SPACING_VALUES[lineSpacing];
@@ -567,6 +582,8 @@ export function MobileEditor({
           console.error('Clipboard paste failed:', err);
         }
       },
+      getValue: () => view.state.doc.toString(),
+      getTitle: () => localTitleInputRef.current?.value ?? poemTitleRef.current,
     };
 
     onEditorMount(handle as any);
@@ -602,6 +619,7 @@ export function MobileEditor({
           {isEditingTitle ? (
             <input
               className="mobile-editor-title-input"
+              ref={assignTitleInputRef}
               defaultValue={poemTitle}
               autoFocus
               onBlur={handleTitleBlur}

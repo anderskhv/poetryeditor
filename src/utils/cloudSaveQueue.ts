@@ -1,10 +1,12 @@
 /**
  * Single-flight cloud save queue.
  *
- * Overlapping HTTP updates are unsafe: a debounce that captured "the"
- * can finish after a later full-line save and become the committed copy.
- * This queue writes at most one request at a time and, when that request
- * returns, writes again if the poet kept typing.
+ * Persist must read the live editor (Monaco getValue / title input) at
+ * write time. A React `text` / `poemTitle` snapshot from a debounce
+ * closure can be a prefix of what the poet already sees on screen.
+ *
+ * After each HTTP write, if the live model has moved, write again.
+ * "Saved" is only honest when the last committed row matches the model.
  */
 
 export interface CloudDraftSnapshot {
@@ -22,31 +24,100 @@ export function resolveTitleToPersist(
   return currentTitle;
 }
 
-export function createCloudSaveQueue(
-  persist: (draft: CloudDraftSnapshot) => Promise<void>,
-) {
-  let latest: CloudDraftSnapshot = { text: '', title: '' };
+/** Prefer the editor model / title input over a lagged React snapshot. */
+export function readLiveCloudDraft(input: {
+  getValue?: () => string | undefined;
+  getTitle?: () => string | undefined;
+  titleInputValue?: string;
+  fallbackText: string;
+  fallbackTitle: string;
+}): CloudDraftSnapshot {
+  const fromModel = input.getValue?.();
+  const fromTitleFn = input.getTitle?.();
+  const fromInput = input.titleInputValue;
+  return {
+    text: fromModel !== undefined ? fromModel : input.fallbackText,
+    title: fromTitleFn !== undefined
+      ? fromTitleFn
+      : (fromInput !== undefined ? fromInput : input.fallbackTitle),
+  };
+}
+
+export function rememberKnownTitle(
+  current: string | null,
+  nextTitle: string | null | undefined,
+): string | null {
+  if (nextTitle != null && nextTitle.trim() !== '') {
+    return nextTitle;
+  }
+  return current && current.trim() !== '' ? current : null;
+}
+
+/** Build the poems.update payload. Never send title "" over a known title. */
+export function buildCloudPoemWrite<TFormatting>(input: {
+  text: string;
+  title: string;
+  knownTitle: string | null;
+  formatting: TFormatting;
+}): { content: string; title?: string; formatting: TFormatting } {
+  const title = resolveTitleToPersist(input.title, input.knownTitle);
+  if (title.trim() === '') {
+    return { content: input.text, formatting: input.formatting };
+  }
+  return { content: input.text, title, formatting: input.formatting };
+}
+
+export interface CloudSaveQueueOptions {
+  persist: (draft: CloudDraftSnapshot) => Promise<void>;
+  readLiveDraft: () => CloudDraftSnapshot;
+}
+
+export function createCloudSaveQueue(options: CloudSaveQueueOptions) {
+  let knownTitle = '';
   let lastSaved: { text: string | null; title: string | null } = { text: null, title: null };
   let inFlight: Promise<CloudDraftSnapshot | null> | null = null;
 
-  function setDraft(text: string, title: string) {
-    latest = { text, title };
+  function rememberTitle(title: string) {
+    if (title.trim() !== '') {
+      knownTitle = title;
+    }
   }
 
-  function syncLastSaved(text: string | null, title: string | null) {
-    lastSaved = { text, title };
+  function liveSnapshot(): CloudDraftSnapshot {
+    const live = options.readLiveDraft();
+    const title = resolveTitleToPersist(live.title, knownTitle);
+    rememberTitle(title);
+    return { text: live.text, title };
+  }
+
+  function matchesCommitted(draft?: CloudDraftSnapshot): boolean {
+    const snap = draft ?? liveSnapshot();
+    const committedTitle = lastSaved.title ?? '';
+    return snap.text === lastSaved.text && snap.title === committedTitle;
   }
 
   function isDirty(): boolean {
-    return latest.text !== lastSaved.text || latest.title !== lastSaved.title;
+    return !matchesCommitted();
+  }
+
+  /**
+   * Seed the last committed row after a cloud load.
+   * Empty server titles do not become the known title (and cannot wipe one
+   * on this poem's first load — knownTitle resets per poem).
+   */
+  function syncLastSaved(text: string | null, title: string | null) {
+    lastSaved = { text, title };
+    knownTitle = title && title.trim() !== '' ? title : '';
   }
 
   async function runFlush(): Promise<CloudDraftSnapshot | null> {
     let written: CloudDraftSnapshot | null = null;
     while (isDirty()) {
-      written = { text: latest.text, title: latest.title };
-      await persist(written);
-      lastSaved = { text: written.text, title: written.title };
+      const toWrite = liveSnapshot();
+      await options.persist(toWrite);
+      lastSaved = { text: toWrite.text, title: toWrite.title };
+      rememberTitle(toWrite.title);
+      written = toWrite;
     }
     if (written) return written;
     if (lastSaved.text === null) return null;
@@ -70,12 +141,13 @@ export function createCloudSaveQueue(
   }
 
   return {
-    setDraft,
+    rememberTitle,
     syncLastSaved,
     flush,
     isDirty,
-    getLatest: (): CloudDraftSnapshot => ({ ...latest }),
+    matchesCommitted,
     getLastSaved: () => ({ ...lastSaved }),
+    getKnownTitle: () => knownTitle,
   };
 }
 

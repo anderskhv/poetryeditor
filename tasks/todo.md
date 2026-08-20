@@ -17,3 +17,10 @@
 - Mobile first paint: coach panel and poems nav default closed at ≤900px.
 - File → New: Cancel keeps the draft. Cloud poems are never blanked in place.
 - `/my-collections`: `_redirects` is `/* /index.html 200` (c4b02ed baseline) plus `/collections` 302. Never rewrite to `/200.html`. Prerender writes `my-collections.html` as the SPA shell.
+
+## Follow-up 2026-08-20 (live model persist)
+- [x] Persist Monaco `getValue()` + title input, not React `text` / `poemTitle`
+- [x] Saved only when the flush response matches the live model
+- [x] Never write title `""` over a known title
+- [x] Burst + 3s idle + reload keeps the full line; already-set title is kept
+- Do not merge until Anders re-walks live

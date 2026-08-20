@@ -151,3 +151,11 @@ useEffect(() => {
 **Fix**: Removed `status` from the SELECT. Default to `'draft'` in the mapped data.
 
 **Rule**: Before adding columns to a Supabase `.select()`, check `types/database.ts` for the actual table interface. The `Poem` type (database) and `CollectionPoem` type (local) have different fields. Local-only fields like `status` don't exist in the database. Silent failures in Supabase queries (inside try/catch) are especially dangerous — they leave state empty with no user-visible error.
+
+## 2026-08-20: Persist the live editor model, not a React snapshot
+
+**Bug**: After the single-flight queue (570f875), a live walk still lost the last 4 letters of a line (`counsel` → `cou`) and blanked the title. The on-screen badge showed the full line and "Saved"; hard reload restored the prefix.
+
+**Root Cause**: `setDraft` / `persist` wrote React `text` / `poemTitle` (or `activePoem*Ref`) captured by the debounce. Monaco already had more characters. "Saved" flipped when that stale write returned, not when the cloud row matched the buffer the poet sees.
+
+**Rule**: Cloud save must read `editor.getValue()` and the title input at write time. After the last keystroke, flush that model. Do not show Saved until the committed snapshot matches the live model. Never persist title `""` over a known title. Do not "fix" this by only delaying the badge.

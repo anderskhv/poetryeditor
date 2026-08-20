@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type Ref } from 'react';
 import Editor, { Monaco } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { analyzeText } from '../utils/nlpProcessor';
@@ -67,6 +67,7 @@ interface PoetryEditorProps {
   firstLineIndent?: boolean;
   lineSpacing?: 'normal' | 'relaxed' | 'spacious';
   onEditorMount?: (editor: editor.IStandaloneCodeEditor) => void;
+  titleInputRef?: Ref<HTMLInputElement>;
   readOnly?: boolean;
   hideTitle?: boolean;
   comments?: {
@@ -108,7 +109,7 @@ const POS_COLORS = {
   Other: '#424242',       // charcoal
 };
 
-export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, readOnly = false, hideTitle = false, comments = [], onAddComment, showCommentHighlights = true, onToggleCommentHighlights, poemMetadata }: PoetryEditorProps) {
+export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange, onWordsAnalyzed, highlightedPOS, isDarkMode, meterColoringData, syllableColoringData, rhythmVariationColoringData, lineLengthColoringData, punctuationColoringData, passiveVoiceColoringData, tenseColoringData, scansionColoringData, highlightedLines, highlightedWords, onLineHover, editorFont, paragraphAlign = 'left', editorTheme = 'light', firstLineIndent = false, lineSpacing = 'normal', onEditorMount, titleInputRef, readOnly = false, hideTitle = false, comments = [], onAddComment, showCommentHighlights = true, onToggleCommentHighlights, poemMetadata }: PoetryEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const decorationsRef = useRef<string[]>([]);
@@ -1882,6 +1883,7 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
             <div className="poem-title-inline">
               <input
                 type="text"
+                ref={titleInputRef}
                 className={`poem-title-editor-input ${isDarkMode ? 'dark' : ''}`}
                 value={poemTitle}
                 onChange={(e) => onTitleChange(e.target.value)}
