@@ -47,6 +47,7 @@ import {
   shouldFetchCloudPoem,
   shouldScheduleCloudSave,
 } from './utils/cloudDraftGuard';
+import { createCloudSaveQueue, resolveTitleToPersist } from './utils/cloudSaveQueue';
 import { hasDraftToProtect, NEW_POEM_CONFIRM_MESSAGE, planNewPoem } from './utils/newPoemConfirm';
 import { getDefaultNavSidebarOpen, getDefaultSidePanelOpen } from './utils/editorLayoutDefaults';
 import './App.css';
@@ -169,6 +170,37 @@ function App() {
   const lastSavedTitleRef = useRef<string | null>(null);
   const loadedCloudPoemIdRef = useRef<string | null>(null);
   const lastSavedContentRef = useRef<string | null>(null);
+  const cloudPoemIdForSaveRef = useRef<string | null>(cloudPoemId);
+  cloudPoemIdForSaveRef.current = cloudPoemId;
+  const formattingRef = useRef<PoemFormatting | null>(null);
+  const cloudSaveQueueRef = useRef<ReturnType<typeof createCloudSaveQueue> | null>(null);
+  if (cloudSaveQueueRef.current === null) {
+    cloudSaveQueueRef.current = createCloudSaveQueue(async (draft) => {
+      if (!supabase) throw new Error('No database');
+      const poemId = cloudPoemIdForSaveRef.current;
+      if (!poemId) throw new Error('No poem');
+      if (skipCloudSaveRef.current) return;
+      const title = resolveTitleToPersist(draft.title, lastSavedTitleRef.current);
+      const formatting = formattingRef.current ?? {
+        align: 'left' as const,
+        font: 'libre-baskerville',
+        lineSpacing: 'normal' as const,
+        firstLineIndent: false,
+      };
+      const { error } = await supabase
+        .from('poems')
+        .update({
+          content: draft.text,
+          title,
+          formatting,
+          updated_at: new Date().toISOString(),
+        } as any)
+        .eq('id', poemId)
+        .select('id')
+        .single();
+      if (error) throw error;
+    });
+  }
 
   // Nav sidebar state - collapsed on phones so it does not cover the poem
   const [navSidebarOpen, setNavSidebarOpen] = useState<boolean>(() => (
@@ -415,6 +447,7 @@ function App() {
           setPoemTitle(poemData.title);
           setLastSavedContent(poemData.content);
           lastSavedTitleRef.current = poemData.title;
+          cloudSaveQueueRef.current?.syncLastSaved(poemData.content, poemData.title);
         } else {
           lastSavedTitleRef.current = lastSavedTitleRef.current ?? poemData.title;
         }
@@ -621,35 +654,23 @@ function App() {
   }), [paragraphAlign, selectedFont, lineSpacing, firstLineIndent]);
 
   const saveCloudPoemNow = useCallback(async (
-    poemId: string,
+    _poemId: string,
     nextTitle: string,
     nextText: string,
     formatting: PoemFormatting,
   ) => {
-    if (!supabase) return false;
-    const saveSeq = cloudSaveSeqRef.current + 1;
-    cloudSaveSeqRef.current = saveSeq;
+    const queue = cloudSaveQueueRef.current;
+    if (!queue || !supabase) return false;
+    formattingRef.current = formatting;
+    queue.setDraft(nextText, nextTitle);
     setCloudSaveStatus('saving');
     setCloudSaveError(null);
-
     try {
-      const { error } = await supabase
-        .from('poems')
-        .update({
-          content: nextText,
-          title: nextTitle,
-          formatting,
-          updated_at: new Date().toISOString(),
-        } as any)
-        .eq('id', poemId)
-        .select('id')
-        .single();
-
-      if (error) throw error;
-
-      if (cloudSaveSeqRef.current === saveSeq) {
-        setLastSavedContent(nextText);
-        lastSavedTitleRef.current = nextTitle;
+      const saved = await queue.flush();
+      if (saved) {
+        setLastSavedContent(saved.text);
+        lastSavedContentRef.current = saved.text;
+        lastSavedTitleRef.current = resolveTitleToPersist(saved.title, lastSavedTitleRef.current);
         setLastCloudSavedAt(new Date());
         setCloudSaveStatus('saved');
         setCloudSaveError(null);
@@ -657,17 +678,18 @@ function App() {
       return true;
     } catch (err) {
       console.error('Failed to save cloud poem:', err);
-      if (cloudSaveSeqRef.current === saveSeq) {
-        setCloudSaveStatus('failed');
-        setCloudSaveError('Save failed. Your latest text is still in this browser, but it has not reached the cloud.');
-      }
+      setCloudSaveStatus('failed');
+      setCloudSaveError('Save failed. Your latest text is still in this browser, but it has not reached the cloud.');
       return false;
     }
   }, [supabase]);
 
-  // Auto-save cloud poem changes (debounced).
-  // Do not mark Saving or write to the server unless the loaded draft actually changed.
+  // Auto-save: debounce only arms the flush. The queue always persists the
+  // latest draft, never a captured prefix, and never overlaps HTTP writes.
   useEffect(() => {
+    cloudSaveQueueRef.current?.setDraft(text, poemTitle);
+    formattingRef.current = buildCurrentFormatting();
+
     if (!shouldScheduleCloudSave({
       poemId: cloudPoemId,
       loadedPoemId: loadedCloudPoemId,
@@ -688,16 +710,20 @@ function App() {
       saveTimeoutRef.current = null;
     }
 
-    const poemIdToSave = cloudPoemId;
-    const titleToSave = poemTitle;
-    const textToSave = text;
-    const formattingToSave = buildCurrentFormatting();
     setCloudSaveStatus('saving');
     setCloudSaveError(null);
-    saveTimeoutRef.current = setTimeout(async () => {
+    saveTimeoutRef.current = setTimeout(() => {
       saveTimeoutRef.current = null;
-      if (skipCloudSaveRef.current || !poemIdToSave) return;
-      await saveCloudPoemNow(poemIdToSave, titleToSave, textToSave, formattingToSave);
+      if (skipCloudSaveRef.current || !cloudPoemId) return;
+      const queue = cloudSaveQueueRef.current;
+      if (!queue) return;
+      queue.setDraft(activePoemContentRef.current, activePoemTitleRef.current);
+      void saveCloudPoemNow(
+        cloudPoemId,
+        activePoemTitleRef.current,
+        activePoemContentRef.current,
+        formattingRef.current ?? buildCurrentFormatting(),
+      );
     }, 1000);
 
     return () => {
@@ -706,13 +732,16 @@ function App() {
         saveTimeoutRef.current = null;
       }
     };
-  }, [text, poemTitle, cloudPoemId, loadedCloudPoemId, userId, isLoadingCloudPoem, isPreviewing, lastSavedContent, buildCurrentFormatting, saveCloudPoemNow]);
+    // lastSavedContent is intentionally omitted: a completed prefix save must
+    // not clear the debounce that will flush the rest of the line.
+  }, [text, poemTitle, cloudPoemId, loadedCloudPoemId, userId, isLoadingCloudPoem, isPreviewing, buildCurrentFormatting, saveCloudPoemNow]);
 
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
     activePoemIdRef.current = activeId;
     activePoemTitleRef.current = poemTitle;
     activePoemContentRef.current = text;
+    cloudSaveQueueRef.current?.setDraft(text, poemTitle);
   }, [cloudPoemId, currentPoemId, poemTitle, text]);
 
   // Sync editor text back to collection so AI editor sees current content

@@ -5,3 +5,4 @@
 | 2026-08-20 | File → New Cancel keeps the draft; never blank a cloud poem in place | design | No | Guest New wiped without a keep-draft Cancel; emptying a cloud buffer would autosave "" |
 | 2026-08-20 | `/my-collections` served from SPA `200.html`; `/collections` redirects | deploy | No | Hard refresh served public/404.html; in-app fetch could hang with no timeout |
 | 2026-08-20 | Revert `_redirects` to `/* /index.html 200`. Never rewrite to `/200.html` | deploy | No | Production outage: Pages pretty-URLs turned `/200.html` into `/200` and 308-looped every URL |
+| 2026-08-20 | Cloud autosave is single-flight and always persists the latest draft | architecture | No | Saved badge after Enter + a new line still left only `the` on the server; a stale in-flight update won |
