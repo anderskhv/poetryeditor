@@ -330,4 +330,31 @@ describe('computeFormatting — nested formatting', () => {
     text = applyResult(text, result!);
     expect(text).toBe('**hello**');
   });
+
+  it('allows bold, italic, and underline on the same text', () => {
+    let text = 'hello';
+
+    let result = computeFormatting(text, 0, 5, 'bold');
+    expect(result).not.toBeNull();
+    text = applyResult(text, result!);
+    expect(text).toBe('**hello**');
+
+    result = computeFormatting(text, 2, 7, 'italic');
+    expect(result).not.toBeNull();
+    text = applyResult(text, result!);
+    expect(text).toBe('***hello***');
+
+    result = computeFormatting(text, 3, 8, 'underline');
+    expect(result).not.toBeNull();
+    text = applyResult(text, result!);
+    expect(text).toBe('***__hello__***');
+  });
+
+  it('removes one stacked format while keeping the others', () => {
+    const text = '***__hello__***';
+    const result = computeFormatting(text, 5, 10, 'underline');
+    expect(result).not.toBeNull();
+    const newText = applyResult(text, result!);
+    expect(newText).toBe('***hello***');
+  });
 });

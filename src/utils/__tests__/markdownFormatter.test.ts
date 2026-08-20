@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseMarkdownFormatting, stripMarkdownFormatting } from '../markdownFormatter';
+import { getMarkdownMarkerNavigationOffset, parseMarkdownFormatting, stripMarkdownFormatting } from '../markdownFormatter';
 
 describe('parseMarkdownFormatting', () => {
   it('parses bold markers', () => {
@@ -60,11 +60,38 @@ describe('parseMarkdownFormatting', () => {
     expect(ranges[2].type).toBe('underline');
   });
 
-  it('rejects spaces at start of bold content', () => {
-    const ranges = parseMarkdownFormatting('** nope**');
-    // Bold is rejected, but italic regex picks up `* nope*` — that's expected
-    const boldRanges = ranges.filter(r => r.type === 'bold');
-    expect(boldRanges).toHaveLength(0);
+  it('keeps formatting alive when editing leaves spaces inside markers', () => {
+    const ranges = parseMarkdownFormatting('** nope** and *almost * and __ under __');
+    expect(ranges.find(r => r.type === 'bold')).toMatchObject({
+      type: 'bold',
+      contentStartOffset: 2,
+      contentEndOffset: 7,
+    });
+    expect(ranges.find(r => r.type === 'italic')).toMatchObject({
+      type: 'italic',
+    });
+    expect(ranges.find(r => r.type === 'underline')).toMatchObject({
+      type: 'underline',
+    });
+  });
+
+  it('keeps italic after deleting the last word and leaving trailing space', () => {
+    const ranges = parseMarkdownFormatting('*one two *');
+    expect(ranges).toHaveLength(1);
+    expect(ranges[0]).toMatchObject({
+      type: 'italic',
+      startOffset: 0,
+      endOffset: 10,
+      contentStartOffset: 1,
+      contentEndOffset: 9,
+    });
+  });
+
+  it('parses stacked bold italic underline', () => {
+    const ranges = parseMarkdownFormatting('__***hello***__');
+    expect(ranges.filter(r => r.type === 'bold')).toHaveLength(1);
+    expect(ranges.filter(r => r.type === 'italic')).toHaveLength(1);
+    expect(ranges.filter(r => r.type === 'underline')).toHaveLength(1);
   });
 
   it('rejects content with newlines', () => {
@@ -142,5 +169,20 @@ describe('stripMarkdownFormatting', () => {
 
   it('preserves unformatted text', () => {
     expect(stripMarkdownFormatting('just text')).toBe('just text');
+  });
+});
+
+describe('getMarkdownMarkerNavigationOffset', () => {
+  it('moves backspace out of hidden closing markers', () => {
+    expect(getMarkdownMarkerNavigationOffset('*hello*', 7, 'backward')).toBe(6);
+  });
+
+  it('moves delete out of hidden opening markers', () => {
+    expect(getMarkdownMarkerNavigationOffset('*hello*', 0, 'forward')).toBe(1);
+  });
+
+  it('returns null for normal content deletion', () => {
+    expect(getMarkdownMarkerNavigationOffset('*hello*', 4, 'backward')).toBeNull();
+    expect(getMarkdownMarkerNavigationOffset('*hello*', 4, 'forward')).toBeNull();
   });
 });

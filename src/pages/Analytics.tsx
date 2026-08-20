@@ -146,7 +146,7 @@ export function Analytics() {
               <div>Signed in: {user ? 'yes' : 'no'}</div>
               <div>Admin: {isAdmin ? 'yes' : 'no'}</div>
               <div>Host: {typeof window !== 'undefined' ? window.location.host : 'unknown'}</div>
-              <div>Supabase configured: {Boolean(supabase) ? 'yes' : 'no'}</div>
+              <div>Supabase configured: {supabase ? 'yes' : 'no'}</div>
             </div>
           </div>
         ) : summary ? (

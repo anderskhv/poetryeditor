@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { DndContext, DragEndEvent, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core';
 import { supabase } from '../lib/supabase';
 import type { Poem, Section } from '../types/database';
@@ -13,14 +13,18 @@ function getPoemStatus(poemId: string): PoemStatus {
   try {
     const val = localStorage.getItem(`poem-status:${poemId}`);
     if (val === 'rough' || val === 'draft' || val === 'edit' || val === 'done') return val;
-  } catch {}
+  } catch {
+    return 'draft';
+  }
   return 'draft';
 }
 
 function setPoemStatus(poemId: string, status: PoemStatus) {
   try {
     localStorage.setItem(`poem-status:${poemId}`, status);
-  } catch {}
+  } catch (err) {
+    console.warn('Failed to save poem status:', err);
+  }
 }
 
 interface PoemNavSidebarProps {
@@ -75,10 +79,12 @@ function PoemNavItem({
       className={`poem-nav-draggable ${isDragging ? 'dragging' : ''} ${isOver ? 'drag-over' : ''}`}
     >
       <div className={`poem-nav-item ${isActive ? 'active' : ''}`}>
-        <span
+        <button
+          type="button"
           className="poem-status-dot"
           style={{ background: STATUS_COLORS[status] }}
           title={`${STATUS_LABELS[status]} — click to change`}
+          aria-label={`Status: ${STATUS_LABELS[status]}. Change poem status`}
           onClick={(e) => {
             e.stopPropagation();
             const idx = STATUS_CYCLE.indexOf(status);
@@ -94,6 +100,7 @@ function PoemNavItem({
               type="button"
               className="poem-nav-action-btn delete"
               title="Delete poem"
+              aria-label={`Delete ${poem.title}`}
               onClick={() => onDelete(poem.id)}
             >
               ×
@@ -103,6 +110,7 @@ function PoemNavItem({
             type="button"
             className="poem-nav-action-btn drag"
             title="Drag to reorder"
+            aria-label={`Drag ${poem.title} to reorder`}
             {...attributes}
             {...listeners}
           >
@@ -127,6 +135,8 @@ export function PoemNavSidebar({
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [statusMap, setStatusMap] = useState<Record<string, PoemStatus>>({});
+  const [isCreatingPoem, setIsCreatingPoem] = useState(false);
+  const creatingPoemRef = useRef(false);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
   );
@@ -280,44 +290,58 @@ export function PoemNavSidebar({
 
   const createPoemAt = async (sectionId: string | null, index: number) => {
     if (!supabase) return;
+    if (creatingPoemRef.current) return;
+    creatingPoemRef.current = true;
+    setIsCreatingPoem(true);
+
     const list = sectionId
       ? sections.find(section => section.id === sectionId)?.poems || []
       : unsectionedPoems;
     const clampedIndex = Math.max(0, Math.min(index, list.length));
 
-    const { data, error } = await supabase
-      .from('poems')
-      .insert({
-        collection_id: collectionId,
+    try {
+      const { data, error } = await supabase
+        .from('poems')
+        .insert({
+          collection_id: collectionId,
+          section_id: sectionId,
+          title: 'Untitled',
+          content: '',
+          sort_order: clampedIndex,
+        } as any)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Failed to create poem:', error);
+        return;
+      }
+
+      const created = data as Poem;
+      const updatedList = [...list];
+      updatedList.splice(clampedIndex, 0, created);
+      const normalizedList = updatedList.map((poem, sortOrder) => ({
+        ...poem,
         section_id: sectionId,
-        title: 'Untitled',
-        content: '',
-        sort_order: clampedIndex,
-      } as any)
-      .select()
-      .single();
+        sort_order: sortOrder,
+      }));
 
-    if (error) {
-      console.error('Failed to create poem:', error);
-      return;
+      if (sectionId) {
+        setSections(prev =>
+          prev.map(section =>
+            section.id === sectionId ? { ...section, poems: normalizedList } : section
+          )
+        );
+      } else {
+        setUnsectionedPoems(normalizedList);
+      }
+
+      await persistOrders(normalizedList, sectionId);
+      onPoemSelect(created.id);
+    } finally {
+      creatingPoemRef.current = false;
+      setIsCreatingPoem(false);
     }
-
-    const created = data as Poem;
-    const updatedList = [...list];
-    updatedList.splice(clampedIndex, 0, created);
-
-    if (sectionId) {
-      setSections(prev =>
-        prev.map(section =>
-          section.id === sectionId ? { ...section, poems: updatedList } : section
-        )
-      );
-    } else {
-      setUnsectionedPoems(updatedList);
-    }
-
-    await persistOrders(updatedList, sectionId);
-    onPoemSelect(created.id);
   };
 
   const deletePoem = async (poemId: string) => {
@@ -457,7 +481,7 @@ export function PoemNavSidebar({
   return (
     <div className={`poem-nav-sidebar ${isOpen ? 'open' : 'collapsed'}`}>
       {!isOpen ? (
-        <button className="poem-nav-toggle" onClick={onToggle} title="Show poems">
+        <button className="poem-nav-toggle" onClick={onToggle} title="Show poems" aria-label="Show poems">
           <span className="toggle-icon">›</span>
         </button>
       ) : (
@@ -465,7 +489,7 @@ export function PoemNavSidebar({
       <div className="poem-nav-header">
         <span className="poem-nav-heading">Poems</span>
         <div className="poem-nav-header-actions">
-          <button className="poem-nav-close" onClick={onToggle} title="Hide poems">
+          <button className="poem-nav-close" onClick={onToggle} title="Hide poems" aria-label="Hide poems">
             ‹
           </button>
         </div>
@@ -498,6 +522,7 @@ export function PoemNavSidebar({
                     type="button"
                     className="poem-nav-insert"
                     onClick={() => createPoemAt(null, idx + 1)}
+                    disabled={isCreatingPoem}
                     title="Insert new poem here"
                   >
                     +
@@ -508,6 +533,7 @@ export function PoemNavSidebar({
                 type="button"
                 className="poem-nav-insert end"
                 onClick={() => createPoemAt(null, unsectionedPoems.length)}
+                disabled={isCreatingPoem}
                 title="Add new poem"
               >
                 +
@@ -530,6 +556,7 @@ export function PoemNavSidebar({
                     onPoemSelect={onPoemSelect}
                     onDelete={deletePoem}
                     onInsertAfter={(index) => createPoemAt(section.id, index)}
+                    isCreatingPoem={isCreatingPoem}
                     statusMap={statusMap}
                     onStatusChange={handleStatusChange}
                   />
@@ -597,6 +624,7 @@ function SectionPoemList({
   onPoemSelect,
   onDelete,
   onInsertAfter,
+  isCreatingPoem,
   statusMap,
   onStatusChange,
 }: {
@@ -605,6 +633,7 @@ function SectionPoemList({
   onPoemSelect: (poemId: string) => void;
   onDelete: (poemId: string) => void;
   onInsertAfter: (index: number) => void;
+  isCreatingPoem: boolean;
   statusMap: Record<string, PoemStatus>;
   onStatusChange: (poemId: string, status: PoemStatus) => void;
 }) {
@@ -631,6 +660,7 @@ function SectionPoemList({
             type="button"
             className="poem-nav-insert"
             onClick={() => onInsertAfter(idx + 1)}
+            disabled={isCreatingPoem}
             title="Insert new poem here"
           >
             +
@@ -641,6 +671,7 @@ function SectionPoemList({
         type="button"
         className="poem-nav-insert end"
         onClick={() => onInsertAfter(section.poems.length)}
+        disabled={isCreatingPoem}
         title="Add new poem"
       >
         +

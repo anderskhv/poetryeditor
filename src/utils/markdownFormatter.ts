@@ -26,8 +26,11 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
   const claimedOffsets = new Set<number>();
   let match;
 
-  // Bold+Italic first: ***text*** — emit BOTH a bold and an italic range
-  const boldItalicRegex = /\*\*\*(\S(?:[^*]*\S)?)\*\*\*/g;
+  // Bold+Italic first: ***text*** — emit BOTH a bold and an italic range.
+  // The content may have leading/trailing spaces while the user is editing
+  // inside the range; keep the formatting alive as long as there is one
+  // non-space character between the markers.
+  const boldItalicRegex = /\*\*\*([^*\n]*?\S[^*\n]*?)\*\*\*/g;
   while ((match = boldItalicRegex.exec(text)) !== null) {
     if (match[1].includes('\n')) continue;
     const start = match.index;
@@ -52,9 +55,8 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
     for (let i = start; i < end; i++) claimedOffsets.add(i);
   }
 
-  // Bold: **text** - requires at least one character between markers, non-greedy
-  // Content must not start or end with whitespace for proper formatting
-  const boldRegex = /\*\*(\S(?:[^*]*\S)?)\*\*/g;
+  // Bold: **text** - content may temporarily start/end with whitespace during edits.
+  const boldRegex = /\*\*([^*\n]*?\S[^*\n]*?)\*\*/g;
   while ((match = boldRegex.exec(text)) !== null) {
     if (match[1].includes('\n')) continue;
     // Skip if already claimed by bold+italic
@@ -69,8 +71,8 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
   }
 
   // Italic: *text* (but not **)
-  // Requires: not preceded by *, not followed by *, content has at least one non-space char
-  const italicRegex = /(?<!\*)\*(\S(?:[^*\n]*\S)?)\*(?!\*)/g;
+  // Requires: not preceded by *, not followed by *, content has at least one non-space char.
+  const italicRegex = /(?<!\*)\*(?!\*)([^*\n]*?\S[^*\n]*?)(?<!\*)\*(?!\*)/g;
   while ((match = italicRegex.exec(text)) !== null) {
     // Skip if already claimed by bold+italic
     if (claimedOffsets.has(match.index)) continue;
@@ -89,8 +91,8 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
     }
   }
 
-  // Underline: __text__ - requires at least one non-space character
-  const underlineRegex = /__(\S(?:[^_\n]*\S)?)__/g;
+  // Underline: __text__ - content may temporarily start/end with whitespace during edits.
+  const underlineRegex = /__([^_\n]*?\S[^_\n]*?)__/g;
   while ((match = underlineRegex.exec(text)) !== null) {
     ranges.push({
       type: 'underline',
@@ -102,7 +104,7 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
   }
 
   // Strikethrough: ~~text~~
-  const strikethroughRegex = /~~(\S(?:[^~\n]*\S)?)~~/g;
+  const strikethroughRegex = /~~([^~\n]*?\S[^~\n]*?)~~/g;
   while ((match = strikethroughRegex.exec(text)) !== null) {
     ranges.push({
       type: 'strikethrough',
@@ -125,9 +127,45 @@ export function parseMarkdownFormatting(text: string): MarkdownRange[] {
  */
 export function stripMarkdownFormatting(text: string): string {
   return text
-    .replace(/\*\*\*(\S(?:[^*]*\S)?)\*\*\*/g, '$1')  // Bold+Italic first
-    .replace(/\*\*(\S(?:[^*]*\S)?)\*\*/g, '$1')  // Bold
-    .replace(/(?<!\*)\*(\S(?:[^*\n]*\S)?)\*(?!\*)/g, '$1')  // Italic
-    .replace(/__(\S(?:[^_\n]*\S)?)__/g, '$1')  // Underline
-    .replace(/~~(\S(?:[^~\n]*\S)?)~~/g, '$1');  // Strikethrough
+    .replace(/\*\*\*([^*\n]*?\S[^*\n]*?)\*\*\*/g, '$1')  // Bold+Italic first
+    .replace(/\*\*([^*\n]*?\S[^*\n]*?)\*\*/g, '$1')  // Bold
+    .replace(/(?<!\*)\*(?!\*)([^*\n]*?\S[^*\n]*?)(?<!\*)\*(?!\*)/g, '$1')  // Italic
+    .replace(/__([^_\n]*?\S[^_\n]*?)__/g, '$1')  // Underline
+    .replace(/~~([^~\n]*?\S[^~\n]*?)~~/g, '$1');  // Strikethrough
+}
+
+export function getMarkdownMarkerNavigationOffset(
+  text: string,
+  offset: number,
+  direction: 'backward' | 'forward',
+): number | null {
+  const ranges = parseMarkdownFormatting(text);
+
+  for (const range of ranges) {
+    const markerSpans = [
+      {
+        start: range.startOffset,
+        end: range.contentStartOffset,
+        target: range.contentStartOffset,
+      },
+      {
+        start: range.contentEndOffset,
+        end: range.endOffset,
+        target: range.contentEndOffset,
+      },
+    ];
+
+    for (const span of markerSpans) {
+      if (span.start >= span.end) continue;
+      const wouldDeleteMarker = direction === 'backward'
+        ? offset > span.start && offset <= span.end
+        : offset >= span.start && offset < span.end;
+
+      if (wouldDeleteMarker) {
+        return span.target;
+      }
+    }
+  }
+
+  return null;
 }

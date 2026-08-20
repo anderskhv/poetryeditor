@@ -100,14 +100,18 @@ function getGuestUsage(): GuestUsage {
         return parsed;
       }
     }
-  } catch {}
+  } catch {
+    return { monthKey: getCurrentMonthKey(), costCents: 0 };
+  }
   return { monthKey: getCurrentMonthKey(), costCents: 0 };
 }
 
 function saveGuestUsage(usage: GuestUsage): void {
   try {
     localStorage.setItem(GUEST_USAGE_KEY, JSON.stringify(usage));
-  } catch {}
+  } catch (err) {
+    console.warn('Failed to save guest usage:', err);
+  }
 }
 
 export function recordGuestUsage(model: string, inputTokens: number, outputTokens: number): void {

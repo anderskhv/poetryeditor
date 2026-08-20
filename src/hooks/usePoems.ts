@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Poem, PoemInsert, PoemFormatting } from '../types/database';
 
@@ -6,6 +6,7 @@ export function usePoems(collectionId: string | undefined) {
   const [poems, setPoems] = useState<Poem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const creatingPoemRef = useRef(false);
 
   const fetchPoems = useCallback(async () => {
     if (!collectionId || !supabase) {
@@ -42,6 +43,8 @@ export function usePoems(collectionId: string | undefined) {
     filename: string | null = null
   ): Promise<Poem | null> => {
     if (!collectionId || !supabase) return null;
+    if (creatingPoemRef.current) return null;
+    creatingPoemRef.current = true;
 
     try {
       const insert: PoemInsert = {
@@ -66,6 +69,8 @@ export function usePoems(collectionId: string | undefined) {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create poem');
       return null;
+    } finally {
+      creatingPoemRef.current = false;
     }
   };
 
@@ -76,6 +81,8 @@ export function usePoems(collectionId: string | undefined) {
     index: number
   ): Promise<Poem | null> => {
     if (!collectionId || !supabase) return null;
+    if (creatingPoemRef.current) return null;
+    creatingPoemRef.current = true;
     const client = supabase;
 
     try {
@@ -138,6 +145,8 @@ export function usePoems(collectionId: string | undefined) {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create poem');
       return null;
+    } finally {
+      creatingPoemRef.current = false;
     }
   };
 

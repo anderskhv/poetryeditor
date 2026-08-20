@@ -6,7 +6,7 @@ import { WordInfo } from '../types';
 import { type PassiveVoiceInstance } from '../utils/passiveVoiceDetector';
 import { type TenseInstance } from '../utils/tenseChecker';
 import { type StressedSyllableInstance } from '../utils/scansionAnalyzer';
-import { parseMarkdownFormatting } from '../utils/markdownFormatter';
+import { getMarkdownMarkerNavigationOffset, parseMarkdownFormatting } from '../utils/markdownFormatter';
 import { computeFormatting } from '../utils/formattingEngine';
 import { WordPopup } from './WordPopup';
 
@@ -592,10 +592,22 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       if (!model) return;
 
       const pos = selection.getPosition();
-      if (pos.column !== 1 || pos.lineNumber <= 1) return;
-
       const fullText = model.getValue();
       const cursorOffset = model.getOffsetAt(pos);
+      const markerTarget = getMarkdownMarkerNavigationOffset(fullText, cursorOffset, 'backward');
+      if (markerTarget !== null) {
+        event.preventDefault();
+        const targetPos = model.getPositionAt(markerTarget);
+        editorInstance.setSelection(new monaco.Selection(
+          targetPos.lineNumber,
+          targetPos.column,
+          targetPos.lineNumber,
+          targetPos.column
+        ));
+        return;
+      }
+
+      if (pos.column !== 1 || pos.lineNumber <= 1) return;
       const formattedRanges = parseMarkdownFormatting(fullText);
 
       // Find a formatted region on the previous line (ends anywhere on that line)
@@ -672,12 +684,25 @@ export function PoetryEditor({ value, onChange, poemId, poemTitle, onTitleChange
       if (!model) return;
 
       const pos = selection.getPosition();
+      const fullText = model.getValue();
+      const cursorOffset = model.getOffsetAt(pos);
+      const markerTarget = getMarkdownMarkerNavigationOffset(fullText, cursorOffset, 'forward');
+      if (markerTarget !== null) {
+        event.preventDefault();
+        const targetPos = model.getPositionAt(markerTarget);
+        editorInstance.setSelection(new monaco.Selection(
+          targetPos.lineNumber,
+          targetPos.column,
+          targetPos.lineNumber,
+          targetPos.column
+        ));
+        return;
+      }
+
       const lineContent = model.getLineContent(pos.lineNumber);
       if (pos.column !== lineContent.length + 1) return; // not at end of line
       if (pos.lineNumber >= model.getLineCount()) return; // no next line
 
-      const fullText = model.getValue();
-      const cursorOffset = model.getOffsetAt(pos);
       const formattedRanges = parseMarkdownFormatting(fullText);
 
       // Find a formatted region on the current line

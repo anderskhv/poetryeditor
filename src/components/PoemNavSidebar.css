@@ -126,9 +126,16 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
+  padding: 0;
+  border: none;
   flex-shrink: 0;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.poem-nav-item .poem-status-dot:focus-visible {
+  outline: 2px solid var(--color-text-secondary);
+  outline-offset: 3px;
 }
 
 .poem-nav-item .poem-status-dot:hover {

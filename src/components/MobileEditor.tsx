@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback, useState } from 'react';
 import { EditorView, ViewPlugin, ViewUpdate, Decoration, DecorationSet, keymap, lineNumbers } from '@codemirror/view';
 import { EditorState, RangeSetBuilder, Transaction } from '@codemirror/state';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
-import { parseMarkdownFormatting } from '../utils/markdownFormatter';
+import { getMarkdownMarkerNavigationOffset, parseMarkdownFormatting } from '../utils/markdownFormatter';
 import { computeFormatting } from '../utils/formattingEngine';
 import { analyzeText } from '../utils/nlpProcessor';
 import { WordInfo } from '../types';
@@ -280,6 +280,12 @@ function handleBackspaceInFormatting(view: EditorView): boolean {
   if (from !== to) return false;
 
   const cursorOffset = from;
+  const markerTarget = getMarkdownMarkerNavigationOffset(state.doc.toString(), cursorOffset, 'backward');
+  if (markerTarget !== null) {
+    view.dispatch({ selection: { anchor: markerTarget } });
+    return true;
+  }
+
   const line = state.doc.lineAt(cursorOffset);
 
   // Only handle at start of line (not first line)
@@ -341,6 +347,12 @@ function handleDeleteInFormatting(view: EditorView): boolean {
   if (from !== to) return false;
 
   const cursorOffset = from;
+  const markerTarget = getMarkdownMarkerNavigationOffset(state.doc.toString(), cursorOffset, 'forward');
+  if (markerTarget !== null) {
+    view.dispatch({ selection: { anchor: markerTarget } });
+    return true;
+  }
+
   const line = state.doc.lineAt(cursorOffset);
 
   // Only handle at end of line (not last line)
@@ -511,8 +523,6 @@ export function MobileEditor({
       viewRef.current = null;
       if (analyzeTimerRef.current) clearTimeout(analyzeTimerRef.current);
     };
-    // Only recreate on theme/font/spacing/readOnly change — NOT on value change
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editorTheme, fontFamily, lineHeightPx, readOnly, poemId]);
 
   // --- Sync external value changes ---
@@ -560,7 +570,6 @@ export function MobileEditor({
     };
 
     onEditorMount(handle as any);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onEditorMount, editorTheme, fontFamily, lineHeightPx, readOnly, poemId]);
 
   // --- Title editing ---

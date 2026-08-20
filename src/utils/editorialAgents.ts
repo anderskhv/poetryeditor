@@ -126,9 +126,13 @@ export async function streamSonnet(
   let outputTokens = 0;
 
   try {
-    while (true) {
+    let isReading = true;
+    while (isReading) {
       const { done, value } = await reader.read();
-      if (done) break;
+      if (done) {
+        isReading = false;
+        continue;
+      }
 
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');

@@ -68,9 +68,13 @@ export async function streamCoachingMessage(
     let inputTokens = 0;
     let outputTokens = 0;
 
-    while (true) {
+    let isReading = true;
+    while (isReading) {
       const { done, value } = await reader.read();
-      if (done) break;
+      if (done) {
+        isReading = false;
+        continue;
+      }
 
       buffer += decoder.decode(value, { stream: true });
 

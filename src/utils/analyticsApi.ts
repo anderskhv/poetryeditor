@@ -102,7 +102,8 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
   const baseFields = 'event_type,path,referrer,user_agent,session_id,payload,created_at';
   let includeDuration = true;
 
-  while (true) {
+  let hasMoreRows = true;
+  while (hasMoreRows) {
     const selectFields = includeDuration ? `${baseFields},duration_ms` : baseFields;
     const { data, error } = await supabase
       .from('analytics_events')
@@ -127,9 +128,10 @@ const fetchAnalyticsFallback = async (start: Date, end: Date) => {
     }
 
     if (!data || data.length < pageSize) {
-      break;
+      hasMoreRows = false;
+    } else {
+      from += pageSize;
     }
-    from += pageSize;
   }
 
   const pageviews = rows.filter(row => row.event_type === 'pageview');

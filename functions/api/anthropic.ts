@@ -36,6 +36,10 @@ const PRICING: Record<string, { in: number; out: number }> = {
   'claude-haiku-4-5-20251001': { in: 80, out: 400 },
 };
 
+const ALLOWED_MODELS = new Set(Object.keys(PRICING));
+const MAX_REQUEST_BYTES = 400_000;
+const MAX_OUTPUT_TOKENS = 4096;
+const MAX_MESSAGES = 40;
 const REGISTERED_CAP_CENTS = 500;
 
 function calcCostCents(model: string, inputTokens: number, outputTokens: number): number {
@@ -208,9 +212,13 @@ async function trackStreamingUsage(
   let outputTokens = 0;
 
   try {
-    while (true) {
+    let isReading = true;
+    while (isReading) {
       const { done, value } = await reader.read();
-      if (done) break;
+      if (done) {
+        isReading = false;
+        continue;
+      }
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
       buffer = lines.pop() || '';
@@ -246,6 +254,11 @@ interface PagesContext {
 const handler = async (context: PagesContext): Promise<Response> => {
   const { request, env, waitUntil } = context;
 
+  const contentLength = Number(request.headers.get('content-length') || '0');
+  if (Number.isFinite(contentLength) && contentLength > MAX_REQUEST_BYTES) {
+    return jsonError(413, 'Request is too large. Please send a shorter poem or smaller context.', 'request_too_large');
+  }
+
   let body: Record<string, unknown>;
   try {
     body = (await request.json()) as Record<string, unknown>;
@@ -254,6 +267,24 @@ const handler = async (context: PagesContext): Promise<Response> => {
   }
 
   const model = typeof body.model === 'string' ? body.model : '';
+  if (!ALLOWED_MODELS.has(model)) {
+    return jsonError(400, 'Unsupported model for Poetry Editor.', 'unsupported_model');
+  }
+
+  const messages = body.messages;
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return jsonError(400, 'Missing messages.', 'invalid_messages');
+  }
+  if (messages.length > MAX_MESSAGES) {
+    return jsonError(400, 'Conversation is too long. Start a new thread or reduce context.', 'too_many_messages');
+  }
+
+  const requestedMaxTokens = Number(body.max_tokens);
+  if (!Number.isFinite(requestedMaxTokens) || requestedMaxTokens < 1) {
+    return jsonError(400, 'Missing max_tokens.', 'invalid_max_tokens');
+  }
+  body.max_tokens = Math.min(Math.floor(requestedMaxTokens), MAX_OUTPUT_TOKENS);
+
   const isStream = body.stream === true;
 
   // ── Decide auth mode ──
