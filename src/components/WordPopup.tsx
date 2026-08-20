@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { getStressPattern, getSyllables } from '../utils/cmuDict';
-import { fetchRhymes, fetchNearAndSlantRhymes, fetchSynonymSenses, RhymeWord, SynonymSense } from '../utils/rhymeApi';
+import { fetchSynonymSenses, RhymeWord, SynonymSense } from '../utils/rhymeApi';
+import { getEditorNearRhymes, getEditorRhymes } from '../utils/poetRhymes';
 import { fetchWordInfo, type WordOrigin, type Pronunciation, type WordDefinition } from '../utils/wordInfoApi';
 import './WordPopup.css';
 
@@ -105,7 +106,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
   useEffect(() => {
     if (activeTab === 'rhymes' && rhymes.length === 0 && !loadingRhymes) {
       setLoadingRhymes(true);
-      fetchRhymes(word).then((result) => {
+      getEditorRhymes(word).then((result) => {
         setRhymes(result);
         setLoadingRhymes(false);
       });
@@ -116,7 +117,7 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
   useEffect(() => {
     if (activeTab === 'nearrhymes' && nearRhymes.length === 0 && !loadingNearRhymes) {
       setLoadingNearRhymes(true);
-      fetchNearAndSlantRhymes(word).then((result) => {
+      getEditorNearRhymes(word).then((result) => {
         setNearRhymes(result);
         setLoadingNearRhymes(false);
       });
@@ -291,13 +292,6 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
                           </h4>
                           <div className="word-list">
                             {filteredRhymes
-                              .sort((a, b) => {
-                                // Sort by rhyme quality first (higher is better)
-                                const qualityDiff = (b.rhymeQuality || 0) - (a.rhymeQuality || 0);
-                                if (Math.abs(qualityDiff) > 0.1) return qualityDiff;
-                                // Then by word frequency (score)
-                                return b.score - a.score;
-                              })
                               .map((rhyme, idx) => (
                                 <button
                                   key={idx}
@@ -340,7 +334,6 @@ export function WordPopup({ word, position, onClose, onInsertWord }: WordPopupPr
                           </h4>
                           <div className="word-list">
                             {filteredRhymes
-                              .sort((a, b) => b.score - a.score)
                               .map((rhyme, idx) => (
                                 <button
                                   key={idx}

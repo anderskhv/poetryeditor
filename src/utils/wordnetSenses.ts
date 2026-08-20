@@ -46,3 +46,24 @@ export async function getWordnetSenses(word: string): Promise<WordnetSensePayloa
   if (!data) return null;
   return data[normalized] || null;
 }
+
+/**
+ * Batch-check which words have a WordNet lemma. Loads each unique prefix once.
+ * Local JSON only — not an external API.
+ */
+export async function wordsWithWordnetSenses(words: string[]): Promise<Set<string>> {
+  const normalized = words.map(normalizeWord).filter(Boolean);
+  const prefixes = [...new Set(normalized.map(getPrefix))];
+  await Promise.all(prefixes.map(loadPrefix));
+  const found = new Set<string>();
+  for (const word of normalized) {
+    const data = prefixCache.get(getPrefix(word));
+    if (data?.[word]?.length) found.add(word);
+  }
+  return found;
+}
+
+/** Test helper: drop cached prefix files so a fetch stub can be installed. */
+export function resetWordnetPrefixCache(): void {
+  prefixCache.clear();
+}
