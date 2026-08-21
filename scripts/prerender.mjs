@@ -8,8 +8,9 @@
  * Cloudflare Pages serves static files first; non-pre-rendered routes fall
  * back to dist/index.html via public/_redirects (`/* /index.html 200`).
  * Do not rewrite to /200.html — Pages pretty-URLs turn that into /200 and loop.
- * public/_routes.json must include only /api/* — default Functions include
- * /* swallows every request and skips _redirects, so 404.html wins.
+ * Pages Functions skip `_redirects`. functions/_middleware.ts turns asset
+ * 404s into /index.html (never /200.html). public/_routes.json excludes
+ * /assets/* so missing bundles still hit 404.html.
  */
 
 import fs from 'fs';
@@ -859,13 +860,12 @@ async function main() {
   // 3. Read the built index.html as template
   const template = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
 
-  // Authenticated app routes without nested children can be directory
-  // indexes. Do not emit my-collections.html or my-collections/index.html —
-  // pretty-URLs then 404 /my-collections/:id as a missing child.
-  // Collection URLs are served by _redirects → /index.html. That only
-  // runs when public/_routes.json keeps Functions on /api/* (not /*).
+  // Authenticated app routes are not content-prerendered. Write directory
+  // indexes so /my-collections itself is a static hit (a missing parent
+  // made Pages 308 /my-collections to /). Nested /my-collections/:id is
+  // served by functions/_middleware.ts → /index.html on the asset 404.
   // Do not emit 200.html — a rewrite to /200.html 308-loops to /200.
-  const spaAppRoutes = ['/my-account', '/reset-password', '/editorial-report'];
+  const spaAppRoutes = ['/my-collections', '/my-account', '/reset-password', '/editorial-report'];
   for (const route of spaAppRoutes) {
     const dir = path.join(DIST, route.slice(1));
     fs.mkdirSync(dir, { recursive: true });
@@ -873,11 +873,7 @@ async function main() {
     if (fs.existsSync(flatHtml)) fs.unlinkSync(flatHtml);
     fs.writeFileSync(path.join(dir, 'index.html'), template);
   }
-  const collectionsFlat = path.join(DIST, 'my-collections.html');
-  const collectionsDir = path.join(DIST, 'my-collections');
-  if (fs.existsSync(collectionsFlat)) fs.unlinkSync(collectionsFlat);
-  if (fs.existsSync(collectionsDir)) fs.rmSync(collectionsDir, { recursive: true, force: true });
-  console.log(`  Created SPA shells for ${spaAppRoutes.join(', ')}; skipped /my-collections (nested :id)`);
+  console.log(`  Created SPA shells for ${spaAppRoutes.join(', ')}`);
 
   let count = 0;
 

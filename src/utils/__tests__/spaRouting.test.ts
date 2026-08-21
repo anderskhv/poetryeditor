@@ -38,18 +38,21 @@ describe('SPA routing for authenticated app pages', () => {
     expect(redirects).not.toMatch(/200\.html/);
   });
 
-  it('does not emit a my-collections pretty-URL parent that 404s :id children', () => {
-    expect(prerender).toMatch(/spaAppRoutes = \['\/my-account'/);
-    expect(prerender).not.toMatch(/spaAppRoutes = \[[^\]]*['"]\/my-collections['"]/);
-    expect(prerender).toMatch(/unlinkSync\(collectionsFlat\)/);
-    expect(prerender).toMatch(/rmSync\(collectionsDir/);
+  it('writes collection SPA shells as directory indexes and never emits 200.html', () => {
+    expect(prerender).toMatch(/spaAppRoutes = \['\/my-collections'/);
+    expect(prerender).toMatch(/writeFileSync\(path\.join\(dir, 'index\.html'\)/);
+    expect(prerender).toMatch(/unlinkSync\(flatHtml\)/);
     expect(prerender).not.toMatch(/writeFileSync\([^)]*200\.html/);
   });
 
-  it('invokes Pages Functions only on /api/* so _redirects still run', () => {
-    expect(routes.version).toBe(1);
-    expect(routes.include).toEqual(['/api/*']);
-    expect(routes.include).not.toContain('/*');
+  it('uses Functions middleware to serve index.html on 404, not 200.html', () => {
+    const middleware = readFileSync(resolve('functions/_middleware.ts'), 'utf8');
     expect(existsSync(resolve('functions/api/anthropic.ts'))).toBe(true);
+    expect(middleware).toMatch(/ASSETS\.fetch\(new URL\('\/index\.html'/);
+    expect(middleware).toMatch(/pathname\.startsWith\('\/assets\/'\)/);
+    expect(middleware).not.toMatch(/ASSETS\.fetch\([^)]*200\.html/);
+    expect(routes.version).toBe(1);
+    expect(routes.include).toEqual(['/*']);
+    expect(routes.exclude).toEqual(['/assets/*']);
   });
 });

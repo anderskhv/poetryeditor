@@ -441,7 +441,7 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 - Ordinary click/tap places a caret. Word lookup is right-click, modifier+click, or long-press.
 - Narrow viewports default the coach panel and poems sidebar closed so the writing surface is first paint.
 - File → New: Cancel keeps the draft. Never blank a cloud poem in place (autosave would write empty content).
-- `/my-collections` is an SPA route. Pages fallback is `/* /index.html 200` (c4b02ed baseline). Never rewrite to `/200.html` — pretty-URLs 308-loop to `/200`. Do not emit `my-collections.html` or `my-collections/index.html` — pretty-URLs then 404 `/my-collections/:id` as a missing child. `_redirects` rewrites `/my-collections` and `/my-collections/*` to `/index.html`. That rewrite only runs if `public/_routes.json` includes `/api/*` only; default Functions `include: ["/*"]` skip `_redirects` and serve `404.html`. `/collections` 302s to the list. `/collections/:id` keeps the id.
+- `/my-collections` is an SPA route. Pages fallback is `/* /index.html 200` (c4b02ed baseline). Never rewrite to `/200.html` — pretty-URLs 308-loop to `/200`. Prerender writes `my-collections/index.html` so the list is a static hit. Nested `:id` is served by `functions/_middleware.ts` (`/index.html` on non-asset 404s) because Functions skip `_redirects`. `/collections` 302s to the list. `/collections/:id` keeps the id.
 
 **[Collections reliability 2026-08-21]**: Signed-in walk of the shipped collections UI.
 

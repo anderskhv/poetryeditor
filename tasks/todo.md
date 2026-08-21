@@ -49,3 +49,5 @@
 - [x] Rewrite `/my-collections` and `/my-collections/*` to `/index.html`; keep `/* /index.html 200`; no `200.html`
 - [x] `/collections/:id` still keeps the id
 - Do not merge until Anders re-walks the bookmarked collection URL
+- [x] Rebase onto 440e929 after #6/#7
+- [ ] Preview of `_routes.json`-only fix still 404ed `:id` — ship Functions middleware
