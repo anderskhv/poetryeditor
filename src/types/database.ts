@@ -13,6 +13,7 @@ export interface Collection {
   name: string;
   created_at: string;
   updated_at: string;
+  poem_count?: number;
 }
 
 export interface Section {

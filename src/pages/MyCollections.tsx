@@ -5,6 +5,7 @@ import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
 import { useCollections } from '../hooks/useCollections';
 import { AuthModal } from '../components/AuthModal';
+import { formatCollectionUpdatedAt, formatPoemCount } from '../utils/collectionShelf';
 import './MyCollections.css';
 
 interface ParsedFolder {
@@ -220,11 +221,13 @@ export function MyCollections() {
               New Collection
             </button>
             <button
-              className="upload-button"
+              type="button"
+              className="upload-button upload-folder-button"
               onClick={() => fileInputRef.current?.click()}
             >
               Upload Folder
             </button>
+            <p className="upload-folder-note">Upload a folder from a computer.</p>
           </div>
         </div>
 
@@ -249,11 +252,13 @@ export function MyCollections() {
                 Create Your First Collection
               </button>
               <button
+                type="button"
                 className="upload-folder-link"
                 onClick={() => fileInputRef.current?.click()}
               >
                 Or upload a folder of markdown files
               </button>
+              <p className="upload-folder-note">Upload a folder from a computer.</p>
             </div>
           </div>
         ) : (
@@ -263,15 +268,21 @@ export function MyCollections() {
                 <Link to={`/my-collections/${collection.id}`} className="collection-link">
                   <h2>{collection.name}</h2>
                   <p className="collection-date">
-                    Updated {new Date(collection.updated_at).toLocaleDateString()}
+                    {formatCollectionUpdatedAt(collection.updated_at)}
                   </p>
+                  {formatPoemCount(collection.poem_count) && (
+                    <p className="collection-poem-count">{formatPoemCount(collection.poem_count)}</p>
+                  )}
                 </Link>
                 <button
+                  type="button"
                   className="delete-collection-btn"
                   onClick={() => handleDeleteCollection(collection.id, collection.name)}
                   title="Delete collection"
+                  aria-label={`Delete ${collection.name}`}
                 >
-                  &times;
+                  <span className="delete-collection-icon" aria-hidden="true">&times;</span>
+                  <span className="delete-collection-label">Delete</span>
                 </button>
               </div>
             ))}

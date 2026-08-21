@@ -1,4 +1,5 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate, useParams } from 'react-router-dom';
+import { legacyCollectionPath } from './utils/collectionShelf';
 import App from './App';
 import { RhymeDictionary } from './pages/RhymeDictionary';
 import { RhymeWord } from './pages/RhymeWord';
@@ -45,6 +46,11 @@ import { ReadingPathsPage } from './pages/ReadingPathsPage';
 import { ReadingPathPage } from './pages/ReadingPathPage';
 import { WhereToSharePage } from './pages/WhereToSharePage';
 import { RouteError } from './components/RouteError';
+
+function LegacyCollectionRedirect() {
+  const { id } = useParams<{ id: string }>();
+  return <Navigate to={legacyCollectionPath(id)} replace />;
+}
 
 export const router = createBrowserRouter([
   {
@@ -259,7 +265,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/collections/:id',
-    element: <Navigate to="/my-collections" replace />,
+    element: <LegacyCollectionRedirect />,
   },
   {
     path: '/my-account',

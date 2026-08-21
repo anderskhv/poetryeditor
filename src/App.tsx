@@ -7,7 +7,8 @@ import { PoemNavSidebar } from './components/PoemNavSidebar';
 import type { Poem } from './types/database';
 import { EditorSwitch } from './components/EditorSwitch';
 import type { EditorHandle } from './types/editorHandle';
-import { addPoemVersion, ensureInitialPoemVersion, fetchPoemVersionById, migrateLocalPoemVersions, type PoemVersion } from './utils/poemVersions';
+import { addPoemVersion, ensureInitialPoemVersion, fetchPoemVersionById, migrateLocalPoemVersions, isVersionForPoem, type PoemVersion } from './utils/poemVersions';
+import { canWritePoemVersion } from './utils/collectionShelf';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { CommentsPanel } from './components/CommentsPanel';
 import { CollectionPanel } from './components/collection/CollectionPanel';
@@ -831,12 +832,17 @@ function App() {
   useEffect(() => {
     const activeId = cloudPoemId || currentPoemId;
     if (!activeId || !user) return;
-    if (isPreviewing) return;
-    if (cloudPoemId && isLoadingCloudPoem) return;
+    if (!canWritePoemVersion({
+      poemId: activeId,
+      isCloud: Boolean(cloudPoemId),
+      loadedCloudPoemId,
+      isLoadingCloudPoem,
+      isPreviewing,
+    })) return;
     if (ensuredPoemIdsRef.current.has(activeId)) return;
     ensuredPoemIdsRef.current.add(activeId);
     ensureInitialPoemVersion(activeId, poemTitle, text, user.id);
-  }, [cloudPoemId, currentPoemId, poemTitle, text, user, isLoadingCloudPoem]);
+  }, [cloudPoemId, currentPoemId, poemTitle, text, user, isLoadingCloudPoem, loadedCloudPoemId, isPreviewing]);
 
   useEffect(() => {
     if (!activePoemId) {
@@ -853,10 +859,17 @@ function App() {
     const interval = window.setInterval(() => {
       const id = activePoemIdRef.current;
       if (!id) return;
+      if (!canWritePoemVersion({
+        poemId: id,
+        isCloud: Boolean(cloudPoemId),
+        loadedCloudPoemId,
+        isLoadingCloudPoem,
+        isPreviewing,
+      })) return;
       addPoemVersion(id, activePoemTitleRef.current, activePoemContentRef.current, user.id);
     }, 5 * 60 * 1000);
     return () => window.clearInterval(interval);
-  }, [cloudPoemId, currentPoemId, user]);
+  }, [cloudPoemId, currentPoemId, user, loadedCloudPoemId, isLoadingCloudPoem, isPreviewing]);
 
   // Keep local saved poem title in sync with editor title
   useEffect(() => {
@@ -1287,6 +1300,7 @@ function App() {
 
   const handleRestorePreviewVersion = useCallback(async () => {
     if (!versionPreview || !cloudPoemId || !user || !supabase) return;
+    if (!isVersionForPoem(versionPreview, cloudPoemId)) return;
     const confirmRestore = window.confirm('Restore this version to the current poem?');
     if (!confirmRestore) return;
     try {
@@ -1432,8 +1446,10 @@ function App() {
     if (poemId === cloudPoemId) return;
     const saved = await flushCurrentCloudPoem();
     if (!saved) return;
-    navigate(`/?poem=${poemId}`);
-  }, [cloudPoemId, flushCurrentCloudPoem, navigate]);
+    navigate(`/?poem=${poemId}`, {
+      state: cloudPoemCollectionId ? { fromCollectionId: cloudPoemCollectionId } : undefined,
+    });
+  }, [cloudPoemId, cloudPoemCollectionId, flushCurrentCloudPoem, navigate]);
 
   const poemStats = useMemo(() => {
     const plainText = stripMarkdownFormatting(text);
@@ -2188,6 +2204,15 @@ function App() {
       </header>
 
       <div className="workspace-status-strip" role="status" aria-live="polite">
+        {cloudPoemCollectionId && (
+          <nav className="editor-collection-crumb" aria-label="Collection">
+            <Link to="/my-collections">My Collections</Link>
+            <span className="editor-collection-crumb-sep" aria-hidden="true">/</span>
+            <Link to={`/my-collections/${cloudPoemCollectionId}`}>
+              {cloudCollectionName || 'Collection'}
+            </Link>
+          </nav>
+        )}
         <span className="privacy-pill" title="Poem text should not be logged or casually accessed by the site operator.">
           Private by default
         </span>

@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
-import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors, useDroppable } from '@dnd-kit/core';
-import { SortableContext, useSortable, rectSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, TouchSensor, closestCorners, pointerWithin, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core';
 import { EditorLayout } from '../components/EditorLayout';
 import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
 import { useSections } from '../hooks/useCollections';
 import { usePoems } from '../hooks/usePoems';
 import { supabase } from '../lib/supabase';
-import { fetchPoemVersionsForPoems, fetchPoemVersions, addPoemVersion, ensureInitialPoemVersion, migrateLocalPoemVersions, type PoemVersion } from '../utils/poemVersions';
+import { fetchPoemVersionsForPoems, fetchPoemVersions, addPoemVersion, ensureInitialPoemVersion, migrateLocalPoemVersions, isVersionForPoem, versionDisplayTitle, type PoemVersion } from '../utils/poemVersions';
 import { getOrCreateShare } from '../utils/sharedCollections';
 import { syncLocalComments } from '../utils/poemComments';
-import type { Collection, Section } from '../types/database';
+import { collectionDroppableId, planCollectionPoemDrag, poemSlotId } from '../utils/poemDrag';
+import { shouldShowCollectionEmptyState } from '../utils/collectionShelf';
+import type { Collection } from '../types/database';
 import JSZip from 'jszip';
 import './CollectionView.css';
 
@@ -49,7 +49,16 @@ export function CollectionView() {
   const [shareBusy, setShareBusy] = useState(false);
   const [shareError, setShareError] = useState<string | null>(null);
   const [shareCommentsDefault, setShareCommentsDefault] = useState(true);
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 8 } })
+  );
+
+  const collisionDetection: typeof closestCorners = (args) => {
+    const pointerHits = pointerWithin(args);
+    return pointerHits.length > 0 ? pointerHits : closestCorners(args);
+  };
 
   // Fetch collection details
   useEffect(() => {
@@ -246,7 +255,8 @@ export function CollectionView() {
   };
 
   const handlePreviewVersion = (poem: { id: string; title: string; content: string }, version: PoemVersion) => {
-    navigate(`/?poem=${poem.id}&version=${version.id}`);
+    if (!isVersionForPoem(version, poem.id)) return;
+    navigate(`/?poem=${poem.id}&version=${version.id}`, { state: { fromCollectionId: id } });
   };
 
   const handleRenameCollection = async (newName: string) => {
@@ -264,18 +274,26 @@ export function CollectionView() {
     }
   };
 
-  const handleCreatePoem = async () => {
-    const created = await createPoem('Untitled', '', null, null);
+  const openPoemInCollection = (poemId: string) => {
+    navigate(`/?poem=${poemId}`, { state: { fromCollectionId: id } });
+  };
+
+  const handleCreatePoem = async (sectionId: string | null = null) => {
+    const created = await createPoem('Untitled', '', sectionId, null);
     if (created) {
-      navigate(`/?poem=${created.id}`);
+      openPoemInCollection(created.id);
     }
   };
 
   const handleInsertPoemAfter = async (sectionId: string | null, index: number) => {
     const created = await createPoemAt('Untitled', '', sectionId, index + 1);
     if (created) {
-      navigate(`/?poem=${created.id}`);
+      openPoemInCollection(created.id);
     }
+  };
+
+  const handleAddPoemToSection = async (sectionId: string) => {
+    await createPoem('Untitled', '', sectionId, null);
   };
 
   const handleAddSection = async () => {
@@ -320,64 +338,30 @@ export function CollectionView() {
     return grouped;
   }, [poems]);
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDragId(String(event.active.id));
+  };
+
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
-    if (!over || active.id === over.id) return;
+    setActiveDragId(null);
+    if (!over) return;
 
-    const activePoem = poems.find(poem => poem.id === active.id);
-    if (!activePoem) return;
-
-    const overId = over.id as string;
-    const overPoem = poems.find(poem => poem.id === overId);
-    const overSectionId = overId.startsWith('section-') ? overId.replace('section-', '') : null;
-
-    const fromSectionId = activePoem.section_id ?? null;
-    const targetSectionId = overPoem
-      ? (overPoem.section_id ?? null)
-      : overSectionId === 'root'
-        ? null
-        : overSectionId;
-    if (targetSectionId === undefined) return;
-
-    const fromKey = getSectionKey(fromSectionId);
-    const toKey = getSectionKey(targetSectionId);
-
-    const fromList = [...(poemsBySection.get(fromKey) || [])];
-    const toList = fromKey === toKey ? fromList : [...(poemsBySection.get(toKey) || [])];
-
-    const fromIndex = fromList.findIndex(poem => poem.id === active.id);
-    if (fromIndex === -1) return;
-
-    if (fromKey === toKey) {
-      const toIndex = toList.findIndex(poem => poem.id === overId);
-      if (toIndex === -1) return;
-      const reordered = arrayMove(fromList, fromIndex, toIndex);
-      const updates = reordered.map((poem, idx) => ({
+    const updates = planCollectionPoemDrag(
+      poems.map(poem => ({
         id: poem.id,
-        section_id: targetSectionId,
-        sort_order: idx,
-      }));
-      await updatePoemOrders(updates);
-      return;
-    }
-
-    const [moved] = fromList.splice(fromIndex, 1);
-    const insertIndex = overPoem ? toList.findIndex(poem => poem.id === overId) : toList.length;
-    toList.splice(insertIndex < 0 ? toList.length : insertIndex, 0, { ...moved, section_id: targetSectionId });
-
-    const updates = [
-      ...fromList.map((poem, idx) => ({
-        id: poem.id,
-        section_id: fromSectionId,
-        sort_order: idx,
+        section_id: poem.section_id ?? null,
+        sort_order: poem.sort_order,
       })),
-      ...toList.map((poem, idx) => ({
-        id: poem.id,
-        section_id: targetSectionId,
-        sort_order: idx,
-      })),
-    ];
+      String(active.id),
+      String(over.id)
+    );
+    if (!updates || updates.length === 0) return;
     await updatePoemOrders(updates);
+  };
+
+  const handleDragCancel = () => {
+    setActiveDragId(null);
   };
 
   const toggleVersions = (poemId: string) => {
@@ -394,6 +378,7 @@ export function CollectionView() {
 
   const handleRestoreVersion = async (poem: { id: string; title: string; content: string }, version: PoemVersion) => {
     if (!user) return;
+    if (!isVersionForPoem(version, poem.id)) return;
     if (!window.confirm(`Restore version from ${new Date(version.created_at).toLocaleString()}?`)) return;
 
     // Preserve current version before restoring
@@ -445,10 +430,15 @@ export function CollectionView() {
     );
   }
 
-  const sectionMap = new Map(sections.map(s => [s.id, s]));
   const orderedSections = [...sections].sort((a, b) => a.sort_order - b.sort_order);
   const rootPoems = poemsBySection.get('root') || [];
   const visibleSectionCount = sections.length;
+  const showEmptyState = shouldShowCollectionEmptyState({
+    poemCount: poems.length,
+    sectionCount: sections.length,
+    isAddingSection: addingSectionName !== null,
+  });
+  const activeDragPoem = poems.find(poem => poem.id === activeDragId) || null;
 
   return (
     <EditorLayout>
@@ -504,7 +494,7 @@ export function CollectionView() {
             </h1>
           )}
           <div className="collection-actions">
-            <button className="export-button" onClick={handleCreatePoem}>
+            <button className="export-button" onClick={() => handleCreatePoem(null)}>
               New Poem
             </button>
             <button className="export-button" onClick={handleAddSection}>
@@ -527,48 +517,53 @@ export function CollectionView() {
 
         {loadingPoems ? (
           <div className="loading">Loading poems...</div>
-        ) : poems.length === 0 ? (
+        ) : showEmptyState ? (
           <div className="no-poems">
             <p>This collection is empty. You can start by adding sections to organize your poems, or jump straight in with a new poem.</p>
-            <p className="no-poems-hint">It's perfectly fine to have just one poem in a collection — you can always add more later.</p>
+            <p className="no-poems-hint">It's perfectly fine to have just one poem in a collection. You can always add more later.</p>
             <div className="no-poems-actions">
               <button className="export-button" onClick={handleAddSection}>
                 Add a Section
               </button>
-              <button className="export-button" onClick={handleCreatePoem}>
+              <button className="export-button" onClick={() => handleCreatePoem(null)}>
                 Write a Poem
               </button>
             </div>
           </div>
         ) : (
-          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={collisionDetection}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragCancel={handleDragCancel}
+          >
             <div className="poems-container">
-              {/* Root level poems */}
-              {rootPoems.length > 0 && (
+              {(rootPoems.length > 0 || orderedSections.length > 0) && (
                 <SectionDropTarget sectionId="root">
                   <div className="poems-section">
-                    <SortableContext items={rootPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
+                    {rootPoems.length > 0 && (
                       <div className="poems-grid">
                         {rootPoems.map((poem, idx) => (
                           <SortablePoemCard
                             key={poem.id}
                             poem={poem}
+                            collectionId={id}
                             onDelete={handleDeletePoem}
                             onToggleVersions={toggleVersions}
                             expanded={expandedVersions.has(poem.id)}
-                            versions={versionsByPoem[poem.id] || []}
+                            versions={(versionsByPoem[poem.id] || []).filter(version => isVersionForPoem(version, poem.id))}
                             onRestoreVersion={handleRestoreVersion}
                             onInsertAfter={() => handleInsertPoemAfter(null, idx)}
                             onPreviewVersion={handlePreviewVersion}
                           />
                         ))}
                       </div>
-                    </SortableContext>
+                    )}
                   </div>
                 </SectionDropTarget>
               )}
 
-              {/* Sectioned poems */}
               {orderedSections.map((section) => {
                 const sectionPoems = poemsBySection.get(section.id) || [];
                 return (
@@ -613,6 +608,7 @@ export function CollectionView() {
                           </h2>
                         )}
                         <button
+                          type="button"
                           className="section-delete-btn"
                           onClick={() => handleDeleteSection(section.id)}
                           title="Delete section"
@@ -621,32 +617,39 @@ export function CollectionView() {
                         </button>
                       </div>
                       {sectionPoems.length > 0 ? (
-                        <SortableContext items={sectionPoems.map(poem => poem.id)} strategy={rectSortingStrategy}>
-                          <div className="poems-grid">
-                            {sectionPoems.map((poem, idx) => (
-                              <SortablePoemCard
-                                key={poem.id}
-                                poem={poem}
-                                onDelete={handleDeletePoem}
-                                onToggleVersions={toggleVersions}
-                                expanded={expandedVersions.has(poem.id)}
-                                versions={versionsByPoem[poem.id] || []}
-                                onRestoreVersion={handleRestoreVersion}
-                                onInsertAfter={() => handleInsertPoemAfter(poem.section_id, idx)}
-                                onPreviewVersion={handlePreviewVersion}
-                              />
-                            ))}
-                          </div>
-                        </SortableContext>
+                        <div className="poems-grid">
+                          {sectionPoems.map((poem, idx) => (
+                            <SortablePoemCard
+                              key={poem.id}
+                              poem={poem}
+                              collectionId={id}
+                              onDelete={handleDeletePoem}
+                              onToggleVersions={toggleVersions}
+                              expanded={expandedVersions.has(poem.id)}
+                              versions={(versionsByPoem[poem.id] || []).filter(version => isVersionForPoem(version, poem.id))}
+                              onRestoreVersion={handleRestoreVersion}
+                              onInsertAfter={() => handleInsertPoemAfter(poem.section_id, idx)}
+                              onPreviewVersion={handlePreviewVersion}
+                            />
+                          ))}
+                        </div>
                       ) : (
-                        <p className="section-empty-note">No poems in this section. Drag poems here or delete the section.</p>
+                        <div className="section-empty-note">
+                          <p>Drag poems here or delete the section.</p>
+                          <button
+                            type="button"
+                            className="section-add-poem-btn"
+                            onClick={() => handleAddPoemToSection(section.id)}
+                          >
+                            Add a poem
+                          </button>
+                        </div>
                       )}
                     </div>
                   </SectionDropTarget>
                 );
               })}
 
-              {/* Add section input */}
               {addingSectionName !== null && (
                 <div className="poems-section add-section-row">
                   <input
@@ -664,6 +667,17 @@ export function CollectionView() {
                 </div>
               )}
             </div>
+            <DragOverlay dropAnimation={null}>
+              {activeDragPoem && (
+                <div className="poem-card poem-card-overlay">
+                  <h3>{activeDragPoem.title || 'Untitled'}</h3>
+                  <p className="poem-preview">
+                    {activeDragPoem.content.substring(0, 80)}
+                    {activeDragPoem.content.length > 80 ? '...' : ''}
+                  </p>
+                </div>
+              )}
+            </DragOverlay>
           </DndContext>
         )}
 
@@ -759,9 +773,10 @@ export function CollectionView() {
 }
 
 function SectionDropTarget({ sectionId, children }: { sectionId: string; children: React.ReactNode }) {
+  const droppableId = collectionDroppableId(sectionId === 'root' ? null : sectionId);
   const { setNodeRef, isOver } = useDroppable({
-    id: `section-${sectionId}`,
-    data: { sectionId },
+    id: droppableId,
+    data: { sectionId: sectionId === 'root' ? null : sectionId },
   });
 
   return (
@@ -773,6 +788,7 @@ function SectionDropTarget({ sectionId, children }: { sectionId: string; childre
 
 function SortablePoemCard({
   poem,
+  collectionId,
   onDelete,
   onToggleVersions,
   expanded,
@@ -782,6 +798,7 @@ function SortablePoemCard({
   onPreviewVersion,
 }: {
   poem: { id: string; title: string; content: string; section_id: string | null };
+  collectionId?: string;
   onDelete: (poemId: string, title: string) => void;
   onToggleVersions: (poemId: string) => void;
   expanded: boolean;
@@ -790,20 +807,29 @@ function SortablePoemCard({
   onInsertAfter?: () => void;
   onPreviewVersion: (poem: { id: string; title: string; content: string }, version: PoemVersion) => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const { attributes, listeners, setNodeRef: setDragRef, isDragging } = useDraggable({
     id: poem.id,
     data: { sectionId: poem.section_id },
   });
+  const { setNodeRef: setDropRef, isOver } = useDroppable({
+    id: poemSlotId(poem.id),
+    data: { poemId: poem.id, sectionId: poem.section_id },
+  });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.6 : 1,
+  const setNodeRef = (node: HTMLDivElement | null) => {
+    setDragRef(node);
+    setDropRef(node);
   };
 
+  const style = {
+    opacity: isDragging ? 0.4 : 1,
+  };
+
+  const scopedVersions = versions.filter(version => isVersionForPoem(version, poem.id));
+
   return (
-    <div ref={setNodeRef} style={style} className="poem-card">
-      <Link to={`/?poem=${poem.id}`} className="poem-link">
+    <div ref={setNodeRef} style={style} className={`poem-card ${isOver ? 'is-drop-target' : ''}`}>
+      <Link to={`/?poem=${poem.id}`} state={collectionId ? { fromCollectionId: collectionId } : undefined} className="poem-link">
         <h3>{poem.title}</h3>
         <p className="poem-preview">
           {poem.content.substring(0, 100)}
@@ -811,29 +837,43 @@ function SortablePoemCard({
         </p>
       </Link>
       <div className="poem-card-actions">
-        <button className="poem-drag-handle" {...attributes} {...listeners} title="Drag to reorder">
+        <button
+          type="button"
+          className="poem-drag-handle"
+          {...attributes}
+          {...listeners}
+          title="Drag to reorder"
+          aria-label={`Drag ${poem.title || 'Untitled'} to reorder`}
+        >
           ⋮⋮
         </button>
         {onInsertAfter && (
-          <button className="poem-insert-btn" onClick={onInsertAfter} title="Insert new poem after">
+          <button type="button" className="poem-insert-btn" onClick={onInsertAfter} title="Insert new poem after">
             +
           </button>
         )}
-        <button className="versions-btn" onClick={() => onToggleVersions(poem.id)}>
-          Versions ({versions.length})
+        <button type="button" className="versions-btn" onClick={() => onToggleVersions(poem.id)}>
+          Versions ({scopedVersions.length})
         </button>
-        <button className="delete-poem-btn" onClick={() => onDelete(poem.id, poem.title)} title="Delete poem">
-          &times;
+        <button
+          type="button"
+          className="delete-poem-btn"
+          onClick={() => onDelete(poem.id, poem.title)}
+          title="Delete poem"
+          aria-label={`Delete ${poem.title || 'Untitled'}`}
+        >
+          Delete
         </button>
       </div>
       {expanded && (
         <div className="poem-versions">
-          {versions.length === 0 ? (
+          {scopedVersions.length === 0 ? (
             <div className="poem-version-empty">No saved versions yet.</div>
           ) : (
-            versions.map(version => (
+            scopedVersions.map(version => (
               <div key={version.id} className="poem-version-item">
                 <button
+                  type="button"
                   className="poem-version-meta"
                   onClick={() => onPreviewVersion(poem, version)}
                   title="Open this version"
@@ -841,13 +881,13 @@ function SortablePoemCard({
                   <span className="poem-version-date">
                     {new Date(version.created_at).toLocaleString()}
                   </span>
-                  <span className="poem-version-title">{version.title}</span>
+                  <span className="poem-version-title">{versionDisplayTitle(version.title, poem.title)}</span>
                 </button>
                 <p className="poem-version-preview">
                   {version.content.substring(0, 120)}
                   {version.content.length > 120 ? '...' : ''}
                 </p>
-                <button className="poem-version-restore" onClick={() => onRestoreVersion(poem, version)}>
+                <button type="button" className="poem-version-restore" onClick={() => onRestoreVersion(poem, version)}>
                   Restore
                 </button>
               </div>

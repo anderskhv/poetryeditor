@@ -18,7 +18,41 @@ interface LocalPoemVersion {
   hash: string;
 }
 
-const VERSION_LIMIT = 10;
+export const VERSION_LIMIT = 10;
+
+export function isVersionForPoem(version: { poem_id?: string | null }, poemId: string): boolean {
+  return Boolean(poemId) && version.poem_id === poemId;
+}
+
+export function versionDisplayTitle(versionTitle: string | null | undefined, poemTitle: string | null | undefined): string {
+  const version = (versionTitle || '').trim();
+  const poem = (poemTitle || '').trim();
+  if (version && version !== 'Untitled') return version;
+  return poem || version || 'Untitled';
+}
+
+export function groupPoemVersions(
+  versions: PoemVersion[],
+  poemIds: string[],
+  limit = VERSION_LIMIT
+): Record<string, PoemVersion[]> {
+  const allowed = new Set(poemIds.filter(Boolean));
+  const grouped: Record<string, PoemVersion[]> = {};
+  poemIds.forEach(poemId => {
+    if (poemId) grouped[poemId] = [];
+  });
+
+  versions.forEach(version => {
+    if (!isVersionForPoem(version, version.poem_id || '')) return;
+    if (!allowed.has(version.poem_id)) return;
+    if (!grouped[version.poem_id]) grouped[version.poem_id] = [];
+    if (grouped[version.poem_id].length < limit) {
+      grouped[version.poem_id].push(version);
+    }
+  });
+
+  return grouped;
+}
 
 const storageKey = (poemId: string) => `poemVersions:${poemId}`;
 
@@ -101,15 +135,7 @@ export const fetchPoemVersionsForPoems = async (poemIds: string[], userId: strin
     return fallback;
   }
 
-  const grouped: Record<string, PoemVersion[]> = {};
-  (data || []).forEach(version => {
-    if (!grouped[version.poem_id]) grouped[version.poem_id] = [];
-    if (grouped[version.poem_id].length < VERSION_LIMIT) {
-      grouped[version.poem_id].push(version);
-    }
-  });
-
-  return grouped;
+  return groupPoemVersions((data || []) as PoemVersion[], poemIds);
 };
 
 export const fetchPoemVersions = async (poemId: string, userId: string) => {
@@ -137,7 +163,7 @@ export const fetchPoemVersions = async (poemId: string, userId: string) => {
     }));
   }
 
-  return data || [];
+  return ((data || []) as PoemVersion[]).filter(version => isVersionForPoem(version, poemId));
 };
 
 export const fetchPoemVersionById = async (versionId: string, userId: string) => {

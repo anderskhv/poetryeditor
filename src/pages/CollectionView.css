@@ -352,7 +352,35 @@
   color: #999;
   font-style: italic;
   margin: 0;
-  padding: 8px 0;
+  min-height: 88px;
+  padding: 16px;
+  border: 1px dashed var(--color-border, #e0e0e0);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+}
+
+.section-empty-note p {
+  margin: 0;
+}
+
+.section-add-poem-btn {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  font-style: normal;
+  padding: 8px 12px;
+  min-height: 40px;
+  background: none;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.section-add-poem-btn:hover {
+  border-color: var(--color-text-muted, #666);
 }
 
 .add-section-row {
@@ -370,9 +398,22 @@
   background: var(--color-paper, #fff);
   border: 1px solid var(--color-border, #e0e0e0);
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
+}
+
+.poem-card.is-drop-target {
+  border-color: var(--color-text-muted, #666);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+.poem-card-overlay {
+  width: min(280px, 80vw);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 1rem 1.25rem;
+  cursor: grabbing;
+  pointer-events: none;
 }
 
 .poem-card:hover {
@@ -393,6 +434,10 @@
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.poem-card-actions .delete-poem-btn {
+  margin-left: auto;
 }
 
 .versions-btn {
@@ -450,6 +495,16 @@
 
 .poem-drag-handle {
   cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.delete-poem-btn {
+  width: auto;
+  min-width: 44px;
+  min-height: 40px;
+  padding: 0 12px;
+  font-size: 13px;
 }
 
 .poem-drag-handle:active {
@@ -551,9 +606,15 @@
 }
 
 .poems-section-drop.is-over .poems-section {
-  outline: 2px dashed var(--color-border, #e0e0e0);
+  outline: 2px dashed var(--color-text-muted, #666);
   outline-offset: 6px;
   border-radius: 12px;
+  background: var(--color-highlight-subtle, rgba(0, 0, 0, 0.03));
+}
+
+.poems-section-drop.is-over .section-empty-note {
+  border-color: var(--color-text-muted, #666);
+  color: var(--color-text-secondary, #333);
 }
 
 /* Stats */
@@ -578,5 +639,14 @@
 
   .collection-actions {
     justify-content: center;
+  }
+
+  .poem-insert-btn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .section-delete-btn {
+    color: #999;
   }
 }
