@@ -146,7 +146,44 @@
   display: flex;
   flex-direction: row;
   align-items: baseline;
+  flex-wrap: wrap;
   gap: 8px;
+}
+
+.app-header:has(.header-collection-crumb) {
+  height: auto;
+  min-height: var(--header-height);
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.app-header:has(.header-collection-crumb) .header-content {
+  height: auto;
+  min-height: var(--header-height);
+}
+
+.header-collection-crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text-primary);
+}
+
+.header-collection-crumb a {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.header-collection-crumb a:hover,
+.header-collection-crumb a:focus-visible {
+  color: var(--color-text-secondary);
+}
+
+.header-collection-crumb-sep {
+  color: var(--color-text-muted);
 }
 
 .app-title {

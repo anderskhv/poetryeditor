@@ -33,9 +33,14 @@ describe('formatCollectionUpdatedAt', () => {
     expect(formatCollectionUpdatedAt('2026-08-21T14:59:30.000Z', now)).toBe('Updated just now');
   });
 
-  it('falls back to a calendar date for older days', () => {
-    expect(formatCollectionUpdatedAt('2026-08-20T15:00:00.000Z', now)).toMatch(/^Updated /);
-    expect(formatCollectionUpdatedAt('2026-08-20T15:00:00.000Z', now)).not.toMatch(/just now|minutes ago|hours ago/);
+  it('names yesterday and other recent days instead of a calendar date', () => {
+    expect(formatCollectionUpdatedAt('2026-08-20T15:00:00.000Z', now)).toBe('Updated yesterday');
+    expect(formatCollectionUpdatedAt('2026-08-18T15:00:00.000Z', now)).toBe('Updated 3 days ago');
+  });
+
+  it('falls back to a calendar date after a week', () => {
+    expect(formatCollectionUpdatedAt('2026-08-01T15:00:00.000Z', now)).toMatch(/^Updated /);
+    expect(formatCollectionUpdatedAt('2026-08-01T15:00:00.000Z', now)).not.toMatch(/just now|minutes ago|hours ago|yesterday|days ago/);
   });
 });
 

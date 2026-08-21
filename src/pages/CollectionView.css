@@ -409,11 +409,21 @@
 }
 
 .poem-card-overlay {
+  position: fixed;
+  z-index: 10000;
   width: min(280px, 80vw);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   padding: 1rem 1.25rem;
   cursor: grabbing;
   pointer-events: none;
+}
+
+.poem-card.is-dragging {
+  opacity: 0.4;
+}
+
+.poems-container.is-dragging-poem {
+  user-select: none;
 }
 
 .poem-card:hover {

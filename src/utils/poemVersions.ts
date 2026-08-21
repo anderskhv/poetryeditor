@@ -24,6 +24,37 @@ export function isVersionForPoem(version: { poem_id?: string | null }, poemId: s
   return Boolean(poemId) && version.poem_id === poemId;
 }
 
+export function normalizeVersionBody(text: string | null | undefined): string {
+  return (text || '').replace(/\s+/g, ' ').trim();
+}
+
+export function versionLooksLikePoem(versionContent: string, poemContent: string): boolean {
+  const version = normalizeVersionBody(versionContent);
+  const poem = normalizeVersionBody(poemContent);
+  if (!version || !poem) return false;
+  if (version === poem) return true;
+  if (version.length >= 24 && (poem.includes(version) || version.includes(poem))) return true;
+  const limit = Math.min(version.length, poem.length, 80);
+  let shared = 0;
+  while (shared < limit && version[shared] === poem[shared]) shared += 1;
+  return shared >= 40;
+}
+
+export function filterVersionsForPoem(
+  versions: PoemVersion[],
+  poem: { id: string; content: string },
+  siblings: Array<{ id: string; content: string }>
+): PoemVersion[] {
+  return versions.filter(version => {
+    if (!isVersionForPoem(version, poem.id)) return false;
+    if (versionLooksLikePoem(version.content, poem.content)) return true;
+    const matchesSibling = siblings.some(
+      sibling => sibling.id !== poem.id && versionLooksLikePoem(version.content, sibling.content)
+    );
+    return !matchesSibling;
+  });
+}
+
 export function versionDisplayTitle(versionTitle: string | null | undefined, poemTitle: string | null | undefined): string {
   const version = (versionTitle || '').trim();
   const poem = (poemTitle || '').trim();

@@ -1479,6 +1479,10 @@ function App() {
     return `Local draft saved ${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
   }, [cloudPoemId, cloudSaveStatus, lastCloudSavedAt, lastSaved]);
 
+  const routeCollection = (location.state as { fromCollectionId?: string; fromCollectionName?: string } | null) || {};
+  const editorCollectionId = cloudPoemCollectionId || routeCollection.fromCollectionId || null;
+  const editorCollectionName = cloudCollectionName || routeCollection.fromCollectionName || 'Collection';
+
   const handleSaveSnapshot = useCallback(async () => {
     if (!activePoemId) {
       setWorkspaceNotice('Save the poem first, then snapshot the draft.');
@@ -1552,6 +1556,13 @@ function App() {
             <div className="app-title-group">
               <h1 className="app-title">Poetry Editor</h1>
               <span className="app-subtitle">AI feedback for serious poets</span>
+              {editorCollectionId && (
+                <nav className="header-collection-crumb" aria-label="Collection">
+                  <Link to="/my-collections">My Collections</Link>
+                  <span className="header-collection-crumb-sep" aria-hidden="true">/</span>
+                  <Link to={`/my-collections/${editorCollectionId}`}>{editorCollectionName}</Link>
+                </nav>
+              )}
             </div>
             {isAnalyzing && (
               <span className="analyzing-indicator" title="Analyzing poem...">
@@ -2204,12 +2215,12 @@ function App() {
       </header>
 
       <div className="workspace-status-strip" role="status" aria-live="polite">
-        {cloudPoemCollectionId && (
+        {editorCollectionId && (
           <nav className="editor-collection-crumb" aria-label="Collection">
             <Link to="/my-collections">My Collections</Link>
             <span className="editor-collection-crumb-sep" aria-hidden="true">/</span>
-            <Link to={`/my-collections/${cloudPoemCollectionId}`}>
-              {cloudCollectionName || 'Collection'}
+            <Link to={`/my-collections/${editorCollectionId}`}>
+              {editorCollectionName}
             </Link>
           </nav>
         )}
