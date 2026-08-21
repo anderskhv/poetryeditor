@@ -453,6 +453,14 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 - Status dots announce Rough/Draft/Edit/Done (`title`, `aria-label`, hover/focus label).
 - A section created on an empty book stays visible. Upload Folder hides on coarse pointers and shows "Upload a folder from a computer."
 
+**[Homepage voice 2026-08-20]**: Public chrome and SEO introduce Poetry Editor as a writing tool, not an AI feedback product.
+
+- Title: `Poetry Editor` (not `Poetry Editor — AI Feedback for Serious Poets`)
+- Visible subtitle: `A writing tool for poets`
+- Description: `Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.`
+- No em dashes in this chrome copy. No "not X but Y" / "not a poem generator".
+- Tool-page layout subtitle uses the same product line. Poem analysis pages, learn pages, and tool H1s stay as they are.
+
 ---
 
 ## Autonomy Framework

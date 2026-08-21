@@ -1536,8 +1536,8 @@ function App() {
   return (
     <div className="app">
       <SEOHead
-        title="Poetry Editor — AI Feedback for Serious Poets"
-        description="Get AI feedback on your poetry — craft, rhythm, imagery, and voice. Not a poem generator. A writing tool for poets who want to improve their work."
+        title="Poetry Editor"
+        description="Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one."
         canonicalPath="/"
         keywords="poetry editor, AI poetry coach, AI poetry feedback, poetry coaching, poetry feedback, rhyme finder, syllable counter, synonym finder, poetry writing tool"
         jsonLd={{
@@ -1547,7 +1547,7 @@ function App() {
           "url": "https://poetryeditor.com",
           "applicationCategory": "WritingApplication",
           "operatingSystem": "Web",
-          "description": "Get AI feedback on your poetry — craft, rhythm, imagery, and voice. Not a poem generator. A writing tool for poets who want to improve their work."
+          "description": "Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one."
         }}
       />
       <header className="app-header">
@@ -1555,7 +1555,7 @@ function App() {
           <div className="header-left">
             <div className="app-title-group">
               <h1 className="app-title">Poetry Editor</h1>
-              <span className="app-subtitle">AI feedback for serious poets</span>
+              <span className="app-subtitle">A writing tool for poets</span>
               {editorCollectionId && (
                 <nav className="header-collection-crumb" aria-label="Collection">
                   <Link to="/my-collections">My Collections</Link>
