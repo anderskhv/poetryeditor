@@ -159,3 +159,19 @@ useEffect(() => {
 **Root Cause**: `setDraft` / `persist` wrote React `text` / `poemTitle` (or `activePoem*Ref`) captured by the debounce. Monaco already had more characters. "Saved" flipped when that stale write returned, not when the cloud row matched the buffer the poet sees.
 
 **Rule**: Cloud save must read `editor.getValue()` and the title input at write time. After the last keystroke, flush that model. Do not show Saved until the committed snapshot matches the live model. Never persist title `""` over a known title. Do not "fix" this by only delaying the badge.
+
+## 2026-08-21: Pages Functions skip `_redirects`
+
+**Bug**: Direct load of `/my-collections/:id` served `public/404.html`. In-app navigation worked. `#9` added `/my-collections/* /index.html 200` and a `my-collections/index.html` shell; the 404 remained.
+
+**Root Cause**: `functions/api/anthropic.ts` makes Pages generate `_routes.json` with `include: ["/*"]`. Every request invokes the Worker. Cloudflare does not apply `_redirects` to Function-handled requests, so the SPA catch-all never ran. `404.html` then disabled built-in SPA fallback. A `my-collections` static parent (flat html or directory index) also makes pretty-URLs treat `:id` as a missing child.
+
+**Rule**: Keep `public/_routes.json` at `include: ["/api/*"]` only. Never emit `my-collections.html` or `my-collections/index.html`. Never rewrite to `/200.html`. Prove the catch-all is alive by checking a path with no static file (not only `/my-collections`).
+
+## 2026-08-21: `_routes.json` include `/api/*` did not restore `_redirects`
+
+**Bug**: Preview of that fix still served `404.html` for `/my-collections/:id` and `/widget`. `/my-collections` 308ed to `/` once the static parent was removed.
+
+**Root Cause**: Pages Functions still skipped `_redirects` on the preview. Constraining include was not enough. A missing `/my-collections` parent made the asset handler walk up to `/`.
+
+**Rule**: Use `functions/_middleware.ts` to serve `/index.html` on non-asset 404s. Keep a directory index for `/my-collections` so the list is a static hit. Never rewrite to `/200.html`. Verify on the Pages preview host, not only unit tests.

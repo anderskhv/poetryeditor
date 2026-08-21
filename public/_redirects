@@ -1,6 +1,7 @@
 /assets/*  /404.html  404
 /collections    /my-collections    302
 /collections/*  /my-collections/:splat  302
+/my-collections    /index.html  200
 /my-collections/*  /index.html  200
 /my-account/*  /index.html  200
 /reset-password/*  /index.html  200

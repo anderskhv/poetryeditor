@@ -1,4 +1,6 @@
 | Date | Decision | Category | Escalated? | Reasoning |
+| 2026-08-21 | Pages Functions invoke only `/api/*`; do not emit a my-collections pretty-URL parent | deploy | No | Hard refresh of `/my-collections/:id` still served 404.html after #9; live `/widget` and unknown paths 404 too — default Functions `/*` skip `_redirects` |
+| 2026-08-21 | Functions `_middleware.ts` serves `/index.html` on non-asset 404s | deploy | No | Preview of the `_routes.json`-only fix still 404ed `/my-collections/:id` and `/widget`; Functions skip `_redirects` even with include `/api/*` |
 | 2026-08-21 | Collection page drag is pointer-capture + `data-poem-drop`, not dnd-kit | architecture | No | Production still had no ghost after the dnd-kit rewrite; poets could not move a card into a section |
 | 2026-08-21 | Hide version rows whose body matches a sibling poem more than this poem | architecture | No | Titles were scoped; the stored snapshot body was still the other poem |
 | 2026-08-21 | Collection crumb lives in the editor header, not only the status strip | design | No | Live walk saw File/Formatting and POEMS, and never a path back to the book |

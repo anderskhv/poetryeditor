@@ -8,6 +8,9 @@
  * Cloudflare Pages serves static files first; non-pre-rendered routes fall
  * back to dist/index.html via public/_redirects (`/* /index.html 200`).
  * Do not rewrite to /200.html — Pages pretty-URLs turn that into /200 and loop.
+ * Pages Functions skip `_redirects`. functions/_middleware.ts turns asset
+ * 404s into /index.html (never /200.html). public/_routes.json excludes
+ * /assets/* so missing bundles still hit 404.html.
  */
 
 import fs from 'fs';
@@ -857,9 +860,10 @@ async function main() {
   // 3. Read the built index.html as template
   const template = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
 
-  // Authenticated app routes are not content-prerendered. Write the SPA
-  // shell as directory index files. A flat my-collections.html makes
-  // Cloudflare pretty-URLs 404 /my-collections/:id before _redirects run.
+  // Authenticated app routes are not content-prerendered. Write directory
+  // indexes so /my-collections itself is a static hit (a missing parent
+  // made Pages 308 /my-collections to /). Nested /my-collections/:id is
+  // served by functions/_middleware.ts → /index.html on the asset 404.
   // Do not emit 200.html — a rewrite to /200.html 308-loops to /200.
   const spaAppRoutes = ['/my-collections', '/my-account', '/reset-password', '/editorial-report'];
   for (const route of spaAppRoutes) {

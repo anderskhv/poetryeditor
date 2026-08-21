@@ -40,3 +40,14 @@
 - [x] Never write title `""` over a known title
 - [x] Burst + 3s idle + reload keeps the full line; already-set title is kept
 - Do not merge until Anders re-walks live
+
+## Follow-up 2026-08-21 (collection URL hard refresh)
+- [x] Re-trace live `/my-collections/:id` 404 after #9 (946d66c)
+- [x] Confirm catch-all is dead: `/widget` and unknown paths also serve 404.html
+- [x] `public/_routes.json` include `/api/*` only so Functions do not skip `_redirects`
+- [x] Do not emit `my-collections.html` or `my-collections/index.html`
+- [x] Rewrite `/my-collections` and `/my-collections/*` to `/index.html`; keep `/* /index.html 200`; no `200.html`
+- [x] `/collections/:id` still keeps the id
+- Do not merge until Anders re-walks the bookmarked collection URL
+- [x] Rebase onto 440e929 after #6/#7
+- [ ] Preview of `_routes.json`-only fix still 404ed `:id` — ship Functions middleware
