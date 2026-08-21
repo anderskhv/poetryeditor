@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { DndContext, DragEndEvent, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, TouchSensor, closestCorners, pointerWithin, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core';
 import { supabase } from '../lib/supabase';
 import type { Poem, Section } from '../types/database';
 import type { PoemStatus } from '../types/collection';
+import { parseSidebarDrop, planSidebarPoemDrag } from '../utils/poemDrag';
 import './PoemNavSidebar.css';
 
 const STATUS_CYCLE: PoemStatus[] = ['rough', 'draft', 'edit', 'done'];
@@ -61,11 +62,11 @@ function PoemNavItem({
 }) {
   const { attributes, listeners, setNodeRef: setDragRef, isDragging } = useDraggable({
     id: poem.id,
-    data: { poemId: poem.id, sectionId },
+    data: { poemId: poem.id, sectionId, index },
   });
   const { setNodeRef: setDropRef, isOver } = useDroppable({
     id: `poem-${poem.id}`,
-    data: { sectionId, index },
+    data: { poemId: poem.id, sectionId, index },
   });
 
   const setRefs = (node: HTMLDivElement | null) => {
@@ -82,15 +83,18 @@ function PoemNavItem({
         <button
           type="button"
           className="poem-status-dot"
-          style={{ background: STATUS_COLORS[status] }}
-          title={`${STATUS_LABELS[status]} — click to change`}
-          aria-label={`Status: ${STATUS_LABELS[status]}. Change poem status`}
+          data-status-label={STATUS_LABELS[status]}
+          title={STATUS_LABELS[status]}
+          aria-label={`Poem status: ${STATUS_LABELS[status]}. Activate to cycle status.`}
           onClick={(e) => {
             e.stopPropagation();
             const idx = STATUS_CYCLE.indexOf(status);
             onStatusChange(poem.id, STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length]);
           }}
-        />
+        >
+          <span className="poem-status-dot-swatch" style={{ background: STATUS_COLORS[status] }} />
+          <span className="poem-status-dot-label">{STATUS_LABELS[status]}</span>
+        </button>
         <button className="poem-nav-title" onClick={() => onSelect(poem.id)}>
           {poem.title}
         </button>
@@ -136,10 +140,16 @@ export function PoemNavSidebar({
   const [loading, setLoading] = useState(true);
   const [statusMap, setStatusMap] = useState<Record<string, PoemStatus>>({});
   const [isCreatingPoem, setIsCreatingPoem] = useState(false);
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
   const creatingPoemRef = useRef(false);
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 8 } })
   );
+  const collisionDetection: typeof closestCorners = (args) => {
+    const pointerHits = pointerWithin(args);
+    return pointerHits.length > 0 ? pointerHits : closestCorners(args);
+  };
 
   const handleStatusChange = useCallback((poemId: string, status: PoemStatus) => {
     setPoemStatus(poemId, status);
@@ -378,60 +388,70 @@ export function PoemNavSidebar({
     );
   };
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDragId(String(event.active.id));
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    setActiveDragId(null);
     if (!over) return;
 
     const activeId = active.id as string;
-    const overData = over.data.current as { sectionId?: string | null; index?: number } | undefined;
+    const overData = over.data.current as { sectionId?: string | null; index?: number; poemId?: string } | undefined;
     const overId = over.id as string;
 
     const activeEntry = poemLookup.get(activeId);
     if (!activeEntry) return;
 
     const sourceSectionId = activeEntry.sectionId;
-    let targetSectionId: string | null = null;
-    let targetIndex: number | null = null;
+    let target = parseSidebarDrop(overId, overData);
 
-    if (overData && 'sectionId' in overData) {
-      targetSectionId = overData.sectionId ?? null;
-      targetIndex = typeof overData.index === 'number' ? overData.index : null;
-    } else if (overId.startsWith('section-')) {
-      const sectionId = overId.replace('section-', '');
-      targetSectionId = sectionId === 'root' ? null : sectionId || null;
-      targetIndex = null;
-    }
-
-    if (targetSectionId === null && targetIndex === null && overId.startsWith('poem-')) {
+    if ((!target || (target.sectionId === null && target.index === null && overId.startsWith('poem-'))) && overId.startsWith('poem-')) {
       const targetPoemId = overId.replace('poem-', '');
       const targetEntry = poemLookup.get(targetPoemId);
-      targetSectionId = targetEntry?.sectionId ?? null;
-      targetIndex = targetEntry
-        ? (targetSectionId
-            ? sections.find(section => section.id === targetSectionId)?.poems.findIndex(poem => poem.id === targetPoemId)
-            : unsectionedPoems.findIndex(poem => poem.id === targetPoemId)) ?? null
-        : null;
+      if (targetEntry) {
+        const targetList = targetEntry.sectionId
+          ? sections.find(section => section.id === targetEntry.sectionId)?.poems || []
+          : unsectionedPoems;
+        target = {
+          sectionId: targetEntry.sectionId,
+          index: targetList.findIndex(poem => poem.id === targetPoemId),
+        };
+      }
     }
 
-    if (targetSectionId === null && targetIndex === null) return;
+    if (!target) return;
 
     const sourceList = sourceSectionId
       ? sections.find(section => section.id === sourceSectionId)?.poems || []
       : unsectionedPoems;
+    const plannedTargetList = target.sectionId
+      ? sections.find(section => section.id === target.sectionId)?.poems || []
+      : unsectionedPoems;
+    const fromIndex = sourceList.findIndex(poem => poem.id === activeId);
+    if (fromIndex === -1) return;
+
+    const plan = planSidebarPoemDrag({
+      activeId,
+      sourceSectionId,
+      sourceIndex: fromIndex,
+      target,
+      sourceCount: sourceList.length,
+      targetCount: plannedTargetList.length,
+    });
+    if (!plan) return;
+
+    const targetSectionId = plan.sectionId;
+    const insertIndex = plan.index;
     const targetList = targetSectionId
       ? sections.find(section => section.id === targetSectionId)?.poems || []
       : unsectionedPoems;
 
-    const fromIndex = sourceList.findIndex(poem => poem.id === activeId);
-    if (fromIndex === -1) return;
-
-    const insertIndex = targetIndex ?? targetList.length;
-
     if (sourceSectionId === targetSectionId) {
       const reordered = [...sourceList];
       const [moved] = reordered.splice(fromIndex, 1);
-      const adjustedIndex = fromIndex < insertIndex ? insertIndex - 1 : insertIndex;
-      reordered.splice(adjustedIndex, 0, moved);
+      reordered.splice(insertIndex, 0, moved);
 
       if (sourceSectionId) {
         setSections(prev =>
@@ -473,10 +493,11 @@ export function PoemNavSidebar({
     void persistOrders(nextTargetList, targetSectionId);
   };
 
-  const { setNodeRef: setUnsectionedDropRef, isOver: isOverUnsectioned } = useDroppable({
-    id: 'section-list-root',
-    data: { sectionId: null, index: unsectionedPoems.length },
-  });
+  const handleDragCancel = () => {
+    setActiveDragId(null);
+  };
+
+  const activeDragPoem = poemLookup.get(activeDragId || '')?.poem || null;
 
   return (
     <div className={`poem-nav-sidebar ${isOpen ? 'open' : 'collapsed'}`}>
@@ -495,81 +516,34 @@ export function PoemNavSidebar({
         </div>
       </div>
 
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-      <div className="poem-nav-list">
-        {loading ? (
-          <div className="poem-nav-loading">Loading...</div>
-        ) : (
-          <>
-            {/* Unsectioned poems first */}
-            <div
-              ref={setUnsectionedDropRef}
-              className={`poem-nav-dropzone ${isOverUnsectioned ? 'is-over' : ''}`}
-            >
-              {unsectionedPoems.map((poem, idx) => (
-                <div key={poem.id} className="poem-nav-row">
-                  <PoemNavItem
-                    poem={poem}
-                    isActive={poem.id === currentPoemId}
-                    onSelect={onPoemSelect}
-                    sectionId={null}
-                    index={idx}
-                    onDelete={deletePoem}
-                    status={statusMap[poem.id] || 'draft'}
-                    onStatusChange={handleStatusChange}
-                  />
-                  <button
-                    type="button"
-                    className="poem-nav-insert"
-                    onClick={() => createPoemAt(null, idx + 1)}
-                    disabled={isCreatingPoem}
-                    title="Insert new poem here"
-                  >
-                    +
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                className="poem-nav-insert end"
-                onClick={() => createPoemAt(null, unsectionedPoems.length)}
-                disabled={isCreatingPoem}
-                title="Add new poem"
-              >
-                +
-              </button>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={collisionDetection}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
+      >
+        <PoemNavListBody
+          loading={loading}
+          unsectionedPoems={unsectionedPoems}
+          sections={sections}
+          collapsedSections={collapsedSections}
+          currentPoemId={currentPoemId}
+          onPoemSelect={onPoemSelect}
+          onDelete={deletePoem}
+          onToggleSection={toggleSection}
+          onCreatePoemAt={createPoemAt}
+          isCreatingPoem={isCreatingPoem}
+          statusMap={statusMap}
+          onStatusChange={handleStatusChange}
+        />
+        <DragOverlay dropAnimation={null}>
+          {activeDragPoem && (
+            <div className="poem-nav-item poem-nav-overlay">
+              <span className="poem-nav-overlay-title">{activeDragPoem.title || 'Untitled'}</span>
             </div>
-
-            {/* Sectioned poems */}
-            {sections.map(section => (
-              <div key={section.id} className="poem-nav-section">
-                <SectionHeader
-                  sectionId={section.id}
-                  name={section.name}
-                  collapsed={collapsedSections.has(section.id)}
-                  onToggle={() => toggleSection(section.id)}
-                />
-                {!collapsedSections.has(section.id) && (
-                  <SectionPoemList
-                    section={section}
-                    currentPoemId={currentPoemId}
-                    onPoemSelect={onPoemSelect}
-                    onDelete={deletePoem}
-                    onInsertAfter={(index) => createPoemAt(section.id, index)}
-                    isCreatingPoem={isCreatingPoem}
-                    statusMap={statusMap}
-                    onStatusChange={handleStatusChange}
-                  />
-                )}
-              </div>
-            ))}
-
-            {unsectionedPoems.length === 0 && sections.length === 0 && (
-              <div className="poem-nav-empty">No poems in collection</div>
-            )}
-          </>
-        )}
-      </div>
+          )}
+        </DragOverlay>
       </DndContext>
 
       {!loading && (unsectionedPoems.length > 0 || sections.length > 0) && (
@@ -582,6 +556,114 @@ export function PoemNavSidebar({
           ))}
         </div>
       )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function PoemNavListBody({
+  loading,
+  unsectionedPoems,
+  sections,
+  collapsedSections,
+  currentPoemId,
+  onPoemSelect,
+  onDelete,
+  onToggleSection,
+  onCreatePoemAt,
+  isCreatingPoem,
+  statusMap,
+  onStatusChange,
+}: {
+  loading: boolean;
+  unsectionedPoems: Poem[];
+  sections: SectionWithPoems[];
+  collapsedSections: Set<string>;
+  currentPoemId: string;
+  onPoemSelect: (poemId: string) => void;
+  onDelete: (poemId: string) => void;
+  onToggleSection: (sectionId: string) => void;
+  onCreatePoemAt: (sectionId: string | null, index: number) => void;
+  isCreatingPoem: boolean;
+  statusMap: Record<string, PoemStatus>;
+  onStatusChange: (poemId: string, status: PoemStatus) => void;
+}) {
+  const { setNodeRef: setUnsectionedDropRef, isOver: isOverUnsectioned } = useDroppable({
+    id: 'section-list-root',
+    data: { sectionId: null, index: unsectionedPoems.length },
+  });
+
+  return (
+    <div className="poem-nav-list">
+      {loading ? (
+        <div className="poem-nav-loading">Loading...</div>
+      ) : (
+        <>
+          <div
+            ref={setUnsectionedDropRef}
+            className={`poem-nav-dropzone ${isOverUnsectioned ? 'is-over' : ''}`}
+          >
+            {unsectionedPoems.map((poem, idx) => (
+              <div key={poem.id} className="poem-nav-row">
+                <PoemNavItem
+                  poem={poem}
+                  isActive={poem.id === currentPoemId}
+                  onSelect={onPoemSelect}
+                  sectionId={null}
+                  index={idx}
+                  onDelete={onDelete}
+                  status={statusMap[poem.id] || 'draft'}
+                  onStatusChange={onStatusChange}
+                />
+                <button
+                  type="button"
+                  className="poem-nav-insert"
+                  onClick={() => onCreatePoemAt(null, idx + 1)}
+                  disabled={isCreatingPoem}
+                  title="Insert new poem here"
+                >
+                  +
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="poem-nav-insert end"
+              onClick={() => onCreatePoemAt(null, unsectionedPoems.length)}
+              disabled={isCreatingPoem}
+              title="Add new poem"
+            >
+              +
+            </button>
+          </div>
+
+          {sections.map(section => (
+            <div key={section.id} className="poem-nav-section">
+              <SectionHeader
+                sectionId={section.id}
+                name={section.name}
+                collapsed={collapsedSections.has(section.id)}
+                onToggle={() => onToggleSection(section.id)}
+              />
+              {!collapsedSections.has(section.id) && (
+                <SectionPoemList
+                  section={section}
+                  currentPoemId={currentPoemId}
+                  onPoemSelect={onPoemSelect}
+                  onDelete={onDelete}
+                  onInsertAfter={(index) => onCreatePoemAt(section.id, index)}
+                  isCreatingPoem={isCreatingPoem}
+                  statusMap={statusMap}
+                  onStatusChange={onStatusChange}
+                />
+              )}
+            </div>
+          ))}
+
+          {unsectionedPoems.length === 0 && sections.length === 0 && (
+            <div className="poem-nav-empty">No poems in collection</div>
+          )}
         </>
       )}
     </div>

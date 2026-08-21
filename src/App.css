@@ -297,6 +297,31 @@
   flex-wrap: wrap;
 }
 
+.editor-collection-crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 4px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.editor-collection-crumb a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.editor-collection-crumb a:hover,
+.editor-collection-crumb a:focus-visible {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+.editor-collection-crumb-sep {
+  color: var(--color-text-muted);
+}
+
 .privacy-pill,
 .save-status-pill {
   display: inline-flex;

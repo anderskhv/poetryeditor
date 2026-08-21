@@ -186,6 +186,13 @@
   margin: 0;
 }
 
+.collection-poem-count {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-secondary, #333);
+  margin: 0.35rem 0 0;
+}
+
 .delete-collection-btn {
   position: absolute;
   top: 8px;
@@ -200,15 +207,34 @@
   opacity: 0;
   transition: opacity 0.15s ease;
   border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
-.collection-card:hover .delete-collection-btn {
+.collection-card:hover .delete-collection-btn,
+.collection-card:focus-within .delete-collection-btn {
   opacity: 1;
 }
 
 .delete-collection-btn:hover {
   color: #d32f2f;
   background: rgba(211, 47, 47, 0.1);
+}
+
+.delete-collection-label {
+  display: none;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+}
+
+.upload-folder-note {
+  display: none;
+  margin: 0;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--color-text-muted, #666);
 }
 
 /* Upload Modal */
@@ -370,5 +396,42 @@
 
   .collections-header h1 {
     text-align: center;
+  }
+}
+
+@media (hover: none), (pointer: coarse), (max-width: 600px) {
+  .delete-collection-btn {
+    opacity: 1;
+    width: auto;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid var(--color-border, #e0e0e0);
+    background: var(--color-paper, #fff);
+    z-index: 1;
+  }
+
+  .delete-collection-label {
+    display: inline;
+  }
+
+  .delete-collection-icon {
+    display: none;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .upload-folder-button,
+  .upload-folder-link {
+    display: none;
+  }
+
+  .upload-folder-note {
+    display: block;
+  }
+
+  .collections-actions {
+    flex-wrap: wrap;
+    align-items: center;
   }
 }

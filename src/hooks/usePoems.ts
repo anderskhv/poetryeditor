@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Poem, PoemInsert, PoemFormatting } from '../types/database';
+import { touchCollectionUpdatedAt } from '../utils/touchCollection';
 
 export function usePoems(collectionId: string | undefined) {
   const [poems, setPoems] = useState<Poem[]>([]);
@@ -65,6 +66,7 @@ export function usePoems(collectionId: string | undefined) {
       if (error) throw error;
       const newPoem = data as Poem;
       setPoems(prev => [...prev, newPoem]);
+      await touchCollectionUpdatedAt(collectionId);
       return newPoem;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create poem');
@@ -141,6 +143,7 @@ export function usePoems(collectionId: string | undefined) {
         return [...others, ...updatedSection];
       });
 
+      await touchCollectionUpdatedAt(collectionId);
       return newPoem;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create poem');
@@ -178,6 +181,9 @@ export function usePoems(collectionId: string | undefined) {
       if (error) throw error;
       const newPoems = (data as Poem[]) || [];
       setPoems(prev => [...prev, ...newPoems]);
+      if (newPoems.length > 0) {
+        await touchCollectionUpdatedAt(collectionId);
+      }
       return newPoems;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create poems');
@@ -197,6 +203,7 @@ export function usePoems(collectionId: string | undefined) {
       setPoems(prev =>
         prev.map(p => (p.id === id ? { ...p, ...updates, updated_at: new Date().toISOString() } : p))
       );
+      await touchCollectionUpdatedAt(collectionId);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update poem');
@@ -246,6 +253,7 @@ export function usePoems(collectionId: string | undefined) {
           return match ? { ...poem, section_id: match.section_id ?? poem.section_id, sort_order: match.sort_order } : poem;
         })
       );
+      await touchCollectionUpdatedAt(collectionId);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update poems');
@@ -263,6 +271,7 @@ export function usePoems(collectionId: string | undefined) {
 
       if (error) throw error;
       setPoems(prev => prev.filter(p => p.id !== id));
+      await touchCollectionUpdatedAt(collectionId);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete poem');
@@ -280,6 +289,7 @@ export function usePoems(collectionId: string | undefined) {
 
       if (error) throw error;
       setPoems(prev => prev.filter(p => !ids.includes(p.id)));
+      await touchCollectionUpdatedAt(collectionId);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete poems');

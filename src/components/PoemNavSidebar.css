@@ -122,24 +122,58 @@
 
 /* Poem Status Dot */
 .poem-nav-item .poem-status-dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
   padding: 0;
   border: none;
+  background: transparent;
   flex-shrink: 0;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.poem-status-dot-swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.poem-status-dot-label {
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-size: 10px;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.poem-nav-item .poem-status-dot:hover .poem-status-dot-label,
+.poem-nav-item .poem-status-dot:focus-visible .poem-status-dot-label,
+.poem-nav-item .poem-status-dot:focus .poem-status-dot-label {
+  opacity: 1;
 }
 
 .poem-nav-item .poem-status-dot:focus-visible {
   outline: 2px solid var(--color-text-secondary);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
-.poem-nav-item .poem-status-dot:hover {
-  transform: scale(1.5);
+.poem-nav-item .poem-status-dot:hover .poem-status-dot-swatch {
+  transform: scale(1.25);
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
@@ -193,6 +227,25 @@
   color: #c62828;
   border-color: rgba(198, 40, 40, 0.3);
   background: rgba(198, 40, 40, 0.1);
+}
+
+.poem-nav-action-btn.drag {
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+
+.poem-nav-overlay {
+  width: 180px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  background: var(--color-paper);
+  pointer-events: none;
+}
+
+.poem-nav-overlay-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .poem-nav-draggable.dragging .poem-nav-item {
@@ -303,6 +356,14 @@
   height: 20px;
   margin: 0 10px 4px;
   border: 1px dashed var(--color-border);
+}
+
+.poem-nav-list:has(.dragging) .poem-nav-insert {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  border: none !important;
 }
 
 .poem-nav-section-items:hover .poem-nav-insert.end,

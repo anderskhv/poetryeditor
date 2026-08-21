@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Collection, Section, CollectionInsert, SectionInsert } from '../types/database';
 import { useAuth } from './useAuth';
+import { touchCollectionUpdatedAt } from '../utils/touchCollection';
 
 export function useCollections() {
   const { user } = useAuth();
@@ -35,7 +36,27 @@ export function useCollections() {
 
       if (timedOut) return;
       if (error) throw error;
-      setCollections((data as Collection[]) || []);
+      const rows = (data as Collection[]) || [];
+      if (rows.length === 0) {
+        setCollections([]);
+        return;
+      }
+
+      const { data: poemRows, error: poemError } = await supabase
+        .from('poems')
+        .select('collection_id')
+        .in('collection_id', rows.map(row => row.id));
+
+      if (poemError) {
+        setCollections(rows);
+        return;
+      }
+
+      const counts = new Map<string, number>();
+      (poemRows || []).forEach((row: { collection_id: string }) => {
+        counts.set(row.collection_id, (counts.get(row.collection_id) || 0) + 1);
+      });
+      setCollections(rows.map(row => ({ ...row, poem_count: counts.get(row.id) || 0 })));
     } catch (err) {
       if (timedOut) return;
       setError(err instanceof Error ? err.message : 'Failed to fetch collections');
@@ -174,6 +195,7 @@ export function useSections(collectionId: string | undefined) {
       if (error) throw error;
       const newSection = data as Section;
       setSections(prev => [...prev, newSection]);
+      await touchCollectionUpdatedAt(collectionId);
       return newSection;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create section');
@@ -200,6 +222,9 @@ export function useSections(collectionId: string | undefined) {
       if (error) throw error;
       const newSections = (data as Section[]) || [];
       setSections(prev => [...prev, ...newSections]);
+      if (newSections.length > 0) {
+        await touchCollectionUpdatedAt(collectionId);
+      }
       return newSections;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create sections');
@@ -216,6 +241,7 @@ export function useSections(collectionId: string | undefined) {
         .eq('id', sectionId);
       if (error) throw error;
       setSections(prev => prev.map(s => s.id === sectionId ? { ...s, name } : s));
+      await touchCollectionUpdatedAt(collectionId);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to rename section');
@@ -238,6 +264,7 @@ export function useSections(collectionId: string | undefined) {
         .eq('id', sectionId);
       if (error) throw error;
       setSections(prev => prev.filter(s => s.id !== sectionId));
+      await touchCollectionUpdatedAt(collectionId);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete section');

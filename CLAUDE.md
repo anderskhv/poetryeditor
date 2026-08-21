@@ -441,7 +441,17 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 - Ordinary click/tap places a caret. Word lookup is right-click, modifier+click, or long-press.
 - Narrow viewports default the coach panel and poems sidebar closed so the writing surface is first paint.
 - File → New: Cancel keeps the draft. Never blank a cloud poem in place (autosave would write empty content).
-- `/my-collections` is an SPA route. Pages fallback is `/* /index.html 200` (c4b02ed baseline). Never rewrite to `/200.html` — pretty-URLs 308-loop to `/200`. Prerender writes `my-collections.html` as the SPA shell. `/collections` 302s here.
+- `/my-collections` is an SPA route. Pages fallback is `/* /index.html 200` (c4b02ed baseline). Never rewrite to `/200.html` — pretty-URLs 308-loop to `/200`. Prerender writes `my-collections.html` as the SPA shell. `/collections` 302s here. `/collections/:id` must keep the id (`/my-collections/:id` in the SPA, `/collections/* /my-collections/:splat 302` in `_redirects`).
+
+**[Collections reliability 2026-08-21]**: Signed-in walk of the shipped collections UI.
+
+- Poem cards and the poems sidebar drag with handle-only `useDraggable`, section droppables, `pointerWithin` then `closestCorners`, TouchSensor, and a `DragOverlay` ghost. Do not apply a transform to the source card or the pointer stays trapped on that card.
+- `Versions` lists and restores only rows whose `poem_id` matches the card. Snapshot writes wait until the open cloud poem has loaded. Untitled snapshots show the poem's current title.
+- New Poem stays in the book via `My Collections / {name}` in the workspace strip.
+- Collection delete is visible on coarse/touch (labeled control). Poem delete is a labeled button, not a 28px `×` beside Versions.
+- Child poem/section writes bump `collections.updated_at`. Shelf cards show relative time and poem count.
+- Status dots announce Rough/Draft/Edit/Done (`title`, `aria-label`, hover/focus label).
+- A section created on an empty book stays visible. Upload Folder hides on coarse pointers and shows "Upload a folder from a computer."
 
 ---
 

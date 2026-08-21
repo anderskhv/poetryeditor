@@ -1,4 +1,4 @@
 /assets/*  /404.html  404
 /collections    /my-collections    302
-/collections/*  /my-collections    302
+/collections/*  /my-collections/:splat  302
 /*    /index.html   200
