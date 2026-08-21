@@ -461,6 +461,12 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 - No em dashes in this chrome copy. No "not X but Y" / "not a poem generator".
 - Tool-page layout subtitle uses the same product line. Poem analysis pages, learn pages, and tool H1s stay as they are.
 
+**[Editor Rhymes 2026-08-20]**: WordPopup Rhymes / Near Rhymes use `poetRhymes.ts` — the local CMU/phoneme matcher from `/rhymes`, not Datamuse.
+
+- Defaults: strict perfect (Rhymes tab), hide clichés (originality < 35), hide non-words (frequency + Compromise lexicon + local WordNet lemmas).
+- Do not re-sort chips by short-word score. That floated `keef` / `naef` above `leaf` / `relief`.
+- Keep "Insert and copy" on chips. Topic/Datamuse stays on `/rhymes` only.
+
 ---
 
 ## Autonomy Framework

@@ -167,6 +167,17 @@ export function injectDictionary(dict: Map<string, Pronunciation[]>): void {
 }
 
 /**
+ * Parse and install a CMU dictionary from raw `cmudict.dict` text.
+ * Used by unit tests so they do not need `fetch('/cmudict.dict')`.
+ */
+export function loadCMUDictionaryFromText(text: string): void {
+  dictionaryCache = parseCMUDict(text);
+  rhymeIndexCache = null;
+  isLoading = false;
+  loadPromise = Promise.resolve();
+}
+
+/**
  * Get syllables by splitting the word approximately based on syllable count
  * Uses the CMU dictionary stress pattern as the source of truth for syllable count
  */

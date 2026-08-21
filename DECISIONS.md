@@ -17,3 +17,4 @@
 | 2026-08-20 | Cloud autosave is single-flight and always persists the latest draft | architecture | No | Saved badge after Enter + a new line still left only `the` on the server; a stale in-flight update won |
 | 2026-08-20 | Persist Monaco `getValue()` + title input; Saved only when cloud matches the model; never write title `""` | architecture | No | After 570f875, Saved showed the full line while reload restored a 4-letter prefix and blanked the title |
 | 2026-08-20 | Public chrome/SEO presents Poetry Editor as a writing tool, not an AI feedback product | content | No | Specified copy swap; coach, save, and _redirects left untouched |
+| 2026-08-20 | Editor WordPopup rhymes use local CMU poet pipeline (strict, hide clichés/non-words); no Datamuse | architecture | No | Popup dumped CMU junk (keef/naef) and re-sorted by length; /rhymes already had the matcher + filters |
