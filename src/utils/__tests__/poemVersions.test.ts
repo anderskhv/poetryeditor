@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  filterVersionsForPoem,
   groupPoemVersions,
   isVersionForPoem,
   versionDisplayTitle,
@@ -44,6 +45,19 @@ describe('isVersionForPoem', () => {
   it('rejects a version that points at another poem', () => {
     expect(isVersionForPoem({ poem_id: 'poem-b' }, 'poem-a')).toBe(false);
     expect(isVersionForPoem({ poem_id: 'poem-a' }, 'poem-a')).toBe(true);
+  });
+});
+
+describe('filterVersionsForPoem', () => {
+  it('hides a snapshot whose body is another poem in the same book', () => {
+    const poemA = { id: 'poem-a', content: 'kettle steam test' };
+    const poemB = { id: 'poem-b', content: 'test kettle hums on the sillunting steam in even breaths the window keeps a grey opinion' };
+    const kept = filterVersionsForPoem([
+      version({ id: 'v1', poem_id: 'poem-a', title: 'UX Walk Poem', content: 'kettle steam test' }),
+      version({ id: 'v-leak', poem_id: 'poem-a', title: 'UX Walk Poem', content: poemB.content }),
+    ], poemA, [poemA, poemB]);
+
+    expect(kept.map(item => item.id)).toEqual(['v1']);
   });
 });
 

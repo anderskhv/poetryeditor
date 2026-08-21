@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, TouchSensor, closestCorners, pointerWithin, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core';
 import { EditorLayout } from '../components/EditorLayout';
 import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
 import { useSections } from '../hooks/useCollections';
 import { usePoems } from '../hooks/usePoems';
 import { supabase } from '../lib/supabase';
-import { fetchPoemVersionsForPoems, fetchPoemVersions, addPoemVersion, ensureInitialPoemVersion, migrateLocalPoemVersions, isVersionForPoem, versionDisplayTitle, type PoemVersion } from '../utils/poemVersions';
+import { fetchPoemVersionsForPoems, fetchPoemVersions, addPoemVersion, ensureInitialPoemVersion, migrateLocalPoemVersions, filterVersionsForPoem, versionDisplayTitle, type PoemVersion } from '../utils/poemVersions';
 import { getOrCreateShare } from '../utils/sharedCollections';
 import { syncLocalComments } from '../utils/poemComments';
 import { collectionDroppableId, planCollectionPoemDrag, poemSlotId } from '../utils/poemDrag';
+import { findPoemDropId } from '../utils/pointerPoemDrag';
 import { shouldShowCollectionEmptyState } from '../utils/collectionShelf';
 import type { Collection } from '../types/database';
 import JSZip from 'jszip';
@@ -49,16 +49,12 @@ export function CollectionView() {
   const [shareBusy, setShareBusy] = useState(false);
   const [shareError, setShareError] = useState<string | null>(null);
   const [shareCommentsDefault, setShareCommentsDefault] = useState(true);
-  const [activeDragId, setActiveDragId] = useState<string | null>(null);
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 8 } })
-  );
-
-  const collisionDetection: typeof closestCorners = (args) => {
-    const pointerHits = pointerWithin(args);
-    return pointerHits.length > 0 ? pointerHits : closestCorners(args);
-  };
+  const [activeDrag, setActiveDrag] = useState<{
+    poemId: string;
+    x: number;
+    y: number;
+    overId: string | null;
+  } | null>(null);
 
   // Fetch collection details
   useEffect(() => {
@@ -255,8 +251,10 @@ export function CollectionView() {
   };
 
   const handlePreviewVersion = (poem: { id: string; title: string; content: string }, version: PoemVersion) => {
-    if (!isVersionForPoem(version, poem.id)) return;
-    navigate(`/?poem=${poem.id}&version=${version.id}`, { state: { fromCollectionId: id } });
+    if (filterVersionsForPoem([version], poem, poems).length === 0) return;
+    navigate(`/?poem=${poem.id}&version=${version.id}`, {
+      state: { fromCollectionId: id, fromCollectionName: collection?.name },
+    });
   };
 
   const handleRenameCollection = async (newName: string) => {
@@ -275,7 +273,9 @@ export function CollectionView() {
   };
 
   const openPoemInCollection = (poemId: string) => {
-    navigate(`/?poem=${poemId}`, { state: { fromCollectionId: id } });
+    navigate(`/?poem=${poemId}`, {
+      state: { fromCollectionId: id, fromCollectionName: collection?.name },
+    });
   };
 
   const handleCreatePoem = async (sectionId: string | null = null) => {
@@ -338,30 +338,60 @@ export function CollectionView() {
     return grouped;
   }, [poems]);
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveDragId(String(event.active.id));
-  };
-
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-    setActiveDragId(null);
-    if (!over) return;
-
+  const applyDrop = async (poemId: string, overId: string | null) => {
+    if (!overId) return;
     const updates = planCollectionPoemDrag(
       poems.map(poem => ({
         id: poem.id,
         section_id: poem.section_id ?? null,
         sort_order: poem.sort_order,
       })),
-      String(active.id),
-      String(over.id)
+      poemId,
+      overId
     );
     if (!updates || updates.length === 0) return;
     await updatePoemOrders(updates);
   };
 
-  const handleDragCancel = () => {
-    setActiveDragId(null);
+  const beginPointerDrag = (event: React.PointerEvent<HTMLElement>, poemId: string) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const handle = event.currentTarget;
+    handle.setPointerCapture(event.pointerId);
+    const originX = event.clientX;
+    const originY = event.clientY;
+    let started = false;
+
+    const onMove = (moveEvent: PointerEvent) => {
+      const distance = Math.hypot(moveEvent.clientX - originX, moveEvent.clientY - originY);
+      if (!started && distance < 4) return;
+      started = true;
+      setActiveDrag({
+        poemId,
+        x: moveEvent.clientX,
+        y: moveEvent.clientY,
+        overId: findPoemDropId(moveEvent.clientX, moveEvent.clientY, poemId),
+      });
+    };
+
+    const finish = (endEvent: PointerEvent) => {
+      try {
+        handle.releasePointerCapture(endEvent.pointerId);
+      } catch {
+        // Capture may already be released.
+      }
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', finish);
+      window.removeEventListener('pointercancel', finish);
+      const overId = started ? findPoemDropId(endEvent.clientX, endEvent.clientY, poemId) : null;
+      setActiveDrag(null);
+      void applyDrop(poemId, overId);
+    };
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', finish);
+    window.addEventListener('pointercancel', finish);
   };
 
   const toggleVersions = (poemId: string) => {
@@ -378,7 +408,7 @@ export function CollectionView() {
 
   const handleRestoreVersion = async (poem: { id: string; title: string; content: string }, version: PoemVersion) => {
     if (!user) return;
-    if (!isVersionForPoem(version, poem.id)) return;
+    if (filterVersionsForPoem([version], poem, poems).length === 0) return;
     if (!window.confirm(`Restore version from ${new Date(version.created_at).toLocaleString()}?`)) return;
 
     // Preserve current version before restoring
@@ -438,7 +468,7 @@ export function CollectionView() {
     sectionCount: sections.length,
     isAddingSection: addingSectionName !== null,
   });
-  const activeDragPoem = poems.find(poem => poem.id === activeDragId) || null;
+  const activeDragPoem = poems.find(poem => poem.id === activeDrag?.poemId) || null;
 
   return (
     <EditorLayout>
@@ -531,16 +561,10 @@ export function CollectionView() {
             </div>
           </div>
         ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={collisionDetection}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDragCancel={handleDragCancel}
-          >
-            <div className="poems-container">
+          <>
+          <div className={`poems-container ${activeDrag ? 'is-dragging-poem' : ''}`}>
               {(rootPoems.length > 0 || orderedSections.length > 0) && (
-                <SectionDropTarget sectionId="root">
+                <SectionDropTarget sectionId="root" isOver={activeDrag?.overId === collectionDroppableId(null)}>
                   <div className="poems-section">
                     {rootPoems.length > 0 && (
                       <div className="poems-grid">
@@ -552,10 +576,13 @@ export function CollectionView() {
                             onDelete={handleDeletePoem}
                             onToggleVersions={toggleVersions}
                             expanded={expandedVersions.has(poem.id)}
-                            versions={(versionsByPoem[poem.id] || []).filter(version => isVersionForPoem(version, poem.id))}
+                            versions={filterVersionsForPoem(versionsByPoem[poem.id] || [], poem, poems)}
                             onRestoreVersion={handleRestoreVersion}
                             onInsertAfter={() => handleInsertPoemAfter(null, idx)}
                             onPreviewVersion={handlePreviewVersion}
+                            onBeginDrag={beginPointerDrag}
+                            isDropTarget={activeDrag?.overId === poemSlotId(poem.id)}
+                            isDragging={activeDrag?.poemId === poem.id}
                           />
                         ))}
                       </div>
@@ -567,7 +594,7 @@ export function CollectionView() {
               {orderedSections.map((section) => {
                 const sectionPoems = poemsBySection.get(section.id) || [];
                 return (
-                  <SectionDropTarget key={section.id} sectionId={section.id}>
+                  <SectionDropTarget key={section.id} sectionId={section.id} isOver={activeDrag?.overId === collectionDroppableId(section.id)}>
                     <div className="poems-section">
                       <div className="section-header-row">
                         {editingSectionId === section.id ? (
@@ -626,10 +653,13 @@ export function CollectionView() {
                               onDelete={handleDeletePoem}
                               onToggleVersions={toggleVersions}
                               expanded={expandedVersions.has(poem.id)}
-                              versions={(versionsByPoem[poem.id] || []).filter(version => isVersionForPoem(version, poem.id))}
+                              versions={filterVersionsForPoem(versionsByPoem[poem.id] || [], poem, poems)}
                               onRestoreVersion={handleRestoreVersion}
                               onInsertAfter={() => handleInsertPoemAfter(poem.section_id, idx)}
                               onPreviewVersion={handlePreviewVersion}
+                              onBeginDrag={beginPointerDrag}
+                              isDropTarget={activeDrag?.overId === poemSlotId(poem.id)}
+                              isDragging={activeDrag?.poemId === poem.id}
                             />
                           ))}
                         </div>
@@ -667,18 +697,19 @@ export function CollectionView() {
                 </div>
               )}
             </div>
-            <DragOverlay dropAnimation={null}>
-              {activeDragPoem && (
-                <div className="poem-card poem-card-overlay">
-                  <h3>{activeDragPoem.title || 'Untitled'}</h3>
-                  <p className="poem-preview">
-                    {activeDragPoem.content.substring(0, 80)}
-                    {activeDragPoem.content.length > 80 ? '...' : ''}
-                  </p>
-                </div>
-              )}
-            </DragOverlay>
-          </DndContext>
+            {activeDrag && activeDragPoem && (
+              <div
+                className="poem-card poem-card-overlay"
+                style={{ left: activeDrag.x + 12, top: activeDrag.y + 12 }}
+              >
+                <h3>{activeDragPoem.title || 'Untitled'}</h3>
+                <p className="poem-preview">
+                  {activeDragPoem.content.substring(0, 80)}
+                  {activeDragPoem.content.length > 80 ? '...' : ''}
+                </p>
+              </div>
+            )}
+          </>
         )}
 
         {showShareModal && (
@@ -772,15 +803,18 @@ export function CollectionView() {
   );
 }
 
-function SectionDropTarget({ sectionId, children }: { sectionId: string; children: React.ReactNode }) {
+function SectionDropTarget({
+  sectionId,
+  isOver,
+  children,
+}: {
+  sectionId: string;
+  isOver: boolean;
+  children: React.ReactNode;
+}) {
   const droppableId = collectionDroppableId(sectionId === 'root' ? null : sectionId);
-  const { setNodeRef, isOver } = useDroppable({
-    id: droppableId,
-    data: { sectionId: sectionId === 'root' ? null : sectionId },
-  });
-
   return (
-    <div ref={setNodeRef} className={`poems-section-drop ${isOver ? 'is-over' : ''}`}>
+    <div data-poem-drop={droppableId} className={`poems-section-drop ${isOver ? 'is-over' : ''}`}>
       {children}
     </div>
   );
@@ -796,6 +830,9 @@ function SortablePoemCard({
   onRestoreVersion,
   onInsertAfter,
   onPreviewVersion,
+  onBeginDrag,
+  isDropTarget,
+  isDragging,
 }: {
   poem: { id: string; title: string; content: string; section_id: string | null };
   collectionId?: string;
@@ -806,30 +843,20 @@ function SortablePoemCard({
   onRestoreVersion: (poem: { id: string; title: string; content: string }, version: PoemVersion) => void;
   onInsertAfter?: () => void;
   onPreviewVersion: (poem: { id: string; title: string; content: string }, version: PoemVersion) => void;
+  onBeginDrag: (event: React.PointerEvent<HTMLElement>, poemId: string) => void;
+  isDropTarget: boolean;
+  isDragging: boolean;
 }) {
-  const { attributes, listeners, setNodeRef: setDragRef, isDragging } = useDraggable({
-    id: poem.id,
-    data: { sectionId: poem.section_id },
-  });
-  const { setNodeRef: setDropRef, isOver } = useDroppable({
-    id: poemSlotId(poem.id),
-    data: { poemId: poem.id, sectionId: poem.section_id },
-  });
-
-  const setNodeRef = (node: HTMLDivElement | null) => {
-    setDragRef(node);
-    setDropRef(node);
-  };
-
-  const style = {
-    opacity: isDragging ? 0.4 : 1,
-  };
-
-  const scopedVersions = versions.filter(version => isVersionForPoem(version, poem.id));
-
   return (
-    <div ref={setNodeRef} style={style} className={`poem-card ${isOver ? 'is-drop-target' : ''}`}>
-      <Link to={`/?poem=${poem.id}`} state={collectionId ? { fromCollectionId: collectionId } : undefined} className="poem-link">
+    <div
+      data-poem-drop={poemSlotId(poem.id)}
+      className={`poem-card ${isDropTarget ? 'is-drop-target' : ''} ${isDragging ? 'is-dragging' : ''}`}
+    >
+      <Link
+        to={`/?poem=${poem.id}`}
+        state={collectionId ? { fromCollectionId: collectionId } : undefined}
+        className="poem-link"
+      >
         <h3>{poem.title}</h3>
         <p className="poem-preview">
           {poem.content.substring(0, 100)}
@@ -840,10 +867,9 @@ function SortablePoemCard({
         <button
           type="button"
           className="poem-drag-handle"
-          {...attributes}
-          {...listeners}
           title="Drag to reorder"
           aria-label={`Drag ${poem.title || 'Untitled'} to reorder`}
+          onPointerDown={(event) => onBeginDrag(event, poem.id)}
         >
           ⋮⋮
         </button>
@@ -853,7 +879,7 @@ function SortablePoemCard({
           </button>
         )}
         <button type="button" className="versions-btn" onClick={() => onToggleVersions(poem.id)}>
-          Versions ({scopedVersions.length})
+          Versions ({versions.length})
         </button>
         <button
           type="button"
@@ -867,10 +893,10 @@ function SortablePoemCard({
       </div>
       {expanded && (
         <div className="poem-versions">
-          {scopedVersions.length === 0 ? (
+          {versions.length === 0 ? (
             <div className="poem-version-empty">No saved versions yet.</div>
           ) : (
-            scopedVersions.map(version => (
+            versions.map(version => (
               <div key={version.id} className="poem-version-item">
                 <button
                   type="button"

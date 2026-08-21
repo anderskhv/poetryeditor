@@ -857,12 +857,17 @@ async function main() {
   // 3. Read the built index.html as template
   const template = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
 
-  // Authenticated app routes are not content-prerendered. Write the original
-  // SPA shell as flat .html files so Cloudflare pretty-URLs serve them on
-  // refresh. Do not emit 200.html — a rewrite to /200.html 308-loops to /200.
+  // Authenticated app routes are not content-prerendered. Write the SPA
+  // shell as directory index files. A flat my-collections.html makes
+  // Cloudflare pretty-URLs 404 /my-collections/:id before _redirects run.
+  // Do not emit 200.html — a rewrite to /200.html 308-loops to /200.
   const spaAppRoutes = ['/my-collections', '/my-account', '/reset-password', '/editorial-report'];
   for (const route of spaAppRoutes) {
-    fs.writeFileSync(path.join(DIST, `${route.slice(1)}.html`), template);
+    const dir = path.join(DIST, route.slice(1));
+    fs.mkdirSync(dir, { recursive: true });
+    const flatHtml = path.join(DIST, `${route.slice(1)}.html`);
+    if (fs.existsSync(flatHtml)) fs.unlinkSync(flatHtml);
+    fs.writeFileSync(path.join(dir, 'index.html'), template);
   }
   console.log(`  Created SPA shells for ${spaAppRoutes.join(', ')}`);
 

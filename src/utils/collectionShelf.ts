@@ -24,6 +24,10 @@ export function formatCollectionUpdatedAt(iso: string, now = Date.now()): string
     return `Updated today at ${updated.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
   }
 
+  const days = Math.floor(hours / 24);
+  if (days === 1) return 'Updated yesterday';
+  if (days < 7) return `Updated ${days} days ago`;
+
   return `Updated ${updated.toLocaleDateString()}`;
 }
 

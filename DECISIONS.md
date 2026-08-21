@@ -1,4 +1,8 @@
 | Date | Decision | Category | Escalated? | Reasoning |
+| 2026-08-21 | Collection page drag is pointer-capture + `data-poem-drop`, not dnd-kit | architecture | No | Production still had no ghost after the dnd-kit rewrite; poets could not move a card into a section |
+| 2026-08-21 | Hide version rows whose body matches a sibling poem more than this poem | architecture | No | Titles were scoped; the stored snapshot body was still the other poem |
+| 2026-08-21 | Collection crumb lives in the editor header, not only the status strip | design | No | Live walk saw File/Formatting and POEMS, and never a path back to the book |
+| 2026-08-21 | SPA shells are `route/index.html` plus `/my-collections/* /index.html 200` | deploy | No | Flat `my-collections.html` made Cloudflare pretty-URLs serve 404.html on hard refresh of `/my-collections/:id` |
 | 2026-08-21 | Keep `/collections/:id` on the same book via `/my-collections/:id`; never drop the id | deploy | No | Live walk landed on the shelf; Cloudflare splat and the SPA redirect both discarded `:id` |
 | 2026-08-21 | Collection drag uses handle-only draggables, section droppables, and a ghost overlay | architecture | No | Sortable-per-section plus a 6px pointer sensor never moved cards; empty-section copy was a lie |
 | 2026-08-21 | Version snapshots write only after the open poem is loaded, and the list filters by `poem_id` | architecture | No | Switching poems could snapshot the previous buffer onto the next id; cards then showed another poem's body |
