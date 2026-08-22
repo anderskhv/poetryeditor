@@ -5,7 +5,8 @@ import { SEOHead } from '../components/SEOHead';
 import { useAuth } from '../hooks/useAuth';
 import { useCollections } from '../hooks/useCollections';
 import { AuthModal } from '../components/AuthModal';
-import { formatCollectionUpdatedAt, formatPoemCount } from '../utils/collectionShelf';
+import { CollectionRenameField } from '../components/collection/CollectionRenameField';
+import { formatCollectionUpdatedAt, formatPoemCount, nextCollectionName } from '../utils/collectionShelf';
 import './MyCollections.css';
 
 interface ParsedFolder {
@@ -43,8 +44,10 @@ function naturalCompare(a: string, b: string): number {
 
 export function MyCollections() {
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const { collections, loading, error, refetch, createCollection, deleteCollection } = useCollections();
+  const { collections, loading, error, refetch, createCollection, updateCollection, deleteCollection } = useCollections();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameInput, setRenameInput] = useState('');
   const [showUploader, setShowUploader] = useState(false);
   const [showNewCollection, setShowNewCollection] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState('');
@@ -162,6 +165,27 @@ export function MyCollections() {
     }
   };
 
+  const beginRenameCollection = (id: string, name: string) => {
+    setRenamingId(id);
+    setRenameInput(name);
+  };
+
+  const commitRenameCollection = async () => {
+    if (!renamingId) return;
+    const current = collections.find(collection => collection.id === renamingId);
+    const nextName = nextCollectionName(current?.name ?? '', renameInput);
+    const id = renamingId;
+    setRenamingId(null);
+    if (nextName) {
+      await updateCollection(id, nextName);
+    }
+  };
+
+  const cancelRenameCollection = () => {
+    setRenamingId(null);
+    setRenameInput('');
+  };
+
   if (authLoading) {
     return (
       <EditorLayout>
@@ -265,25 +289,55 @@ export function MyCollections() {
           <div className="collections-grid">
             {collections.map(collection => (
               <div key={collection.id} className="collection-card">
-                <Link to={`/my-collections/${collection.id}`} className="collection-link">
-                  <h2>{collection.name}</h2>
-                  <p className="collection-date">
-                    {formatCollectionUpdatedAt(collection.updated_at)}
-                  </p>
-                  {formatPoemCount(collection.poem_count) && (
-                    <p className="collection-poem-count">{formatPoemCount(collection.poem_count)}</p>
+                {renamingId === collection.id ? (
+                  <div className="collection-card-edit">
+                    <CollectionRenameField
+                      className="collection-card-rename-input"
+                      value={renameInput}
+                      onChange={setRenameInput}
+                      onCommit={commitRenameCollection}
+                      onCancel={cancelRenameCollection}
+                    />
+                    <p className="collection-date">
+                      {formatCollectionUpdatedAt(collection.updated_at)}
+                    </p>
+                    {formatPoemCount(collection.poem_count) && (
+                      <p className="collection-poem-count">{formatPoemCount(collection.poem_count)}</p>
+                    )}
+                  </div>
+                ) : (
+                  <Link to={`/my-collections/${collection.id}`} className="collection-link">
+                    <h2>{collection.name}</h2>
+                    <p className="collection-date">
+                      {formatCollectionUpdatedAt(collection.updated_at)}
+                    </p>
+                    {formatPoemCount(collection.poem_count) && (
+                      <p className="collection-poem-count">{formatPoemCount(collection.poem_count)}</p>
+                    )}
+                  </Link>
+                )}
+                <div className="collection-card-actions">
+                  {renamingId !== collection.id && (
+                    <button
+                      type="button"
+                      className="rename-collection-btn"
+                      onClick={() => beginRenameCollection(collection.id, collection.name)}
+                      aria-label={`Rename ${collection.name}`}
+                    >
+                      Rename
+                    </button>
                   )}
-                </Link>
-                <button
-                  type="button"
-                  className="delete-collection-btn"
-                  onClick={() => handleDeleteCollection(collection.id, collection.name)}
-                  title="Delete collection"
-                  aria-label={`Delete ${collection.name}`}
-                >
-                  <span className="delete-collection-icon" aria-hidden="true">&times;</span>
-                  <span className="delete-collection-label">Delete</span>
-                </button>
+                  <button
+                    type="button"
+                    className="delete-collection-btn"
+                    onClick={() => handleDeleteCollection(collection.id, collection.name)}
+                    title="Delete collection"
+                    aria-label={`Delete ${collection.name}`}
+                  >
+                    <span className="delete-collection-icon" aria-hidden="true">&times;</span>
+                    <span className="delete-collection-label">Delete</span>
+                  </button>
+                </div>
               </div>
             ))}
           </div>

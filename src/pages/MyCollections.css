@@ -157,16 +157,18 @@
   border: 1px solid var(--color-border, rgba(0, 0, 0, 0.06));
   border-radius: 4px;
   transition: border-color 0.15s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .collection-card:hover {
   border-color: var(--color-text-muted, #9a9a9a);
 }
 
-.collection-link {
+.collection-link,
+.collection-card-edit {
   display: block;
-  padding: 1.5rem;
-  padding-right: 5.5rem;
+  padding: 1.5rem 1.5rem 0.75rem;
   text-decoration: none;
   color: inherit;
 }
@@ -193,16 +195,25 @@
   margin: 0.35rem 0 0;
 }
 
+.collection-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 1.25rem 1rem;
+}
+
+.rename-collection-btn,
 .delete-collection-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
+  position: static;
   width: auto;
   min-width: 44px;
-  height: 36px;
-  padding: 0 10px;
+  min-height: 40px;
+  height: auto;
+  padding: 0 12px;
   background: var(--color-paper, #fff);
   border: 1px solid var(--color-border, #e0e0e0);
+  font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 13px;
   color: var(--color-text-muted, #666);
   cursor: pointer;
@@ -212,12 +223,38 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  z-index: 1;
 }
 
-.delete-collection-btn:hover {
+.rename-collection-btn:hover,
+.rename-collection-btn:focus-visible {
+  color: var(--color-text-primary, #000);
+  border-color: var(--color-text-muted, #666);
+}
+
+.delete-collection-btn:hover,
+.delete-collection-btn:focus-visible {
   color: #d32f2f;
   background: rgba(211, 47, 47, 0.1);
+}
+
+.collection-card-rename-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin: 0 0 0.5rem;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 4px;
+  background: #fff;
+  color: inherit;
+}
+
+.collection-card-rename-input:focus {
+  outline: none;
+  border-color: var(--color-text-muted, #666);
 }
 
 .delete-collection-label {
@@ -401,10 +438,12 @@
 }
 
 @media (hover: none), (pointer: coarse), (max-width: 600px) {
+  .rename-collection-btn,
   .delete-collection-btn {
     opacity: 1;
     width: auto;
     min-width: 44px;
+    min-height: 44px;
     height: 44px;
     padding: 0 12px;
     border: 1px solid var(--color-border, #e0e0e0);

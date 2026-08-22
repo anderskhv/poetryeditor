@@ -1,3 +1,21 @@
+# Collection rename on the list and inside the book (2026-08-22)
+
+## Plan
+1. [x] Confirm live rename was hover/double-click only on the book H1, and missing on the shelf
+2. [x] Add a labeled Rename control next to the collection H1; keep double-click as a shortcut
+3. [x] Add labeled Rename on each My Collections card via `updateCollection`
+4. [x] Shared Enter/blur save and Escape cancel; empty or unchanged names cancel
+5. [x] Source tests plus `nextCollectionName` unit tests
+6. [x] lint / tsc / existing tests
+7. [ ] PR, do not merge
+
+## Review
+- Collection page: H1 stays the real title. Rename is a labeled button. Persist still uses `handleRenameCollection` / supabase `collections.update`.
+- Shelf: each card has labeled Rename. Save updates the card through `useCollections.updateCollection`.
+- Touch: 44px labeled controls. No hover-only pencil on the collection title.
+
+---
+
 # Homepage voice: writing tool, not AI feedback (2026-08-20)
 
 ## Plan

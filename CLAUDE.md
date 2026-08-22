@@ -443,6 +443,13 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 - File → New: Cancel keeps the draft. Never blank a cloud poem in place (autosave would write empty content).
 - `/my-collections` is an SPA route. Pages fallback is `/* /index.html 200` (c4b02ed baseline). Never rewrite to `/200.html` — pretty-URLs 308-loop to `/200`. Prerender writes `my-collections/index.html` so the list is a static hit. Nested `:id` is served by `functions/_middleware.ts` (`/index.html` on non-asset 404s) because Functions skip `_redirects`. `/collections` 302s to the list. `/collections/:id` keeps the id.
 
+**[Collection rename 2026-08-22]**: Anders could not rename a collection on live.
+
+- Rename is a labeled button next to the book H1 and on each shelf card. Double-click on the H1 stays as a shortcut.
+- Persist through the existing supabase `collections.update` path (`handleRenameCollection` in the book, `updateCollection` on the list).
+- Keep a real H1 on `/my-collections/:id`. The breadcrumb and editor crumb are not the only name and are not the rename control.
+- Enter/blur save, Escape cancel. Touch gets a 44px labeled control. No hover-only pencil.
+
 **[Collections reliability 2026-08-21]**: Signed-in walk of the shipped collections UI.
 
 - Poem cards and the poems sidebar drag with handle-only `useDraggable`, section droppables, `pointerWithin` then `closestCorners`, TouchSensor, and a `DragOverlay` ghost. Do not apply a transform to the source card or the pointer stays trapped on that card.

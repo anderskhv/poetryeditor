@@ -1,4 +1,5 @@
 | Date | Decision | Category | Escalated? | Reasoning |
+| 2026-08-22 | Labeled Rename on the collection H1 and on each shelf card; double-click stays as a shortcut | design | No | Anders could not rename on live because the only control was hover/double-click on the book H1, and the list had no rename at all |
 | 2026-08-22 | One 48px header: title, subtitle, and menubar share a line; collection crumb once in the header; status strip is save + stats only | design | No | Live walk jammed the crumb into the wordmark, repeated it on the strip, and left Tools as a gray pill |
 | 2026-08-22 | Poems sidebar gets labeled New Poem and New Section; hover + is no longer the only create path | design | No | Anders could see UX Walk Section and the legend, but not how to add a section |
 | 2026-08-22 | Remove Private by default from the editor strip; keep a quiet Privacy note on My Account and the contact footer | design | No | The chip was a banner. Privacy does not need to sit next to Saved |
