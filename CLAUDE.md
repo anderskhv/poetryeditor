@@ -447,7 +447,7 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 
 - Poem cards and the poems sidebar drag with handle-only `useDraggable`, section droppables, `pointerWithin` then `closestCorners`, TouchSensor, and a `DragOverlay` ghost. Do not apply a transform to the source card or the pointer stays trapped on that card.
 - `Versions` lists and restores only rows whose `poem_id` matches the card. Snapshot writes wait until the open cloud poem has loaded. Untitled snapshots show the poem's current title.
-- New Poem stays in the book via `My Collections / {name}` in the workspace strip.
+- New Poem stays in the book via `My Collections / {name}` once in the header, not on the status strip.
 - Collection delete is visible on coarse/touch (labeled control). Poem delete is a labeled button, not a 28px `×` beside Versions.
 - Child poem/section writes bump `collections.updated_at`. Shelf cards show relative time and poem count.
 - Status dots announce Rough/Draft/Edit/Done (`title`, `aria-label`, hover/focus label).
@@ -460,6 +460,14 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 - Description: `Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.`
 - No em dashes in this chrome copy. No "not X but Y" / "not a poem generator".
 - Tool-page layout subtitle uses the same product line. Poem analysis pages, learn pages, and tool H1s stay as they are.
+
+**[Editor chrome 2026-08-22]**: One quiet header for the writing tool.
+
+- Header stays 48px. Title, subtitle, and File / Formatting / Background / Inspiration / Tools share one line. Tools is a menubar item, not a gray pill.
+- Collection path appears once, in the header, and truncates. Status strip is save state plus stats. No `Private by default` chip.
+- Poems sidebar has labeled New Poem and New Section. Status dots stay named.
+- Coach send sits on the same row as the input, same height, vertically centered.
+- EditorLayout imports the same header language so `/my-collections` does not look like another product. Privacy lives on My Account. Footer keeps the contact line.
 
 **[Editor Rhymes 2026-08-20]**: WordPopup Rhymes / Near Rhymes use `poetRhymes.ts` — the local CMU/phoneme matcher from `/rhymes`, not Datamuse.
 

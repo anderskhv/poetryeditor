@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { AuthButton } from './AuthButton';
 import { useAuth } from '../hooks/useAuth';
 import { trackPageview } from '../utils/analytics';
+import '../App.css';
 import './EditorLayout.css';
 
 interface EditorLayoutProps {
@@ -27,14 +28,17 @@ export function EditorLayout({ children }: EditorLayoutProps) {
               <span className="app-subtitle">A writing tool for poets</span>
             </Link>
           </div>
-          <div className="header-actions">
+          <nav className="header-actions header-menubar" aria-label="Account">
             <AuthButton />
-          </div>
+          </nav>
         </div>
       </header>
       <main className="editor-layout-main">
         {children}
       </main>
+      <footer className="app-footer">
+        <p className="footer-line">Ideas, feedback, or bugs? Write <a href="mailto:contact@poetryeditor.com">contact@poetryeditor.com</a>. We will get back in &lt;48 hours.</p>
+      </footer>
     </div>
   );
 }

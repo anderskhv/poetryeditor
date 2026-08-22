@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import type { Poem, Section } from '../types/database';
 import type { PoemStatus } from '../types/collection';
 import { parseSidebarDrop, planSidebarPoemDrag } from '../utils/poemDrag';
+import { touchCollectionUpdatedAt } from '../utils/touchCollection';
 import './PoemNavSidebar.css';
 
 const STATUS_CYCLE: PoemStatus[] = ['rough', 'draft', 'edit', 'done'];
@@ -140,8 +141,12 @@ export function PoemNavSidebar({
   const [loading, setLoading] = useState(true);
   const [statusMap, setStatusMap] = useState<Record<string, PoemStatus>>({});
   const [isCreatingPoem, setIsCreatingPoem] = useState(false);
+  const [isCreatingSection, setIsCreatingSection] = useState(false);
+  const [showSectionForm, setShowSectionForm] = useState(false);
+  const [newSectionName, setNewSectionName] = useState('');
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
   const creatingPoemRef = useRef(false);
+  const creatingSectionRef = useRef(false);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 8 } })
@@ -347,6 +352,7 @@ export function PoemNavSidebar({
       }
 
       await persistOrders(normalizedList, sectionId);
+      await touchCollectionUpdatedAt(collectionId);
       onPoemSelect(created.id);
     } finally {
       creatingPoemRef.current = false;
@@ -373,6 +379,44 @@ export function PoemNavSidebar({
         poems: section.poems.filter(p => p.id !== poemId),
       }))
     );
+    await touchCollectionUpdatedAt(collectionId);
+  };
+
+  const createSection = async (rawName: string) => {
+    if (!supabase) return;
+    if (creatingSectionRef.current) return;
+    const name = rawName.trim();
+    if (!name) {
+      setShowSectionForm(false);
+      setNewSectionName('');
+      return;
+    }
+    creatingSectionRef.current = true;
+    setIsCreatingSection(true);
+    try {
+      const { data, error } = await supabase
+        .from('sections')
+        .insert({
+          collection_id: collectionId,
+          name,
+          parent_id: null,
+          sort_order: sections.length,
+        } as any)
+        .select()
+        .single();
+      if (error) {
+        console.error('Failed to create section:', error);
+        return;
+      }
+      const created = data as Section;
+      setSections(prev => [...prev, { ...created, poems: [] }]);
+      setShowSectionForm(false);
+      setNewSectionName('');
+      await touchCollectionUpdatedAt(collectionId);
+    } finally {
+      creatingSectionRef.current = false;
+      setIsCreatingSection(false);
+    }
   };
 
   const persistOrders = async (poemsToUpdate: Poem[], sectionId: string | null) => {
@@ -515,6 +559,60 @@ export function PoemNavSidebar({
           </button>
         </div>
       </div>
+
+      <div className="poem-nav-create">
+        <button
+          type="button"
+          className="poem-nav-create-btn"
+          onClick={() => createPoemAt(null, unsectionedPoems.length)}
+          disabled={isCreatingPoem}
+        >
+          New Poem
+        </button>
+        <button
+          type="button"
+          className="poem-nav-create-btn"
+          onClick={() => {
+            setShowSectionForm(true);
+            setNewSectionName('');
+          }}
+          disabled={isCreatingSection}
+        >
+          New Section
+        </button>
+      </div>
+      {showSectionForm && (
+        <form
+          className="poem-nav-section-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void createSection(newSectionName);
+          }}
+        >
+          <label className="visually-hidden" htmlFor="poem-nav-section-name">
+            Section name
+          </label>
+          <input
+            id="poem-nav-section-name"
+            className="poem-nav-section-input"
+            value={newSectionName}
+            onChange={(e) => setNewSectionName(e.target.value)}
+            onBlur={() => void createSection(newSectionName)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setShowSectionForm(false);
+                setNewSectionName('');
+              }
+            }}
+            placeholder="Section name"
+            autoFocus
+            disabled={isCreatingSection}
+          />
+          <button type="submit" className="poem-nav-create-btn" disabled={isCreatingSection}>
+            Add
+          </button>
+        </form>
+      )}
 
       <DndContext
         sensors={sensors}

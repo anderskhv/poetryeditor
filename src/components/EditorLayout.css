@@ -2,9 +2,17 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--color-background, #fafafa);
+  background: var(--color-paper, #fdfcfa);
 }
 
 .editor-layout-main {
   flex: 1;
+}
+
+.editor-layout .app-header {
+  flex-shrink: 0;
+}
+
+.editor-layout .app-footer {
+  flex-shrink: 0;
 }

@@ -1,4 +1,7 @@
 | Date | Decision | Category | Escalated? | Reasoning |
+| 2026-08-22 | One 48px header: title, subtitle, and menubar share a line; collection crumb once in the header; status strip is save + stats only | design | No | Live walk jammed the crumb into the wordmark, repeated it on the strip, and left Tools as a gray pill |
+| 2026-08-22 | Poems sidebar gets labeled New Poem and New Section; hover + is no longer the only create path | design | No | Anders could see UX Walk Section and the legend, but not how to add a section |
+| 2026-08-22 | Remove Private by default from the editor strip; keep a quiet Privacy note on My Account and the contact footer | design | No | The chip was a banner. Privacy does not need to sit next to Saved |
 | 2026-08-21 | Pages Functions invoke only `/api/*`; do not emit a my-collections pretty-URL parent | deploy | No | Hard refresh of `/my-collections/:id` still served 404.html after #9; live `/widget` and unknown paths 404 too — default Functions `/*` skip `_redirects` |
 | 2026-08-21 | Functions `_middleware.ts` serves `/index.html` on non-asset 404s | deploy | No | Preview of the `_routes.json`-only fix still 404ed `/my-collections/:id` and `/widget`; Functions skip `_redirects` even with include `/api/*` |
 | 2026-08-21 | Collection page drag is pointer-capture + `data-poem-drop`, not dnd-kit | architecture | No | Production still had no ghost after the dnd-kit rewrite; poets could not move a card into a section |

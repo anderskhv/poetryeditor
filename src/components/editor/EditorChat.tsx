@@ -431,7 +431,7 @@ export function EditorChat({
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={isLoading ? (isSynthesizing ? 'Adding craft notes...' : 'Thinking...') : (mode === 'collection' ? 'Ask about your collection...' : 'Ask about your poem...')}
-            rows={2}
+            rows={1}
             disabled={isLoading}
           />
           {isLoading ? (
