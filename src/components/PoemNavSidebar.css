@@ -10,8 +10,8 @@
 }
 
 .poem-nav-sidebar.open {
-  width: 200px;
-  min-width: 200px;
+  width: 220px;
+  min-width: 220px;
 }
 
 .poem-nav-sidebar.collapsed {
@@ -41,6 +41,74 @@
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.poem-nav-create {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.poem-nav-create-btn {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--color-text-secondary);
+  padding: 7px 8px;
+  cursor: pointer;
+}
+
+.poem-nav-create-btn:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+  background: var(--color-highlight-subtle);
+}
+
+.poem-nav-create-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.poem-nav-section-form {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.poem-nav-section-input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.3;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-paper);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.poem-nav-section-input:focus {
+  border-color: var(--color-text-secondary);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .poem-nav-add {

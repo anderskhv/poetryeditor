@@ -134,56 +134,59 @@
   height: 100%;
   max-width: 1800px;
   margin: 0 auto;
+  gap: 24px;
 }
 
 .header-left {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: baseline;
+  gap: 16px;
+  min-width: 0;
+  flex: 1;
 }
 
 .app-title-group {
   display: flex;
   flex-direction: row;
   align-items: baseline;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
-}
-
-.app-header:has(.header-collection-crumb) {
-  height: auto;
-  min-height: var(--header-height);
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-.app-header:has(.header-collection-crumb) .header-content {
-  height: auto;
-  min-height: var(--header-height);
+  flex-shrink: 0;
 }
 
 .header-collection-crumb {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 6px;
+  min-width: 0;
+  max-width: 42ch;
   font-family: var(--font-sans);
   font-size: 13px;
-  color: var(--color-text-primary);
+  line-height: 1;
+  color: var(--color-text-secondary);
 }
 
 .header-collection-crumb a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.header-collection-crumb a:hover,
+.header-collection-crumb a:focus-visible {
   color: var(--color-text-primary);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.header-collection-crumb a:hover,
-.header-collection-crumb a:focus-visible {
-  color: var(--color-text-secondary);
-}
-
 .header-collection-crumb-sep {
   color: var(--color-text-muted);
+}
+
+.header-collection-crumb a:last-of-type {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .app-title {
@@ -205,11 +208,33 @@
   line-height: 1;
 }
 
-.header-actions {
+.header-actions,
+.header-menubar {
   display: flex;
-  gap: 20px;
   align-items: center;
+  align-self: stretch;
+  gap: 2px;
+  height: 100%;
   flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.header-menubar .btn,
+.header-menubar .btn-menu {
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.header-menubar .auth-user-menu,
+.header-menubar .auth-user-button {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
 }
 
 /* Shared pill button layout for header actions */
@@ -321,11 +346,11 @@
 }
 
 .workspace-status-strip {
-  min-height: 34px;
+  min-height: 32px;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 32px;
+  padding: 4px 32px;
   background: var(--color-paper);
   border-bottom: 1px solid var(--color-border);
   color: var(--color-text-muted);
@@ -334,32 +359,6 @@
   flex-wrap: wrap;
 }
 
-.editor-collection-crumb {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-right: 4px;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  color: var(--color-text-secondary);
-}
-
-.editor-collection-crumb a {
-  color: var(--color-text-secondary);
-  text-decoration: none;
-}
-
-.editor-collection-crumb a:hover,
-.editor-collection-crumb a:focus-visible {
-  color: var(--color-text-primary);
-  text-decoration: underline;
-}
-
-.editor-collection-crumb-sep {
-  color: var(--color-text-muted);
-}
-
-.privacy-pill,
 .save-status-pill {
   display: inline-flex;
   align-items: center;
@@ -370,12 +369,6 @@
   color: var(--color-text-secondary);
   background: var(--color-background);
   white-space: nowrap;
-}
-
-.privacy-pill {
-  color: #47665c;
-  border-color: rgba(71, 102, 92, 0.22);
-  background: rgba(71, 102, 92, 0.08);
 }
 
 .save-status-pill.saving {
@@ -1635,11 +1628,12 @@
   .header-content {
     flex-direction: row;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
   }
 
-  .header-actions {
-    gap: 12px;
+  .header-actions,
+  .header-menubar {
+    gap: 0;
   }
 
   .poem-title-container {
@@ -1698,8 +1692,13 @@
   }
 
   /* Hide less essential buttons on mobile, keep core actions */
-  .header-actions {
-    gap: 8px;
+  .header-collection-crumb a:last-of-type {
+    max-width: 14ch;
+  }
+
+  .header-actions,
+  .header-menubar {
+    gap: 0;
   }
 
   .header-actions .font-dropdown,
@@ -2007,7 +2006,6 @@
   border-bottom-color: var(--color-border);
 }
 
-:root.dark-mode .privacy-pill,
 :root.dark-mode .save-status-pill {
   background: rgba(255, 255, 255, 0.04);
 }

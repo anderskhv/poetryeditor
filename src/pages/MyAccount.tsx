@@ -182,6 +182,11 @@ export function MyAccount() {
             )}
           </section>
 
+          <section className="my-account-section">
+            <h2>Privacy</h2>
+            <p className="my-account-hint">Poems you write here stay private unless you share a collection or a link. The site does not list your drafts publicly.</p>
+          </section>
+
           {/* Writing stats */}
           <section className="my-account-section">
             <h2>Your Writing</h2>

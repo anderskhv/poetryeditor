@@ -1556,21 +1556,21 @@ function App() {
             <div className="app-title-group">
               <h1 className="app-title">Poetry Editor</h1>
               <span className="app-subtitle">A writing tool for poets</span>
-              {editorCollectionId && (
-                <nav className="header-collection-crumb" aria-label="Collection">
-                  <Link to="/my-collections">My Collections</Link>
-                  <span className="header-collection-crumb-sep" aria-hidden="true">/</span>
-                  <Link to={`/my-collections/${editorCollectionId}`}>{editorCollectionName}</Link>
-                </nav>
-              )}
             </div>
+            {editorCollectionId && (
+              <nav className="header-collection-crumb" aria-label="Collection">
+                <Link to="/my-collections">My Collections</Link>
+                <span className="header-collection-crumb-sep" aria-hidden="true">/</span>
+                <Link to={`/my-collections/${editorCollectionId}`}>{editorCollectionName}</Link>
+              </nav>
+            )}
             {isAnalyzing && (
               <span className="analyzing-indicator" title="Analyzing poem...">
                 <span className="analyzing-dot"></span>
               </span>
             )}
           </div>
-          <div className="header-actions">
+          <nav className="header-actions header-menubar" aria-label="Editor">
             {/* Collection panel hidden for now - not ready for release
             <button
               onClick={() => setIsCollectionOpen(!isCollectionOpen)}
@@ -1962,7 +1962,7 @@ function App() {
             <div className="tools-dropdown">
               <button
                 onClick={() => setShowToolsMenu(!showToolsMenu)}
-                className="header-pill btn-tools"
+                className="btn btn-menu"
                 aria-label="Tools"
                 aria-expanded={showToolsMenu}
               >
@@ -2210,23 +2210,11 @@ function App() {
             </div>
             {/* Auth Button */}
             <AuthButton />
-          </div>
+          </nav>
         </div>
       </header>
 
       <div className="workspace-status-strip" role="status" aria-live="polite">
-        {editorCollectionId && (
-          <nav className="editor-collection-crumb" aria-label="Collection">
-            <Link to="/my-collections">My Collections</Link>
-            <span className="editor-collection-crumb-sep" aria-hidden="true">/</span>
-            <Link to={`/my-collections/${editorCollectionId}`}>
-              {editorCollectionName}
-            </Link>
-          </nav>
-        )}
-        <span className="privacy-pill" title="Poem text should not be logged or casually accessed by the site operator.">
-          Private by default
-        </span>
         <span className={`save-status-pill ${cloudSaveStatus}`}>
           {saveLabel}
         </span>
