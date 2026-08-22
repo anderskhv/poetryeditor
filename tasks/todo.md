@@ -7,7 +7,7 @@
 4. [x] Shared Enter/blur save and Escape cancel; empty or unchanged names cancel
 5. [x] Source tests plus `nextCollectionName` unit tests
 6. [x] lint / tsc / existing tests
-7. [ ] PR, do not merge
+7. [x] PR, do not merge (https://github.com/anderskhv/poetryeditor/pull/12)
 
 ## Review
 - Collection page: H1 stays the real title. Rename is a labeled button. Persist still uses `handleRenameCollection` / supabase `collections.update`.
