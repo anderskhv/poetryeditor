@@ -1,18 +1,16 @@
 import { expect, test, type Page } from '@playwright/test';
 
-async function waitForEditor(page: Page) {
-  await page.waitForFunction(() => (window as unknown as { __monacoEditor?: unknown }).__monacoEditor !== undefined, {
-    timeout: 15000,
-  });
+async function openEditor(page: Page) {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  await expect(page.locator('.app-header .app-title')).toHaveText('Poetry Editor');
+  await expect(page.locator('.editor-input')).toBeVisible();
 }
 
 test.describe('Quiet editor chrome', () => {
   test('header, status strip, and coach composer share one rhythm', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/');
-    await waitForEditor(page);
+    await openEditor(page);
 
-    await expect(page.locator('.app-header .app-title')).toHaveText('Poetry Editor');
     await expect(page.locator('.app-header .app-subtitle')).toHaveText('A writing tool for poets');
     await expect(page.locator('.app-header')).toHaveCount(1);
     await expect(page.locator('.header-collection-crumb')).toHaveCount(0);
@@ -40,18 +38,21 @@ test.describe('Quiet editor chrome', () => {
     await expect(page.locator('.workspace-status-strip .save-status-pill')).toBeVisible();
     await expect(page.locator('.workspace-status-strip .poem-stats')).toBeVisible();
 
+    const form = page.locator('.editor-input-form');
     const input = page.locator('.editor-input');
     const send = page.locator('.editor-send-btn');
+    await expect(form).toBeVisible();
     await expect(input).toBeVisible();
     await expect(send).toBeVisible();
+    const formBox = await form.boundingBox();
     const inputBox = await input.boundingBox();
     const sendBox = await send.boundingBox();
-    expect(inputBox && sendBox).toBeTruthy();
-    if (inputBox && sendBox) {
-      expect(Math.abs(inputBox.height - sendBox.height)).toBeLessThan(8);
-      const inputMid = inputBox.y + inputBox.height / 2;
+    expect(formBox && inputBox && sendBox).toBeTruthy();
+    if (formBox && inputBox && sendBox) {
+      expect(Math.abs(inputBox.height - sendBox.height)).toBeLessThan(6);
+      const formMid = formBox.y + formBox.height / 2;
       const sendMid = sendBox.y + sendBox.height / 2;
-      expect(Math.abs(inputMid - sendMid)).toBeLessThan(4);
+      expect(Math.abs(formMid - sendMid)).toBeLessThan(3);
     }
   });
 

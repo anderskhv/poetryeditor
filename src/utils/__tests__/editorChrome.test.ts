@@ -42,6 +42,7 @@ describe('editor chrome after the beauty pass', () => {
   it('centers the coach send button on the same row as the input', () => {
     expect(chatCss).toMatch(/\.editor-input-form\s*\{[^}]*align-items:\s*center/s);
     expect(chatCss).toMatch(/\.editor-send-btn\s*\{[^}]*align-self:\s*center/s);
+    expect(chatCss).toMatch(/\.editor-input-form\s*\{[^}]*min-height:\s*44px/s);
     expect(chatCss).not.toMatch(/\.editor-input-form\s*\{[^}]*align-items:\s*flex-end/s);
   });
 
