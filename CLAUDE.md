@@ -464,9 +464,15 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 
 - Title: `Poetry Editor` (not `Poetry Editor — AI Feedback for Serious Poets`)
 - Visible subtitle: `A writing tool for poets`
-- Description: `Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.`
+- Description: `It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.`
 - No em dashes in this chrome copy. No "not X but Y" / "not a poem generator".
 - Tool-page layout subtitle uses the same product line. Poem analysis pages, learn pages, and tool H1s stay as they are.
+
+**[Homepage lead 2026-08-27]**: Description starts with what the tool does. Do not repeat the subtitle as the first sentence.
+
+- Keep title `Poetry Editor` and visible subtitle `A writing tool for poets`.
+- Drop `Poetry Editor is a writing tool for poets.` from description, prerender, and json-ld.
+- Lead: `It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.`
 
 **[Editor chrome 2026-08-22]**: One quiet header for the writing tool.
 

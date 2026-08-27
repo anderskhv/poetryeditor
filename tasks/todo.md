@@ -1,3 +1,19 @@
+# Homepage lead starts with what it does (2026-08-27)
+
+## Plan
+1. [x] Drop the repeating first sentence from description / prerender / json-ld
+2. [x] Keep title `Poetry Editor` and subtitle `A writing tool for poets`
+3. [x] Do not change `_redirects` or Functions
+4. [ ] lint / tsc / existing tests
+5. [ ] PR, wait CI green, squash-merge after #12
+
+## Copy
+- Title: `Poetry Editor`
+- Subtitle: `A writing tool for poets`
+- Description: `It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.`
+
+---
+
 # Collection rename on the list and inside the book (2026-08-22)
 
 ## Plan
@@ -28,7 +44,7 @@
 ## Copy
 - Title: `Poetry Editor`
 - Subtitle: `A writing tool for poets`
-- Description: `Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.`
+- Description: `It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.`
 
 ---
 
