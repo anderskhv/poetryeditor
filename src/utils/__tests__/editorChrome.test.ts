@@ -60,4 +60,18 @@ describe('editor chrome after the beauty pass', () => {
     expect(redirects).toMatch(/^\s*\/\*\s+\/index\.html\s+200\s*$/m);
     expect(redirects).not.toMatch(/200\.html/);
   });
+
+  it('starts homepage description with what the tool does, not the subtitle', () => {
+    const indexHtml = readFileSync(resolve('index.html'), 'utf8');
+    const prerender = readFileSync(resolve('scripts/prerender.mjs'), 'utf8');
+    const lead = 'It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.';
+    const repeated = 'Poetry Editor is a writing tool for poets.';
+    expect(appSource).toContain(lead);
+    expect(indexHtml).toContain(lead);
+    expect(prerender).toContain(lead);
+    expect(appSource).not.toContain(repeated);
+    expect(indexHtml).not.toContain(repeated);
+    expect(prerender).not.toContain(repeated);
+    expect(appSource).toMatch(/<span className="app-subtitle">A writing tool for poets<\/span>/);
+  });
 });

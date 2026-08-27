@@ -784,7 +784,7 @@ const LEARN_PAGES = [
 function homepageHtml() {
   return `<article>
 <h1>Poetry Editor</h1>
-<p>Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.</p>
+<p>It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.</p>
 <nav>
 <h2>Poetry Tools</h2>
 <ul>
@@ -880,7 +880,7 @@ async function main() {
   // 5. Homepage
   writePage('/', stampTemplate(template, {
     title: 'Poetry Editor',
-    description: 'Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.',
+    description: 'It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.',
     canonical: SITE + '/',
     keywords: 'poetry editor, AI poetry coach, AI poetry feedback, poetry coaching, poetry feedback, rhyme finder, syllable counter, synonym finder, poetry writing tool',
     jsonLd: {
@@ -890,7 +890,7 @@ async function main() {
       url: SITE,
       applicationCategory: 'WritingApplication',
       operatingSystem: 'Web',
-      description: 'Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.',
+      description: 'It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one.',
     },
     bodyHtml: homepageHtml(),
   }));

@@ -1537,7 +1537,7 @@ function App() {
     <div className="app">
       <SEOHead
         title="Poetry Editor"
-        description="Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one."
+        description="It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one."
         canonicalPath="/"
         keywords="poetry editor, AI poetry coach, AI poetry feedback, poetry coaching, poetry feedback, rhyme finder, syllable counter, synonym finder, poetry writing tool"
         jsonLd={{
@@ -1547,7 +1547,7 @@ function App() {
           "url": "https://poetryeditor.com",
           "applicationCategory": "WritingApplication",
           "operatingSystem": "Web",
-          "description": "Poetry Editor is a writing tool for poets. It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one."
+          "description": "It shows the rhythm, meter, and diction of the draft you are writing, and you can ask for a reading when you want one."
         }}
       />
       <header className="app-header">
