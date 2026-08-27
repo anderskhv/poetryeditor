@@ -4,6 +4,7 @@ import {
   formatCollectionUpdatedAt,
   formatPoemCount,
   legacyCollectionPath,
+  nextCollectionName,
   shouldShowCollectionEmptyState,
 } from '../collectionShelf';
 
@@ -49,6 +50,17 @@ describe('formatPoemCount', () => {
     expect(formatPoemCount(0)).toBe('0 poems');
     expect(formatPoemCount(1)).toBe('1 poem');
     expect(formatPoemCount(3)).toBe('3 poems');
+  });
+});
+
+describe('nextCollectionName', () => {
+  it('saves a trimmed new name', () => {
+    expect(nextCollectionName('Drafts', '  Spring  ')).toBe('Spring');
+  });
+
+  it('cancels when the name is empty or unchanged', () => {
+    expect(nextCollectionName('Drafts', '   ')).toBeNull();
+    expect(nextCollectionName('Drafts', 'Drafts')).toBeNull();
   });
 });
 

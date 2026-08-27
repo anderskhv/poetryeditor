@@ -11,7 +11,8 @@ import { getOrCreateShare } from '../utils/sharedCollections';
 import { syncLocalComments } from '../utils/poemComments';
 import { collectionDroppableId, planCollectionPoemDrag, poemSlotId } from '../utils/poemDrag';
 import { findPoemDropId } from '../utils/pointerPoemDrag';
-import { shouldShowCollectionEmptyState } from '../utils/collectionShelf';
+import { CollectionRenameField } from '../components/collection/CollectionRenameField';
+import { nextCollectionName, shouldShowCollectionEmptyState } from '../utils/collectionShelf';
 import type { Collection } from '../types/database';
 import JSZip from 'jszip';
 import './CollectionView.css';
@@ -272,6 +273,29 @@ export function CollectionView() {
     }
   };
 
+  const beginRenameCollection = () => {
+    if (!collection) return;
+    setTitleInput(collection.name);
+    setEditingTitle(true);
+  };
+
+  const commitRenameCollection = () => {
+    if (!collection) {
+      setEditingTitle(false);
+      return;
+    }
+    const nextName = nextCollectionName(collection.name, titleInput);
+    if (nextName) {
+      void handleRenameCollection(nextName);
+    }
+    setEditingTitle(false);
+  };
+
+  const cancelRenameCollection = () => {
+    setEditingTitle(false);
+    setTitleInput(collection?.name ?? '');
+  };
+
   const openPoemInCollection = (poemId: string) => {
     navigate(`/?poem=${poemId}`, {
       state: { fromCollectionId: id, fromCollectionName: collection?.name },
@@ -486,43 +510,34 @@ export function CollectionView() {
         </nav>
 
         <div className="collection-header">
-          {editingTitle ? (
-            <input
-              className="collection-title-input"
-              value={titleInput}
-              onChange={(e) => setTitleInput(e.target.value)}
-              onBlur={() => {
-                const trimmed = titleInput.trim();
-                if (trimmed && trimmed !== collection.name) {
-                  handleRenameCollection(trimmed);
-                }
-                setEditingTitle(false);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  const trimmed = titleInput.trim();
-                  if (trimmed && trimmed !== collection.name) {
-                    handleRenameCollection(trimmed);
-                  }
-                  setEditingTitle(false);
-                } else if (e.key === 'Escape') {
-                  setEditingTitle(false);
-                }
-              }}
-              autoFocus
-            />
-          ) : (
-            <h1
-              className="collection-title-editable"
-              onDoubleClick={() => {
-                setTitleInput(collection.name);
-                setEditingTitle(true);
-              }}
-              title="Double-click to rename"
-            >
-              {collection.name}<span className="edit-hint">&#9998;</span>
-            </h1>
-          )}
+          <div className="collection-title-row">
+            {editingTitle ? (
+              <CollectionRenameField
+                className="collection-title-input"
+                value={titleInput}
+                onChange={setTitleInput}
+                onCommit={commitRenameCollection}
+                onCancel={cancelRenameCollection}
+              />
+            ) : (
+              <>
+                <h1
+                  className="collection-title-editable"
+                  onDoubleClick={beginRenameCollection}
+                >
+                  {collection.name}
+                </h1>
+                <button
+                  type="button"
+                  className="rename-collection-btn"
+                  onClick={beginRenameCollection}
+                  aria-label={`Rename ${collection.name}`}
+                >
+                  Rename
+                </button>
+              </>
+            )}
+          </div>
           <div className="collection-actions">
             <button className="export-button" onClick={() => handleCreatePoem(null)}>
               New Poem

@@ -30,7 +30,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
   margin-bottom: 2rem;
+}
+
+.collection-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .collection-header h1 {
@@ -41,19 +51,27 @@
 }
 
 .collection-title-editable {
+  cursor: text;
+}
+
+.rename-collection-btn {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  min-width: 44px;
+  min-height: 40px;
+  padding: 0 12px;
+  background: var(--color-paper, #fff);
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 4px;
+  color: var(--color-text-muted, #666);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
-.collection-title-editable .edit-hint {
-  font-size: 0.5em;
-  color: transparent;
-  margin-left: 0.5em;
-  vertical-align: middle;
-  transition: color 0.15s;
-}
-
-.collection-title-editable:hover .edit-hint {
-  color: #999;
+.rename-collection-btn:hover,
+.rename-collection-btn:focus-visible {
+  color: var(--color-text-primary, #000);
+  border-color: var(--color-text-muted, #666);
 }
 
 .collection-title-input {
@@ -642,8 +660,17 @@
     align-items: stretch;
   }
 
+  .collection-title-row {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
   .collection-header h1 {
     text-align: center;
+  }
+
+  .rename-collection-btn {
+    min-height: 44px;
   }
 
   .collection-actions {

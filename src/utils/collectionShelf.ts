@@ -41,6 +41,12 @@ export function legacyCollectionPath(id?: string | null): string {
   return `/my-collections/${id}`;
 }
 
+export function nextCollectionName(currentName: string, draft: string): string | null {
+  const trimmed = draft.trim();
+  if (!trimmed || trimmed === currentName) return null;
+  return trimmed;
+}
+
 export function canWritePoemVersion(opts: {
   poemId: string | null | undefined;
   isCloud: boolean;
