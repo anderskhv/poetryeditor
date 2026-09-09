@@ -85,3 +85,13 @@
 - Do not merge until Anders re-walks the bookmarked collection URL
 - [x] Rebase onto 440e929 after #6/#7
 - [ ] Preview of `_routes.json`-only fix still 404ed `:id` — ship Functions middleware
+
+
+## Poem title preservation — 2026-09-09
+- [x] Trace reopening against latest main: equal cached body skipped title and saved-baseline hydration.
+- [x] Hydrate the complete poem on first load/switch, persist title locally, and prevent stale mobile title input.
+- [x] Preserve the live-buffer save queue; omit unchanged titles and detect deliberate title-only edits.
+- [x] Demonstrate three new guard regressions fail before the fix and pass afterward.
+- [x] Verify 151 unit tests, seven browser regressions, scoped lint, production build, and credential scan.
+
+Review: the unchanged loading guard reproduced the desktop stale-title failure; the fixed guard passed the identical browser test. Original checkout changes were preserved; the fix is based on current main in an isolated checkout.

@@ -211,3 +211,15 @@ describe('createCloudSaveQueue', () => {
     expect(queue.matchesCommitted()).toBe(true);
   });
 });
+
+
+describe('unchanged cloud titles', () => {
+  it('omits an unchanged title on a body edit', () => {
+    const payload = buildCloudPoemWrite({ text: 'Edited body', title: 'Chosen title', knownTitle: 'Chosen title', committedTitle: 'Chosen title', formatting: {} });
+    expect(payload).toEqual({ content: 'Edited body', formatting: {} });
+  });
+  it('includes a deliberate rename', () => {
+    const payload = buildCloudPoemWrite({ text: 'Body', title: 'New title', knownTitle: 'New title', committedTitle: 'Old title', formatting: {} });
+    expect(payload.title).toBe('New title');
+  });
+});

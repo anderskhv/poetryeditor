@@ -523,3 +523,6 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 - **Don't ask unnecessary questions**: Be autonomous on routine decisions. The user prefers momentum over permission-seeking.
 - **The user (Anders) is the product owner**: He has strong opinions about UX, visual consistency, and editorial philosophy. Respect his design instincts — when he says "kill it", kill it immediately.
 - **Deep root-cause analysis before fixing**: Don't patch symptoms. Trace the full data flow from trigger to error. Use subagents for thorough investigation. Verify fixes by re-tracing the same flow with the fix applied. The user expects "test, test, test" before committing.
+
+
+**[Poem title restoration 2026-09-09]**: First load or a switch to another poem must hydrate title and saved baseline even when its body equals localStorage. Equality of body text is not proof that the complete poem has loaded. Keep loaded titles in `poetryTitle`, use controlled mobile title input, and compare title edits against the queue's committed title (not its remembered fallback). Body-only cloud writes omit unchanged titles.

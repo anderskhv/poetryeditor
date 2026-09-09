@@ -129,7 +129,7 @@ function App() {
   }, []);
 
   const [text, setText, lastSaved] = useDebouncedLocalStorage('poetryContent', SAMPLE_POEM, 800);
-  const [localTitle, setLocalTitle] = useDebouncedLocalStorage('poetryTitle', '', 800);
+  const [poemTitle, setPoemTitle] = useDebouncedLocalStorage('poetryTitle', '', 800);
   const [analyzedWords, setAnalyzedWords] = useState<WordInfo[]>([]);
 
   const llmAnalysis = useLLMAnalysis({
@@ -210,6 +210,7 @@ function App() {
           text: draft.text,
           title: draft.title,
           knownTitle: lastSavedTitleRef.current,
+          committedTitle: cloudSaveQueueRef.current?.getLastSaved().title,
           formatting,
         });
         if (write.title) {
@@ -300,7 +301,6 @@ function App() {
     return saved ? JSON.parse(saved) : [];
   });
   const [currentPoemId, setCurrentPoemId] = useState<string | null>(null);
-  const [poemTitle, setPoemTitle] = useState<string>('');
   const [lastSavedContent, setLastSavedContent] = useState<string | null>(null); // Track content at last explicit save
   loadedCloudPoemIdRef.current = loadedCloudPoemId;
   lastSavedContentRef.current = lastSavedContent;
@@ -640,11 +640,6 @@ function App() {
   }, [user, cloudPoemId, versionId, navigate, setText]);
 
   useEffect(() => {
-    if (user || cloudPoemId) return;
-    setPoemTitle(localTitle);
-  }, [user, cloudPoemId, localTitle]);
-
-  useEffect(() => {
     if (!versionId) {
       if (versionPreview) {
         if (previewTextRef.current !== null) {
@@ -764,8 +759,14 @@ function App() {
       currentText: live.text,
       currentTitle: resolveTitleToPersist(live.title, lastSavedTitleRef.current),
       lastSavedText: lastSavedContent,
-      lastSavedTitle: lastSavedTitleRef.current,
+      lastSavedTitle: cloudSaveQueueRef.current?.getLastSaved().title ?? null,
     })) {
+      const queue = cloudSaveQueueRef.current;
+      if (cloudPoemId && loadedCloudPoemId === cloudPoemId && !isLoadingCloudPoem
+        && !isPreviewing && queue && !queue.isSaving() && queue.matchesCommitted(live)) {
+        setCloudSaveStatus('saved');
+        setCloudSaveError(null);
+      }
       return;
     }
 
@@ -2298,9 +2299,6 @@ function App() {
                 lastSavedTitleRef.current = rememberKnownTitle(lastSavedTitleRef.current, nextTitle);
                 cloudSaveQueueRef.current?.rememberTitle(nextTitle);
               }
-              if (!user && !cloudPoemId) {
-                setLocalTitle(nextTitle);
-              }
             }}
             onWordsAnalyzed={handleWordsAnalyzed}
             highlightedPOS={highlightedPOS}
@@ -2328,7 +2326,7 @@ function App() {
             onAddComment={handleAddComment}
             showCommentHighlights={showCommentHighlights}
             onToggleCommentHighlights={() => setShowCommentHighlights(prev => !prev)}
-            readOnly={Boolean(versionPreview)}
+            readOnly={Boolean(versionPreview) || Boolean(cloudPoemId && loadedCloudPoemId !== cloudPoemId)}
           />
 
           <button

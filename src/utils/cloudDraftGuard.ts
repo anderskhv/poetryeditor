@@ -32,7 +32,8 @@ export function shouldFetchCloudPoem(
 
 /**
  * Never apply server text over a dirty local draft of the same poem.
- * First load of a poem (nothing loaded yet) may apply server content.
+ * Opening a poem must initialize its title and saved snapshot even if its
+ * body already matches the browser cache or the previously opened poem.
  */
 export function shouldApplyServerContent(input: {
   requestedPoemId: string;
@@ -42,7 +43,8 @@ export function shouldApplyServerContent(input: {
   isDirty: boolean;
 }): boolean {
   const isSamePoem = input.loadedPoemId === input.requestedPoemId;
-  if (isSamePoem && input.isDirty) return false;
+  if (!isSamePoem) return true;
+  if (input.isDirty) return false;
   return input.serverContent !== input.localContent;
 }
 

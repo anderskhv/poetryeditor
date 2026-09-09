@@ -27,6 +27,27 @@ describe('shouldFetchCloudPoem', () => {
 });
 
 describe('shouldApplyServerContent', () => {
+
+  it.each([null, 'different-poem'])('initializes metadata when opening a poem from %s despite identical cached text', (loadedPoemId) => {
+    expect(shouldApplyServerContent({
+      requestedPoemId: 'poem-1',
+      loadedPoemId,
+      localContent: 'already cached body',
+      serverContent: 'already cached body',
+      isDirty: true,
+    })).toBe(true);
+  });
+
+  it('initializes a blank poem on first load so its saved title is restored', () => {
+    expect(shouldApplyServerContent({
+      requestedPoemId: 'poem-1',
+      loadedPoemId: null,
+      localContent: '',
+      serverContent: '',
+      isDirty: false,
+    })).toBe(true);
+  });
+
   it('refuses to overwrite a dirty draft of the same poem', () => {
     expect(shouldApplyServerContent({
       requestedPoemId: 'poem-1',
@@ -47,10 +68,10 @@ describe('shouldApplyServerContent', () => {
     })).toBe(true);
   });
 
-  it('skips apply when server already matches local', () => {
+  it('skips apply when an already loaded clean poem matches the server', () => {
     expect(shouldApplyServerContent({
       requestedPoemId: 'poem-1',
-      loadedPoemId: null,
+      loadedPoemId: 'poem-1',
       localContent: 'same',
       serverContent: 'same',
       isDirty: false,

@@ -53,15 +53,16 @@ export function rememberKnownTitle(
   return current && current.trim() !== '' ? current : null;
 }
 
-/** Build the poems.update payload. Never send title "" over a known title. */
+/** Build the poems.update payload without resending unchanged or empty titles. */
 export function buildCloudPoemWrite<TFormatting>(input: {
   text: string;
   title: string;
   knownTitle: string | null;
+  committedTitle?: string | null;
   formatting: TFormatting;
 }): { content: string; title?: string; formatting: TFormatting } {
   const title = resolveTitleToPersist(input.title, input.knownTitle);
-  if (title.trim() === '') {
+  if (title.trim() === '' || title === input.committedTitle) {
     return { content: input.text, formatting: input.formatting };
   }
   return { content: input.text, title, formatting: input.formatting };
@@ -145,6 +146,7 @@ export function createCloudSaveQueue(options: CloudSaveQueueOptions) {
     syncLastSaved,
     flush,
     isDirty,
+    isSaving: () => inFlight !== null,
     matchesCommitted,
     getLastSaved: () => ({ ...lastSaved }),
     getKnownTitle: () => knownTitle,

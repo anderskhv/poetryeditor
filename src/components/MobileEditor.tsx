@@ -589,27 +589,30 @@ export function MobileEditor({
     onEditorMount(handle as any);
   }, [onEditorMount, editorTheme, fontFamily, lineHeightPx, readOnly, poemId]);
 
+  // A title input belongs to one loaded poem, including during hydration.
+  useEffect(() => {
+    setIsEditingTitle(false);
+  }, [poemId, readOnly]);
+
   // --- Title editing ---
   const handleTitleDoubleClick = useCallback(() => {
     if (!readOnly) setIsEditingTitle(true);
   }, [readOnly]);
 
   const handleTitleBlur = useCallback(
-    (e: React.FocusEvent<HTMLInputElement>) => {
+    () => {
       setIsEditingTitle(false);
-      onTitleChange(e.target.value);
     },
-    [onTitleChange]
+    []
   );
 
   const handleTitleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
         setIsEditingTitle(false);
-        onTitleChange((e.target as HTMLInputElement).value);
       }
     },
-    [onTitleChange]
+    []
   );
 
   return (
@@ -620,7 +623,9 @@ export function MobileEditor({
             <input
               className="mobile-editor-title-input"
               ref={assignTitleInputRef}
-              defaultValue={poemTitle}
+              value={poemTitle}
+              onChange={(e) => onTitleChange(e.target.value)}
+              readOnly={readOnly}
               autoFocus
               onBlur={handleTitleBlur}
               onKeyDown={handleTitleKeyDown}
