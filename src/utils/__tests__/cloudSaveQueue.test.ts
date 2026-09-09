@@ -223,3 +223,62 @@ describe('unchanged cloud titles', () => {
     expect(payload.title).toBe('New title');
   });
 });
+
+
+describe('navigation during cloud saves', () => {
+  it('does not write the old editor into a newly selected poem while it loads', async () => {
+    let scope: object | null = { poemId: 'A' };
+    let live = { text: 'edited A', title: 'A' };
+    const gate = deferred();
+    const persist = vi.fn(async () => gate.promise);
+    const queue = createCloudSaveQueue({ getScope: () => scope, readLiveDraft: () => live, persist });
+    queue.syncLastSaved('original A', 'A');
+    const saving = queue.flush();
+    live = { text: 'latest A keystroke', title: 'A' };
+    scope = null; // Route B selected, but A is still on screen.
+    gate.resolve();
+    expect(await saving).toBeNull();
+    expect(persist).toHaveBeenCalledTimes(1);
+    expect(await queue.flush()).toBeNull();
+  });
+
+  it('cannot replace the new poem baseline or title when the previous write completes', async () => {
+    let scope = { poemId: 'A' };
+    let live = { text: 'edited A', title: 'A' };
+    const gate = deferred();
+    const persist = vi.fn(async () => gate.promise);
+    const queue = createCloudSaveQueue({ getScope: () => scope, readLiveDraft: () => live, persist });
+    queue.syncLastSaved('original A', 'A');
+    const first = queue.flush();
+    const concurrent = queue.flush();
+    scope = { poemId: 'B' };
+    live = { text: 'original B', title: 'B' };
+    queue.syncLastSaved(live.text, live.title);
+    gate.resolve();
+    expect(await first).toBeNull();
+    expect(await concurrent).toBeNull();
+    expect(queue.getLastSaved()).toEqual(live);
+    expect(queue.getKnownTitle()).toBe('B');
+    expect(persist).toHaveBeenCalledTimes(1);
+    live = { text: 'edited B', title: 'B' };
+    expect(await queue.flush()).toEqual(live);
+    expect(persist).toHaveBeenLastCalledWith(live);
+  });
+
+  it('invalidates an old write even when navigation returns to the same poem', async () => {
+    let scope = { poemId: 'A' };
+    let live = { text: 'edited A', title: 'A' };
+    const gate = deferred();
+    const persist = vi.fn(async () => gate.promise);
+    const queue = createCloudSaveQueue({ getScope: () => scope, readLiveDraft: () => live, persist });
+    queue.syncLastSaved('original A', 'A');
+    const saving = queue.flush();
+    scope = { poemId: 'A' }; // New navigation session, same database id.
+    live = { text: 'reloaded A', title: 'A' };
+    queue.syncLastSaved(live.text, live.title);
+    gate.resolve();
+    expect(await saving).toBeNull();
+    expect(queue.getLastSaved()).toEqual(live);
+    expect(persist).toHaveBeenCalledTimes(1);
+  });
+});

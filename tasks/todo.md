@@ -95,3 +95,14 @@
 - [x] Verify 151 unit tests, seven browser regressions, scoped lint, production build, and credential scan.
 
 Review: the unchanged loading guard reproduced the desktop stale-title failure; the fixed guard passed the identical browser test. Original checkout changes were preserved; the fix is based on current main in an isolated checkout.
+
+
+## Poem navigation save isolation — 2026-09-09
+- [x] Trace shared queue across route changes and delayed writes.
+- [x] Bind flushes to a stable loaded poem/user session and reject stale save completions.
+- [x] Ensure latest sidebar click wins when multiple selections await the same save.
+- [x] Add three queue regressions and a browser test holding A's write while B loads.
+- [x] Prove browser regression fails on previous main (A's latest content sent to B), then passes with fix.
+- [x] Verify 154 unit tests, eight browser regressions, production build and credential scan.
+
+Review: no database data or schema changes. A request already sent can complete for its original poem, but cannot drain into a new poem or alter its saved baseline. Sidebar navigation still flushes before leaving. Direct history navigation can still abandon the latest unsent edits to the old poem; preserving those across arbitrary navigation is separate from preventing cross-poem writes.

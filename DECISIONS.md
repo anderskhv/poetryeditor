@@ -27,3 +27,5 @@
 | 2026-08-20 | Editor WordPopup rhymes use local CMU poet pipeline (strict, hide clichés/non-words); no Datamuse | architecture | No | Popup dumped CMU junk (keef/naef) and re-sorted by length; /rhymes already had the matcher + filters |
 
 | 2026-09-09 | Initialize the complete cloud poem on first load even when cached text matches; persist loaded titles locally and omit unchanged titles from cloud writes | architecture | No | Prevents stale browser titles from replacing saved titles while retaining the existing live-buffer save queue. |
+
+| 2026-09-09 | Bind save drains and completion updates to loaded poem navigation sessions | architecture | No | Authorized corruption bug fix; stops delayed saves crossing poem identities without database changes. |

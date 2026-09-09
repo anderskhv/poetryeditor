@@ -14,10 +14,15 @@ const poem = {
   updated_at: '2026-09-01T12:00:00.000Z',
 };
 
-async function fixtures(page: Page, guest = false, holdCloudLoad = false) {
+async function fixtures(page: Page, guest = false, holdCloudLoad = false, holdFirstWrite = false) {
   const updates: Record<string, unknown>[] = [];
   const storedPoem = { ...poem };
   const secondPoem = { ...poem, id: 'second-title-regression-poem', title: 'A different chosen title' };
+  let releaseWrite = () => {};
+  const writeGate = new Promise<void>(resolve => { releaseWrite = resolve; });
+  let releaseSecondLoad = () => {};
+  const secondLoadGate = new Promise<void>(resolve => { releaseSecondLoad = resolve; });
+  let secondLoadStarted = false;
   let releaseCloudLoad = () => {};
   const loadGate = new Promise<void>(resolve => { releaseCloudLoad = resolve; });
   await page.route('**/*', async route => {
@@ -60,6 +65,10 @@ async function fixtures(page: Page, guest = false, holdCloudLoad = false) {
       if (query.action === 'update') {
         updates.push(query.payload);
         Object.assign(targetPoem, query.payload);
+        if (holdFirstWrite && updates.length === 1) await writeGate;
+      } else if (holdFirstWrite && targetPoem === secondPoem) {
+        secondLoadStarted = true;
+        await secondLoadGate;
       } else if (holdCloudLoad) {
         await loadGate;
       }
@@ -83,7 +92,7 @@ async function fixtures(page: Page, guest = false, holdCloudLoad = false) {
     // the cloud title and initialize the committed save snapshot.
     localStorage.setItem('poetryContent', JSON.stringify(poem.content));
   }, { guest, poem });
-  return { updates, storedPoem, secondPoem, releaseCloudLoad };
+  return { updates, storedPoem, secondPoem, releaseCloudLoad, releaseWrite, releaseSecondLoad, secondLoadStarted: () => secondLoadStarted };
 }
 
 test('reopening a guest draft preserves its chosen title and body', async ({ page }) => {
@@ -182,4 +191,29 @@ test.describe('desktop title', () => {
     await page.waitForTimeout(1400);
     expect(updates).toEqual([]);
   });
+});
+
+
+test('a delayed save cannot overwrite the next poem while its cloud load is pending', async ({ page }) => {
+  const fixture = await fixtures(page, false, false, true);
+  await page.goto('/');
+  await expect(page.locator('.mobile-editor-title')).toHaveText(poem.title);
+  await page.locator('.cm-content').fill('First edited draft of A');
+  await expect.poll(() => fixture.updates.length).toBe(1);
+  await page.locator('.cm-content').fill('Latest draft of A while saving');
+  await page.evaluate(id => {
+    history.pushState({}, '', `/?poem=${id}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  }, fixture.secondPoem.id);
+  await expect.poll(fixture.secondLoadStarted).toBe(true);
+  fixture.releaseWrite();
+  await page.waitForTimeout(1400);
+  expect(fixture.secondPoem.content).toBe(poem.content);
+  expect(fixture.updates).toHaveLength(1);
+  fixture.releaseSecondLoad();
+  await expect(page.locator('.mobile-editor-title')).toHaveText(fixture.secondPoem.title);
+  await expect(page.locator('.cm-content')).toContainText('A small bird waits');
+  await page.locator('.cm-content').fill('A deliberate edit of B');
+  await expect.poll(() => fixture.secondPoem.content).toBe('A deliberate edit of B');
+  expect(fixture.storedPoem.content).toBe('First edited draft of A');
 });

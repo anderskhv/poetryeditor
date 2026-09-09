@@ -179,8 +179,16 @@ function App() {
   const lastSavedContentRef = useRef<string | null>(null);
   const editorRef = useRef<EditorHandle | null>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
-  const cloudPoemIdForSaveRef = useRef<string | null>(cloudPoemId);
-  cloudPoemIdForSaveRef.current = cloudPoemId;
+  const cloudSaveScopeRef = useRef({ poemId: cloudPoemId, userId });
+  if (cloudSaveScopeRef.current.poemId !== cloudPoemId || cloudSaveScopeRef.current.userId !== userId) {
+    cloudSaveScopeRef.current = { poemId: cloudPoemId, userId };
+  }
+  const getCloudSaveScope = useCallback(() => (
+    cloudSaveScopeRef.current.poemId && cloudSaveScopeRef.current.userId
+    && loadedCloudPoemIdRef.current === cloudSaveScopeRef.current.poemId
+    && !skipCloudSaveRef.current
+      ? cloudSaveScopeRef.current : null
+  ), []);
   const formattingRef = useRef<PoemFormatting | null>(null);
 
   const readLiveDraft = () => readLiveCloudDraft({
@@ -195,11 +203,13 @@ function App() {
   if (cloudSaveQueueRef.current === null) {
     cloudSaveQueueRef.current = createCloudSaveQueue({
       readLiveDraft,
+      getScope: getCloudSaveScope,
       persist: async (draft) => {
         if (!supabase) throw new Error('No database');
-        const poemId = cloudPoemIdForSaveRef.current;
+        // Capture the loaded session target before the first await.
+        const poemId = getCloudSaveScope()?.poemId;
         if (!poemId) throw new Error('No poem');
-        if (skipCloudSaveRef.current) return;
+
         const formatting = formattingRef.current ?? {
           align: 'left' as const,
           font: 'libre-baskerville',
@@ -679,13 +689,14 @@ function App() {
   }), [paragraphAlign, selectedFont, lineSpacing, firstLineIndent]);
 
   const saveCloudPoemNow = useCallback(async (
-    _poemId: string,
+    poemId: string,
     _nextTitle: string,
     _nextText: string,
     formatting: PoemFormatting,
   ) => {
     const queue = cloudSaveQueueRef.current;
-    if (!queue || !supabase) return false;
+    const scope = getCloudSaveScope();
+    if (!queue || !supabase || !scope || scope.poemId !== poemId) return false;
     formattingRef.current = formatting;
     if (poemTitle.trim()) {
       queue.rememberTitle(poemTitle);
@@ -695,8 +706,10 @@ function App() {
     setCloudSaveError(null);
     try {
       let saved = await queue.flush();
+      if (getCloudSaveScope() !== scope) return false;
       if (queue.isDirty()) {
         saved = await queue.flush();
+        if (getCloudSaveScope() !== scope) return false;
       }
       const live = readLiveDraft();
       if (saved && queue.matchesCommitted(live)) {
@@ -714,8 +727,9 @@ function App() {
       // A write may have landed, but the live model is still ahead.
       // Do not flip Saved for a prefix — flush the model again.
       setCloudSaveStatus('saving');
-      if (!skipCloudSaveRef.current && cloudPoemIdForSaveRef.current) {
+      if (getCloudSaveScope() === scope) {
         saved = await queue.flush();
+        if (getCloudSaveScope() !== scope) return false;
         const caughtUp = saved && queue.matchesCommitted(readLiveDraft());
         if (caughtUp && saved) {
           setLastSavedContent(saved.text);
@@ -732,12 +746,13 @@ function App() {
       }
       return false;
     } catch (err) {
+      if (getCloudSaveScope() !== scope) return false;
       console.error('Failed to save cloud poem:', err);
       setCloudSaveStatus('failed');
       setCloudSaveError('Save failed. Your latest text is still in this browser, but it has not reached the cloud.');
       return false;
     }
-  }, [supabase, poemTitle]);
+  }, [supabase, poemTitle, getCloudSaveScope]);
 
   // Auto-save: debounce only arms the flush. Persist always re-reads the
   // live Monaco / title-input value at write time.
@@ -1442,11 +1457,15 @@ function App() {
     return saveCloudPoemNow(cloudPoemId, poemTitle, text, buildCurrentFormatting());
   }, [cloudPoemId, user, supabase, isPreviewing, loadedCloudPoemId, text, poemTitle, buildCurrentFormatting, saveCloudPoemNow]);
 
+  const poemNavigationSeqRef = useRef(0);
+
   // Handle poem selection from nav sidebar
   const handleNavPoemSelect = useCallback(async (poemId: string) => {
     if (poemId === cloudPoemId) return;
+    const sequence = ++poemNavigationSeqRef.current;
+    const scope = cloudSaveScopeRef.current;
     const saved = await flushCurrentCloudPoem();
-    if (!saved) return;
+    if (!saved || sequence !== poemNavigationSeqRef.current || scope !== cloudSaveScopeRef.current) return;
     navigate(`/?poem=${poemId}`, {
       state: cloudPoemCollectionId ? { fromCollectionId: cloudPoemCollectionId } : undefined,
     });

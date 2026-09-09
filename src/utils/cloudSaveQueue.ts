@@ -70,6 +70,8 @@ export function buildCloudPoemWrite<TFormatting>(input: {
 
 export interface CloudSaveQueueOptions {
   persist: (draft: CloudDraftSnapshot) => Promise<void>;
+  /** Stable identity for the loaded editor session; null disables writes. */
+  getScope?: () => unknown;
   readLiveDraft: () => CloudDraftSnapshot;
 }
 
@@ -111,11 +113,15 @@ export function createCloudSaveQueue(options: CloudSaveQueueOptions) {
     knownTitle = title && title.trim() !== '' ? title : '';
   }
 
-  async function runFlush(): Promise<CloudDraftSnapshot | null> {
+  const getScope = () => options.getScope ? options.getScope() : options;
+
+  async function runFlush(scope: unknown): Promise<CloudDraftSnapshot | null> {
     let written: CloudDraftSnapshot | null = null;
-    while (isDirty()) {
+    while (getScope() === scope && isDirty()) {
       const toWrite = liveSnapshot();
       await options.persist(toWrite);
+      // Navigation invalidates this drain, including its committed baseline.
+      if (getScope() !== scope) return null;
       lastSaved = { text: toWrite.text, title: toWrite.title };
       rememberTitle(toWrite.title);
       written = toWrite;
@@ -126,14 +132,17 @@ export function createCloudSaveQueue(options: CloudSaveQueueOptions) {
   }
 
   async function flush(): Promise<CloudDraftSnapshot | null> {
+    const scope = getScope();
+    if (scope == null) return null;
     if (inFlight) {
       await inFlight;
+      if (getScope() !== scope) return null;
       if (isDirty()) return flush();
       if (lastSaved.text === null) return null;
       return { text: lastSaved.text, title: lastSaved.title ?? '' };
     }
 
-    inFlight = runFlush();
+    inFlight = runFlush(scope);
     try {
       return await inFlight;
     } finally {

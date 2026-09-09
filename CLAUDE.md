@@ -526,3 +526,6 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 
 
 **[Poem title restoration 2026-09-09]**: First load or a switch to another poem must hydrate title and saved baseline even when its body equals localStorage. Equality of body text is not proof that the complete poem has loaded. Keep loaded titles in `poetryTitle`, use controlled mobile title input, and compare title edits against the queue's committed title (not its remembered fallback). Body-only cloud writes omit unchanged titles.
+
+
+**[Poem navigation saves 2026-09-09]**: A cloud save drain belongs to a stable loaded poem/user navigation session. Check that identity before and after every awaited write and before applying saved/error state. Stop stale drains before reading the newly selected editor; never let an old write completion replace a newly loaded baseline. Explicit save calls must match the loaded target. Sidebar selections waiting on a save honor the latest click only.
