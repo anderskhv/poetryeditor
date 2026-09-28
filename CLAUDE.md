@@ -529,3 +529,5 @@ Pattern: Any action that depends on async-fetched state must guard against the s
 
 
 **[Poem navigation saves 2026-09-09]**: A cloud save drain belongs to a stable loaded poem/user navigation session. Check that identity before and after every awaited write and before applying saved/error state. Stop stale drains before reading the newly selected editor; never let an old write completion replace a newly loaded baseline. Explicit save calls must match the loaded target. Sidebar selections waiting on a save honor the latest click only.
+
+**[PDF sharing 2026-09-28]**: The poem and collection Share dialogs offer Share as PDF through a clean browser print view (choose Save as PDF). Preserve editor emphasis and line breaks; escape all user content. Collection poems print in section/order sequence with one poem starting per page. This does not create a public share link.

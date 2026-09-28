@@ -1,3 +1,4 @@
+import { sharePoetryPdf } from '../utils/poetryPdf';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { EditorLayout } from '../components/EditorLayout';
@@ -731,6 +732,18 @@ export function CollectionView() {
           <div className="share-modal-overlay" onClick={() => setShowShareModal(false)}>
             <div className="share-modal" onClick={(e) => e.stopPropagation()}>
               <h2>Share Collection</h2>
+              <button className="export-button" disabled={poems.length === 0} onClick={() => {
+                if (!collection) return;
+                const orderedSections = [...sections].sort((a, b) => a.sort_order - b.sort_order);
+                const sectionOrder = new Map(orderedSections.map((section, index) => [section.id, index + 1]));
+                const orderedPoems = [...poems].sort((a, b) =>
+                  (sectionOrder.get(a.section_id || '') || 0) - (sectionOrder.get(b.section_id || '') || 0) || a.sort_order - b.sort_order);
+                setShareError(sharePoetryPdf(collection.name, orderedPoems.map(poem => ({
+                  title: poem.title, content: poem.content, align: poem.formatting?.align,
+                  section: sections.find(section => section.id === poem.section_id)?.name,
+                }))) ? null : 'Allow pop-ups for Poetry Editor, then try again.');
+              }}>Share as PDF</button>
+              <p>Choose Save as PDF in the print dialog. Each poem starts on a new page.</p>
               <p>This link gives read-only access to your collection and its comments.</p>
               <div className="share-comments-choice">
                 <div className="share-comments-label">Show comments by default?</div>

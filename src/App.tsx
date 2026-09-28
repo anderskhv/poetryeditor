@@ -1718,7 +1718,7 @@ function App() {
                       setShowExportOptions(false);
                     }}
                   >
-                    Share Image
+                    Share
                   </button>
                 </div>
               )}
@@ -2071,7 +2071,7 @@ function App() {
                       setShowMobileMenu(false);
                     }}
                   >
-                    Share Image
+                    Share
                   </button>
                   {/* Export */}
                   <div className="mobile-overflow-item submenu-label">Export</div>

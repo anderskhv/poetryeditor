@@ -29,3 +29,4 @@
 | 2026-09-09 | Initialize the complete cloud poem on first load even when cached text matches; persist loaded titles locally and omit unchanged titles from cloud writes | architecture | No | Prevents stale browser titles from replacing saved titles while retaining the existing live-buffer save queue. |
 
 | 2026-09-09 | Bind save drains and completion updates to loaded poem navigation sessions | architecture | No | Authorized corruption bug fix; stops delayed saves crossing poem identities without database changes. |
+| 2026-09-28 | Add PDF sharing using browser print rendering to poem and collection Share dialogs | design | No | Requested sharing option; preserves Unicode and emphasis without a dependency or schema change. |

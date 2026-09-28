@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo, useTransition } from 'react';
 import './ShareModal.css';
+import { sharePoetryPdf } from '../utils/poetryPdf';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -64,6 +65,7 @@ const ensureFontLoaded = async (): Promise<void> => {
 };
 
 export function ShareModal({ isOpen, onClose, poemTitle, poemText, paragraphAlign = 'left' }: ShareModalProps) {
+  const [pdfError, setPdfError] = useState('');
   const [selectedFormat, setSelectedFormat] = useState<ShareFormat>('square');
   const [selectedBgIndex, setSelectedBgIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -389,6 +391,12 @@ export function ShareModal({ isOpen, onClose, poemTitle, poemText, paragraphAlig
         </div>
 
         <div className="share-modal-footer">
+          <button className="share-download-btn" onClick={() => {
+            setPdfError(sharePoetryPdf(poemTitle, [{ title: poemTitle, content: poemText, align: paragraphAlign }])
+              ? '' : 'Allow pop-ups for Poetry Editor, then try again.');
+          }}>Share as PDF</button>
+          <p className="share-instructions">Choose Save as PDF in the print dialog.</p>
+          {pdfError && <p role="alert">{pdfError}</p>}
           <p className="share-instructions">
             {pages.length > 1
               ? `Your poem spans ${pages.length} images. All will be downloaded.`
