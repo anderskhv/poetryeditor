@@ -35,7 +35,7 @@ export function CollectionView() {
   const { isAuthenticated, loading: authLoading, user } = useAuth();
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loadingCollection, setLoadingCollection] = useState(true);
-  const { sections, createSection, createManySections, renameSection, deleteSection } = useSections(id);
+  const { sections, loading: loadingSections, createSection, createManySections, renameSection, deleteSection } = useSections(id);
   const { poems, createPoem, createPoemAt, createManyPoems, updatePoem, updatePoemOrders, deletePoem, loading: loadingPoems, refetch: refetchPoems } = usePoems(id);
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleInput, setTitleInput] = useState('');
@@ -49,6 +49,8 @@ export function CollectionView() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [shareBusy, setShareBusy] = useState(false);
+  const [wordExportBusy, setWordExportBusy] = useState(false);
+  const [wordExportError, setWordExportError] = useState<string | null>(null);
   const [shareError, setShareError] = useState<string | null>(null);
   const [shareCommentsDefault, setShareCommentsDefault] = useState(true);
   const [activeDrag, setActiveDrag] = useState<{
@@ -224,6 +226,21 @@ export function CollectionView() {
     a.download = `${collection.name}.zip`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleShareAsWord = async () => {
+    if (!collection || wordExportBusy || poems.length === 0) return;
+    setWordExportBusy(true);
+    setWordExportError(null);
+    try {
+      const { downloadCollectionAsWord } = await import('../utils/collectionWordExport');
+      await downloadCollectionAsWord(collection, poems, sections);
+    } catch (error) {
+      console.error('Failed to export collection as Word:', error);
+      setWordExportError('Could not create the Word document. Please try again.');
+    } finally {
+      setWordExportBusy(false);
+    }
   };
 
   const handleShare = async () => {
@@ -744,6 +761,13 @@ export function CollectionView() {
                 }))) ? null : 'Allow pop-ups for Poetry Editor, then try again.');
               }}>Share as PDF</button>
               <p>Choose Save as PDF in the print dialog. Each poem starts on a new page.</p>
+              <div className="share-word-option">
+                <button className="export-button" onClick={handleShareAsWord} disabled={wordExportBusy || loadingPoems || loadingSections || processingUpload || poems.length === 0}>
+                  {wordExportBusy ? 'Creating Word document...' : 'Share as Word document'}
+                </button>
+                <p>Download a Word document (.docx) with your poems and section headings to send or edit. Comments are not included.</p>
+                {wordExportError && <div className="share-error" role="alert">{wordExportError}</div>}
+              </div>
               <p>This link gives read-only access to your collection and its comments.</p>
               <div className="share-comments-choice">
                 <div className="share-comments-label">Show comments by default?</div>

@@ -161,6 +161,16 @@
   margin-bottom: 1rem;
 }
 
+.share-word-option {
+  margin: 1rem 0;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
+}
+
+.share-word-option p {
+  margin-top: 0.5rem;
+}
+
 .share-link-row {
   display: flex;
   gap: 0.5rem;
